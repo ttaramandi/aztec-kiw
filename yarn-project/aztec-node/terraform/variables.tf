@@ -1,3 +1,8 @@
+variable "NUM_OF_NODES" {
+  type    = number
+  default = 2
+}
+
 variable "DEPLOY_TAG" {
   type = string
 }
@@ -35,14 +40,19 @@ variable "CHAIN_ID" {
   default = 31337
 }
 
-variable "BOOTNODE_1_LISTEN_PORT" {
-  type    = string
-  default = 40500
-}
+# variable "BOOTNODE_1_LISTEN_PORT" {
+#   type    = string
+#   default = 40500
+# }
 
-variable "BOOTNODE_2_LISTEN_PORT" {
-  type    = string
-  default = 40501
+# variable "BOOTNODE_2_LISTEN_PORT" {
+#   type    = string
+#   default = 40501
+# }
+
+variable "BOOTNODE_LISTEN_PORT" {
+  type    = number
+  default = 40500
 }
 
 variable "BOOTNODE_1_PEER_ID" {
@@ -53,15 +63,20 @@ variable "BOOTNODE_2_PEER_ID" {
   type = string
 }
 
-variable "NODE_1_TCP_PORT" {
-  type    = string
+# variable "NODE_1_TCP_PORT" {
+#   type    = string
+#   default = 40400
+# }
+
+variable "NODE_TCP_PORT" {
+  type    = number
   default = 40400
 }
 
-variable "NODE_2_TCP_PORT" {
-  type    = string
-  default = 40401
-}
+# variable "NODE_2_TCP_PORT" {
+#   type    = string
+#   default = 40401
+# }
 
 variable "NODE_1_PRIVATE_KEY" {
   type = string

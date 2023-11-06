@@ -58,13 +58,24 @@ data "terraform_remote_state" "l1_contracts" {
   }
 }
 
-resource "aws_cloudwatch_log_group" "aztec-node-log-group-1" {
-  name              = "/fargate/service/${var.DEPLOY_TAG}/aztec-node-1"
+locals {
+  node_names = [for i in range(var.NUM_OF_NODES) : format("aztec-node-%d", i + 1)]
+}
+
+# resource "aws_cloudwatch_log_group" "aztec-node-log-group-1" {
+#   name              = "/fargate/service/${var.DEPLOY_TAG}/aztec-node-1"
+#   retention_in_days = 14
+# }
+
+resource "aws_cloudwatch_log_group" "aztec-node-log-group" {
+  count             = var.NUM_OF_NODES
+  name              = "/fargate/service/${var.DEPLOY_TAG}/${local.node_names[count.index]}"
   retention_in_days = 14
 }
 
-resource "aws_service_discovery_service" "aztec-node-1" {
-  name = "${var.DEPLOY_TAG}-aztec-node-1"
+resource "aws_service_discovery_service" "aztec-node" {
+  count = var.NUM_OF_NODES
+  name  = "${var.DEPLOY_TAG}-${local.node_names[count.index]}"
 
   health_check_custom_config {
     failure_threshold = 1
@@ -85,17 +96,12 @@ resource "aws_service_discovery_service" "aztec-node-1" {
 
     routing_policy = "MULTIVALUE"
   }
-
-  # Terraform just fails if this resource changes and you have registered instances.
-  provisioner "local-exec" {
-    when    = destroy
-    command = "${path.module}/../servicediscovery-drain.sh ${self.id}"
-  }
 }
 
 # Define task definition and service.
-resource "aws_ecs_task_definition" "aztec-node-1" {
-  family                   = "${var.DEPLOY_TAG}-aztec-node-1"
+resource "aws_ecs_task_definition" "aztec-node" {
+  count                    = var.NUM_OF_NODES
+  family                   = "${var.DEPLOY_TAG}-${local.node_names[count.index]}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = "2048"
@@ -106,7 +112,7 @@ resource "aws_ecs_task_definition" "aztec-node-1" {
   container_definitions = <<DEFINITIONS
 [
   {
-    "name": "${var.DEPLOY_TAG}-aztec-node-1",
+    "name": "${var.DEPLOY_TAG}-${local.node_names[count.index]}",
     "image": "${var.ECR_URL}/aztec-node:${var.DEPLOY_TAG}",
     "essential": true,
     "memoryReservation": 3776,
@@ -115,7 +121,7 @@ resource "aws_ecs_task_definition" "aztec-node-1" {
         "containerPort": 80
       },
       {
-        "containerPort": ${var.NODE_1_TCP_PORT}
+        "containerPort": ${var.NODE_TCP_PORT + count.index}
       }
     ],
     "environment": [
@@ -177,11 +183,11 @@ resource "aws_ecs_task_definition" "aztec-node-1" {
       },
       {
         "name": "API_PREFIX",
-        "value": "/${var.DEPLOY_TAG}/aztec-node-1"
+        "value": "/${var.DEPLOY_TAG}/${local.node_names[count.index]}"
       },
       {
         "name": "P2P_TCP_LISTEN_PORT",
-        "value": "${var.NODE_1_TCP_PORT}"
+        "value": "${var.NODE_TCP_PORT + count.index}"
       },
       {
         "name": "P2P_TCP_LISTEN_IP",
@@ -193,11 +199,11 @@ resource "aws_ecs_task_definition" "aztec-node-1" {
       },
       {
         "name": "P2P_ANNOUNCE_PORT",
-        "value": "${var.NODE_1_TCP_PORT}"
+        "value": "${var.NODE_TCP_PORT + count.index}"
       },
       {
         "name": "BOOTSTRAP_NODES",
-        "value": "/dns4/${var.DEPLOY_TAG}-aztec-bootstrap-2.local/tcp/${var.BOOTNODE_2_LISTEN_PORT}/p2p/${var.BOOTNODE_2_PEER_ID},/dns4/${var.DEPLOY_TAG}-aztec-bootstrap-1.local/tcp/${var.BOOTNODE_1_LISTEN_PORT}/p2p/${var.BOOTNODE_1_PEER_ID}"
+        "value": "/dns4/${var.DEPLOY_TAG}-aztec-bootstrap-2.local/tcp/${var.BOOTNODE_LISTEN_PORT + count.index}/p2p/${var.BOOTNODE_2_PEER_ID},/dns4/${var.DEPLOY_TAG}-aztec-bootstrap-1.local/tcp/${var.BOOTNODE_LISTEN_PORT + count.index}/p2p/${var.BOOTNODE_1_PEER_ID}"
       },
       {
         "name": "P2P_ENABLED",
@@ -223,7 +229,7 @@ resource "aws_ecs_task_definition" "aztec-node-1" {
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
-        "awslogs-group": "/fargate/service/${var.DEPLOY_TAG}/aztec-node-1",
+        "awslogs-group": "/fargate/service/${var.DEPLOY_TAG}/${local.node_names[count.index]}",
         "awslogs-region": "eu-west-2",
         "awslogs-stream-prefix": "ecs"
       }
@@ -233,8 +239,9 @@ resource "aws_ecs_task_definition" "aztec-node-1" {
 DEFINITIONS
 }
 
-resource "aws_ecs_service" "aztec-node-1" {
-  name                               = "${var.DEPLOY_TAG}-aztec-node-1"
+resource "aws_ecs_service" "aztec-node" {
+  count                              = var.NUM_OF_NODES
+  name                               = "${var.DEPLOY_TAG}-${local.node_names[count.index]}"
   cluster                            = data.terraform_remote_state.setup_iac.outputs.ecs_cluster_id
   launch_type                        = "FARGATE"
   desired_count                      = 1
@@ -251,20 +258,20 @@ resource "aws_ecs_service" "aztec-node-1" {
   }
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.aztec-node-1.arn
-    container_name   = "${var.DEPLOY_TAG}-aztec-node-1"
+    target_group_arn = aws_alb_target_group.aztec-node[count.index].arn
+    container_name   = "${var.DEPLOY_TAG}-${local.node_names[count.index]}"
     container_port   = 80
   }
 
   load_balancer {
     target_group_arn = aws_lb_target_group.aztec-node-1-target-group.arn
-    container_name   = "${var.DEPLOY_TAG}-aztec-node-1"
-    container_port   = var.NODE_1_TCP_PORT
+    container_name   = "${var.DEPLOY_TAG}-${local.node_names[count.index]}"
+    container_port   = var.NODE_TCP_PORT + count.index
   }
 
   service_registries {
     registry_arn   = aws_service_discovery_service.aztec-node-1.arn
-    container_name = "${var.DEPLOY_TAG}-aztec-node-1"
+    container_name = "${var.DEPLOY_TAG}-${local.node_names[count.index]}"
     container_port = 80
   }
 
@@ -272,8 +279,9 @@ resource "aws_ecs_service" "aztec-node-1" {
 }
 
 # Configure ALB to route /aztec-node to server.
-resource "aws_alb_target_group" "aztec-node-1" {
-  name                 = "${var.DEPLOY_TAG}-node-1-http-target"
+resource "aws_alb_target_group" "aztec-node" {
+  count                = var.NUM_OF_NODES
+  name                 = "${var.DEPLOY_TAG}-node-${count.index + 1}-http-target"
   port                 = 80
   protocol             = "HTTP"
   target_type          = "ip"
@@ -281,7 +289,7 @@ resource "aws_alb_target_group" "aztec-node-1" {
   deregistration_delay = 5
 
   health_check {
-    path                = "/${var.DEPLOY_TAG}/aztec-node-1/status"
+    path                = "/${var.DEPLOY_TAG}/${local.node_names[count.index]}/status"
     matcher             = "200"
     interval            = 10
     healthy_threshold   = 2
@@ -290,17 +298,20 @@ resource "aws_alb_target_group" "aztec-node-1" {
   }
 
   tags = {
-    name = "${var.DEPLOY_TAG}-aztec-node-1"
+    name = "${var.DEPLOY_TAG}-${local.node_names[count.index]}"
   }
 }
 
-resource "aws_lb_listener_rule" "api-1" {
+resource "aws_lb_listener_rule" "api" {
+  # count        = var.NUM_OF_NODES
+  for_each     = { for tg in aws_alb_target_group.aztec-node : tg.name => tg.arn }
   listener_arn = data.terraform_remote_state.aztec2_iac.outputs.alb_listener_arn
   priority     = 500
 
   action {
-    type             = "forward"
-    target_group_arn = aws_alb_target_group.aztec-node-1.arn
+    type = "forward"
+    # target_group_arn = aws_alb_target_group.aztec-node[count.index].arn
+    target_group_arn = each.value
   }
 
   condition {
@@ -310,9 +321,10 @@ resource "aws_lb_listener_rule" "api-1" {
   }
 }
 
-resource "aws_lb_target_group" "aztec-node-1-target-group" {
-  name        = "${var.DEPLOY_TAG}-node-1-p2p-target"
-  port        = var.NODE_1_TCP_PORT
+resource "aws_lb_target_group" "aztec-node-target-group" {
+  count       = var.NUM_OF_NODES
+  name        = "${var.DEPLOY_TAG}-node-${count.index + 1}-p2p-target"
+  port        = var.NODE_TCP_PORT + count.index + 1
   protocol    = "TCP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.setup_iac.outputs.vpc_id
@@ -322,14 +334,15 @@ resource "aws_lb_target_group" "aztec-node-1-target-group" {
     interval            = 10
     healthy_threshold   = 2
     unhealthy_threshold = 2
-    port                = var.NODE_1_TCP_PORT
+    port                = var.NODE_TCP_PORT + count.index + 1
   }
 }
 
 resource "aws_security_group_rule" "allow-node-1-tcp" {
+  count             = var.NUM_OF_NODES
   type              = "ingress"
-  from_port         = var.NODE_1_TCP_PORT
-  to_port           = var.NODE_1_TCP_PORT
+  from_port         = var.NODE_TCP_PORT + count.index + 1
+  to_port           = var.NODE_TCP_PORT + count.index + 1
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = data.terraform_remote_state.aztec-network_iac.outputs.p2p_security_group_id
