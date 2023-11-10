@@ -71,29 +71,29 @@ template <typename FF> struct Row {
     FF main_Y_free_value{};
     FF main_Z_free_value{};
     FF main__operation_id_no_change{};
-    FF main_r7_shift{};
-    FF main__romgen_first_step_shift{};
-    FF main_r0_shift{};
-    FF main_r8_shift{};
-    FF main_r1_shift{};
-    FF main_r9_shift{};
-    FF main_r10_shift{};
-    FF main_m_is_write_shift{};
-    FF main_pc_shift{};
     FF main_tmp_shift{};
-    FF main_addr_shift{};
-    FF main_jump_ptr_shift{};
+    FF main_r10_shift{};
     FF main_r11_shift{};
-    FF main_r2_shift{};
-    FF main_r3_shift{};
-    FF main_m_value_shift{};
-    FF main_r5_shift{};
+    FF main_jump_ptr_shift{};
+    FF main_m_is_write_shift{};
+    FF main_r1_shift{};
     FF main__operation_id_shift{};
+    FF main_m_value_shift{};
     FF main__sigma_shift{};
-    FF main_r4_shift{};
-    FF main_m_addr_shift{};
     FF main_r6_shift{};
+    FF main_r5_shift{};
+    FF main_r9_shift{};
+    FF main_r7_shift{};
+    FF main_addr_shift{};
+    FF main_r2_shift{};
+    FF main_m_addr_shift{};
+    FF main__romgen_first_step_shift{};
+    FF main_pc_shift{};
     FF main_first_step_shift{};
+    FF main_r0_shift{};
+    FF main_r3_shift{};
+    FF main_r8_shift{};
+    FF main_r4_shift{};
 };
 
 #define DECLARE_VIEWS(index)                                                                                           \
@@ -163,29 +163,29 @@ template <typename FF> struct Row {
     [[maybe_unused]] auto main_Y_free_value = View(new_term.main_Y_free_value);                                        \
     [[maybe_unused]] auto main_Z_free_value = View(new_term.main_Z_free_value);                                        \
     [[maybe_unused]] auto main__operation_id_no_change = View(new_term.main__operation_id_no_change);                  \
-    [[maybe_unused]] auto main_r7_shift = View(new_term.main_r7_shift);                                                \
-    [[maybe_unused]] auto main__romgen_first_step_shift = View(new_term.main__romgen_first_step_shift);                \
-    [[maybe_unused]] auto main_r0_shift = View(new_term.main_r0_shift);                                                \
-    [[maybe_unused]] auto main_r8_shift = View(new_term.main_r8_shift);                                                \
-    [[maybe_unused]] auto main_r1_shift = View(new_term.main_r1_shift);                                                \
-    [[maybe_unused]] auto main_r9_shift = View(new_term.main_r9_shift);                                                \
-    [[maybe_unused]] auto main_r10_shift = View(new_term.main_r10_shift);                                              \
-    [[maybe_unused]] auto main_m_is_write_shift = View(new_term.main_m_is_write_shift);                                \
-    [[maybe_unused]] auto main_pc_shift = View(new_term.main_pc_shift);                                                \
     [[maybe_unused]] auto main_tmp_shift = View(new_term.main_tmp_shift);                                              \
-    [[maybe_unused]] auto main_addr_shift = View(new_term.main_addr_shift);                                            \
-    [[maybe_unused]] auto main_jump_ptr_shift = View(new_term.main_jump_ptr_shift);                                    \
+    [[maybe_unused]] auto main_r10_shift = View(new_term.main_r10_shift);                                              \
     [[maybe_unused]] auto main_r11_shift = View(new_term.main_r11_shift);                                              \
-    [[maybe_unused]] auto main_r2_shift = View(new_term.main_r2_shift);                                                \
-    [[maybe_unused]] auto main_r3_shift = View(new_term.main_r3_shift);                                                \
-    [[maybe_unused]] auto main_m_value_shift = View(new_term.main_m_value_shift);                                      \
-    [[maybe_unused]] auto main_r5_shift = View(new_term.main_r5_shift);                                                \
+    [[maybe_unused]] auto main_jump_ptr_shift = View(new_term.main_jump_ptr_shift);                                    \
+    [[maybe_unused]] auto main_m_is_write_shift = View(new_term.main_m_is_write_shift);                                \
+    [[maybe_unused]] auto main_r1_shift = View(new_term.main_r1_shift);                                                \
     [[maybe_unused]] auto main__operation_id_shift = View(new_term.main__operation_id_shift);                          \
+    [[maybe_unused]] auto main_m_value_shift = View(new_term.main_m_value_shift);                                      \
     [[maybe_unused]] auto main__sigma_shift = View(new_term.main__sigma_shift);                                        \
-    [[maybe_unused]] auto main_r4_shift = View(new_term.main_r4_shift);                                                \
-    [[maybe_unused]] auto main_m_addr_shift = View(new_term.main_m_addr_shift);                                        \
     [[maybe_unused]] auto main_r6_shift = View(new_term.main_r6_shift);                                                \
-    [[maybe_unused]] auto main_first_step_shift = View(new_term.main_first_step_shift);
+    [[maybe_unused]] auto main_r5_shift = View(new_term.main_r5_shift);                                                \
+    [[maybe_unused]] auto main_r9_shift = View(new_term.main_r9_shift);                                                \
+    [[maybe_unused]] auto main_r7_shift = View(new_term.main_r7_shift);                                                \
+    [[maybe_unused]] auto main_addr_shift = View(new_term.main_addr_shift);                                            \
+    [[maybe_unused]] auto main_r2_shift = View(new_term.main_r2_shift);                                                \
+    [[maybe_unused]] auto main_m_addr_shift = View(new_term.main_m_addr_shift);                                        \
+    [[maybe_unused]] auto main__romgen_first_step_shift = View(new_term.main__romgen_first_step_shift);                \
+    [[maybe_unused]] auto main_pc_shift = View(new_term.main_pc_shift);                                                \
+    [[maybe_unused]] auto main_first_step_shift = View(new_term.main_first_step_shift);                                \
+    [[maybe_unused]] auto main_r0_shift = View(new_term.main_r0_shift);                                                \
+    [[maybe_unused]] auto main_r3_shift = View(new_term.main_r3_shift);                                                \
+    [[maybe_unused]] auto main_r8_shift = View(new_term.main_r8_shift);                                                \
+    [[maybe_unused]] auto main_r4_shift = View(new_term.main_r4_shift);
 
 template <typename FF_> class BrilligVMImpl {
   public:

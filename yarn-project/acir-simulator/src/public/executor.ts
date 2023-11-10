@@ -1,5 +1,5 @@
 import { GlobalVariables, HistoricBlockData, PublicCircuitPublicInputs } from '@aztec/circuits.js';
-import { createDebugLogger } from '@aztec/foundation/log';
+import { DebugLogger, createDebugLogger } from '@aztec/foundation/log';
 
 import { Oracle } from '../acvm/index.js';
 import { ExecutionError, createSimulationError } from '../common/errors.js';
@@ -14,7 +14,30 @@ import { Fr } from '@aztec/circuits.js';
 import { FunctionL2Logs } from '@aztec/types';
 import { InvalidStructSignatureError } from 'viem';
 
+//import { execFile } from 'child_process';
+import {exec} from 'node:child_process';
+import util from 'node:util';
+import fs from 'fs';
+import { log } from 'node:console';
 
+const execPromise = util.promisify(exec);
+
+const POWDR_BINDIR = process.env.POWDR_BINDIR;//'/mnt/user-data/david/projects/3-aztec3/powdr/target/debug/';
+
+async function tryExec(cmd: string) {
+  // promisify exec
+  const log = createDebugLogger('aztec:simulator:public_vm_exec');
+
+  try {
+    const {stdout, stderr} = await execPromise(cmd);
+    log(`STDOUT: ${stdout}`);
+    log(`STDERR: ${stderr}`);
+    return stdout;
+  } catch (error) {
+    log(`ERROR: ${error}`);
+    throw error;
+  }
+}
 enum Opcode {
   CALLDATASIZE,
   CALLDATACOPY,
@@ -166,9 +189,29 @@ export class PublicExecutor {
     }
   }
 
+  public async bytecodeToPowdr(execution: PublicExecution) {
+    const selector = execution.functionData.selector;
+    const bytecode = await this.contractsDb.getBytecode(execution.contractAddress, selector);
+    log(`bytecode: ${bytecode}`);
+    log(`bytecode base64: ` + bytecode!.toString('base64'));
+    // write bytecode to file
+    // pass filename to powdr bberg main
+    const bytecodePath = await tryExec('mktemp');
+    log(`writing bytecode to: ${bytecodePath}`);
+    // writeFileSync to tmp file not working
+    //fs.writeFileSync(bytecodePath, bytecode!.toString('base64'));
+    await tryExec(`echo ${bytecode!.toString('base64')} > ${bytecodePath}`);
+    await tryExec(`cd ../../barretenberg/cpp/ && ${POWDR_BINDIR}/bberg ${bytecodePath}`);
+  }
+  public async generateWitness() {
+    await tryExec(`cd ../../barretenberg/cpp/ && ${POWDR_BINDIR}/powdr pil brillig_out.asm --field bn254 --force`);
+  }
+  public async prove() {
+    const log = createDebugLogger('aztec:simulator:public_vm_prove');
+    log(`Proving public vm`);
 
-  //public async generateWitness(execution: PublicExecution, globalVariables: GlobalVariables): Promise<PublicVMWitness>;
-  //public async prove(witness: PublicVMWitness) Promise<PublicExecutionResult>;
+    await tryExec('cd ../../barretenberg/cpp/build/ && ./bin/publicvm_cli dummy-path');
+  }
 }
 
 async function vmExecute(bytecode: AVMInstruction[]/*Buffer*/,

@@ -68,6 +68,9 @@ add_subdirectory(barretenberg/solidity_helpers)
 add_subdirectory(barretenberg/wasi)
 add_subdirectory(barretenberg/grumpkin_srs_gen)
 add_subdirectory(barretenberg/bb)
+if (NOT WASM)
+    add_subdirectory(barretenberg/publicvm)
+endif()
 
 
 if(SMT)

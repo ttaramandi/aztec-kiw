@@ -4,7 +4,6 @@
 #include "barretenberg/ecc/curves/bn254/fr.hpp"
 #include "barretenberg/proof_system/arithmetization/arithmetization.hpp"
 #include <cstdint>
-#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -49,10 +48,6 @@ inline std::vector<Row> read_both_file_into_cols(std::string const& commited_fil
         std::cout << "Error opening constant file" << std::endl;
         return {};
     }
-
-    // TODO: temp hack: required for shifts
-    Row check_row = { .main_FIRST = 1, .main__block_enforcer_last_step = 1, .main_XIsZero = 1 };
-    rows.push_back(check_row);
 
     // We are assuming that the two files are the same length
     while (commited_file) {
@@ -179,29 +174,29 @@ inline std::vector<Row> read_both_file_into_cols(std::string const& commited_fil
 
     for (size_t i = 1; i < rows.size(); ++i) {
         Row& row = rows[i - 1];
-        row.main_r7_shift = rows[(i) % rows.size()].main_r7;
-        row.main__romgen_first_step_shift = rows[(i) % rows.size()].main__romgen_first_step;
-        row.main_r0_shift = rows[(i) % rows.size()].main_r0;
-        row.main_r8_shift = rows[(i) % rows.size()].main_r8;
-        row.main_r1_shift = rows[(i) % rows.size()].main_r1;
-        row.main_r9_shift = rows[(i) % rows.size()].main_r9;
-        row.main_r10_shift = rows[(i) % rows.size()].main_r10;
-        row.main_m_is_write_shift = rows[(i) % rows.size()].main_m_is_write;
-        row.main_pc_shift = rows[(i) % rows.size()].main_pc;
         row.main_tmp_shift = rows[(i) % rows.size()].main_tmp;
-        row.main_addr_shift = rows[(i) % rows.size()].main_addr;
-        row.main_jump_ptr_shift = rows[(i) % rows.size()].main_jump_ptr;
+        row.main_r10_shift = rows[(i) % rows.size()].main_r10;
         row.main_r11_shift = rows[(i) % rows.size()].main_r11;
-        row.main_r2_shift = rows[(i) % rows.size()].main_r2;
-        row.main_r3_shift = rows[(i) % rows.size()].main_r3;
-        row.main_m_value_shift = rows[(i) % rows.size()].main_m_value;
-        row.main_r5_shift = rows[(i) % rows.size()].main_r5;
+        row.main_jump_ptr_shift = rows[(i) % rows.size()].main_jump_ptr;
+        row.main_m_is_write_shift = rows[(i) % rows.size()].main_m_is_write;
+        row.main_r1_shift = rows[(i) % rows.size()].main_r1;
         row.main__operation_id_shift = rows[(i) % rows.size()].main__operation_id;
+        row.main_m_value_shift = rows[(i) % rows.size()].main_m_value;
         row.main__sigma_shift = rows[(i) % rows.size()].main__sigma;
-        row.main_r4_shift = rows[(i) % rows.size()].main_r4;
-        row.main_m_addr_shift = rows[(i) % rows.size()].main_m_addr;
         row.main_r6_shift = rows[(i) % rows.size()].main_r6;
+        row.main_r5_shift = rows[(i) % rows.size()].main_r5;
+        row.main_r9_shift = rows[(i) % rows.size()].main_r9;
+        row.main_r7_shift = rows[(i) % rows.size()].main_r7;
+        row.main_addr_shift = rows[(i) % rows.size()].main_addr;
+        row.main_r2_shift = rows[(i) % rows.size()].main_r2;
+        row.main_m_addr_shift = rows[(i) % rows.size()].main_m_addr;
+        row.main__romgen_first_step_shift = rows[(i) % rows.size()].main__romgen_first_step;
+        row.main_pc_shift = rows[(i) % rows.size()].main_pc;
         row.main_first_step_shift = rows[(i) % rows.size()].main_first_step;
+        row.main_r0_shift = rows[(i) % rows.size()].main_r0;
+        row.main_r3_shift = rows[(i) % rows.size()].main_r3;
+        row.main_r8_shift = rows[(i) % rows.size()].main_r8;
+        row.main_r4_shift = rows[(i) % rows.size()].main_r4;
     }
 
     return rows;

@@ -105,74 +105,74 @@ BrilligVMProver_<Flavor>::BrilligVMProver_(std::shared_ptr<typename Flavor::Prov
     prover_polynomials.main_Z_free_value = key->main_Z_free_value;
     prover_polynomials.main__operation_id_no_change = key->main__operation_id_no_change;
 
-    prover_polynomials.main_r7 = key->main_r7;
-    prover_polynomials.main_r7_shift = key->main_r7.shifted();
-
-    prover_polynomials.main__romgen_first_step = key->main__romgen_first_step;
-    prover_polynomials.main__romgen_first_step_shift = key->main__romgen_first_step.shifted();
-
-    prover_polynomials.main_r0 = key->main_r0;
-    prover_polynomials.main_r0_shift = key->main_r0.shifted();
-
-    prover_polynomials.main_r8 = key->main_r8;
-    prover_polynomials.main_r8_shift = key->main_r8.shifted();
-
-    prover_polynomials.main_r1 = key->main_r1;
-    prover_polynomials.main_r1_shift = key->main_r1.shifted();
-
-    prover_polynomials.main_r9 = key->main_r9;
-    prover_polynomials.main_r9_shift = key->main_r9.shifted();
+    prover_polynomials.main_tmp = key->main_tmp;
+    prover_polynomials.main_tmp_shift = key->main_tmp.shifted();
 
     prover_polynomials.main_r10 = key->main_r10;
     prover_polynomials.main_r10_shift = key->main_r10.shifted();
 
-    prover_polynomials.main_m_is_write = key->main_m_is_write;
-    prover_polynomials.main_m_is_write_shift = key->main_m_is_write.shifted();
-
-    prover_polynomials.main_pc = key->main_pc;
-    prover_polynomials.main_pc_shift = key->main_pc.shifted();
-
-    prover_polynomials.main_tmp = key->main_tmp;
-    prover_polynomials.main_tmp_shift = key->main_tmp.shifted();
-
-    prover_polynomials.main_addr = key->main_addr;
-    prover_polynomials.main_addr_shift = key->main_addr.shifted();
+    prover_polynomials.main_r11 = key->main_r11;
+    prover_polynomials.main_r11_shift = key->main_r11.shifted();
 
     prover_polynomials.main_jump_ptr = key->main_jump_ptr;
     prover_polynomials.main_jump_ptr_shift = key->main_jump_ptr.shifted();
 
-    prover_polynomials.main_r11 = key->main_r11;
-    prover_polynomials.main_r11_shift = key->main_r11.shifted();
+    prover_polynomials.main_m_is_write = key->main_m_is_write;
+    prover_polynomials.main_m_is_write_shift = key->main_m_is_write.shifted();
 
-    prover_polynomials.main_r2 = key->main_r2;
-    prover_polynomials.main_r2_shift = key->main_r2.shifted();
-
-    prover_polynomials.main_r3 = key->main_r3;
-    prover_polynomials.main_r3_shift = key->main_r3.shifted();
-
-    prover_polynomials.main_m_value = key->main_m_value;
-    prover_polynomials.main_m_value_shift = key->main_m_value.shifted();
-
-    prover_polynomials.main_r5 = key->main_r5;
-    prover_polynomials.main_r5_shift = key->main_r5.shifted();
+    prover_polynomials.main_r1 = key->main_r1;
+    prover_polynomials.main_r1_shift = key->main_r1.shifted();
 
     prover_polynomials.main__operation_id = key->main__operation_id;
     prover_polynomials.main__operation_id_shift = key->main__operation_id.shifted();
 
+    prover_polynomials.main_m_value = key->main_m_value;
+    prover_polynomials.main_m_value_shift = key->main_m_value.shifted();
+
     prover_polynomials.main__sigma = key->main__sigma;
     prover_polynomials.main__sigma_shift = key->main__sigma.shifted();
-
-    prover_polynomials.main_r4 = key->main_r4;
-    prover_polynomials.main_r4_shift = key->main_r4.shifted();
-
-    prover_polynomials.main_m_addr = key->main_m_addr;
-    prover_polynomials.main_m_addr_shift = key->main_m_addr.shifted();
 
     prover_polynomials.main_r6 = key->main_r6;
     prover_polynomials.main_r6_shift = key->main_r6.shifted();
 
+    prover_polynomials.main_r5 = key->main_r5;
+    prover_polynomials.main_r5_shift = key->main_r5.shifted();
+
+    prover_polynomials.main_r9 = key->main_r9;
+    prover_polynomials.main_r9_shift = key->main_r9.shifted();
+
+    prover_polynomials.main_r7 = key->main_r7;
+    prover_polynomials.main_r7_shift = key->main_r7.shifted();
+
+    prover_polynomials.main_addr = key->main_addr;
+    prover_polynomials.main_addr_shift = key->main_addr.shifted();
+
+    prover_polynomials.main_r2 = key->main_r2;
+    prover_polynomials.main_r2_shift = key->main_r2.shifted();
+
+    prover_polynomials.main_m_addr = key->main_m_addr;
+    prover_polynomials.main_m_addr_shift = key->main_m_addr.shifted();
+
+    prover_polynomials.main__romgen_first_step = key->main__romgen_first_step;
+    prover_polynomials.main__romgen_first_step_shift = key->main__romgen_first_step.shifted();
+
+    prover_polynomials.main_pc = key->main_pc;
+    prover_polynomials.main_pc_shift = key->main_pc.shifted();
+
     prover_polynomials.main_first_step = key->main_first_step;
     prover_polynomials.main_first_step_shift = key->main_first_step.shifted();
+
+    prover_polynomials.main_r0 = key->main_r0;
+    prover_polynomials.main_r0_shift = key->main_r0.shifted();
+
+    prover_polynomials.main_r3 = key->main_r3;
+    prover_polynomials.main_r3_shift = key->main_r3.shifted();
+
+    prover_polynomials.main_r8 = key->main_r8;
+    prover_polynomials.main_r8_shift = key->main_r8.shifted();
+
+    prover_polynomials.main_r4 = key->main_r4;
+    prover_polynomials.main_r4_shift = key->main_r4.shifted();
 
     // prover_polynomials.lookup_inverses = key->lookup_inverses;
     // key->z_perm = Polynomial(key->circuit_size);

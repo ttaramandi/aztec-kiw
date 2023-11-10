@@ -275,29 +275,29 @@ template <typename CycleGroup_T, typename Curve_T, typename PCS_T> class Brillig
         DataType& main_Z_free_value = std::get<63>(this->_data);
         DataType& main__operation_id_no_change = std::get<64>(this->_data);
 
-        DataType& main_r7_shift = std::get<65>(this->_data);
-        DataType& main__romgen_first_step_shift = std::get<66>(this->_data);
-        DataType& main_r0_shift = std::get<67>(this->_data);
-        DataType& main_r8_shift = std::get<68>(this->_data);
-        DataType& main_r1_shift = std::get<69>(this->_data);
-        DataType& main_r9_shift = std::get<70>(this->_data);
-        DataType& main_r10_shift = std::get<71>(this->_data);
-        DataType& main_m_is_write_shift = std::get<72>(this->_data);
-        DataType& main_pc_shift = std::get<73>(this->_data);
-        DataType& main_tmp_shift = std::get<74>(this->_data);
-        DataType& main_addr_shift = std::get<75>(this->_data);
-        DataType& main_jump_ptr_shift = std::get<76>(this->_data);
-        DataType& main_r11_shift = std::get<77>(this->_data);
-        DataType& main_r2_shift = std::get<78>(this->_data);
-        DataType& main_r3_shift = std::get<79>(this->_data);
-        DataType& main_m_value_shift = std::get<80>(this->_data);
-        DataType& main_r5_shift = std::get<81>(this->_data);
-        DataType& main__operation_id_shift = std::get<82>(this->_data);
-        DataType& main__sigma_shift = std::get<83>(this->_data);
-        DataType& main_r4_shift = std::get<84>(this->_data);
-        DataType& main_m_addr_shift = std::get<85>(this->_data);
-        DataType& main_r6_shift = std::get<86>(this->_data);
-        DataType& main_first_step_shift = std::get<87>(this->_data);
+        DataType& main_tmp_shift = std::get<65>(this->_data);
+        DataType& main_r10_shift = std::get<66>(this->_data);
+        DataType& main_r11_shift = std::get<67>(this->_data);
+        DataType& main_jump_ptr_shift = std::get<68>(this->_data);
+        DataType& main_m_is_write_shift = std::get<69>(this->_data);
+        DataType& main_r1_shift = std::get<70>(this->_data);
+        DataType& main__operation_id_shift = std::get<71>(this->_data);
+        DataType& main_m_value_shift = std::get<72>(this->_data);
+        DataType& main__sigma_shift = std::get<73>(this->_data);
+        DataType& main_r6_shift = std::get<74>(this->_data);
+        DataType& main_r5_shift = std::get<75>(this->_data);
+        DataType& main_r9_shift = std::get<76>(this->_data);
+        DataType& main_r7_shift = std::get<77>(this->_data);
+        DataType& main_addr_shift = std::get<78>(this->_data);
+        DataType& main_r2_shift = std::get<79>(this->_data);
+        DataType& main_m_addr_shift = std::get<80>(this->_data);
+        DataType& main__romgen_first_step_shift = std::get<81>(this->_data);
+        DataType& main_pc_shift = std::get<82>(this->_data);
+        DataType& main_first_step_shift = std::get<83>(this->_data);
+        DataType& main_r0_shift = std::get<84>(this->_data);
+        DataType& main_r3_shift = std::get<85>(this->_data);
+        DataType& main_r8_shift = std::get<86>(this->_data);
+        DataType& main_r4_shift = std::get<87>(this->_data);
 
         std::vector<HandleType> get_wires() override
         {
@@ -367,29 +367,29 @@ template <typename CycleGroup_T, typename Curve_T, typename PCS_T> class Brillig
                 main_Y_free_value,
                 main_Z_free_value,
                 main__operation_id_no_change,
-                main_r7,
-                main__romgen_first_step,
-                main_r0,
-                main_r8,
-                main_r1,
-                main_r9,
-                main_r10,
-                main_m_is_write,
-                main_pc,
                 main_tmp,
-                main_addr,
-                main_jump_ptr,
+                main_r10,
                 main_r11,
-                main_r2,
-                main_r3,
-                main_m_value,
-                main_r5,
+                main_jump_ptr,
+                main_m_is_write,
+                main_r1,
                 main__operation_id,
+                main_m_value,
                 main__sigma,
-                main_r4,
-                main_m_addr,
                 main_r6,
+                main_r5,
+                main_r9,
+                main_r7,
+                main_addr,
+                main_r2,
+                main_m_addr,
+                main__romgen_first_step,
+                main_pc,
                 main_first_step,
+                main_r0,
+                main_r3,
+                main_r8,
+                main_r4,
 
             };
         };
@@ -469,18 +469,29 @@ template <typename CycleGroup_T, typename Curve_T, typename PCS_T> class Brillig
         std::vector<HandleType> get_to_be_shifted() override
         {
             return {
-                main_r7,         main__romgen_first_step,
-                main_r0,         main_r8,
-                main_r1,         main_r9,
-                main_r10,        main_m_is_write,
-                main_pc,         main_tmp,
-                main_addr,       main_jump_ptr,
-                main_r11,        main_r2,
-                main_r3,         main_m_value,
-                main_r5,         main__operation_id,
-                main__sigma,     main_r4,
-                main_m_addr,     main_r6,
+                main_tmp,
+                main_r10,
+                main_r11,
+                main_jump_ptr,
+                main_m_is_write,
+                main_r1,
+                main__operation_id,
+                main_m_value,
+                main__sigma,
+                main_r6,
+                main_r5,
+                main_r9,
+                main_r7,
+                main_addr,
+                main_r2,
+                main_m_addr,
+                main__romgen_first_step,
+                main_pc,
                 main_first_step,
+                main_r0,
+                main_r3,
+                main_r8,
+                main_r4,
 
             };
         };
@@ -488,18 +499,29 @@ template <typename CycleGroup_T, typename Curve_T, typename PCS_T> class Brillig
         std::vector<HandleType> get_shifted() override
         {
             return {
-                main_r7_shift,         main__romgen_first_step_shift,
-                main_r0_shift,         main_r8_shift,
-                main_r1_shift,         main_r9_shift,
-                main_r10_shift,        main_m_is_write_shift,
-                main_pc_shift,         main_tmp_shift,
-                main_addr_shift,       main_jump_ptr_shift,
-                main_r11_shift,        main_r2_shift,
-                main_r3_shift,         main_m_value_shift,
-                main_r5_shift,         main__operation_id_shift,
-                main__sigma_shift,     main_r4_shift,
-                main_m_addr_shift,     main_r6_shift,
+                main_tmp_shift,
+                main_r10_shift,
+                main_r11_shift,
+                main_jump_ptr_shift,
+                main_m_is_write_shift,
+                main_r1_shift,
+                main__operation_id_shift,
+                main_m_value_shift,
+                main__sigma_shift,
+                main_r6_shift,
+                main_r5_shift,
+                main_r9_shift,
+                main_r7_shift,
+                main_addr_shift,
+                main_r2_shift,
+                main_m_addr_shift,
+                main__romgen_first_step_shift,
+                main_pc_shift,
                 main_first_step_shift,
+                main_r0_shift,
+                main_r3_shift,
+                main_r8_shift,
+                main_r4_shift,
 
             };
         };

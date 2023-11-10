@@ -40,7 +40,7 @@ describe('ACIR public execution simulator', () => {
 
   describe('Token contract', () => {
     describe('public vm', () => {
-      it('should run the public vm', async () => {
+      it('should simulate the public vm', async () => {
         const contractAddress = AztecAddress.random();
         const mintArtifact = TokenContractArtifact.functions.find(f => f.name === 'mint_public')!;
         const functionData = FunctionData.fromAbi(mintArtifact);
@@ -67,6 +67,37 @@ describe('ACIR public execution simulator', () => {
 
         expect(result.returnValues[0]).toEqual(new Fr(ret));
       });
+      it('should prove the public vm', async () => {
+        const contractAddress = AztecAddress.random();
+        const mintArtifact = TokenContractArtifact.functions.find(f => f.name === 'mint_public')!;
+        const functionData = FunctionData.fromAbi(mintArtifact);
+
+        // ADD 42 + 24
+        const args = encodeArguments(mintArtifact, [42n, 24n]);
+        const ret = 42n + 24n;
+
+        const msgSender = AztecAddress.random();
+        const callContext = CallContext.from({
+          msgSender,
+          storageContractAddress: contractAddress,
+          portalContractAddress: EthAddress.random(),
+          functionSelector: FunctionSelector.empty(),
+          isContractDeployment: false,
+          isDelegateCall: false,
+          isStaticCall: false,
+        });
+
+        publicContracts.getBytecode.mockResolvedValue(Buffer.from(mintArtifact.bytecode, 'base64'));
+
+        const execution: PublicExecution = { contractAddress, functionData, args, callContext };
+        //const result = await executor.simulate(execution, GlobalVariables.empty());
+
+        //expect(result.returnValues[0]).toEqual(new Fr(ret));
+
+        await executor.bytecodeToPowdr(execution);
+        await executor.generateWitness();
+        await executor.prove();
+      }, 1_000_000);
     });
   });
 });
