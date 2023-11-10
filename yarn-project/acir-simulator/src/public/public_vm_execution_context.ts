@@ -1,9 +1,18 @@
-import { PublicExecution, PublicExecutionResult } from './execution.js';
-import { Fr, GlobalVariables, HistoricBlockData } from '@aztec/circuits.js';
+import { PublicExecution } from './execution.js';
+import { Fr } from '@aztec/circuits.js';
+
+//enum MemoryType {
+//  U8,
+//  U16,
+//  U32,
+//  U64,
+//  //U128,
+//  FIELD,
+//};
 
 export class PublicVmExecutionContext {
   readonly MEM_WORDS = 1024;
-  public fieldMem: Fr[] = new Array<Fr>(this.MEM_WORDS);
+  public fieldMem: Fr[] = new Array<Fr>(this.MEM_WORDS).fill(Fr.ZERO);
   public readonly calldata: Fr[];
 
   constructor(

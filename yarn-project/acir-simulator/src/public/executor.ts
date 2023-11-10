@@ -11,11 +11,12 @@ import { PublicExecution, PublicExecutionResult } from './execution.js';
 import { PublicExecutionContext } from './public_execution_context.js';
 import { PublicVmExecutionContext } from './public_vm_execution_context.js';
 import { Fr } from '@aztec/circuits.js';
+import { FunctionL2Logs } from '@aztec/types';
+import { InvalidStructSignatureError } from 'viem';
 
-
-const VM_MEM_SIZE = 1024;
 
 enum Opcode {
+  CALLDATASIZE,
   CALLDATACOPY,
   ADD,
   RETURN,
@@ -45,18 +46,38 @@ export async function executePublicFunction(
 ): Promise<PublicExecutionResult> {
   let bytecode = [
     new AVMInstruction(
-      /*opcode*/ Opcode.CALLDATACOPY,
+      /*opcode*/ Opcode.CALLDATASIZE, // M[0] = CD.length
       /*d0:*/ 0, /*target memory address*/
       /*sd:*/ 0, /*unused*/
-      /*s0:*/ 1, /*calldata offset*/
-      /*s1:*/ 2, /*copy size*/ // M[0:0+M[2]] = CD[1+M[2]]);
+      /*s0:*/ 0, /*unused*/
+      /*s1:*/ 0, /*unused*/
     ),
+    new AVMInstruction(
+      /*opcode*/ Opcode.CALLDATACOPY, // M[1:1+M[0]] = CD[0+M[0]]);
+      /*d0:*/ 1, /*target memory address*/
+      /*sd:*/ 0, /*unused*/
+      /*s0:*/ 0, /*calldata offset*/
+      /*s1:*/ 0, /*copy size*/
+    ),
+    new AVMInstruction(
+      /*opcode*/ Opcode.ADD, // M[10] = M[1] + M[2]
+      /*d0:*/ 10, /*target memory address*/
+      /*sd:*/ 0, /*unused*/
+      /*s0:*/ 1, /*to add*/
+      /*s1:*/ 2, /*to add*/
+    ),
+    new AVMInstruction(
+      /*opcode*/ Opcode.RETURN, // return M[10]
+      /*d0:*/ 0, /*unused*/
+      /*sd:*/ 0, /*unused*/
+      /*s0:*/ 10, /*field memory offset*/
+      /*s1:*/ 1, /*return size*/
+    )
   ];
   //let bytecode = [
   //  { opcode: "CALLDATACOPY", d0: 0 /*target memory address*/, s0: 1 /*calldata offset*/, s1: 2 /*copy size*/}, // M[0:0+M[2]] = CD[1+M[2]]
   //  { opcode: "ADD", d0: 10, s0: 0, s1: 0}, // M[10] = M[0] + M[0]
   //  { opcode: "RETURN", s0: 10 /*memory to return*/, s1: 1 /*size*/}, // return M[10:10+M[1]]
-
   //];
   const execution = context.execution;
   const { contractAddress, functionData } = execution;
@@ -65,33 +86,34 @@ export async function executePublicFunction(
 
   // PUBLIC VM
   //const vmCallback = new Oracle(context);
-  const {
-    returnValues,
-    newL2ToL1Msgs,
-    newCommitments,
-    newNullifiers,
-  } = await vm.execute(bytecode, context /*, vmCallback*/);
+  const
+    //returnValues,
+    //newL2ToL1Msgs,
+    //newCommitments,
+    //newNullifiers,
+    returnData
+   = await vmExecute(bytecode, context /*, vmCallback*/);
 
-  const { contractStorageReads, contractStorageUpdateRequests } = context.getStorageActionData();
-  log(
-    `Contract storage reads: ${contractStorageReads
-      .map(r => r.toFriendlyJSON() + ` - sec: ${r.sideEffectCounter}`)
-      .join(', ')}`,
-  );
+  //const { contractStorageReads, contractStorageUpdateRequests } = context.getStorageActionData();
+  //log(
+  //  `Contract storage reads: ${contractStorageReads
+  //    .map(r => r.toFriendlyJSON() + ` - sec: ${r.sideEffectCounter}`)
+  //    .join(', ')}`,
+  //);
 
-  const nestedExecutions = context.getNestedExecutions();
-  const unencryptedLogs = context.getUnencryptedLogs();
+  //const nestedExecutions = context.getNestedExecutions();
+  //const unencryptedLogs = context.getUnencryptedLogs();
 
   return {
     execution,
-    newCommitments,
-    newL2ToL1Msgs,
-    newNullifiers,
-    contractStorageReads,
-    contractStorageUpdateRequests,
-    returnValues,
-    nestedExecutions,
-    unencryptedLogs,
+    newCommitments: [],
+    newL2ToL1Messages: [],
+    newNullifiers: [],
+    contractStorageReads: [],
+    contractStorageUpdateRequests: [],
+    returnValues: returnData,
+    nestedExecutions: [],
+    unencryptedLogs: FunctionL2Logs.empty(),
   };
 }
 
@@ -144,53 +166,60 @@ export class PublicExecutor {
     }
   }
 
-  public async execute(bytecode: AVMInstruction[]/*Buffer*/,
-                       context: PublicVmExecutionContext,
-                       /*callback: any/*Oracle*/): Promise<PublicCircuitPublicInputs> {
-
-    let pc = 0; // TODO: should be u32
-    while(pc < bytecode.length) {
-      const instr = bytecode[pc];
-      switch (instr.opcode) {
-        case Opcode.CALLDATACOPY: {
-          const srcOffset = context.fieldMem[instr.s0];
-          const copySize = context.fieldMem[instr.s1];
-          const dstOffset = context.fieldMem[instr.d0];
-          //assert srcOffset + copySize <= context.calldata.length;
-          //assert dstOffset + copySize <= context.fieldMem.length;
-          for (let i = 0; i < copySize; i++) {
-            context.fieldMem[dstOffset+i] = context.calldata[srcOffset+i];
-          }
-          break;
-        }
-        case Opcode.ADD: {
-          context.fieldMem[instr.d0] = context.fieldMem[instr.s0] + context.fieldMem[instr.s1];
-          break;
-        }
-        case Opcode.JUMP: {
-          pc = instr.s0;
-          break;
-        }
-        case Opcode.JUMPI: {
-          pc = context.fieldMem[instr.sd] ? instr.s0 : pc + 1;
-          break;
-        }
-        case Opcode.RETURN: {
-          const srcOffset = context.fieldMem[instr.s0];
-          const retSize = context.fieldMem[instr.s1];
-          const endOffset = srcOffset + retSize;
-          //assert srcOffset + retSize <= context.fieldMem.length;
-          //assert endOffset + retSize <= context.fieldMem.length;
-          return context.fieldMem.slice(srcOffset, endOffset);
-        }
-      }
-      if (!PC_MODIFIERS.includes(instr.opcode)) {
-        pc++;
-      }
-    }
-    throw new Error("Reached end of bytecode without RETURN or REVERT");
-  }
 
   //public async generateWitness(execution: PublicExecution, globalVariables: GlobalVariables): Promise<PublicVMWitness>;
   //public async prove(witness: PublicVMWitness) Promise<PublicExecutionResult>;
+}
+
+async function vmExecute(bytecode: AVMInstruction[]/*Buffer*/,
+                      context: PublicVmExecutionContext,
+                      /*callback: any/*Oracle*/): Promise<Fr[]> {
+
+  const log = createDebugLogger('aztec:simulator:public_vm_execution');
+  log(`Executing public vm`);
+  // TODO: check memory out of bounds
+  let pc = 0; // TODO: should be u32
+  while(pc < bytecode.length) {
+    const instr = bytecode[pc];
+    log(`Executing instruction ${Opcode[instr.opcode]}`);
+    switch (instr.opcode) {
+      case Opcode.CALLDATASIZE: {
+        // TODO: dest should be u32
+        context.fieldMem[instr.d0] = new Fr(context.calldata.length);
+        break;
+      }
+      case Opcode.CALLDATACOPY: {
+        // TODO: srcOffset and copySize should be u32s
+        const copySize = context.fieldMem[instr.s1].toBigInt();
+        //assert instr.s0 + copySize <= context.calldata.length;
+        //assert instr.d0 + copySize <= context.fieldMem.length;
+        for (let i = 0; i < copySize; i++) {
+          context.fieldMem[instr.d0+i] = context.calldata[instr.s0+i];
+        }
+        break;
+      }
+      case Opcode.ADD: {
+        // TODO: actual field addition
+        context.fieldMem[instr.d0] = new Fr(context.fieldMem[instr.s0].toBigInt() + context.fieldMem[instr.s1].toBigInt());
+        break;
+      }
+      case Opcode.JUMP: {
+        pc = instr.s0;
+        break;
+      }
+      case Opcode.JUMPI: {
+        pc = !context.fieldMem[instr.sd].isZero() ? instr.s0 : pc + 1;
+        break;
+      }
+      case Opcode.RETURN: {
+        const retSize = context.fieldMem[instr.s1];
+        //assert instr.s0 + retSize <= context.fieldMem.length;
+        return context.fieldMem.slice(instr.s0, instr.s0 + Number(retSize.toBigInt()));
+      }
+    }
+    if (!PC_MODIFIERS.includes(instr.opcode)) {
+      pc++;
+    }
+  }
+  throw new Error("Reached end of bytecode without RETURN or REVERT");
 }

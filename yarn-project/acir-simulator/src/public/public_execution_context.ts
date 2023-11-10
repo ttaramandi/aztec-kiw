@@ -17,6 +17,7 @@ import { CommitmentsDB, PublicContractsDB, PublicStateDB } from './db.js';
 import { PublicExecution, PublicExecutionResult } from './execution.js';
 import { executePublicFunction } from './executor.js';
 import { ContractStorageActionsCollector } from './state_actions.js';
+import { PublicVmExecutionContext } from './public_vm_execution_context.js';
 
 /**
  * The execution context for a public tx simulation.
@@ -206,17 +207,20 @@ export class PublicExecutionContext extends TypedOracle {
       callContext,
     };
 
-    const context = new PublicExecutionContext(
+    const context = new PublicVmExecutionContext(
       nestedExecution,
-      this.historicBlockData,
-      this.globalVariables,
-      this.packedArgsCache,
-      this.sideEffectCounter,
-      this.stateDb,
-      this.contractsDb,
-      this.commitmentsDb,
-      this.log,
     );
+    //const context = new PublicExecutionContext(
+    //  nestedExecution,
+    //  this.historicBlockData,
+    //  this.globalVariables,
+    //  this.packedArgsCache,
+    //  this.sideEffectCounter,
+    //  this.stateDb,
+    //  this.contractsDb,
+    //  this.commitmentsDb,
+    //  this.log,
+    //);
 
     const childExecutionResult = await executePublicFunction(context, acir);
 
