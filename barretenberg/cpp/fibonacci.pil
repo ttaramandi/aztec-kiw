@@ -3,20 +3,15 @@ constant %N = 16;
 // This uses the alternative nomenclature as well.
 
 namespace Fibonacci(%N);
-    col fixed ISLAST(i) { match i {
+    col fixed LAST(i) { match i {
         %N - 1 => 1,
         _ => 0,
     } };
-    col fixed ISFIRST(i) { match i {
+    col fixed FIRST(i) { match i {
         0 => 1,
         _ => 0,
     } };
-    
     col witness x, y;
 
-    ISFIRST * (y' - 1) = 0;
-    ISFIRST * (x' - 1) = 0;
-
-    (-ISFIRST + 1) * (-ISLAST + 1) * (x' - y) = 0;
-    (-ISFIRST + 1) * (-ISLAST + 1) * (y' - (x + y)) = 0;
-
+    (1-LAST) * (x' - y) = 0;
+    (1-LAST) * (y' - (x + y)) = 0;
