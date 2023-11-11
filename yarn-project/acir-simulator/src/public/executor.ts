@@ -97,17 +97,11 @@ export async function executePublicFunction(
       /*s1:*/ 1, /*return size*/
     )
   ];
-  //let bytecode = [
-  //  { opcode: "CALLDATACOPY", d0: 0 /*target memory address*/, s0: 1 /*calldata offset*/, s1: 2 /*copy size*/}, // M[0:0+M[2]] = CD[1+M[2]]
-  //  { opcode: "ADD", d0: 10, s0: 0, s1: 0}, // M[10] = M[0] + M[0]
-  //  { opcode: "RETURN", s0: 10 /*memory to return*/, s1: 1 /*size*/}, // return M[10:10+M[1]]
-  //];
   const execution = context.execution;
   const { contractAddress, functionData } = execution;
   const selector = functionData.selector;
   log(`Executing public external function ${contractAddress.toString()}:${selector}`);
 
-  // PUBLIC VM
   //const vmCallback = new Oracle(context);
   const
     //returnValues,
@@ -192,15 +186,14 @@ export class PublicExecutor {
   public async bytecodeToPowdr(execution: PublicExecution) {
     const selector = execution.functionData.selector;
     const bytecode = await this.contractsDb.getBytecode(execution.contractAddress, selector);
-    log(`bytecode: ${bytecode}`);
-    log(`bytecode base64: ` + bytecode!.toString('base64'));
+    //log(`bytecode: ` + bytecode!.toString('base64'));
     // write bytecode to file
     // pass filename to powdr bberg main
     const bytecodePath = await tryExec('mktemp');
     log(`writing bytecode to: ${bytecodePath}`);
-    // writeFileSync to tmp file not working
+    // writeFileSync to tmp file not working here
     //fs.writeFileSync(bytecodePath, bytecode!.toString('base64'));
-    await tryExec(`echo ${bytecode!.toString('base64')} > ${bytecodePath}`);
+    await tryExec(`echo -n ${bytecode!.toString('base64')} > ${bytecodePath}`);
     await tryExec(`cd ../../barretenberg/cpp/ && ${POWDR_BINDIR}/bberg ${bytecodePath}`);
   }
   public async generateWitness() {
