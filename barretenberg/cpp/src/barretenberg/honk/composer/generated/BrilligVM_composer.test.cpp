@@ -29,7 +29,7 @@ namespace {
 auto& engine = numeric::random::get_debug_engine();
 }
 
-TEST_F(BrilligVMTests, powdre2e)
+TEST_F(BrilligVMTests, notAnymore)
 {
     barretenberg::srs::init_crs_factory("../srs_db/ignition");
 

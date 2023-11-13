@@ -92,13 +92,13 @@ template <typename CycleGroup_T, typename Curve_T, typename PCS_T> class FibFlav
         DataType& Fibonacci_x = std::get<2>(this->_data);
         DataType& Fibonacci_y = std::get<3>(this->_data);
 
-        DataType& Fibonacci_y_shift = std::get<4>(this->_data);
-        DataType& Fibonacci_x_shift = std::get<5>(this->_data);
+        DataType& Fibonacci_x_shift = std::get<4>(this->_data);
+        DataType& Fibonacci_y_shift = std::get<5>(this->_data);
 
         std::vector<HandleType> get_wires() override
         {
             return {
-                Fibonacci_LAST, Fibonacci_FIRST, Fibonacci_x, Fibonacci_y, Fibonacci_y, Fibonacci_x,
+                Fibonacci_LAST, Fibonacci_FIRST, Fibonacci_x, Fibonacci_y, Fibonacci_x, Fibonacci_y,
 
             };
         };
@@ -117,8 +117,8 @@ template <typename CycleGroup_T, typename Curve_T, typename PCS_T> class FibFlav
         std::vector<HandleType> get_to_be_shifted() override
         {
             return {
-                Fibonacci_y,
                 Fibonacci_x,
+                Fibonacci_y,
 
             };
         };
@@ -126,8 +126,8 @@ template <typename CycleGroup_T, typename Curve_T, typename PCS_T> class FibFlav
         std::vector<HandleType> get_shifted() override
         {
             return {
-                Fibonacci_y_shift,
                 Fibonacci_x_shift,
+                Fibonacci_y_shift,
 
             };
         };

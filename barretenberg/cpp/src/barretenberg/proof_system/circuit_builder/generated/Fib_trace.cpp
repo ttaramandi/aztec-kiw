@@ -10,6 +10,8 @@
 #include <sys/types.h>
 #include <vector>
 
+#include "./Fib_trace.hpp"
+
 #include "barretenberg/proof_system/arithmetization/generated/Fib_arith.hpp"
 #include "barretenberg/proof_system/relations/generated/Fib.hpp"
 
@@ -19,4 +21,47 @@ namespace proof_system {
 
 using Row = Fib_vm::Row<barretenberg::fr>;
 
+void FibTraceBuilder::build_circuit()
+{
+    {
+
+        // Build up the rows
+        size_t n = 16;
+        // Build the is_last column
+
+        // Add first row that makes the shifted cols 0
+        Row first_row = Row{ .Fibonacci_FIRST = 1 };
+        rows.push_back(first_row);
+
+        // The actual first row
+        Row row = {
+            .Fibonacci_x = 0,
+            .Fibonacci_y = 1,
+        };
+        rows.push_back(row);
+
+        for (size_t i = 2; i < n; i++) {
+            FF x = rows[i - 1].Fibonacci_y;
+            FF y = rows[i - 1].Fibonacci_x + rows[i - 1].Fibonacci_y;
+            Row row = {
+                .Fibonacci_x = x,
+                .Fibonacci_y = y,
+            };
+            rows.push_back(row);
+        }
+
+        // Build the isLast row
+        for (size_t i = 0; i < n; i++) {
+            rows[i].Fibonacci_LAST = i == n - 1;
+        }
+
+        // Build the shifts
+        for (size_t i = 1; i < n; i++) {
+            Row& row = rows[i - 1];
+            row.Fibonacci_x_shift = rows[(i) % rows.size()].Fibonacci_x;
+            row.Fibonacci_y_shift = rows[(i) % rows.size()].Fibonacci_y;
+        }
+        info("Built circuit with ", rows.size(), " rows");
+    }
 }
+} // namespace proof_system

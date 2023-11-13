@@ -42,7 +42,6 @@ TEST_F(FibTests, powdre2e)
 
     auto prover = composer.create_prover(circuit_builder);
     auto proof = prover.construct_proof();
-    info(proof);
 
     auto verifier = composer.create_verifier(circuit_builder);
     bool verified = verifier.verify_proof(proof);

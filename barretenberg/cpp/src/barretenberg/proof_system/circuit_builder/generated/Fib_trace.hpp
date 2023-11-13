@@ -8,7 +8,6 @@
 #include "barretenberg/proof_system/arithmetization/arithmetization.hpp"
 #include "barretenberg/proof_system/circuit_builder/circuit_builder_base.hpp"
 
-#include "./Fib_trace.cpp"
 #include "barretenberg/honk/flavor/generated/Fib_flavor.hpp"
 #include "barretenberg/proof_system/arithmetization/generated/Fib_arith.hpp"
 #include "barretenberg/proof_system/relations/generated/Fib.hpp"
@@ -30,46 +29,7 @@ class FibTraceBuilder {
     static constexpr size_t num_polys = 4;
     std::vector<Row> rows;
 
-    [[maybe_unused]] void build_circuit()
-    {
-
-        // Build up the rows
-        size_t n = 16;
-        // Build the is_last column
-
-        // Add first row that makes the shifted cols 0
-        Row first_row = Row{ .Fibonacci_FIRST = 1 };
-        rows.push_back(first_row);
-
-        // The actual first row
-        Row row = {
-            .Fibonacci_x = 0,
-            .Fibonacci_y = 1,
-        };
-        rows.push_back(row);
-
-        for (size_t i = 2; i < n; i++) {
-            FF x = rows[i - 1].Fibonacci_y;
-            FF y = rows[i - 1].Fibonacci_x + rows[i - 1].Fibonacci_y;
-            Row row = {
-                .Fibonacci_x = x,
-                .Fibonacci_y = y,
-            };
-            rows.push_back(row);
-        }
-
-        // Build the isLast row
-        for (size_t i = 0; i < n; i++) {
-            rows[i].Fibonacci_LAST = i == n - 1;
-        }
-
-        // Build the shifts
-        for (size_t i = 2; i < n; i++) {
-            Row& row = rows[i - 1];
-            row.Fibonacci_x_shift = rows[(i) % rows.size()].Fibonacci_x;
-            row.Fibonacci_y_shift = rows[(i) % rows.size()].Fibonacci_y;
-        }
-    }
+    [[maybe_unused]] void build_circuit();
 
     AllPolynomials compute_polynomials()
     {
@@ -88,17 +48,14 @@ class FibTraceBuilder {
             polys.Fibonacci_y[i] = rows[i].Fibonacci_y;
         }
 
-        polys.Fibonacci_y_shift = Polynomial(polys.Fibonacci_y.shifted());
         polys.Fibonacci_x_shift = Polynomial(polys.Fibonacci_x.shifted());
+        polys.Fibonacci_y_shift = Polynomial(polys.Fibonacci_y.shifted());
 
         return polys;
     }
 
     [[maybe_unused]] bool check_circuit()
     {
-        // Get the rows from file
-        build_circuit();
-
         auto polys = compute_polynomials();
         const size_t num_rows = polys[0].size();
 
