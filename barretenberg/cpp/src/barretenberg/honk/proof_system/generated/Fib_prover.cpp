@@ -44,11 +44,11 @@ FibProver_<Flavor>::FibProver_(std::shared_ptr<typename Flavor::ProvingKey> inpu
     prover_polynomials.Fibonacci_x = key->Fibonacci_x;
     prover_polynomials.Fibonacci_y = key->Fibonacci_y;
 
-    prover_polynomials.Fibonacci_x = key->Fibonacci_x;
-    prover_polynomials.Fibonacci_x_shift = key->Fibonacci_x.shifted();
-
     prover_polynomials.Fibonacci_y = key->Fibonacci_y;
     prover_polynomials.Fibonacci_y_shift = key->Fibonacci_y.shifted();
+
+    prover_polynomials.Fibonacci_x = key->Fibonacci_x;
+    prover_polynomials.Fibonacci_x_shift = key->Fibonacci_x.shifted();
 
     // prover_polynomials.lookup_inverses = key->lookup_inverses;
     // key->z_perm = Polynomial(key->circuit_size);

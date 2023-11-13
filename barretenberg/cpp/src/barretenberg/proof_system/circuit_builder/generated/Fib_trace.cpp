@@ -24,7 +24,6 @@ using Row = Fib_vm::Row<barretenberg::fr>;
 void FibTraceBuilder::build_circuit()
 {
     {
-
         // Build up the rows
         size_t n = 16;
         // Build the is_last column
@@ -41,19 +40,18 @@ void FibTraceBuilder::build_circuit()
         rows.push_back(row);
 
         for (size_t i = 2; i < n; i++) {
-            FF x = rows[i - 1].Fibonacci_y;
-            FF y = rows[i - 1].Fibonacci_x + rows[i - 1].Fibonacci_y;
+            Row prev_row = rows[i - 1];
+
+            FF x = prev_row.Fibonacci_y;
+            FF y = prev_row.Fibonacci_x + prev_row.Fibonacci_y;
             Row row = {
                 .Fibonacci_x = x,
                 .Fibonacci_y = y,
             };
             rows.push_back(row);
         }
-
         // Build the isLast row
-        for (size_t i = 0; i < n; i++) {
-            rows[i].Fibonacci_LAST = i == n - 1;
-        }
+        rows[n - 1].Fibonacci_LAST = 1;
 
         // Build the shifts
         for (size_t i = 1; i < n; i++) {
