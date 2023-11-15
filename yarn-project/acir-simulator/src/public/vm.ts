@@ -53,11 +53,14 @@ class AVMCallState {
   readonly MEM_REGION_WORDS = 1024;
   readonly RETURN_BUFFER_WORDS = 128;
 
-  //public pc: number = 0;
+  public pc: number = 0; // TODO: should be u32
+  public error: boolean = false;
+  public returned: boolean = false;
   //public l1GasUsed: number = 0; // or left?
   //public l2GasUsed: number = 0; // or left?
   public fieldMemory: Fr[] = new Array<Fr>(this.MEM_REGION_WORDS).fill(Fr.ZERO);
-  public returnData: Fr[] = new Array<Fr>(this.RETURN_BUFFER_WORDS).fill(Fr.ZERO);
+  /** Buffer to store returnData from nested calls */
+  public returnBuffer: Fr[] = new Array<Fr>(this.RETURN_BUFFER_WORDS).fill(Fr.ZERO);
 }
 
 /**
@@ -96,6 +99,12 @@ export class AVMCallExecutor {
    * Generate a partial witness.
    */
   public async simulate(): Promise<PublicExecutionResult> {
+    this.log(`Simulating the Aztec Public VM`);
+
+    const returnValues = await this.simulateInternal();
+    const [contractStorageReads, contractStorageUpdateRequests] = this.storageActions.collect();
+
+    // just rename args to calldata...
     const execution = {
       contractAddress: this.context.contractAddress,
       functionData: this.context.functionData,
@@ -107,136 +116,152 @@ export class AVMCallExecutor {
       newCommitments: [],
       newL2ToL1Messages: [],
       newNullifiers: [],
-      contractStorageReads: [],
-      contractStorageUpdateRequests: [],
-      returnValues: await this.simulateInternal(),
+      contractStorageReads,
+      contractStorageUpdateRequests,
+      returnValues: returnValues,
       nestedExecutions: [],
       unencryptedLogs: FunctionL2Logs.empty(),
     };
   }
 
   /**
-   * Execute this call.
-   * Generate a partial witness.
+   * Execute each instruction based on the program counter.
+   * End execution when the call errors or returns.
    */
   private async simulateInternal(): Promise<Fr[]> {
-    this.log(`Executing public vm`);
-    // TODO: check memory out of bounds
-    let pc = 0; // TODO: should be u32
-    while(pc < this.bytecode.length) {
-      const instr = this.bytecode[pc];
-      this.log(`Executing instruction ${Opcode[instr.opcode]}`);
-      switch (instr.opcode) {
-        case Opcode.CALLDATASIZE: {
-          // TODO: dest should be u32
-          this.state.fieldMemory[instr.d0] = new Fr(this.context.calldata.length);
-          break;
-        }
-        case Opcode.CALLDATACOPY: {
-          // TODO: srcOffset and copySize should be u32s
-          const copySize = this.state.fieldMemory[instr.s1].toBigInt();
-          //assert instr.s0 + copySize <= context.calldata.length;
-          //assert instr.d0 + copySize <= context.fieldMemory.length;
-          for (let i = 0; i < copySize; i++) {
-            this.state.fieldMemory[instr.d0+i] = this.context.calldata[instr.s0+i];
-          }
-          break;
-        }
-        case Opcode.ADD: {
-          // TODO: consider having a single case for all arithmetic operations and then applying the corresponding function to the args
-          // TODO: actual field addition
-          this.state.fieldMemory[instr.d0] = new Fr(this.state.fieldMemory[instr.s0].toBigInt() + this.state.fieldMemory[instr.s1].toBigInt());
-          break;
-        }
-        case Opcode.JUMP: {
-          pc = instr.s0;
-          break;
-        }
-        case Opcode.JUMPI: {
-          pc = !this.state.fieldMemory[instr.sd].isZero() ? instr.s0 : pc + 1;
-          break;
-        }
-        case Opcode.RETURN: {
-          const retSize = this.state.fieldMemory[instr.s1];
-          //assert instr.s0 + retSize <= context.fieldMemory.length;
-          return this.state.fieldMemory.slice(instr.s0, instr.s0 + Number(retSize.toBigInt()));
-        }
-        case Opcode.SLOAD: {
-          // TODO: use u32 memory for storage slot
-          const storageSlot = this.state.fieldMemory[instr.s0];
-          this.state.fieldMemory[instr.s1] = await this.sload(storageSlot);
-          break;
-        }
-        case Opcode.SSTORE: {
-          // TODO: use u32 memory for storage slot
-          const storageSlot = this.state.fieldMemory[instr.d0];
-          const value = this.state.fieldMemory[instr.s1];
-          await this.sstore(storageSlot, value);
-          break;
-        }
-        case Opcode.CALL: {
-          //const gas = this.state.fieldMemory[instr.s0];
-          const addrFr = this.state.fieldMemory[instr.s1];
-          const targetContractAddress = AztecAddress.fromBigInt(addrFr.toBigInt());
-          // TODO: use u32 memory for offsets and sizes
-          // TODO: do we do M[M[sd] + 0,1,2,3], or M[sd + 0,1,2,3]
-          // For now, doing M[sd + 0,1,2,3]
-          //const argsAndRetOffset = this.state.fieldMemory[instr.sd];
-          // size of argsAndRetOffset is 4:
-          // - argsOffset & argsSize
-          // - retOffset & retSize
-          const argsOffset = Number(this.state.fieldMemory[instr.sd].toBigInt());
-          const argsSize = Number(this.state.fieldMemory[instr.sd + 1].toBigInt());
-          const retOffset = Number(this.state.fieldMemory[instr.sd + 2].toBigInt());
-          const retSize = Number(this.state.fieldMemory[instr.sd + 3].toBigInt());
-
-          const calldata = this.state.fieldMemory.slice(argsOffset, argsOffset + argsSize);
-          // For now, extract functionSelector here.
-          // TODO: eventually functionSelector can become a use-case of calldata as in EVM.
-          // FIXME: calldata[0] could be larger than 4-byte function selector!
-          const functionSelector = new FunctionSelector(Number(calldata[0].toBigInt()));
-          this.log(`Nested call in AVM: addr=${targetContractAddress} selector=${functionSelector}`);
-
-          const portalAddress = (await this.contractsDb.getPortalContractAddress(targetContractAddress)) ?? EthAddress.ZERO;
-          const isInternal = await this.contractsDb.getIsInternal(targetContractAddress, functionSelector);
-          if (isInternal === undefined) {
-            throw new Error(`ERR: Method not found - ${targetContractAddress.toString()}:${functionSelector.toString()}`);
-          }
-
-          const functionData = new FunctionData(functionSelector, isInternal, false, false);
-          const nestedCallContext = CallContext.from({
-            msgSender: this.context.contractAddress,
-            portalContractAddress: portalAddress,
-            storageContractAddress: targetContractAddress,
-            functionSelector,
-            isContractDeployment: false,
-            isDelegateCall: false,
-            isStaticCall: false,
-          });
-          const nestedContext = {
-            contractAddress:targetContractAddress,
-            functionData,
-            calldata: calldata,
-            callContext: nestedCallContext,
-          };
-          const nestedAvm = new AVMCallExecutor(
-            nestedContext,
-            this.sideEffectCounter,
-            this.stateDb,
-            this.contractsDb,
-          );
-          const childExecutionResult = await nestedAvm.simulate();
-          this.nestedExecutions.push(childExecutionResult);
-          this.log(`Returning from nested call: ret=${childExecutionResult.returnValues.join(', ')}`);
-
-          this.state.returnData.splice(retOffset, retSize, ...childExecutionResult.returnValues);
-        }
+    while(this.state.pc < this.bytecode.length && !this.state.error && !this.state.returned) {
+      const returnData = await this.simulateNextInstruction();
+      if (this.state.returned) {
+        return returnData;
       }
-      if (!PC_MODIFIERS.includes(instr.opcode)) {
-        pc++;
+      if (this.state.error) {
+        throw new Error("Reverting is not yet supported in the AVM");
       }
     }
     throw new Error("Reached end of bytecode without RETURN or REVERT");
+  }
+
+  /**
+   * Execute the instruction at the current program counter.
+   */
+  private async simulateNextInstruction(): Promise<Fr[]> {
+    // TODO: check memory out of bounds
+    const instr = this.bytecode[this.state.pc];
+    this.log(`Executing instruction (pc:${this.state.pc}): ${Opcode[instr.opcode]}`);
+    switch (instr.opcode) {
+      case Opcode.CALLDATASIZE: {
+        // TODO: dest should be u32
+        this.state.fieldMemory[instr.d0] = new Fr(this.context.calldata.length);
+        break;
+      }
+      case Opcode.CALLDATACOPY: {
+        // TODO: srcOffset and copySize should be u32s
+        const copySize = this.state.fieldMemory[instr.s1].toBigInt();
+        //assert instr.s0 + copySize <= context.calldata.length;
+        //assert instr.d0 + copySize <= context.fieldMemory.length;
+        for (let i = 0; i < copySize; i++) {
+          this.log(`Copying calldata[${instr.s0+i}] (${this.context.calldata[instr.s0+i]}) to fieldMemory[${instr.d0+i}]`);
+          this.state.fieldMemory[instr.d0+i] = this.context.calldata[instr.s0+i];
+        }
+        break;
+      }
+      case Opcode.ADD: {
+        // TODO: consider having a single case for all arithmetic operations and then applying the corresponding function to the args
+        // TODO: actual field addition
+        this.state.fieldMemory[instr.d0] = new Fr(this.state.fieldMemory[instr.s0].toBigInt() + this.state.fieldMemory[instr.s1].toBigInt());
+        break;
+      }
+      case Opcode.JUMP: {
+        this.state.pc = instr.s0;
+        break;
+      }
+      case Opcode.JUMPI: {
+        this.state.pc = !this.state.fieldMemory[instr.sd].isZero() ? instr.s0 : this.state.pc + 1;
+        break;
+      }
+      case Opcode.RETURN: {
+        const retSize = this.state.fieldMemory[instr.s1];
+        //assert instr.s0 + retSize <= context.fieldMemory.length;
+        this.state.returned = true;
+        return this.state.fieldMemory.slice(instr.s0, instr.s0 + Number(retSize.toBigInt()));
+      }
+      case Opcode.SLOAD: {
+        // TODO: use u32 memory for storage slot
+        const storageSlot = this.state.fieldMemory[instr.s0];
+        this.state.fieldMemory[instr.s1] = await this.sload(storageSlot);
+        break;
+      }
+      case Opcode.SSTORE: {
+        // TODO: use u32 memory for storage slot
+        this.log(`SSTORE: S[M[${instr.d0}]] = M[${instr.s0}]`)
+        const storageSlot = this.state.fieldMemory[instr.d0];
+        const value = this.state.fieldMemory[instr.s0];
+        this.log(`SSTORE: S[${storageSlot}] = ${value}`)
+        await this.sstore(storageSlot, value);
+        break;
+      }
+      case Opcode.CALL: {
+        //const gas = this.state.fieldMemory[instr.s0];
+        const addrFr = this.state.fieldMemory[instr.s1];
+        const targetContractAddress = AztecAddress.fromBigInt(addrFr.toBigInt());
+        // TODO: use u32 memory for offsets and sizes
+        // TODO: do we do M[M[sd] + 0,1,2,3], or M[sd + 0,1,2,3]
+        // For now, doing M[sd + 0,1,2,3]
+        //const argsAndRetOffset = this.state.fieldMemory[instr.sd];
+        // size of argsAndRetOffset is 4:
+        // - argsOffset & argsSize
+        // - retOffset & retSize
+        const argsOffset = Number(this.state.fieldMemory[instr.sd].toBigInt());
+        const argsSize = Number(this.state.fieldMemory[instr.sd + 1].toBigInt());
+        const retOffset = Number(this.state.fieldMemory[instr.sd + 2].toBigInt());
+        const retSize = Number(this.state.fieldMemory[instr.sd + 3].toBigInt());
+
+        const calldata = this.state.fieldMemory.slice(argsOffset, argsOffset + argsSize);
+        // For now, extract functionSelector here.
+        // TODO: eventually functionSelector can become a use-case of calldata as in EVM.
+        // FIXME: calldata[0] could be larger than 4-byte function selector!
+        const functionSelector = new FunctionSelector(Number(calldata[0].toBigInt()));
+        this.log(`Nested call in AVM: addr=${targetContractAddress} selector=${functionSelector}`);
+
+        const portalAddress = (await this.contractsDb.getPortalContractAddress(targetContractAddress)) ?? EthAddress.ZERO;
+        const isInternal = await this.contractsDb.getIsInternal(targetContractAddress, functionSelector);
+        if (isInternal === undefined) {
+          throw new Error(`ERR: Method not found - ${targetContractAddress.toString()}:${functionSelector.toString()}`);
+        }
+
+        const functionData = new FunctionData(functionSelector, isInternal, false, false);
+        const nestedCallContext = CallContext.from({
+          msgSender: this.context.contractAddress,
+          portalContractAddress: portalAddress,
+          storageContractAddress: targetContractAddress,
+          functionSelector,
+          isContractDeployment: false,
+          isDelegateCall: false,
+          isStaticCall: false,
+        });
+        const nestedContext = {
+          contractAddress:targetContractAddress,
+          functionData,
+          calldata: calldata,
+          callContext: nestedCallContext,
+        };
+        const nestedAvm = new AVMCallExecutor(
+          nestedContext,
+          this.sideEffectCounter,
+          this.stateDb,
+          this.contractsDb,
+        );
+        const childExecutionResult = await nestedAvm.simulate();
+        this.nestedExecutions.push(childExecutionResult);
+        this.log(`Returning from nested call: ret=${childExecutionResult.returnValues.join(', ')}`);
+
+        this.state.returnBuffer.splice(retOffset, retSize, ...childExecutionResult.returnValues);
+      }
+    }
+    if (!PC_MODIFIERS.includes(instr.opcode)) {
+      this.state.pc++;
+    }
+    return [];
   }
 
   private fetchBytecode(): AVMInstruction[] {
@@ -244,6 +269,36 @@ export class AVMCallExecutor {
     //const acir = await this.contractsDb.getBytecode(context.contractAddress, selector);
     //if (!acir) throw new Error(`Bytecode not found for ${context.contractAddress}:${selector}`);
     //return acir; // extract brillig or AVM bytecode
+    //return [
+    //  new AVMInstruction(
+    //    /*opcode*/ Opcode.CALLDATASIZE, // M[0] = CD.length
+    //    /*d0:*/ 0, /*target memory address*/
+    //    /*sd:*/ 0, /*unused*/
+    //    /*s0:*/ 0, /*unused*/
+    //    /*s1:*/ 0, /*unused*/
+    //  ),
+    //  new AVMInstruction(
+    //    /*opcode*/ Opcode.CALLDATACOPY, // M[1:1+M[0]] = CD[0+M[0]]);
+    //    /*d0:*/ 1, /*target memory address*/
+    //    /*sd:*/ 0, /*unused*/
+    //    /*s0:*/ 0, /*calldata offset*/
+    //    /*s1:*/ 0, /*copy size*/
+    //  ),
+    //  new AVMInstruction(
+    //    /*opcode*/ Opcode.ADD, // M[10] = M[1] + M[2]
+    //    /*d0:*/ 10, /*target memory address*/
+    //    /*sd:*/ 0, /*unused*/
+    //    /*s0:*/ 1, /*to add*/
+    //    /*s1:*/ 2, /*to add*/
+    //  ),
+    //  new AVMInstruction(
+    //    /*opcode*/ Opcode.RETURN, // return M[10]
+    //    /*d0:*/ 0, /*unused*/
+    //    /*sd:*/ 0, /*unused*/
+    //    /*s0:*/ 10, /*field memory offset*/
+    //    /*s1:*/ 1, /*return size*/
+    //  )
+    //];
     return [
       new AVMInstruction(
         /*opcode*/ Opcode.CALLDATASIZE, // M[0] = CD.length
@@ -253,11 +308,11 @@ export class AVMCallExecutor {
         /*s1:*/ 0, /*unused*/
       ),
       new AVMInstruction(
-        /*opcode*/ Opcode.CALLDATACOPY, // M[1:1+M[0]] = CD[0+M[0]]);
-        /*d0:*/ 1, /*target memory address*/
+        /*opcode*/ Opcode.CALLDATACOPY, // M[1:1+M[0]] = calldata[0+M[0]]);
+        /*d0:*/ 1, /*target memory address (store calldata starting at M[1])*/
         /*sd:*/ 0, /*unused*/
         /*s0:*/ 0, /*calldata offset*/
-        /*s1:*/ 0, /*copy size*/
+        /*s1:*/ 0, /*copy size (M[0] contains copy size)*/
       ),
       new AVMInstruction(
         /*opcode*/ Opcode.ADD, // M[10] = M[1] + M[2]
@@ -266,12 +321,19 @@ export class AVMCallExecutor {
         /*s0:*/ 1, /*to add*/
         /*s1:*/ 2, /*to add*/
       ),
+      new AVMInstruction( // TODO: but PublicStateDB.storageWrite() is not mocked in test
+        /*opcode*/ Opcode.SSTORE, // S[M[d0]] = M[s1]
+        /*d0:*/ 3, /*memory word containing target storage slot (M[3] originally from calldata[2])*/
+        /*sd:*/ 0, /*unused*/
+        /*s0:*/ 10, /*store result of add (M[10])*/
+        /*s1:*/ 0, /*unused*/
+      ),
       new AVMInstruction(
         /*opcode*/ Opcode.RETURN, // return M[10]
         /*d0:*/ 0, /*unused*/
         /*sd:*/ 0, /*unused*/
-        /*s0:*/ 10, /*field memory offset*/
-        /*s1:*/ 1, /*return size*/
+        /*s0:*/ 10, /*field memory offset (return M[10])*/
+        /*s1:*/ 1, /*return size (1 word)*/
       )
     ];
 
