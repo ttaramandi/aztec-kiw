@@ -24,22 +24,40 @@ class IPATest : public CommitmentTest<Curve> {
 
 TEST_F(IPATest, CommitOnManyZeroCoeffPolyWorks)
 {
-    constexpr size_t n = 4;
+    using IPA = IPA<Curve>;
+
+    constexpr size_t n = 16;
     Polynomial p(n);
     for (size_t i = 0; i < n - 1; i++) {
         p[i] = Fr::zero();
     }
     p[3] = Fr::one();
     GroupElement commitment = this->commit(p);
-    auto srs_elements = this->ck()->srs->get_monomial_points();
-    GroupElement expected = srs_elements[0] * p[0];
-    // The SRS stored in the commitment key is the result after applying the pippenger point table so the
-    // values at odd indices contain the point {srs[i-1].x * beta, srs[i-1].y}, where beta is the endomorphism
-    // G_vec_local should use only the original SRS thus we extract only the even indices.
-    for (size_t i = 2; i < 2 * n; i += 2) {
-        expected += srs_elements[i] * p[i >> 1];
-    }
-    EXPECT_EQ(expected.normalize(), commitment.normalize());
+    // auto srs_elements = this->ck()->srs->get_monomial_points();
+    // GroupElement expected = srs_elements[0] * p[0];
+    // // The SRS stored in the commitment key is the result after applying the pippenger point table so the
+    // // values at odd indices contain the point {srs[i-1].x * beta, srs[i-1].y}, where beta is the endomorphism
+    // // G_vec_local should use only the original SRS thus we extract only the even indices.
+    // for (size_t i = 2; i < 2 * n; i += 2) {
+    //     expected += srs_elements[i] * p[i >> 1];
+    // }
+    // EXPECT_EQ(expected.normalize(), commitment.normalize());
+    auto [x, eval] = this->random_eval(p);
+
+    const OpeningPair<Curve> opening_pair = { x, eval };
+    const OpeningClaim<Curve> opening_claim{ opening_pair, commitment };
+
+    // initialize empty prover transcript
+    BaseTranscript<Fr> prover_transcript;
+    IPA::compute_opening_proof(this->ck(), opening_pair, p, prover_transcript);
+
+    // initialize verifier transcript from proof data
+    BaseTranscript<Fr> verifier_transcript{ prover_transcript.proof_data };
+
+    auto result = IPA::verify(this->vk(), opening_claim, verifier_transcript);
+    EXPECT_TRUE(result);
+
+    EXPECT_EQ(prover_transcript.get_manifest(), verifier_transcript.get_manifest());
 }
 
 TEST_F(IPATest, Commit)
