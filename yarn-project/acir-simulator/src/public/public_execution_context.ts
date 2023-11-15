@@ -14,7 +14,7 @@ import {
 } from '../acvm/index.js';
 import { PackedArgsCache, SideEffectCounter } from '../common/index.js';
 import { CommitmentsDB, PublicContractsDB, PublicStateDB } from './db.js';
-import { PublicExecution, PublicExecutionResult } from './execution.js';
+import { PublicCallContext, PublicExecution, PublicExecutionResult } from './execution.js';
 import { executePublicFunction } from './executor.js';
 import { ContractStorageActionsCollector } from './state_actions.js';
 import { PublicVmExecutionContext } from './public_vm_execution_context.js';
@@ -200,16 +200,17 @@ export class PublicExecutionContext extends TypedOracle {
       isStaticCall: false,
     });
 
-    const nestedExecution: PublicExecution = {
-      args,
+    const context: PublicExecution = {
       contractAddress: targetContractAddress,
       functionData,
+      args,
       callContext,
     };
 
-    const context = new PublicVmExecutionContext(
-      nestedExecution,
-    );
+    //const context = new PublicVmExecutionContext(
+    //  nestedExecution,
+    //);
+    //const context: Public
     //const context = new PublicExecutionContext(
     //  nestedExecution,
     //  this.historicBlockData,

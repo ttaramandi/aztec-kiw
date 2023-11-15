@@ -54,6 +54,20 @@ export interface PublicExecution {
 }
 
 /**
+ * The execution of a public function.
+ */
+export interface PublicCallContext {
+  /** Address of the contract being executed. */
+  contractAddress: AztecAddress;
+  /** Function of the contract being called. */
+  functionData: FunctionData;
+  /** Arguments for the call. */
+  calldata: Fr[];
+  /** Context of the call. */
+  callContext: CallContext;
+}
+
+/**
  * Returns if the input is a public execution result and not just a public execution.
  * @param input - Public execution or public execution result.
  * @returns Whether the input is a public execution result and not just a public execution.

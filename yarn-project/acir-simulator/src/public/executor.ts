@@ -1,7 +1,7 @@
 import { GlobalVariables, HistoricBlockData, PublicCircuitPublicInputs } from '@aztec/circuits.js';
 import { DebugLogger, createDebugLogger } from '@aztec/foundation/log';
 
-import { vmExecute } from './vm.js';
+import { AVMCallExecutor } from './vm.js';
 import { AVMInstruction, Opcode } from './opcodes.js';
 import { Oracle } from '../acvm/index.js';
 import { ExecutionError, createSimulationError } from '../common/errors.js';
@@ -9,7 +9,7 @@ import { SideEffectCounter } from '../common/index.js';
 import { PackedArgsCache } from '../common/packed_args_cache.js';
 import { AcirSimulator } from '../index.js';
 import { CommitmentsDB, PublicContractsDB, PublicStateDB } from './db.js';
-import { PublicExecution, PublicExecutionResult } from './execution.js';
+import { PublicCallContext, PublicExecution, PublicExecutionResult } from './execution.js';
 import { PublicExecutionContext } from './public_execution_context.js';
 import { PublicVmExecutionContext } from './public_vm_execution_context.js';
 import { Fr } from '@aztec/circuits.js';
@@ -44,7 +44,7 @@ async function tryExec(cmd: string) {
  * Execute a public function and return the execution result.
  */
 export async function executePublicFunction(
-  context: PublicVmExecutionContext,
+  execution: PublicExecution,
   _bytecode: Buffer,
   log = createDebugLogger('aztec:simulator:public_execution'),
 ): Promise<PublicExecutionResult> {
@@ -78,11 +78,20 @@ export async function executePublicFunction(
       /*s1:*/ 1, /*return size*/
     )
   ];
-  const execution = context.execution;
-  const { contractAddress, functionData } = execution;
+  // this is just to rename args to calldata
+  const context = {
+    contractAddress: execution.contractAddress,
+    functionData: execution.functionData,
+    calldata: execution.args,
+    callContext: execution.callContext
+  };
+  const { contractAddress, functionData } = context;
   const selector = functionData.selector;
   log(`Executing public external function ${contractAddress.toString()}:${selector}`);
 
+
+
+  const avmCall = new AVMCallExecutor(context, bytecode);
   //const vmCallback = new Oracle(context);
   const
     //returnValues,
@@ -90,7 +99,8 @@ export async function executePublicFunction(
     //newCommitments,
     //newNullifiers,
     returnData
-   = await vmExecute(bytecode, context /*, vmCallback*/);
+   = avmCall.execute();
+
 
   //const { contractStorageReads, contractStorageUpdateRequests } = context.getStorageActionData();
   //log(
@@ -143,9 +153,9 @@ export class PublicExecutor {
 
     const sideEffectCounter = new SideEffectCounter();
 
-    const context = new PublicVmExecutionContext(
-      execution,
-    );
+    //const context = new PublicVmExecutionContext(
+    //  execution,
+    //);
     //const context = new PublicExecutionContext(
     //  execution,
     //  this.blockData,
@@ -158,7 +168,7 @@ export class PublicExecutor {
     //);
 
     try {
-      return await executePublicFunction(context, acir);
+      return await executePublicFunction(execution, acir);
     } catch (err) {
       throw createSimulationError(err instanceof Error ? err : new Error('Unknown error during public execution'));
     }
