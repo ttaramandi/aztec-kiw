@@ -1,4 +1,4 @@
-namespace main(64);
+namespace main(256);
 pol commit XInv;
 pol commit XIsZero;
 XIsZero = (1 - (X * XInv));

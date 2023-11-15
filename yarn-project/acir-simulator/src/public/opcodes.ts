@@ -5,6 +5,9 @@ export enum Opcode {
   RETURN,
   JUMP,
   JUMPI,
+  SLOAD,
+  SSTORE,
+  CALL,
 }
 
 export const PC_MODIFIERS = [ Opcode.JUMP, Opcode.JUMPI ];

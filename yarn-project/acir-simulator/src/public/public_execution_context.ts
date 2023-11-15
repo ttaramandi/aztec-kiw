@@ -170,7 +170,7 @@ export class PublicExecutionContext extends TypedOracle {
    * @param argsHash - The packed arguments to pass to the function.
    * @returns The return values of the public function.
    */
-  PUBLIC ASYNC CALLpUBLICfUNCTION(
+  public async callPublicFunction(
     targetContractAddress: AztecAddress,
     functionSelector: FunctionSelector,
     argsHash: Fr,
@@ -213,7 +213,12 @@ export class PublicExecutionContext extends TypedOracle {
       callContext: execution.callContext
     };
 
-    const avm = new AVMCallExecutor(context, this.contractsDb)
+    const avm = new AVMCallExecutor(
+      context,
+      this.sideEffectCounter,
+      this.stateDb,
+      this.contractsDb,
+    );
 
     //const context = new PublicVmExecutionContext(
     //  nestedExecution,
@@ -232,7 +237,7 @@ export class PublicExecutionContext extends TypedOracle {
     //);
 
     //const childExecutionResult = await executePublicFunction(context, acir);
-    const childExecutionResult = avm.simulate();
+    const childExecutionResult = await avm.simulate();
 
     this.nestedExecutions.push(childExecutionResult);
     this.log(`Returning from nested call: ret=${childExecutionResult.returnValues.join(', ')}`);

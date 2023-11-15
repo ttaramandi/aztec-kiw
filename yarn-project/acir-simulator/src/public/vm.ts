@@ -2,8 +2,10 @@ import { AztecAddress, CallContext, Fr, FunctionData } from '@aztec/circuits.js'
 import { AVMInstruction, Opcode, PC_MODIFIERS } from './opcodes.js';
 import { createDebugLogger } from '@aztec/foundation/log';
 import { PublicCallContext, PublicExecutionResult, isPublicExecutionResult } from './execution.js';
-import { PublicContractsDB } from './db.js';
+import { PublicContractsDB, PublicStateDB } from './db.js';
 import { FunctionL2Logs } from '@aztec/types';
+import { ContractStorageActionsCollector } from './state_actions.js';
+import { SideEffectCounter } from '../common/side_effect_counter.js';
 
 /**
  * VM object with top-level/tx-level state
@@ -64,23 +66,27 @@ export class AVMCallExecutor {
   // - unencryptedLogs
   // - nastyOperations
   // ^ these are computed gradually as instructions execute
-  //private storageActions: ContractStorageActionsCollector;
+  private storageActions: ContractStorageActionsCollector;
   //private nestedExecutions: PublicExecutionResult[] = [];
   //private unencryptedLogs: UnencryptedL2Log[] = [];
 
 
   constructor(
     private context: PublicCallContext,
+    private readonly sideEffectCounter: SideEffectCounter,
+    private readonly stateDb: PublicStateDB,
     private readonly contractsDb: PublicContractsDB,
   ) {
     this.bytecode = this.fetchBytecode();
+
+    this.storageActions = new ContractStorageActionsCollector(stateDb, context.contractAddress);
   }
 
   /**
    * Execute this call.
    * Generate a partial witness.
    */
-  public simulate(): PublicExecutionResult {
+  public async simulate(): Promise<PublicExecutionResult> {
     const execution = {
       contractAddress: this.context.contractAddress,
       functionData: this.context.functionData,
@@ -94,7 +100,7 @@ export class AVMCallExecutor {
       newNullifiers: [],
       contractStorageReads: [],
       contractStorageUpdateRequests: [],
-      returnValues: this.simulateInternal(),
+      returnValues: await this.simulateInternal(),
       nestedExecutions: [],
       unencryptedLogs: FunctionL2Logs.empty(),
     };
@@ -104,7 +110,7 @@ export class AVMCallExecutor {
    * Execute this call.
    * Generate a partial witness.
    */
-  private simulateInternal(): Fr[] {
+  private async simulateInternal(): Promise<Fr[]> {
     this.log(`Executing public vm`);
     // TODO: check memory out of bounds
     let pc = 0; // TODO: should be u32
@@ -128,6 +134,7 @@ export class AVMCallExecutor {
           break;
         }
         case Opcode.ADD: {
+          // TODO: consider having a single case for all arithmetic operations and then applying the corresponding function to the args
           // TODO: actual field addition
           this.state.fieldMemory[instr.d0] = new Fr(this.state.fieldMemory[instr.s0].toBigInt() + this.state.fieldMemory[instr.s1].toBigInt());
           break;
@@ -144,6 +151,19 @@ export class AVMCallExecutor {
           const retSize = this.state.fieldMemory[instr.s1];
           //assert instr.s0 + retSize <= context.fieldMemory.length;
           return this.state.fieldMemory.slice(instr.s0, instr.s0 + Number(retSize.toBigInt()));
+        }
+        case Opcode.SLOAD: {
+          // TODO: use u32 memory for storage slot
+          const storageSlot = this.state.fieldMemory[instr.s0];
+          this.state.fieldMemory[instr.s1] = await this.sload(storageSlot);
+          break;
+        }
+        case Opcode.SSTORE: {
+          // TODO: use u32 memory for storage slot
+          const storageSlot = this.state.fieldMemory[instr.d0];
+          const value = this.state.fieldMemory[instr.s1];
+          await this.sstore(storageSlot, value);
+          break;
         }
         //case Opcode.CALL: {
         //  const retSize = this.state.fieldMemory[instr.s1];
@@ -194,6 +214,41 @@ export class AVMCallExecutor {
       )
     ];
 
+  }
+
+  /**
+   * Read the public storage data.
+   * @param storageSlot - The starting storage slot.
+   * @returns value - The value read from the storage slot.
+   */
+  public async sload(storageSlot: Fr): Promise<Fr> {
+    //const values = [];
+    //for (let i = 0; i < Number(numberOfElements); i++) {
+      //const storageSlot = new Fr(startStorageSlot.value + BigInt(i));
+      const sideEffectCounter = this.sideEffectCounter.count();
+      const value = await this.storageActions.read(storageSlot, sideEffectCounter);
+      this.log(`Oracle storage read: slot=${storageSlot.toString()} value=${value.toString()}`);
+      //values.push(value);
+      return value;
+    //}
+    //return values;
+  }
+  /**
+   * Write some values to the public storage.
+   * @param storageSlot - The storage slot.
+   * @param value - The value to be written.
+   */
+  private async sstore(storageSlot: Fr, value: Fr) {
+    //const newValues = [];
+    //for (let i = 0; i < values.length; i++) {
+      //const storageSlot = new Fr(startStorageSlot.value + BigInt(i));
+      //const newValue = values[i];
+      const sideEffectCounter = this.sideEffectCounter.count();
+      await this.storageActions.write(storageSlot, value, sideEffectCounter);
+      await this.stateDb.storageWrite(this.context.contractAddress, storageSlot, value);
+      this.log(`Oracle storage write: slot=${storageSlot.toString()} value=${value.toString()}`);
+      //newValues.push(newValue);
+    //}
   }
 
 }

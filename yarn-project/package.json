@@ -17,6 +17,7 @@
   },
   "workspaces": [
     "acir-simulator",
+    "public-vm",
     "archiver",
     "aztec-faucet",
     "aztec-node",

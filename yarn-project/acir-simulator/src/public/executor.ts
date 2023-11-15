@@ -65,7 +65,12 @@ export class PublicExecutor {
       calldata: execution.args,
       callContext: execution.callContext
     };
-    const avm = new AVMCallExecutor(context, this.contractsDb);
+    const avm = new AVMCallExecutor(
+      context,
+      new SideEffectCounter(),
+      this.stateDb,
+      this.contractsDb,
+    );
 
     // Functions can request to pack arguments before calling other functions.
     // We use this cache to hold the packed arguments.
@@ -89,7 +94,7 @@ export class PublicExecutor {
 
     try {
       //return await executePublicFunction(execution, acir);
-      return avm.simulate();
+      return await avm.simulate();
     } catch (err) {
       throw createSimulationError(err instanceof Error ? err : new Error('Unknown error during public execution'));
     }

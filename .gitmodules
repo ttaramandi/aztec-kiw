@@ -13,3 +13,7 @@
 [submodule "barretenberg/sol/lib/openzeppelin-contracts"]
 	path = barretenberg/sol/lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "barretenberg/build-system"]
+	path = barretenberg/build-system
+	url = https://github.com/AztecProtocol/build-system
+
