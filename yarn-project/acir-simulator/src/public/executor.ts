@@ -189,15 +189,18 @@ export class PublicExecutor {
     //log(`bytecode: ` + bytecode!.toString('base64'));
     // write bytecode to file
     // pass filename to powdr bberg main
-    const bytecodePath = await tryExec('mktemp');
+    const bytecodePath = (await tryExec('mktemp')).replace(/\n/, '');
+    const outAsmPath = (await tryExec('mktemp')).replace(/\n/, '');
     log(`writing bytecode to: ${bytecodePath}`);
+    log(`writing out.asm to: ${outAsmPath}`);
     // writeFileSync to tmp file not working here
     //fs.writeFileSync(bytecodePath, bytecode!.toString('base64'));
     await tryExec(`echo -n ${bytecode!.toString('base64')} > ${bytecodePath}`);
-    await tryExec(`cd ../../barretenberg/cpp/ && ${POWDR_BINDIR}/bberg ${bytecodePath}`);
+    await tryExec(`cd ../../barretenberg/cpp/ && ${POWDR_BINDIR}/bberg ${bytecodePath} ${outAsmPath}`);
+    return outAsmPath;
   }
-  public async generateWitness() {
-    await tryExec(`cd ../../barretenberg/cpp/ && ${POWDR_BINDIR}/powdr pil brillig_out.asm --field bn254 --force`);
+  public async generateWitness(outAsmPath: string) {
+    await tryExec(`cd ../../barretenberg/cpp/ && ${POWDR_BINDIR}/powdr pil ${outAsmPath} --field bn254 --force`);
   }
   public async prove() {
     const log = createDebugLogger('aztec:simulator:public_vm_prove');

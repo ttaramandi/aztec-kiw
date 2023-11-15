@@ -94,8 +94,8 @@ describe('ACIR public execution simulator', () => {
 
         //expect(result.returnValues[0]).toEqual(new Fr(ret));
 
-        await executor.bytecodeToPowdr(execution);
-        await executor.generateWitness();
+        const outAsmPath = await executor.bytecodeToPowdr(execution);
+        await executor.generateWitness(outAsmPath);
         await executor.prove();
       }, 1_000_000);
     });
