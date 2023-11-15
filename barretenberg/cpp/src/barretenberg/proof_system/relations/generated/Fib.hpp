@@ -10,8 +10,8 @@ template <typename FF> struct Row {
     FF Fibonacci_FIRST{};
     FF Fibonacci_x{};
     FF Fibonacci_y{};
-    FF Fibonacci_y_shift{};
     FF Fibonacci_x_shift{};
+    FF Fibonacci_y_shift{};
 };
 
 #define DECLARE_VIEWS(index)                                                                                           \
@@ -20,16 +20,16 @@ template <typename FF> struct Row {
     [[maybe_unused]] auto Fibonacci_FIRST = View(new_term.Fibonacci_FIRST);                                            \
     [[maybe_unused]] auto Fibonacci_x = View(new_term.Fibonacci_x);                                                    \
     [[maybe_unused]] auto Fibonacci_y = View(new_term.Fibonacci_y);                                                    \
-    [[maybe_unused]] auto Fibonacci_y_shift = View(new_term.Fibonacci_y_shift);                                        \
-    [[maybe_unused]] auto Fibonacci_x_shift = View(new_term.Fibonacci_x_shift);
+    [[maybe_unused]] auto Fibonacci_x_shift = View(new_term.Fibonacci_x_shift);                                        \
+    [[maybe_unused]] auto Fibonacci_y_shift = View(new_term.Fibonacci_y_shift);
 
 template <typename FF_> class FibImpl {
   public:
     using FF = FF_;
 
     static constexpr std::array<size_t, 2> SUBRELATION_LENGTHS{
-        5,
-        5,
+        4,
+        4,
     };
 
     template <typename ContainerOverSubrelations, typename AllEntities>
@@ -43,21 +43,19 @@ template <typename FF_> class FibImpl {
         {
             DECLARE_VIEWS(0);
 
-            auto tmp =
-                (((-Fibonacci_LAST + FF(1)) * (Fibonacci_x_shift * (-Fibonacci_LAST + FF(1)) - Fibonacci_y)) - FF(0));
+            auto tmp = ((((-Fibonacci_FIRST + FF(1)) * (-Fibonacci_LAST + FF(1))) * (Fibonacci_x_shift - Fibonacci_y)) -
+                        FF(0));
             tmp *= scaling_factor;
-            tmp *= (-Fibonacci_FIRST + FF(1)); // Temp to switch off
             std::get<0>(evals) += tmp;
         }
         // Contribution 1
         {
             DECLARE_VIEWS(1);
 
-            auto tmp = (((-Fibonacci_LAST + FF(1)) *
-                         (Fibonacci_y_shift * (-Fibonacci_LAST + FF(1)) - (Fibonacci_x + Fibonacci_y))) -
+            auto tmp = ((((-Fibonacci_FIRST + FF(1)) * (-Fibonacci_LAST + FF(1))) *
+                         (Fibonacci_y_shift - (Fibonacci_x + Fibonacci_y))) -
                         FF(0));
             tmp *= scaling_factor;
-            tmp *= (-Fibonacci_FIRST + FF(1)); // Temp to switch off
             std::get<1>(evals) += tmp;
         }
     }
