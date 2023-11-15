@@ -41,91 +41,6 @@ async function tryExec(cmd: string) {
   }
 }
 /**
- * Execute a public function and return the execution result.
- */
-export async function executePublicFunction(
-  execution: PublicExecution,
-  _bytecode: Buffer,
-  log = createDebugLogger('aztec:simulator:public_execution'),
-): Promise<PublicExecutionResult> {
-  let bytecode = [
-    new AVMInstruction(
-      /*opcode*/ Opcode.CALLDATASIZE, // M[0] = CD.length
-      /*d0:*/ 0, /*target memory address*/
-      /*sd:*/ 0, /*unused*/
-      /*s0:*/ 0, /*unused*/
-      /*s1:*/ 0, /*unused*/
-    ),
-    new AVMInstruction(
-      /*opcode*/ Opcode.CALLDATACOPY, // M[1:1+M[0]] = CD[0+M[0]]);
-      /*d0:*/ 1, /*target memory address*/
-      /*sd:*/ 0, /*unused*/
-      /*s0:*/ 0, /*calldata offset*/
-      /*s1:*/ 0, /*copy size*/
-    ),
-    new AVMInstruction(
-      /*opcode*/ Opcode.ADD, // M[10] = M[1] + M[2]
-      /*d0:*/ 10, /*target memory address*/
-      /*sd:*/ 0, /*unused*/
-      /*s0:*/ 1, /*to add*/
-      /*s1:*/ 2, /*to add*/
-    ),
-    new AVMInstruction(
-      /*opcode*/ Opcode.RETURN, // return M[10]
-      /*d0:*/ 0, /*unused*/
-      /*sd:*/ 0, /*unused*/
-      /*s0:*/ 10, /*field memory offset*/
-      /*s1:*/ 1, /*return size*/
-    )
-  ];
-  // this is just to rename args to calldata
-  const context = {
-    contractAddress: execution.contractAddress,
-    functionData: execution.functionData,
-    calldata: execution.args,
-    callContext: execution.callContext
-  };
-  const { contractAddress, functionData } = context;
-  const selector = functionData.selector;
-  log(`Executing public external function ${contractAddress.toString()}:${selector}`);
-
-
-
-  const avmCall = new AVMCallExecutor(context, bytecode);
-  //const vmCallback = new Oracle(context);
-  const
-    //returnValues,
-    //newL2ToL1Msgs,
-    //newCommitments,
-    //newNullifiers,
-    returnData
-   = avmCall.execute();
-
-
-  //const { contractStorageReads, contractStorageUpdateRequests } = context.getStorageActionData();
-  //log(
-  //  `Contract storage reads: ${contractStorageReads
-  //    .map(r => r.toFriendlyJSON() + ` - sec: ${r.sideEffectCounter}`)
-  //    .join(', ')}`,
-  //);
-
-  //const nestedExecutions = context.getNestedExecutions();
-  //const unencryptedLogs = context.getUnencryptedLogs();
-
-  return {
-    execution,
-    newCommitments: [],
-    newL2ToL1Messages: [],
-    newNullifiers: [],
-    contractStorageReads: [],
-    contractStorageUpdateRequests: [],
-    returnValues: returnData,
-    nestedExecutions: [],
-    unencryptedLogs: FunctionL2Logs.empty(),
-  };
-}
-
-/**
  * Handles execution of public functions.
  */
 export class PublicExecutor {
@@ -143,15 +58,20 @@ export class PublicExecutor {
    * @returns The result of the run plus all nested runs.
    */
   public async simulate(execution: PublicExecution, globalVariables: GlobalVariables): Promise<PublicExecutionResult> {
-    const selector = execution.functionData.selector;
-    const acir = await this.contractsDb.getBytecode(execution.contractAddress, selector);
-    if (!acir) throw new Error(`Bytecode not found for ${execution.contractAddress}:${selector}`);
+    // this is just to rename args to calldata
+    const context = {
+      contractAddress: execution.contractAddress,
+      functionData: execution.functionData,
+      calldata: execution.args,
+      callContext: execution.callContext
+    };
+    const avm = new AVMCallExecutor(context, this.contractsDb);
 
     // Functions can request to pack arguments before calling other functions.
     // We use this cache to hold the packed arguments.
-    const packedArgs = await PackedArgsCache.create([]);
+    //const packedArgs = await PackedArgsCache.create([]);
 
-    const sideEffectCounter = new SideEffectCounter();
+    //const sideEffectCounter = new SideEffectCounter();
 
     //const context = new PublicVmExecutionContext(
     //  execution,
@@ -168,7 +88,8 @@ export class PublicExecutor {
     //);
 
     try {
-      return await executePublicFunction(execution, acir);
+      //return await executePublicFunction(execution, acir);
+      return avm.simulate();
     } catch (err) {
       throw createSimulationError(err instanceof Error ? err : new Error('Unknown error during public execution'));
     }

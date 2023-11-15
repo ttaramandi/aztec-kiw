@@ -14,10 +14,9 @@ import {
 } from '../acvm/index.js';
 import { PackedArgsCache, SideEffectCounter } from '../common/index.js';
 import { CommitmentsDB, PublicContractsDB, PublicStateDB } from './db.js';
-import { PublicCallContext, PublicExecution, PublicExecutionResult } from './execution.js';
-import { executePublicFunction } from './executor.js';
+import { PublicExecution, PublicExecutionResult } from './execution.js';
 import { ContractStorageActionsCollector } from './state_actions.js';
-import { PublicVmExecutionContext } from './public_vm_execution_context.js';
+import { AVMCallExecutor } from './vm.js';
 
 /**
  * The execution context for a public tx simulation.
@@ -171,7 +170,7 @@ export class PublicExecutionContext extends TypedOracle {
    * @param argsHash - The packed arguments to pass to the function.
    * @returns The return values of the public function.
    */
-  public async callPublicFunction(
+  PUBLIC ASYNC CALLpUBLICfUNCTION(
     targetContractAddress: AztecAddress,
     functionSelector: FunctionSelector,
     argsHash: Fr,
@@ -185,8 +184,8 @@ export class PublicExecutionContext extends TypedOracle {
       throw new Error(`ERR: Method not found - ${targetContractAddress.toString()}:${functionSelector.toString()}`);
     }
 
-    const acir = await this.contractsDb.getBytecode(targetContractAddress, functionSelector);
-    if (!acir) throw new Error(`Bytecode not found for ${targetContractAddress}:${functionSelector}`);
+    //const acir = await this.contractsDb.getBytecode(targetContractAddress, functionSelector);
+    //if (!acir) throw new Error(`Bytecode not found for ${targetContractAddress}:${functionSelector}`);
 
     const functionData = new FunctionData(functionSelector, isInternal, false, false);
 
@@ -200,12 +199,21 @@ export class PublicExecutionContext extends TypedOracle {
       isStaticCall: false,
     });
 
-    const context: PublicExecution = {
+    const execution: PublicExecution = {
       contractAddress: targetContractAddress,
       functionData,
       args,
       callContext,
     };
+    // this is just to rename args to calldata
+    const context = {
+      contractAddress: execution.contractAddress,
+      functionData: execution.functionData,
+      calldata: execution.args,
+      callContext: execution.callContext
+    };
+
+    const avm = new AVMCallExecutor(context, this.contractsDb)
 
     //const context = new PublicVmExecutionContext(
     //  nestedExecution,
@@ -223,7 +231,8 @@ export class PublicExecutionContext extends TypedOracle {
     //  this.log,
     //);
 
-    const childExecutionResult = await executePublicFunction(context, acir);
+    //const childExecutionResult = await executePublicFunction(context, acir);
+    const childExecutionResult = avm.simulate();
 
     this.nestedExecutions.push(childExecutionResult);
     this.log(`Returning from nested call: ret=${childExecutionResult.returnValues.join(', ')}`);

@@ -1,7 +1,9 @@
 import { AztecAddress, CallContext, Fr, FunctionData } from '@aztec/circuits.js';
 import { AVMInstruction, Opcode, PC_MODIFIERS } from './opcodes.js';
 import { createDebugLogger } from '@aztec/foundation/log';
-import { PublicCallContext } from './execution.js';
+import { PublicCallContext, PublicExecutionResult, isPublicExecutionResult } from './execution.js';
+import { PublicContractsDB } from './db.js';
+import { FunctionL2Logs } from '@aztec/types';
 
 /**
  * VM object with top-level/tx-level state
@@ -28,15 +30,14 @@ import { PublicCallContext } from './execution.js';
 // * @param context 
 // * @returns 
 // */
-//class AVMTxExecutor {
+//class AVM {
 //  private log = createDebugLogger('aztec:simulator:avm_tx_executor');
 //  private topCallExecutor: AVMCallExecutor;
 //
-//  public execute() {
+//  public simulate() {
 //    this.topCallExecutor.execute();
 //
 //  }
-//
 //}
 
 
@@ -55,18 +56,55 @@ export class AVMCallExecutor {
   private log = createDebugLogger('aztec:simulator:avm_call_executor');
 
   private state = new AVMCallState();
-  //private bytecode: AVMInstruction[];
+  private bytecode: AVMInstruction[];
 
-  constructor(private context: PublicCallContext, private bytecode: AVMInstruction[]) {
+  // Partial witness components (inputs to witness generation)
+  // - storageActions
+  // - nestedExecutions
+  // - unencryptedLogs
+  // - nastyOperations
+  // ^ these are computed gradually as instructions execute
+  //private storageActions: ContractStorageActionsCollector;
+  //private nestedExecutions: PublicExecutionResult[] = [];
+  //private unencryptedLogs: UnencryptedL2Log[] = [];
 
-    // TODO: fetch bytecode here?
-    // bytecode = ...
+
+  constructor(
+    private context: PublicCallContext,
+    private readonly contractsDb: PublicContractsDB,
+  ) {
+    this.bytecode = this.fetchBytecode();
   }
 
   /**
    * Execute this call.
+   * Generate a partial witness.
    */
-  public execute(): Fr[] {
+  public simulate(): PublicExecutionResult {
+    const execution = {
+      contractAddress: this.context.contractAddress,
+      functionData: this.context.functionData,
+      args: this.context.calldata, // rename
+      callContext: this.context.callContext
+    };
+    return {
+      execution,
+      newCommitments: [],
+      newL2ToL1Messages: [],
+      newNullifiers: [],
+      contractStorageReads: [],
+      contractStorageUpdateRequests: [],
+      returnValues: this.simulateInternal(),
+      nestedExecutions: [],
+      unencryptedLogs: FunctionL2Logs.empty(),
+    };
+  }
+
+  /**
+   * Execute this call.
+   * Generate a partial witness.
+   */
+  private simulateInternal(): Fr[] {
     this.log(`Executing public vm`);
     // TODO: check memory out of bounds
     let pc = 0; // TODO: should be u32
@@ -119,4 +157,43 @@ export class AVMCallExecutor {
     }
     throw new Error("Reached end of bytecode without RETURN or REVERT");
   }
+
+  private fetchBytecode(): AVMInstruction[] {
+    // TODO get AVM bytecode directly, not ACIR?
+    //const acir = await this.contractsDb.getBytecode(context.contractAddress, selector);
+    //if (!acir) throw new Error(`Bytecode not found for ${context.contractAddress}:${selector}`);
+    //return acir; // extract brillig or AVM bytecode
+    return [
+      new AVMInstruction(
+        /*opcode*/ Opcode.CALLDATASIZE, // M[0] = CD.length
+        /*d0:*/ 0, /*target memory address*/
+        /*sd:*/ 0, /*unused*/
+        /*s0:*/ 0, /*unused*/
+        /*s1:*/ 0, /*unused*/
+      ),
+      new AVMInstruction(
+        /*opcode*/ Opcode.CALLDATACOPY, // M[1:1+M[0]] = CD[0+M[0]]);
+        /*d0:*/ 1, /*target memory address*/
+        /*sd:*/ 0, /*unused*/
+        /*s0:*/ 0, /*calldata offset*/
+        /*s1:*/ 0, /*copy size*/
+      ),
+      new AVMInstruction(
+        /*opcode*/ Opcode.ADD, // M[10] = M[1] + M[2]
+        /*d0:*/ 10, /*target memory address*/
+        /*sd:*/ 0, /*unused*/
+        /*s0:*/ 1, /*to add*/
+        /*s1:*/ 2, /*to add*/
+      ),
+      new AVMInstruction(
+        /*opcode*/ Opcode.RETURN, // return M[10]
+        /*d0:*/ 0, /*unused*/
+        /*sd:*/ 0, /*unused*/
+        /*s0:*/ 10, /*field memory offset*/
+        /*s1:*/ 1, /*return size*/
+      )
+    ];
+
+  }
+
 }
