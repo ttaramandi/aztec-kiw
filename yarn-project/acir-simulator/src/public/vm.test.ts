@@ -70,50 +70,39 @@ describe('ACIR public execution simulator', () => {
         publicContracts.getBytecode.mockResolvedValue(Buffer.from(artifact.bytecode, 'base64'));
 
         publicState.storageRead
-          .mockResolvedValueOnce(new Fr(originalValueAtResultSlot)) // reading whether msg_sender is minter
+          .mockResolvedValueOnce(new Fr(originalValueAtResultSlot)) // before sstore
+          .mockResolvedValueOnce(new Fr(ret)); // after sstore
 
         const execution: PublicExecution = { contractAddress, functionData, args, callContext };
         const result = await executor.simulate(execution, GlobalVariables.empty());
 
         expect(result.returnValues[0]).toEqual(new Fr(ret));
 
+        // SLOAD is performed before SSTORE and after
+        expect(result.contractStorageReads).toEqual([
+          {
+            storageSlot: new Fr(resultSlot),
+            currentValue: new Fr(originalValueAtResultSlot),
+            sideEffectCounter: 0,
+          },
+          {
+            storageSlot: new Fr(resultSlot),
+            currentValue: new Fr(ret),
+            sideEffectCounter: 2,
+          },
+        ]);
         // results of ADD are SSTOREd into resultSlot
         expect(result.contractStorageUpdateRequests).toEqual([
           {
             storageSlot: new Fr(resultSlot),
             oldValue: new Fr(originalValueAtResultSlot),
             newValue: new Fr(ret),
-            sideEffectCounter: 0,
+            sideEffectCounter: 1,
           },
         ]);
       });
       //it('should prove the public vm', async () => {
-      //  const contractAddress = AztecAddress.random();
-      //  const mintArtifact = TokenContractArtifact.functions.find(f => f.name === 'mint_public')!;
-      //  const functionData = FunctionData.fromAbi(mintArtifact);
-
-      //  // ADD 42 + 24
-      //  const args = encodeArguments(mintArtifact, [42n, 24n]);
-      //  const ret = 42n + 24n;
-
-      //  const msgSender = AztecAddress.random();
-      //  const callContext = CallContext.from({
-      //    msgSender,
-      //    storageContractAddress: contractAddress,
-      //    portalContractAddress: EthAddress.random(),
-      //    functionSelector: FunctionSelector.empty(),
-      //    isContractDeployment: false,
-      //    isDelegateCall: false,
-      //    isStaticCall: false,
-      //  });
-
-      //  publicContracts.getBytecode.mockResolvedValue(Buffer.from(mintArtifact.bytecode, 'base64'));
-
-      //  const execution: PublicExecution = { contractAddress, functionData, args, callContext };
-      //  //const result = await executor.simulate(execution, GlobalVariables.empty());
-
-      //  //expect(result.returnValues[0]).toEqual(new Fr(ret));
-
+      //  ...
       //  const outAsmPath = await executor.bytecodeToPowdr(execution);
       //  await executor.generateWitness(outAsmPath);
       //  await executor.prove();

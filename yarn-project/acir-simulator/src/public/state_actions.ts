@@ -37,13 +37,24 @@ export class ContractStorageActionsCollector {
    * @returns The current value as affected by all update requests so far.
    */
   public async read(storageSlot: Fr, sideEffectCounter: number): Promise<Fr> {
+    const value = await this.peek(storageSlot);
+    this.contractStorageReads.set(storageSlot.value, { currentValue: value, sideEffectCounter });
+    return value;
+  }
+
+  /**
+   * Returns the current value of a slot according to the latest update request for it,
+   * falling back to the public db. Does NOT collect the operation in storage reads!
+   * @param storageSlot - Slot to check.
+   * @returns The current value as affected by all update requests so far.
+   */
+  public async peek(storageSlot: Fr): Promise<Fr> {
     const slot = storageSlot.value;
     const updateRequest = this.contractStorageUpdateRequests.get(slot);
     if (updateRequest) return updateRequest.newValue;
     const read = this.contractStorageReads.get(slot);
     if (read) return read.currentValue;
     const value = await this.db.storageRead(this.address, storageSlot);
-    this.contractStorageReads.set(slot, { currentValue: value, sideEffectCounter });
     return value;
   }
 

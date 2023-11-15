@@ -1,4 +1,4 @@
-import { AztecAddress, CallContext, EthAddress, Fr, FunctionData, FunctionSelector } from '@aztec/circuits.js';
+import { AztecAddress, CallContext, ContractStorageRead, ContractStorageUpdateRequest, EthAddress, Fr, FunctionData, FunctionSelector } from '@aztec/circuits.js';
 import { AVMInstruction, Opcode, PC_MODIFIERS } from './opcodes.js';
 import { createDebugLogger } from '@aztec/foundation/log';
 import { PublicCallContext, PublicExecutionResult } from './execution.js';
@@ -72,16 +72,14 @@ export class AVMCallExecutor {
   private state = new AVMCallState();
   private bytecode: AVMInstruction[];
 
-  // Partial witness components (inputs to witness generation)
-  // - storageActions
-  // - nestedExecutions
-  // - unencryptedLogs
-  // - nastyOperations
-  // ^ these are computed gradually as instructions execute
-  private storageActions: ContractStorageActionsCollector;
+  // Components of the partial witness (inputs to witness generation)
+  // collapsedStorageActions is used to retrieve latest value per slot
+  private collapsedStorageActions: ContractStorageActionsCollector;
+  private allStorageReads: ContractStorageRead[] = [];
+  private allStorageUpdates: ContractStorageUpdateRequest[] = [];
   private nestedExecutions: PublicExecutionResult[] = [];
   //private unencryptedLogs: UnencryptedL2Log[] = [];
-
+  // ^ these are computed gradually as instructions execute
 
   constructor(
     private context: PublicCallContext,
@@ -91,7 +89,7 @@ export class AVMCallExecutor {
   ) {
     this.bytecode = this.fetchBytecode();
 
-    this.storageActions = new ContractStorageActionsCollector(stateDb, context.contractAddress);
+    this.collapsedStorageActions = new ContractStorageActionsCollector(stateDb, context.contractAddress);
   }
 
   /**
@@ -102,7 +100,7 @@ export class AVMCallExecutor {
     this.log(`Simulating the Aztec Public VM`);
 
     const returnValues = await this.simulateInternal();
-    const [contractStorageReads, contractStorageUpdateRequests] = this.storageActions.collect();
+    //const [contractStorageReads, contractStorageUpdateRequests] = this.collapsedStorageActions.collect();
 
     // just rename args to calldata...
     const execution = {
@@ -116,8 +114,8 @@ export class AVMCallExecutor {
       newCommitments: [],
       newL2ToL1Messages: [],
       newNullifiers: [],
-      contractStorageReads,
-      contractStorageUpdateRequests,
+      contractStorageReads: this.allStorageReads,
+      contractStorageUpdateRequests: this.allStorageUpdates,
       returnValues: returnValues,
       nestedExecutions: [],
       unencryptedLogs: FunctionL2Logs.empty(),
@@ -187,8 +185,10 @@ export class AVMCallExecutor {
       }
       case Opcode.SLOAD: {
         // TODO: use u32 memory for storage slot
+        this.log(`SLOAD: M[${instr.d0}] = S[M[${instr.s0}]]`)
         const storageSlot = this.state.fieldMemory[instr.s0];
         this.state.fieldMemory[instr.s1] = await this.sload(storageSlot);
+        this.log(`SLOAD value: ${this.state.fieldMemory[instr.s1]} (S[${storageSlot}])`)
         break;
       }
       case Opcode.SSTORE: {
@@ -322,10 +322,24 @@ export class AVMCallExecutor {
         /*s1:*/ 2, /*to add*/
       ),
       new AVMInstruction( // TODO: but PublicStateDB.storageWrite() is not mocked in test
-        /*opcode*/ Opcode.SSTORE, // S[M[d0]] = M[s1]
+        /*opcode*/ Opcode.SLOAD, // M[d0] = S[M[s0]]
+        /*d0:*/ 11, /*write loaded word into M[11]*/
+        /*sd:*/ 0, /*unused*/
+        /*s0:*/ 3, /*load storage word at S[M[3]]*/
+        /*s1:*/ 0, /*unused*/
+      ),
+      new AVMInstruction( // TODO: but PublicStateDB.storageWrite() is not mocked in test
+        /*opcode*/ Opcode.SSTORE, // S[M[d0]] = M[s0]
         /*d0:*/ 3, /*memory word containing target storage slot (M[3] originally from calldata[2])*/
         /*sd:*/ 0, /*unused*/
         /*s0:*/ 10, /*store result of add (M[10])*/
+        /*s1:*/ 0, /*unused*/
+      ),
+      new AVMInstruction( // TODO: but PublicStateDB.storageWrite() is not mocked in test
+        /*opcode*/ Opcode.SLOAD, // M[d0] = S[M[s0]]
+        /*d0:*/ 11, /*write loaded word into M[11]*/
+        /*sd:*/ 0, /*unused*/
+        /*s0:*/ 3, /*load storage word at S[M[3]]*/
         /*s1:*/ 0, /*unused*/
       ),
       new AVMInstruction(
@@ -349,7 +363,8 @@ export class AVMCallExecutor {
     //for (let i = 0; i < Number(numberOfElements); i++) {
       //const storageSlot = new Fr(startStorageSlot.value + BigInt(i));
       const sideEffectCounter = this.sideEffectCounter.count();
-      const value = await this.storageActions.read(storageSlot, sideEffectCounter);
+      const value = await this.collapsedStorageActions.read(storageSlot, sideEffectCounter);
+      this.allStorageReads.push(new ContractStorageRead(storageSlot, value, sideEffectCounter));
       this.log(`Oracle storage read: slot=${storageSlot.toString()} value=${value.toString()}`);
       //values.push(value);
       return value;
@@ -367,7 +382,9 @@ export class AVMCallExecutor {
       //const storageSlot = new Fr(startStorageSlot.value + BigInt(i));
       //const newValue = values[i];
       const sideEffectCounter = this.sideEffectCounter.count();
-      await this.storageActions.write(storageSlot, value, sideEffectCounter);
+      const oldValue = await this.collapsedStorageActions.peek(storageSlot);
+      await this.collapsedStorageActions.write(storageSlot, value, sideEffectCounter);
+      this.allStorageUpdates.push(new ContractStorageUpdateRequest(storageSlot, oldValue, value, sideEffectCounter));
       await this.stateDb.storageWrite(this.context.contractAddress, storageSlot, value);
       this.log(`Oracle storage write: slot=${storageSlot.toString()} value=${value.toString()}`);
       //newValues.push(newValue);
