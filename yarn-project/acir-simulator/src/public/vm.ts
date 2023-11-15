@@ -1,36 +1,39 @@
-import { AztecAddress, CallContext, Fr, FunctionData } from '@aztec/circuits.js';
+import { AztecAddress, CallContext, EthAddress, Fr, FunctionData, FunctionSelector } from '@aztec/circuits.js';
 import { AVMInstruction, Opcode, PC_MODIFIERS } from './opcodes.js';
 import { createDebugLogger } from '@aztec/foundation/log';
-import { PublicCallContext, PublicExecutionResult, isPublicExecutionResult } from './execution.js';
+import { PublicCallContext, PublicExecutionResult } from './execution.js';
 import { PublicContractsDB, PublicStateDB } from './db.js';
 import { FunctionL2Logs } from '@aztec/types';
 import { ContractStorageActionsCollector } from './state_actions.js';
 import { SideEffectCounter } from '../common/side_effect_counter.js';
+
+// TODO: figure out what info needs to go to witgen and prover, and what info
+// is really just for the TS code to keep track of the entire TX/callstack
 
 /**
  * VM object with top-level/tx-level state
  *     - VM can execute a TX which in turns executes each call
  * VM call/context object with call-level state
  *     - call can execute
- * 
+ *
  * There are a few different levels of state during execution:
  * 1. Call-level state that is modified by each instruction
  * 2. TX-level state that is modified by each call
  * 3. Top-level state that is modified by each TX
  * 4. Block-level state that remains constant for all TXs in a block
- * 
+ *
  * Within call-level state, there are values that will remain constant
  * for the duration of the call, and values that will be modified per-instruction
- * 
+ *
  * CallContext is constant for a call. It is the context in which the
  * call was triggered, but is not modified by the call.
  */
 
 ///**
-// * 
-// * @param bytecode 
-// * @param context 
-// * @returns 
+// *
+// * @param bytecode
+// * @param context
+// * @returns
 // */
 //class AVM {
 //  private log = createDebugLogger('aztec:simulator:avm_tx_executor');
@@ -44,15 +47,21 @@ import { SideEffectCounter } from '../common/side_effect_counter.js';
 
 
 /**
- * 
+ *
  */
 class AVMCallState {
-  readonly MEM_WORDS = 1024;
-  public fieldMemory: Fr[] = new Array<Fr>(this.MEM_WORDS).fill(Fr.ZERO);
+  readonly MEM_REGION_WORDS = 1024;
+  readonly RETURN_BUFFER_WORDS = 128;
+
+  //public pc: number = 0;
+  //public l1GasUsed: number = 0; // or left?
+  //public l2GasUsed: number = 0; // or left?
+  public fieldMemory: Fr[] = new Array<Fr>(this.MEM_REGION_WORDS).fill(Fr.ZERO);
+  public returnData: Fr[] = new Array<Fr>(this.RETURN_BUFFER_WORDS).fill(Fr.ZERO);
 }
 
 /**
- * 
+ *
  */
 export class AVMCallExecutor {
   private log = createDebugLogger('aztec:simulator:avm_call_executor');
@@ -67,7 +76,7 @@ export class AVMCallExecutor {
   // - nastyOperations
   // ^ these are computed gradually as instructions execute
   private storageActions: ContractStorageActionsCollector;
-  //private nestedExecutions: PublicExecutionResult[] = [];
+  private nestedExecutions: PublicExecutionResult[] = [];
   //private unencryptedLogs: UnencryptedL2Log[] = [];
 
 
@@ -165,11 +174,63 @@ export class AVMCallExecutor {
           await this.sstore(storageSlot, value);
           break;
         }
-        //case Opcode.CALL: {
-        //  const retSize = this.state.fieldMemory[instr.s1];
-        //  //assert instr.s0 + retSize <= context.fieldMemory.length;
-        //  return this.state.fieldMemory.slice(instr.s0, instr.s0 + Number(retSize.toBigInt()));
-        //}
+        case Opcode.CALL: {
+          //const gas = this.state.fieldMemory[instr.s0];
+          const addrFr = this.state.fieldMemory[instr.s1];
+          const targetContractAddress = AztecAddress.fromBigInt(addrFr.toBigInt());
+          // TODO: use u32 memory for offsets and sizes
+          // TODO: do we do M[M[sd] + 0,1,2,3], or M[sd + 0,1,2,3]
+          // For now, doing M[sd + 0,1,2,3]
+          //const argsAndRetOffset = this.state.fieldMemory[instr.sd];
+          // size of argsAndRetOffset is 4:
+          // - argsOffset & argsSize
+          // - retOffset & retSize
+          const argsOffset = Number(this.state.fieldMemory[instr.sd].toBigInt());
+          const argsSize = Number(this.state.fieldMemory[instr.sd + 1].toBigInt());
+          const retOffset = Number(this.state.fieldMemory[instr.sd + 2].toBigInt());
+          const retSize = Number(this.state.fieldMemory[instr.sd + 3].toBigInt());
+
+          const calldata = this.state.fieldMemory.slice(argsOffset, argsOffset + argsSize);
+          // For now, extract functionSelector here.
+          // TODO: eventually functionSelector can become a use-case of calldata as in EVM.
+          // FIXME: calldata[0] could be larger than 4-byte function selector!
+          const functionSelector = new FunctionSelector(Number(calldata[0].toBigInt()));
+          this.log(`Nested call in AVM: addr=${targetContractAddress} selector=${functionSelector}`);
+
+          const portalAddress = (await this.contractsDb.getPortalContractAddress(targetContractAddress)) ?? EthAddress.ZERO;
+          const isInternal = await this.contractsDb.getIsInternal(targetContractAddress, functionSelector);
+          if (isInternal === undefined) {
+            throw new Error(`ERR: Method not found - ${targetContractAddress.toString()}:${functionSelector.toString()}`);
+          }
+
+          const functionData = new FunctionData(functionSelector, isInternal, false, false);
+          const nestedCallContext = CallContext.from({
+            msgSender: this.context.contractAddress,
+            portalContractAddress: portalAddress,
+            storageContractAddress: targetContractAddress,
+            functionSelector,
+            isContractDeployment: false,
+            isDelegateCall: false,
+            isStaticCall: false,
+          });
+          const nestedContext = {
+            contractAddress:targetContractAddress,
+            functionData,
+            calldata: calldata,
+            callContext: nestedCallContext,
+          };
+          const nestedAvm = new AVMCallExecutor(
+            nestedContext,
+            this.sideEffectCounter,
+            this.stateDb,
+            this.contractsDb,
+          );
+          const childExecutionResult = await nestedAvm.simulate();
+          this.nestedExecutions.push(childExecutionResult);
+          this.log(`Returning from nested call: ret=${childExecutionResult.returnValues.join(', ')}`);
+
+          this.state.returnData.splice(retOffset, retSize, ...childExecutionResult.returnValues);
+        }
       }
       if (!PC_MODIFIERS.includes(instr.opcode)) {
         pc++;
@@ -217,11 +278,11 @@ export class AVMCallExecutor {
   }
 
   /**
-   * Read the public storage data.
+   * Read a public storage word.
    * @param storageSlot - The starting storage slot.
    * @returns value - The value read from the storage slot.
    */
-  public async sload(storageSlot: Fr): Promise<Fr> {
+  private async sload(storageSlot: Fr): Promise<Fr> {
     //const values = [];
     //for (let i = 0; i < Number(numberOfElements); i++) {
       //const storageSlot = new Fr(startStorageSlot.value + BigInt(i));
@@ -234,7 +295,7 @@ export class AVMCallExecutor {
     //return values;
   }
   /**
-   * Write some values to the public storage.
+   * Write a word to public storage.
    * @param storageSlot - The storage slot.
    * @param value - The value to be written.
    */
@@ -250,5 +311,4 @@ export class AVMCallExecutor {
       //newValues.push(newValue);
     //}
   }
-
 }

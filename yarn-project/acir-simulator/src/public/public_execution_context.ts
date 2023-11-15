@@ -199,18 +199,11 @@ export class PublicExecutionContext extends TypedOracle {
       isStaticCall: false,
     });
 
-    const execution: PublicExecution = {
-      contractAddress: targetContractAddress,
-      functionData,
-      args,
-      callContext,
-    };
-    // this is just to rename args to calldata
     const context = {
-      contractAddress: execution.contractAddress,
-      functionData: execution.functionData,
-      calldata: execution.args,
-      callContext: execution.callContext
+      contractAddress:targetContractAddress,
+      functionData,
+      calldata: args,
+      callContext
     };
 
     const avm = new AVMCallExecutor(
