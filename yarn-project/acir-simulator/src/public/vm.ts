@@ -153,14 +153,46 @@ class AVM {
     const instr = this.instructions[this.state.pc];
     this.log(`Executing instruction (pc:${this.state.pc}): ${Opcode[instr.opcode]}`);
     switch (instr.opcode) {
+      /////////////////////////////////////////////////////////////////////////
+      // Arithmetic
+      /////////////////////////////////////////////////////////////////////////
+      case Opcode.ADD: {
+        // TODO: consider having a single case for all arithmetic operations and then applying the corresponding function to the args
+        // TODO: actual field addition
+        this.state.fieldMemory[instr.d0] = new Fr((this.state.fieldMemory[instr.s0].toBigInt() + this.state.fieldMemory[instr.s1].toBigInt()) % Fr.MODULUS);
+        break;
+      }
+      case Opcode.SUB: {
+        // TODO: consider having a single case for all arithmetic operations and then applying the corresponding function to the args
+        // TODO: actual field addition
+        this.state.fieldMemory[instr.d0] = new Fr((this.state.fieldMemory[instr.s0].toBigInt() - this.state.fieldMemory[instr.s1].toBigInt()) % Fr.MODULUS);
+        break;
+      }
+      /////////////////////////////////////////////////////////////////////////
+      // Memory
+      /////////////////////////////////////////////////////////////////////////
+      case Opcode.SET: {
+        // TODO: allow instr.s0 to be larger since SET accepts an immediate value
+        this.log(`SET: M[${instr.d0}] = ${instr.s0}`);
+        this.state.fieldMemory[instr.d0] = new Fr(instr.s0);
+        break;
+      }
+      case Opcode.MOV: {
+        this.log(`MOV: M[${instr.d0}] = M[${instr.s0}]`);
+        this.state.fieldMemory[instr.d0] = this.state.fieldMemory[instr.s0];
+        break;
+      }
+      // TODO: RETURNDATASIZE and RETURNDATACOPY
       case Opcode.CALLDATASIZE: {
         // TODO: dest should be u32
+        this.log(`CALLDATASIZE: M[${instr.d0}] = ${this.context.calldata.length}`);
         this.state.fieldMemory[instr.d0] = new Fr(this.context.calldata.length);
         break;
       }
       case Opcode.CALLDATACOPY: {
         // TODO: srcOffset and copySize should be u32s
-        const copySize = this.state.fieldMemory[instr.s1].toBigInt();
+        const copySize = Number(this.state.fieldMemory[instr.s1].toBigInt());
+        this.log(`CALLDATACOPY: M[${instr.d0}:${instr.d0+copySize}] = calldata[${instr.s0}:${instr.s0+copySize}]`);
         //assert instr.s0 + copySize <= context.calldata.length;
         //assert instr.d0 + copySize <= context.fieldMemory.length;
         for (let i = 0; i < copySize; i++) {
@@ -169,12 +201,9 @@ class AVM {
         }
         break;
       }
-      case Opcode.ADD: {
-        // TODO: consider having a single case for all arithmetic operations and then applying the corresponding function to the args
-        // TODO: actual field addition
-        this.state.fieldMemory[instr.d0] = new Fr((this.state.fieldMemory[instr.s0].toBigInt() + this.state.fieldMemory[instr.s1].toBigInt()) % Fr.MODULUS);
-        break;
-      }
+      /////////////////////////////////////////////////////////////////////////
+      // Control flow
+      /////////////////////////////////////////////////////////////////////////
       case Opcode.JUMP: {
         this.state.pc = instr.s0;
         break;
@@ -183,17 +212,14 @@ class AVM {
         this.state.pc = !this.state.fieldMemory[instr.sd].isZero() ? instr.s0 : this.state.pc + 1;
         break;
       }
-      case Opcode.RETURN: {
-        const retSize = this.state.fieldMemory[instr.s1];
-        //assert instr.s0 + retSize <= context.fieldMemory.length;
-        this.state.returned = true;
-        return this.state.fieldMemory.slice(instr.s0, instr.s0 + Number(retSize.toBigInt()));
-      }
+      /////////////////////////////////////////////////////////////////////////
+      // Storage
+      /////////////////////////////////////////////////////////////////////////
       case Opcode.SLOAD: {
         // TODO: use u32 memory for storage slot
         this.log(`SLOAD: M[${instr.d0}] = S[M[${instr.s0}]]`)
         const storageSlot = this.state.fieldMemory[instr.s0];
-        this.state.fieldMemory[instr.s1] = await this.sload(storageSlot);
+        this.state.fieldMemory[instr.d0] = await this.sload(storageSlot);
         this.log(`SLOAD value: ${this.state.fieldMemory[instr.s1]} (S[${storageSlot}])`)
         break;
       }
@@ -206,6 +232,17 @@ class AVM {
         await this.sstore(storageSlot, value);
         break;
       }
+      case Opcode.RETURN: {
+        const retSizeFr = this.state.fieldMemory[instr.s1];
+        const retSize = Number(retSizeFr.toBigInt());
+        this.log(`RETURN: M[${instr.s0}:${instr.s0 + retSize}] (size: ${retSize})`);
+        //assert instr.s0 + retSize <= context.fieldMemory.length;
+        this.state.returned = true;
+        return this.state.fieldMemory.slice(instr.s0, instr.s0 + retSize);
+      }
+      /////////////////////////////////////////////////////////////////////////
+      // Contract call control flow
+      /////////////////////////////////////////////////////////////////////////
       case Opcode.CALL: {
         const gas = this.state.fieldMemory[instr.s0];
         this.log(`CALL was allocated ${gas} gas`);
@@ -222,13 +259,18 @@ class AVM {
         const argsSize = Number(this.state.fieldMemory[instr.sd + 1].toBigInt());
         const retOffset = Number(this.state.fieldMemory[instr.sd + 2].toBigInt());
         const retSize = Number(this.state.fieldMemory[instr.sd + 3].toBigInt());
+        this.log(`CALL: argsOffset=${argsOffset} argsSize=${argsSize} retOffset=${retOffset} retSize=${retSize}`);
 
         const calldata = this.state.fieldMemory.slice(argsOffset, argsOffset + argsSize);
         // For now, extract functionSelector here.
         // TODO: eventually functionSelector can become a use-case of calldata as in EVM.
         // FIXME: calldata[0] could be larger than 4-byte function selector!
+        // FIXME this is not function selector in vm.test.ts examples!
         const functionSelector = new FunctionSelector(Number(calldata[0].toBigInt()));
         this.log(`Nested call in AVM: addr=${targetContractAddress} selector=${functionSelector}`);
+        for (let i = 0; i < calldata.length; i++) {
+          this.log(`\tInitializing nested calldata[${i}] = ${calldata[i]}`)
+        }
 
         const portalAddress = (await this.contractsDb.getPortalContractAddress(targetContractAddress)) ?? EthAddress.ZERO;
         const isInternal = await this.contractsDb.getIsInternal(targetContractAddress, functionSelector);
@@ -263,7 +305,13 @@ class AVM {
         this.nestedExecutions.push(childExecutionResult);
         this.log(`Returning from nested call: ret=${childExecutionResult.returnValues.join(', ')}`);
 
-        this.state.returnBuffer.splice(retOffset, retSize, ...childExecutionResult.returnValues);
+        // When retSize is provided (known at time of CALL), write return values to memory at provided offset.
+        // Otherwise, write return values to start of returnBuffer.
+        if (retSize > 0) {
+          this.state.fieldMemory.splice(retOffset, retSize, ...childExecutionResult.returnValues);
+        } else {
+          this.state.returnBuffer.splice(0, retSize, ...childExecutionResult.returnValues);
+        }
       }
     }
     if (!PC_MODIFIERS.includes(instr.opcode)) {

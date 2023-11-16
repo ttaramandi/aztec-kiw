@@ -1,12 +1,20 @@
 export enum Opcode {
+  // Arithmetic
+  ADD,
+  SUB,
+  // Memory
+  SET,
+  MOV,
   CALLDATASIZE,
   CALLDATACOPY,
-  ADD,
-  RETURN,
+  // Control flow
   JUMP,
   JUMPI,
+  // Storage
   SLOAD,
   SSTORE,
+  // Contract call control flow
+  RETURN,
   CALL,
 }
 
