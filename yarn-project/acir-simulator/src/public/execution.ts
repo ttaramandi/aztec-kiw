@@ -54,9 +54,10 @@ export interface PublicExecution {
 }
 
 /**
- * The execution of a public function.
+ * The execution of a public function (with args renamed to calldata).
  */
-export interface PublicCallContext {
+// TODO: can this be merged with PublicExecution?
+export interface PublicCall {
   /** Address of the contract being executed. */
   contractAddress: AztecAddress;
   /** Function of the contract being called. */

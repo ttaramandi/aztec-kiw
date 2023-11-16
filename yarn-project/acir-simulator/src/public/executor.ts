@@ -1,7 +1,6 @@
 import { GlobalVariables, HistoricBlockData, PublicCircuitPublicInputs } from '@aztec/circuits.js';
 import { DebugLogger, createDebugLogger } from '@aztec/foundation/log';
 
-import { AVMCallExecutor } from './vm.js';
 import { AVMInstruction, Opcode } from './opcodes.js';
 import { Oracle } from '../acvm/index.js';
 import { ExecutionError, createSimulationError } from '../common/errors.js';
@@ -9,7 +8,7 @@ import { SideEffectCounter } from '../common/index.js';
 import { PackedArgsCache } from '../common/packed_args_cache.js';
 import { AcirSimulator } from '../index.js';
 import { CommitmentsDB, PublicContractsDB, PublicStateDB } from './db.js';
-import { PublicCallContext, PublicExecution, PublicExecutionResult } from './execution.js';
+import { PublicCall, PublicExecution, PublicExecutionResult } from './execution.js';
 import { PublicExecutionContext } from './public_execution_context.js';
 import { PublicVmExecutionContext } from './public_vm_execution_context.js';
 import { Fr } from '@aztec/circuits.js';
@@ -21,6 +20,7 @@ import {exec} from 'node:child_process';
 import util from 'node:util';
 import fs from 'fs';
 import { log } from 'node:console';
+import { AVMExecutor } from './vm.js';
 
 const execPromise = util.promisify(exec);
 
@@ -65,9 +65,7 @@ export class PublicExecutor {
       calldata: execution.args,
       callContext: execution.callContext
     };
-    const avm = new AVMCallExecutor(
-      context,
-      new SideEffectCounter(),
+    const avm = new AVMExecutor(
       this.stateDb,
       this.contractsDb,
     );
@@ -94,7 +92,7 @@ export class PublicExecutor {
 
     try {
       //return await executePublicFunction(execution, acir);
-      return await avm.simulate();
+      return await avm.simulate(context);
     } catch (err) {
       throw createSimulationError(err instanceof Error ? err : new Error('Unknown error during public execution'));
     }

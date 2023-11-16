@@ -16,7 +16,7 @@ import { PackedArgsCache, SideEffectCounter } from '../common/index.js';
 import { CommitmentsDB, PublicContractsDB, PublicStateDB } from './db.js';
 import { PublicExecution, PublicExecutionResult } from './execution.js';
 import { ContractStorageActionsCollector } from './state_actions.js';
-import { AVMCallExecutor } from './vm.js';
+import { AVMExecutor } from './vm.js';
 
 /**
  * The execution context for a public tx simulation.
@@ -206,9 +206,7 @@ export class PublicExecutionContext extends TypedOracle {
       callContext
     };
 
-    const avm = new AVMCallExecutor(
-      context,
-      this.sideEffectCounter,
+    const avm = new AVMExecutor(
       this.stateDb,
       this.contractsDb,
     );
@@ -230,7 +228,7 @@ export class PublicExecutionContext extends TypedOracle {
     //);
 
     //const childExecutionResult = await executePublicFunction(context, acir);
-    const childExecutionResult = await avm.simulate();
+    const childExecutionResult = await avm.simulate(context);
 
     this.nestedExecutions.push(childExecutionResult);
     this.log(`Returning from nested call: ret=${childExecutionResult.returnValues.join(', ')}`);

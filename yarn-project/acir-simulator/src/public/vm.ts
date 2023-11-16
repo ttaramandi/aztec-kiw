@@ -1,7 +1,7 @@
 import { AztecAddress, CallContext, ContractStorageRead, ContractStorageUpdateRequest, EthAddress, Fr, FunctionData, FunctionSelector } from '@aztec/circuits.js';
 import { AVMInstruction, Opcode, PC_MODIFIERS } from './opcodes.js';
 import { createDebugLogger } from '@aztec/foundation/log';
-import { PublicCallContext, PublicExecutionResult } from './execution.js';
+import { PublicCall, PublicExecutionResult } from './execution.js';
 import { PublicContractsDB, PublicStateDB } from './db.js';
 import { FunctionL2Logs } from '@aztec/types';
 import { ContractStorageActionsCollector } from './state_actions.js';
@@ -29,48 +29,50 @@ import { SideEffectCounter } from '../common/side_effect_counter.js';
  * call was triggered, but is not modified by the call.
  */
 
-///**
-// *
-// * @param bytecode
-// * @param context
-// * @returns
-// */
-//class AVM {
-//  private log = createDebugLogger('aztec:simulator:avm_tx_executor');
-//  private topCallExecutor: AVMCallExecutor;
-//
-//  public simulate() {
-//    this.topCallExecutor.execute();
-//
-//  }
-//}
-
-
 /**
  *
  */
 class AVMCallState {
-  readonly MEM_REGION_WORDS = 1024;
-  readonly RETURN_BUFFER_WORDS = 128;
+  static readonly MEM_REGION_WORDS = 1024;
+  static readonly RETURN_BUFFER_WORDS = 128;
 
   public pc: number = 0; // TODO: should be u32
   public error: boolean = false;
   public returned: boolean = false;
   //public l1GasUsed: number = 0; // or left?
   //public l2GasUsed: number = 0; // or left?
-  public fieldMemory: Fr[] = new Array<Fr>(this.MEM_REGION_WORDS).fill(Fr.ZERO);
+  /** Field memory region for this call */
+  public fieldMemory: Fr[] = new Array<Fr>(AVMCallState.MEM_REGION_WORDS).fill(Fr.ZERO);
   /** Buffer to store returnData from nested calls */
-  public returnBuffer: Fr[] = new Array<Fr>(this.RETURN_BUFFER_WORDS).fill(Fr.ZERO);
+  public returnBuffer: Fr[] = new Array<Fr>(AVMCallState.RETURN_BUFFER_WORDS).fill(Fr.ZERO);
 }
 
 /**
  *
  */
-export class AVMCallExecutor {
+export class AVMExecutor {
+  constructor(
+    private readonly stateDb: PublicStateDB,
+    private readonly contractsDb: PublicContractsDB,
+  ) {}
+
+  public async simulate(context: PublicCall): Promise<PublicExecutionResult> {
+    const avm = new AVM(
+      context,
+      new SideEffectCounter(),
+      this.stateDb,
+      this.contractsDb
+    );
+    await avm.init();
+    return avm.simulate();
+  }
+}
+
+class AVM {
   private log = createDebugLogger('aztec:simulator:avm_call_executor');
 
   private state = new AVMCallState();
-  private bytecode: AVMInstruction[];
+  private instructions: AVMInstruction[] = [];
 
   // Components of the partial witness (inputs to witness generation)
   // collapsedStorageActions is used to retrieve latest value per slot
@@ -82,14 +84,18 @@ export class AVMCallExecutor {
   // ^ these are computed gradually as instructions execute
 
   constructor(
-    private context: PublicCallContext,
+    private context: PublicCall,
     private readonly sideEffectCounter: SideEffectCounter,
     private readonly stateDb: PublicStateDB,
     private readonly contractsDb: PublicContractsDB,
   ) {
-    this.bytecode = this.fetchBytecode();
-
     this.collapsedStorageActions = new ContractStorageActionsCollector(stateDb, context.contractAddress);
+  }
+  /**
+   * Must be called before AVM can be executed or simulated.
+   */
+  async init(){
+    this.instructions = await this.fetchAndDecodeBytecode();
   }
 
   /**
@@ -127,7 +133,7 @@ export class AVMCallExecutor {
    * End execution when the call errors or returns.
    */
   private async simulateInternal(): Promise<Fr[]> {
-    while(this.state.pc < this.bytecode.length && !this.state.error && !this.state.returned) {
+    while(this.state.pc < this.instructions.length && !this.state.error && !this.state.returned) {
       const returnData = await this.simulateNextInstruction();
       if (this.state.returned) {
         return returnData;
@@ -144,7 +150,7 @@ export class AVMCallExecutor {
    */
   private async simulateNextInstruction(): Promise<Fr[]> {
     // TODO: check memory out of bounds
-    const instr = this.bytecode[this.state.pc];
+    const instr = this.instructions[this.state.pc];
     this.log(`Executing instruction (pc:${this.state.pc}): ${Opcode[instr.opcode]}`);
     switch (instr.opcode) {
       case Opcode.CALLDATASIZE: {
@@ -245,13 +251,14 @@ export class AVMCallExecutor {
           calldata: calldata,
           callContext: nestedCallContext,
         };
-        const nestedAvm = new AVMCallExecutor(
+        const nestedAVM = new AVM(
           nestedContext,
           this.sideEffectCounter,
           this.stateDb,
           this.contractsDb,
         );
-        const childExecutionResult = await nestedAvm.simulate();
+        await nestedAVM.init();
+        const childExecutionResult = await nestedAVM.simulate();
         this.nestedExecutions.push(childExecutionResult);
         this.log(`Returning from nested call: ret=${childExecutionResult.returnValues.join(', ')}`);
 
@@ -262,95 +269,6 @@ export class AVMCallExecutor {
       this.state.pc++;
     }
     return [];
-  }
-
-  private fetchBytecode(): AVMInstruction[] {
-    // TODO get AVM bytecode directly, not ACIR?
-    //const acir = await this.contractsDb.getBytecode(context.contractAddress, selector);
-    //if (!acir) throw new Error(`Bytecode not found for ${context.contractAddress}:${selector}`);
-    //return acir; // extract brillig or AVM bytecode
-    //return [
-    //  new AVMInstruction(
-    //    /*opcode*/ Opcode.CALLDATASIZE, // M[0] = CD.length
-    //    /*d0:*/ 0, /*target memory address*/
-    //    /*sd:*/ 0, /*unused*/
-    //    /*s0:*/ 0, /*unused*/
-    //    /*s1:*/ 0, /*unused*/
-    //  ),
-    //  new AVMInstruction(
-    //    /*opcode*/ Opcode.CALLDATACOPY, // M[1:1+M[0]] = CD[0+M[0]]);
-    //    /*d0:*/ 1, /*target memory address*/
-    //    /*sd:*/ 0, /*unused*/
-    //    /*s0:*/ 0, /*calldata offset*/
-    //    /*s1:*/ 0, /*copy size*/
-    //  ),
-    //  new AVMInstruction(
-    //    /*opcode*/ Opcode.ADD, // M[10] = M[1] + M[2]
-    //    /*d0:*/ 10, /*target memory address*/
-    //    /*sd:*/ 0, /*unused*/
-    //    /*s0:*/ 1, /*to add*/
-    //    /*s1:*/ 2, /*to add*/
-    //  ),
-    //  new AVMInstruction(
-    //    /*opcode*/ Opcode.RETURN, // return M[10]
-    //    /*d0:*/ 0, /*unused*/
-    //    /*sd:*/ 0, /*unused*/
-    //    /*s0:*/ 10, /*field memory offset*/
-    //    /*s1:*/ 1, /*return size*/
-    //  )
-    //];
-    return [
-      new AVMInstruction(
-        /*opcode*/ Opcode.CALLDATASIZE, // M[0] = CD.length
-        /*d0:*/ 0, /*target memory address*/
-        /*sd:*/ 0, /*unused*/
-        /*s0:*/ 0, /*unused*/
-        /*s1:*/ 0, /*unused*/
-      ),
-      new AVMInstruction(
-        /*opcode*/ Opcode.CALLDATACOPY, // M[1:1+M[0]] = calldata[0+M[0]]);
-        /*d0:*/ 1, /*target memory address (store calldata starting at M[1])*/
-        /*sd:*/ 0, /*unused*/
-        /*s0:*/ 0, /*calldata offset*/
-        /*s1:*/ 0, /*copy size (M[0] contains copy size)*/
-      ),
-      new AVMInstruction(
-        /*opcode*/ Opcode.ADD, // M[10] = M[1] + M[2]
-        /*d0:*/ 10, /*target memory address*/
-        /*sd:*/ 0, /*unused*/
-        /*s0:*/ 1, /*to add*/
-        /*s1:*/ 2, /*to add*/
-      ),
-      new AVMInstruction( // TODO: but PublicStateDB.storageWrite() is not mocked in test
-        /*opcode*/ Opcode.SLOAD, // M[d0] = S[M[s0]]
-        /*d0:*/ 11, /*write loaded word into M[11]*/
-        /*sd:*/ 0, /*unused*/
-        /*s0:*/ 3, /*load storage word at S[M[3]]*/
-        /*s1:*/ 0, /*unused*/
-      ),
-      new AVMInstruction( // TODO: but PublicStateDB.storageWrite() is not mocked in test
-        /*opcode*/ Opcode.SSTORE, // S[M[d0]] = M[s0]
-        /*d0:*/ 3, /*memory word containing target storage slot (M[3] originally from calldata[2])*/
-        /*sd:*/ 0, /*unused*/
-        /*s0:*/ 10, /*store result of add (M[10])*/
-        /*s1:*/ 0, /*unused*/
-      ),
-      new AVMInstruction( // TODO: but PublicStateDB.storageWrite() is not mocked in test
-        /*opcode*/ Opcode.SLOAD, // M[d0] = S[M[s0]]
-        /*d0:*/ 11, /*write loaded word into M[11]*/
-        /*sd:*/ 0, /*unused*/
-        /*s0:*/ 3, /*load storage word at S[M[3]]*/
-        /*s1:*/ 0, /*unused*/
-      ),
-      new AVMInstruction(
-        /*opcode*/ Opcode.RETURN, // return M[10]
-        /*d0:*/ 0, /*unused*/
-        /*sd:*/ 0, /*unused*/
-        /*s0:*/ 10, /*field memory offset (return M[10])*/
-        /*s1:*/ 1, /*return size (1 word)*/
-      )
-    ];
-
   }
 
   /**
@@ -389,5 +307,21 @@ export class AVMCallExecutor {
       this.log(`Oracle storage write: slot=${storageSlot.toString()} value=${value.toString()}`);
       //newValues.push(newValue);
     //}
+  }
+
+  private async fetchAndDecodeBytecode(): Promise<AVMInstruction[]> {
+    // TODO get AVM bytecode directly, not ACIR?
+    const bytecode = await this.contractsDb.getBytecode(this.context.contractAddress, this.context.functionData.selector);
+    if (!bytecode) throw new Error(`Bytecode not found for ${this.context.contractAddress}:${this.context.functionData.selector}`);
+    if (bytecode.length % AVMInstruction.BYTELEN !== 0) throw new Error(`Invalid bytecode length for ${this.context.contractAddress}:${this.context.functionData.selector}`);
+    // TODO: consider decoding instructions individually as they are simulated
+    const numInstructions = bytecode.length / AVMInstruction.BYTELEN;
+    const instructions: AVMInstruction[] = [];
+    for (let pc = 0; pc < numInstructions; pc++) {
+      const instr = AVMInstruction.fromBuffer(bytecode, pc * AVMInstruction.BYTELEN)
+      this.log(`Decoded instruction (pc:${pc}): ${Opcode[instr.opcode]}`);
+      instructions.push(instr);
+    }
+    return instructions;
   }
 }
