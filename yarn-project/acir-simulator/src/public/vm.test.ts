@@ -98,6 +98,7 @@ const nestedCallExample = [
   // - targetAddress: M[1]
   // - M[10:14] is 4 word memory chunk containing argsOffset, argsSize, retOffset, retSize
   new AVMInstruction(Opcode.CALL, 0, 10, 100, 1),
+  // TODO: add support for RETURNDATASIZE/COPY
   new AVMInstruction(Opcode.RETURN, 0, 0, 200, 13), // return M[200] (size 1 from M[13])
 ];
 const nestedCallBytecode = AVMInstruction.toBytecode(nestedCallExample);
@@ -118,7 +119,6 @@ describe('ACIR public execution simulator', () => {
   }, 10000);
 
   async function simulateAndCheck(
-    //contractAddress: AztecAddress,
     calldata: Fr[],
     expectReturn: Fr[],
     bytecode: Buffer,

@@ -248,13 +248,14 @@ class AVM {
         this.log(`CALL was allocated ${gas} gas`);
         const addrFr = this.state.fieldMemory[instr.s1];
         const targetContractAddress = AztecAddress.fromBigInt(addrFr.toBigInt());
-        // TODO: use u32 memory for offsets and sizes
-        // TODO: do we do M[M[sd] + 0,1,2,3], or M[sd + 0,1,2,3]
-        // For now, doing M[sd + 0,1,2,3]
-        //const argsAndRetOffset = this.state.fieldMemory[instr.sd];
+
+        // argsAndRetOffset = sd
         // size of argsAndRetOffset is 4:
-        // - argsOffset & argsSize
-        // - retOffset & retSize
+        // - argsOffset: M[sd]
+        // - argsSize: M[sd + 1]
+        // - retOffset: M[sd + 2]
+        // - retSize: M[sd + 3]
+        // TODO: use u32 memory for offsets and sizes
         const argsOffset = Number(this.state.fieldMemory[instr.sd].toBigInt());
         const argsSize = Number(this.state.fieldMemory[instr.sd + 1].toBigInt());
         const retOffset = Number(this.state.fieldMemory[instr.sd + 2].toBigInt());
@@ -326,17 +327,11 @@ class AVM {
    * @returns value - The value read from the storage slot.
    */
   private async sload(storageSlot: Fr): Promise<Fr> {
-    //const values = [];
-    //for (let i = 0; i < Number(numberOfElements); i++) {
-      //const storageSlot = new Fr(startStorageSlot.value + BigInt(i));
-      const sideEffectCounter = this.sideEffectCounter.count();
-      const value = await this.collapsedStorageActions.read(storageSlot, sideEffectCounter);
-      this.allStorageReads.push(new ContractStorageRead(storageSlot, value, sideEffectCounter));
-      this.log(`Oracle storage read: slot=${storageSlot.toString()} value=${value.toString()}`);
-      //values.push(value);
-      return value;
-    //}
-    //return values;
+    const sideEffectCounter = this.sideEffectCounter.count();
+    const value = await this.collapsedStorageActions.read(storageSlot, sideEffectCounter);
+    this.allStorageReads.push(new ContractStorageRead(storageSlot, value, sideEffectCounter));
+    this.log(`Oracle storage read: slot=${storageSlot.toString()} value=${value.toString()}`);
+    return value;
   }
   /**
    * Write a word to public storage.
@@ -344,18 +339,12 @@ class AVM {
    * @param value - The value to be written.
    */
   private async sstore(storageSlot: Fr, value: Fr) {
-    //const newValues = [];
-    //for (let i = 0; i < values.length; i++) {
-      //const storageSlot = new Fr(startStorageSlot.value + BigInt(i));
-      //const newValue = values[i];
-      const sideEffectCounter = this.sideEffectCounter.count();
-      const oldValue = await this.collapsedStorageActions.peek(storageSlot);
-      await this.collapsedStorageActions.write(storageSlot, value, sideEffectCounter);
-      this.allStorageUpdates.push(new ContractStorageUpdateRequest(storageSlot, oldValue, value, sideEffectCounter));
-      await this.stateDb.storageWrite(this.context.contractAddress, storageSlot, value);
-      this.log(`Oracle storage write: slot=${storageSlot.toString()} value=${value.toString()}`);
-      //newValues.push(newValue);
-    //}
+    const sideEffectCounter = this.sideEffectCounter.count();
+    const oldValue = await this.collapsedStorageActions.peek(storageSlot);
+    await this.collapsedStorageActions.write(storageSlot, value, sideEffectCounter);
+    this.allStorageUpdates.push(new ContractStorageUpdateRequest(storageSlot, oldValue, value, sideEffectCounter));
+    await this.stateDb.storageWrite(this.context.contractAddress, storageSlot, value);
+    this.log(`Oracle storage write: slot=${storageSlot.toString()} value=${value.toString()}`);
   }
 
   private async fetchAndDecodeBytecode(): Promise<AVMInstruction[]> {
