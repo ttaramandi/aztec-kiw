@@ -172,7 +172,7 @@ class AVM {
       case Opcode.ADD: {
         // TODO: consider having a single case for all arithmetic operations and then applying the corresponding function to the args
         // TODO: actual field addition
-        this.state.fieldMemory[instr.d0] = new Fr(this.state.fieldMemory[instr.s0].toBigInt() + this.state.fieldMemory[instr.s1].toBigInt());
+        this.state.fieldMemory[instr.d0] = new Fr((this.state.fieldMemory[instr.s0].toBigInt() + this.state.fieldMemory[instr.s1].toBigInt()) % Fr.MODULUS);
         break;
       }
       case Opcode.JUMP: {
@@ -207,7 +207,8 @@ class AVM {
         break;
       }
       case Opcode.CALL: {
-        //const gas = this.state.fieldMemory[instr.s0];
+        const gas = this.state.fieldMemory[instr.s0];
+        this.log(`CALL was allocated ${gas} gas`);
         const addrFr = this.state.fieldMemory[instr.s1];
         const targetContractAddress = AztecAddress.fromBigInt(addrFr.toBigInt());
         // TODO: use u32 memory for offsets and sizes
