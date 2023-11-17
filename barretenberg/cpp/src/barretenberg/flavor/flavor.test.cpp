@@ -72,25 +72,25 @@ TEST(Flavor, Getters)
     auto lagrange_first = get_test_polynomial(idx);
     auto lagrange_last = get_test_polynomial(idx);
 
-    prover_polynomials.w_l = w_l;
-    prover_polynomials.w_r = w_r;
-    prover_polynomials.w_o = w_o;
-    prover_polynomials.w_4 = w_4;
-    prover_polynomials.z_perm = z_perm;
-    prover_polynomials.z_perm_shift = z_perm_shift;
-    prover_polynomials.q_m = q_m;
-    prover_polynomials.q_l = q_l;
-    prover_polynomials.q_r = q_r;
-    prover_polynomials.q_o = q_o;
-    prover_polynomials.q_c = q_c;
-    prover_polynomials.sigma_1 = sigma_1;
-    prover_polynomials.sigma_2 = sigma_2;
-    prover_polynomials.sigma_3 = sigma_3;
-    prover_polynomials.id_1 = id_1;
-    prover_polynomials.id_2 = id_2;
-    prover_polynomials.id_3 = id_3;
-    prover_polynomials.lagrange_first = lagrange_first;
-    prover_polynomials.lagrange_last = lagrange_last;
+    prover_polynomials.w_l = w_l.shallow_clone();
+    prover_polynomials.w_r = w_r.shallow_clone();
+    prover_polynomials.w_o = w_o.shallow_clone();
+    prover_polynomials.w_4 = w_4.shallow_clone();
+    prover_polynomials.z_perm = z_perm.shallow_clone();
+    prover_polynomials.z_perm_shift = z_perm_shift.shallow_clone();
+    prover_polynomials.q_m = q_m.shallow_clone();
+    prover_polynomials.q_l = q_l.shallow_clone();
+    prover_polynomials.q_r = q_r.shallow_clone();
+    prover_polynomials.q_o = q_o.shallow_clone();
+    prover_polynomials.q_c = q_c.shallow_clone();
+    prover_polynomials.sigma_1 = sigma_1.shallow_clone();
+    prover_polynomials.sigma_2 = sigma_2.shallow_clone();
+    prover_polynomials.sigma_3 = sigma_3.shallow_clone();
+    prover_polynomials.id_1 = id_1.shallow_clone();
+    prover_polynomials.id_2 = id_2.shallow_clone();
+    prover_polynomials.id_3 = id_3.shallow_clone();
+    prover_polynomials.lagrange_first = lagrange_first.shallow_clone();
+    prover_polynomials.lagrange_last = lagrange_last.shallow_clone();
 
     // You can set polynomial values directly through the symbol names
     // and then access the values through the getters.
@@ -119,7 +119,7 @@ TEST(Flavor, AllEntitiesSpecialMemberFunctions)
 
     // Test some special member functions.
 
-    polynomials_A.w_l = random_poly;
+    polynomials_A.w_l = random_poly.shallow_clone();
 
     ASSERT_EQ(random_poly, polynomials_A.w_l);
 

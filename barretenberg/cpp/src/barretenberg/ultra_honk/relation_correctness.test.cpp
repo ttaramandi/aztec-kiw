@@ -677,7 +677,7 @@ TEST_F(RelationCorrectnessTests, GoblinTranslatorDecompositionRelationCorrectnes
     // Assign spans to non-shifted prover polynomials
     for (size_t i = 0; i < prover_polynomials.size(); i++) {
         if (!shifted_id_set.contains(i)) {
-            *polynomial_pointer_view[i] = polynomial_container[i];
+            *polynomial_pointer_view[i] = polynomial_container[i].shallow_clone();
         }
     }
 

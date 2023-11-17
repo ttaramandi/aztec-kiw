@@ -49,13 +49,13 @@ template <typename Fr> class Polynomial {
 
     Polynomial& operator=(Polynomial&& other) noexcept;
     Polynomial& operator=(std::span<const Fr> coefficients) noexcept;
-    Polynomial& operator=(const Polynomial& other);
+    Polynomial& operator=(const Polynomial& other) = delete;
     ~Polynomial() = default;
 
     /**
      * Return a shallow clone of the polynomial. i.e. underlying memory is shared.
      */
-    Polynomial clone()
+    Polynomial shallow_clone() const
     {
         Polynomial p;
         p.backing_memory_ = backing_memory_;

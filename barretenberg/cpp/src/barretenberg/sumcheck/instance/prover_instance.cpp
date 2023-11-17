@@ -282,35 +282,35 @@ std::shared_ptr<typename Flavor::ProvingKey> ProverInstance_<Flavor>::compute_pr
 
 template <class Flavor> void ProverInstance_<Flavor>::initialise_prover_polynomials()
 {
-    prover_polynomials.q_c = proving_key->precomputed.q_c;
-    prover_polynomials.q_l = proving_key->precomputed.q_l;
-    prover_polynomials.q_r = proving_key->precomputed.q_r;
-    prover_polynomials.q_o = proving_key->precomputed.q_o;
-    prover_polynomials.q_m = proving_key->precomputed.q_m;
-    prover_polynomials.sigma_1 = proving_key->precomputed.sigma_1;
-    prover_polynomials.sigma_2 = proving_key->precomputed.sigma_2;
-    prover_polynomials.sigma_3 = proving_key->precomputed.sigma_3;
-    prover_polynomials.id_1 = proving_key->precomputed.id_1;
-    prover_polynomials.id_2 = proving_key->precomputed.id_2;
-    prover_polynomials.id_3 = proving_key->precomputed.id_3;
-    prover_polynomials.lagrange_first = proving_key->precomputed.lagrange_first;
-    prover_polynomials.lagrange_last = proving_key->precomputed.lagrange_last;
-    prover_polynomials.w_l = proving_key->witnesses.w_l;
-    prover_polynomials.w_r = proving_key->witnesses.w_r;
-    prover_polynomials.w_o = proving_key->witnesses.w_o;
+    prover_polynomials.q_c = proving_key->precomputed.q_c.shallow_clone();
+    prover_polynomials.q_l = proving_key->precomputed.q_l.shallow_clone();
+    prover_polynomials.q_r = proving_key->precomputed.q_r.shallow_clone();
+    prover_polynomials.q_o = proving_key->precomputed.q_o.shallow_clone();
+    prover_polynomials.q_m = proving_key->precomputed.q_m.shallow_clone();
+    prover_polynomials.sigma_1 = proving_key->precomputed.sigma_1.shallow_clone();
+    prover_polynomials.sigma_2 = proving_key->precomputed.sigma_2.shallow_clone();
+    prover_polynomials.sigma_3 = proving_key->precomputed.sigma_3.shallow_clone();
+    prover_polynomials.id_1 = proving_key->precomputed.id_1.shallow_clone();
+    prover_polynomials.id_2 = proving_key->precomputed.id_2.shallow_clone();
+    prover_polynomials.id_3 = proving_key->precomputed.id_3.shallow_clone();
+    prover_polynomials.lagrange_first = proving_key->precomputed.lagrange_first.shallow_clone();
+    prover_polynomials.lagrange_last = proving_key->precomputed.lagrange_last.shallow_clone();
+    prover_polynomials.w_l = proving_key->witnesses.w_l.shallow_clone();
+    prover_polynomials.w_r = proving_key->witnesses.w_r.shallow_clone();
+    prover_polynomials.w_o = proving_key->witnesses.w_o.shallow_clone();
 
-    prover_polynomials.q_4 = proving_key->precomputed.q_4;
-    prover_polynomials.q_arith = proving_key->precomputed.q_arith;
-    prover_polynomials.q_sort = proving_key->precomputed.q_sort;
-    prover_polynomials.q_elliptic = proving_key->precomputed.q_elliptic;
-    prover_polynomials.q_aux = proving_key->precomputed.q_aux;
-    prover_polynomials.q_lookup = proving_key->precomputed.q_lookup;
-    prover_polynomials.sigma_4 = proving_key->precomputed.sigma_4;
-    prover_polynomials.id_4 = proving_key->precomputed.id_4;
-    prover_polynomials.table_1 = proving_key->precomputed.table_1;
-    prover_polynomials.table_2 = proving_key->precomputed.table_2;
-    prover_polynomials.table_3 = proving_key->precomputed.table_3;
-    prover_polynomials.table_4 = proving_key->precomputed.table_4;
+    prover_polynomials.q_4 = proving_key->precomputed.q_4.shallow_clone();
+    prover_polynomials.q_arith = proving_key->precomputed.q_arith.shallow_clone();
+    prover_polynomials.q_sort = proving_key->precomputed.q_sort.shallow_clone();
+    prover_polynomials.q_elliptic = proving_key->precomputed.q_elliptic.shallow_clone();
+    prover_polynomials.q_aux = proving_key->precomputed.q_aux.shallow_clone();
+    prover_polynomials.q_lookup = proving_key->precomputed.q_lookup.shallow_clone();
+    prover_polynomials.sigma_4 = proving_key->precomputed.sigma_4.shallow_clone();
+    prover_polynomials.id_4 = proving_key->precomputed.id_4.shallow_clone();
+    prover_polynomials.table_1 = proving_key->precomputed.table_1.shallow_clone();
+    prover_polynomials.table_2 = proving_key->precomputed.table_2.shallow_clone();
+    prover_polynomials.table_3 = proving_key->precomputed.table_3.shallow_clone();
+    prover_polynomials.table_4 = proving_key->precomputed.table_4.shallow_clone();
     prover_polynomials.table_1_shift = proving_key->precomputed.table_1.shifted();
     prover_polynomials.table_2_shift = proving_key->precomputed.table_2.shifted();
     prover_polynomials.table_3_shift = proving_key->precomputed.table_3.shifted();
@@ -320,15 +320,15 @@ template <class Flavor> void ProverInstance_<Flavor>::initialise_prover_polynomi
     prover_polynomials.w_o_shift = proving_key->witnesses.w_o.shifted();
 
     if constexpr (IsGoblinFlavor<Flavor>) {
-        prover_polynomials.ecc_op_wire_1 = proving_key->witnesses.ecc_op_wire_1;
-        prover_polynomials.ecc_op_wire_2 = proving_key->witnesses.ecc_op_wire_2;
-        prover_polynomials.ecc_op_wire_3 = proving_key->witnesses.ecc_op_wire_3;
-        prover_polynomials.ecc_op_wire_4 = proving_key->witnesses.ecc_op_wire_4;
-        prover_polynomials.lagrange_ecc_op = proving_key->precomputed.lagrange_ecc_op;
+        prover_polynomials.ecc_op_wire_1 = proving_key->witnesses.ecc_op_wire_1.shallow_clone();
+        prover_polynomials.ecc_op_wire_2 = proving_key->witnesses.ecc_op_wire_2.shallow_clone();
+        prover_polynomials.ecc_op_wire_3 = proving_key->witnesses.ecc_op_wire_3.shallow_clone();
+        prover_polynomials.ecc_op_wire_4 = proving_key->witnesses.ecc_op_wire_4.shallow_clone();
+        prover_polynomials.lagrange_ecc_op = proving_key->precomputed.lagrange_ecc_op.shallow_clone();
         // DataBus polynomials
-        prover_polynomials.calldata = proving_key->witnesses.calldata;
-        prover_polynomials.calldata_read_counts = proving_key->witnesses.calldata_read_counts;
-        prover_polynomials.q_busread = proving_key->precomputed.q_busread;
+        prover_polynomials.calldata = proving_key->witnesses.calldata.shallow_clone();
+        prover_polynomials.calldata_read_counts = proving_key->witnesses.calldata_read_counts.shallow_clone();
+        prover_polynomials.q_busread = proving_key->precomputed.q_busread.shallow_clone();
     }
 
     std::span<FF> public_wires_source = prover_polynomials.w_r;

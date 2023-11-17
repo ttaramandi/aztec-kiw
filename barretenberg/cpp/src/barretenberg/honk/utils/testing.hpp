@@ -59,7 +59,7 @@ get_zero_prover_polynomials(const size_t log_circuit_size)
     size_t poly_idx = 0;
     auto prover_polynomial_pointers = prover_polynomials.pointer_view();
     for (auto& polynomial : storage) {
-        *prover_polynomial_pointers[poly_idx] = polynomial;
+        *prover_polynomial_pointers[poly_idx] = polynomial.shallow_clone();
         poly_idx++;
     }
 
