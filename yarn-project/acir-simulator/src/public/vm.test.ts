@@ -9,9 +9,9 @@ import { FunctionSelector, encodeArguments } from '@aztec/foundation/abi';
 import { AztecAddress } from '@aztec/foundation/aztec-address';
 import { EthAddress } from '@aztec/foundation/eth-address';
 import { Fr } from '@aztec/foundation/fields';
-//import {
-//  TokenContractArtifact,
-//} from '@aztec/noir-contracts/artifacts';
+import {
+  TestContractArtifact,
+} from '@aztec/noir-contracts/artifacts';
 
 import { MockProxy, mock } from 'jest-mock-extended';
 import { type MemDown, default as memdown } from 'memdown';
@@ -20,6 +20,8 @@ import { CommitmentsDB, PublicContractsDB, PublicStateDB } from './db.js';
 import { PublicCall, PublicExecutionResult } from './execution.js';
 import { AVMExecutor } from './vm.js';
 import { AVMInstruction, Opcode } from './opcodes.js';
+import { acirToAvmBytecode } from './executor.js';
+import { log } from 'console';
 
 export const createMemDown = () => (memdown as any)() as MemDown<any, any>;
 
@@ -219,8 +221,25 @@ describe('ACIR public execution simulator', () => {
 
         await simulateAndCheck(calldata, returndata, nestedCallBytecode, [addArgsReturnBytecode]);
       });
+      it('Can extract public function brillig bytecode', async () => {
+        const addArgsReturnExampleArtifact = TestContractArtifact.functions.find(
+          f => f.name === 'addArgsReturnExample',
+        )!;
+        const acir = Buffer.from(addArgsReturnExampleArtifact.bytecode, 'base64');
+        const bytecode = await acirToAvmBytecode(acir);
+
+        //AVMInstruction.fromBytecodeBuffer(bytecode);
+        //publicContracts.getBytecode.mockResolvedValue(bytecode);
+
+        const addArg0 = 42n;
+        const addArg1 = 25n;
+        const calldata = [addArg0, addArg1].map(arg => new Fr(arg));
+        const returndata = [addArg0 + addArg1].map(arg => new Fr(arg));
+        await simulateAndCheck(calldata, returndata, bytecode);
+      });
+
       //it('should prove the public vm', async () => {
-      //  ...
+      //  //...
       //  const outAsmPath = await executor.bytecodeToPowdr(execution);
       //  await executor.generateWitness(outAsmPath);
       //  await executor.prove();

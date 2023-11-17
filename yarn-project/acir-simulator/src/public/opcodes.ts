@@ -1,7 +1,13 @@
+import { createDebugLogger } from "@aztec/foundation/log";
+import { log } from "console";
+
 export enum Opcode {
   // Arithmetic
   ADD,
   SUB,
+  MUL,
+  DIV,
+  EQ,
   // Memory
   SET,
   MOV,
@@ -10,6 +16,8 @@ export enum Opcode {
   // Control flow
   JUMP,
   JUMPI,
+  INTERNALCALL,
+  INTERNALRETURN,
   // Storage
   SLOAD,
   SSTORE,
@@ -18,7 +26,7 @@ export enum Opcode {
   CALL,
 }
 
-export const PC_MODIFIERS = [ Opcode.JUMP, Opcode.JUMPI ];
+export const PC_MODIFIERS = [ Opcode.JUMP, Opcode.JUMPI, Opcode.INTERNALCALL, Opcode.INTERNALRETURN ];
 
 export class AVMInstruction {
   /** Size of an instruction */
@@ -52,6 +60,7 @@ export class AVMInstruction {
   }
 
   public static fromBuffer(buf: Buffer, offset: number = 0): AVMInstruction {
+    const log = createDebugLogger('aztec:simulator:avm_instructions');
     const opcode = buf.readUInt8(offset);
     offset += 1;
     const d0 = buf.readUInt32BE(offset); // d0
@@ -62,7 +71,20 @@ export class AVMInstruction {
     offset += 4;
     const s1 = buf.readUInt32BE(offset); // s1
     offset += 4;
+    log(`Instruction from buffer: opcode:${opcode} d0:${d0} sd:${sd} s0:${s0} s1:${s1}`);
     return new AVMInstruction(opcode, d0, sd, s0, s1);
+  }
+
+  public static fromBytecodeBuffer(buf: Buffer): AVMInstruction[] {
+    const log = createDebugLogger('aztec:simulator:avm_instructions');
+    const numInstructions = buf.length / AVMInstruction.BYTELEN;
+    const instructions: AVMInstruction[] = [];
+    for (let pc = 0; pc < numInstructions; pc++) {
+      const instr = AVMInstruction.fromBuffer(buf, pc * AVMInstruction.BYTELEN)
+      log(`Decoded instruction (pc:${pc}): ${Opcode[instr.opcode]}`);
+      instructions.push(instr);
+    }
+    return instructions;
   }
 
   public static toBytecode(instructions: AVMInstruction[]): Buffer {

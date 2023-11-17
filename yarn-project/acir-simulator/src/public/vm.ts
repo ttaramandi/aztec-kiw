@@ -39,6 +39,7 @@ class AVMCallState {
   public pc: number = 0; // TODO: should be u32
   public error: boolean = false;
   public returned: boolean = false;
+  public call_stack: number[] = []; // TODO: should be u32[]
   //public l1GasUsed: number = 0; // or left?
   //public l2GasUsed: number = 0; // or left?
   /** Field memory region for this call */
@@ -160,6 +161,8 @@ class AVM {
         // TODO: consider having a single case for all arithmetic operations and then applying the corresponding function to the args
         // TODO: actual field addition
         this.state.fieldMemory[instr.d0] = new Fr((this.state.fieldMemory[instr.s0].toBigInt() + this.state.fieldMemory[instr.s1].toBigInt()) % Fr.MODULUS);
+        this.log(`ADD: M[${instr.d0}] = M[${instr.s0}] + M[${instr.s1}] % Fr.MODULUS`);
+        this.log(`ADD: M[${instr.d0}] = ${this.state.fieldMemory[instr.s0].toBigInt()} + ${this.state.fieldMemory[instr.s1].toBigInt()} = ${this.state.fieldMemory[instr.d0]}`);
         break;
       }
       case Opcode.SUB: {
@@ -210,6 +213,19 @@ class AVM {
       }
       case Opcode.JUMPI: {
         this.state.pc = !this.state.fieldMemory[instr.sd].isZero() ? instr.s0 : this.state.pc + 1;
+        break;
+      }
+      case Opcode.INTERNALCALL: {
+        this.state.call_stack.push(this.state.pc + 1);
+        this.state.pc = instr.s0;
+        this.log(`INTERNALCALL: pushed pc:${this.state.call_stack.at(-1)} to call_stack and jumped to pc:${this.state.pc}`);
+        break;
+      }
+      case Opcode.INTERNALRETURN: {
+        if (this.state.call_stack.length === 0) {
+          throw new Error("INTERNALRETURN: call_stack is empty - nowhere to return to");
+        }
+        this.state.pc = this.state.call_stack.pop()!;
         break;
       }
       /////////////////////////////////////////////////////////////////////////
@@ -313,7 +329,9 @@ class AVM {
         } else {
           this.state.returnBuffer.splice(0, retSize, ...childExecutionResult.returnValues);
         }
+        break;
       }
+      default: throw new Error(`AVM does not know how to process opcode ${Opcode[instr.opcode]} (aka ${instr.opcode}) at pc: ${this.state.pc}`);
     }
     if (!PC_MODIFIERS.includes(instr.opcode)) {
       this.state.pc++;
@@ -353,13 +371,14 @@ class AVM {
     if (!bytecode) throw new Error(`Bytecode not found for ${this.context.contractAddress}:${this.context.functionData.selector}`);
     if (bytecode.length % AVMInstruction.BYTELEN !== 0) throw new Error(`Invalid bytecode length for ${this.context.contractAddress}:${this.context.functionData.selector}`);
     // TODO: consider decoding instructions individually as they are simulated
-    const numInstructions = bytecode.length / AVMInstruction.BYTELEN;
-    const instructions: AVMInstruction[] = [];
-    for (let pc = 0; pc < numInstructions; pc++) {
-      const instr = AVMInstruction.fromBuffer(bytecode, pc * AVMInstruction.BYTELEN)
-      this.log(`Decoded instruction (pc:${pc}): ${Opcode[instr.opcode]}`);
-      instructions.push(instr);
-    }
-    return instructions;
+    return AVMInstruction.fromBytecodeBuffer(bytecode);
+    //const numInstructions = bytecode.length / AVMInstruction.BYTELEN;
+    //const instructions: AVMInstruction[] = [];
+    //for (let pc = 0; pc < numInstructions; pc++) {
+    //  const instr = AVMInstruction.fromBuffer(bytecode, pc * AVMInstruction.BYTELEN)
+    //  this.log(`Decoded instruction (pc:${pc}): ${Opcode[instr.opcode]}`);
+    //  instructions.push(instr);
+    //}
+    //return instructions;
   }
 }

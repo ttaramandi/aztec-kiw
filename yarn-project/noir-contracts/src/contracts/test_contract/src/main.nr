@@ -169,6 +169,12 @@ contract Test {
         context.consume_l1_to_l2_message(msg_key, content_hash, secret_for_L1_to_L2_message_consumption);
     }
 
+    // Very basic example of a public function
+    // (unconstrained instead of public for now to force omission of macro-generated boilerplate)
+    unconstrained fn addArgsReturnExample(addArg0: Field, addArg1: Field) -> Field {
+        addArg0 + addArg1
+    }
+
     // Purely exists for testing
     unconstrained fn getRandom(
         kindaSeed: Field

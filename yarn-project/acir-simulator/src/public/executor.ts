@@ -124,3 +124,20 @@ export class PublicExecutor {
     await tryExec('cd ../../barretenberg/cpp/build/ && ./bin/publicvm_cli dummy-path');
   }
 }
+
+export async function acirToAvmBytecode(acir: Buffer): Promise<Buffer> {
+  const log = createDebugLogger('aztec:simulator:public_vm_acir_to_brillig');
+  const acirPath = (await tryExec('mktemp')).replace(/\n/, '');
+  const outBrilligPath = (await tryExec('mktemp')).replace(/\n/, '');
+  log(`temporarily writing acir to: ${acirPath}`);
+  log(`temporarily generating brillig at: ${outBrilligPath}`);
+  // writeFileSync to tmp file not working here
+  //fs.writeFileSync(bytecodePath, bytecode!.toString('base64'));
+  await tryExec(`echo -n ${acir.toString('base64')} > ${acirPath}`);
+  await tryExec(`cd ../../barretenberg/cpp/ && ${POWDR_BINDIR}/bberg ${acirPath} ${outBrilligPath}`);
+  // Necessary to do base64 twice?
+  const avmBytecode = fs.readFileSync(outBrilligPath, {encoding: 'base64'});
+  return Buffer.from(avmBytecode, 'base64');
+  //const avmBytecode = fs.readFileSync(outBrilligPath, {encoding: 'base64'});
+  //return Buffer.from(avmBytecode, 'base64');
+}
