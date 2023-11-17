@@ -1,5 +1,4 @@
 import { createDebugLogger } from "@aztec/foundation/log";
-import { log } from "console";
 
 export enum Opcode {
   // Arithmetic
@@ -8,6 +7,14 @@ export enum Opcode {
   MUL,
   DIV,
   EQ,
+  LT,
+  LTE,
+  AND,
+  OR,
+  XOR,
+  NOT,
+  SHL,
+  SHR,
   // Memory
   SET,
   MOV,
@@ -30,7 +37,7 @@ export const PC_MODIFIERS = [ Opcode.JUMP, Opcode.JUMPI, Opcode.INTERNALCALL, Op
 
 export class AVMInstruction {
   /** Size of an instruction */
-  public static readonly BYTELEN = 1+4+4+4+4;
+  public static readonly BYTELEN = 1+4+4+4+4+1+1;
 
   constructor(
     public opcode: Opcode,
@@ -38,6 +45,8 @@ export class AVMInstruction {
     public sd: number,
     public s0: number,
     public s1: number,
+    public d0Indirect: boolean = false,
+    public s0Indirect: boolean = false,
   ) {}
 
   //public toBuffer(offset: number = 0): Buffer {
@@ -57,6 +66,10 @@ export class AVMInstruction {
     offset += 4;
     buf.writeUInt32BE(this.s1, offset);
     offset += 4;
+    buf.writeUInt8(Number(this.d0Indirect), offset);
+    offset += 1;
+    buf.writeUInt8(Number(this.s0Indirect), offset);
+    offset += 1;
   }
 
   public static fromBuffer(buf: Buffer, offset: number = 0): AVMInstruction {
@@ -71,12 +84,17 @@ export class AVMInstruction {
     offset += 4;
     const s1 = buf.readUInt32BE(offset); // s1
     offset += 4;
+    const d0Indirect = Boolean(buf.readUInt8(offset));
+    offset += 1;
+    const s0Indirect = Boolean(buf.readUInt8(offset));
+    offset += 1;
     log(`Instruction from buffer: opcode:${opcode} d0:${d0} sd:${sd} s0:${s0} s1:${s1}`);
-    return new AVMInstruction(opcode, d0, sd, s0, s1);
+    return new AVMInstruction(opcode, d0, sd, s0, s1, d0Indirect, s0Indirect);
   }
 
   public static fromBytecodeBuffer(buf: Buffer): AVMInstruction[] {
     const log = createDebugLogger('aztec:simulator:avm_instructions');
+    if (buf.length % AVMInstruction.BYTELEN !== 0) throw new Error(`Invalid bytecode length`);
     const numInstructions = buf.length / AVMInstruction.BYTELEN;
     const instructions: AVMInstruction[] = [];
     for (let pc = 0; pc < numInstructions; pc++) {

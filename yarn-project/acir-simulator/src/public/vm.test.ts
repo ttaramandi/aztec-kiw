@@ -25,10 +25,10 @@ import { log } from 'console';
 
 export const createMemDown = () => (memdown as any)() as MemDown<any, any>;
 
-// function addArgsReturnExample(addArg0, addArg1) {
+// function addExample(addArg0, addArg1) {
 //  return addArg0 + addArg1;
 //}
-const addArgsReturnExample = [
+const addExample = [
   // Get calldata size and store at M[0]
   new AVMInstruction(Opcode.CALLDATASIZE, 0, 0, 0, 0), // SET M[0] = CD.length
   // Copy calldata to memory starting at M[1]
@@ -39,7 +39,7 @@ const addArgsReturnExample = [
   new AVMInstruction(Opcode.SET, 20, 0, 1, 0), // SET M[20] = 1
   new AVMInstruction(Opcode.RETURN, 0, 0, 10, 20), // return M[10]
 ];
-const addArgsReturnBytecode = AVMInstruction.toBytecode(addArgsReturnExample);
+const addBytecode = AVMInstruction.toBytecode(addExample);
 
 // function storageExample(addArg0, slotArg) {
 //  S[slotArg] = addArg0 + S[slotArg];
@@ -159,14 +159,15 @@ describe('ACIR public execution simulator', () => {
   }
 
   describe('Token contract', () => {
-    describe('public vm', () => {
+    describe('AVM tests using bytecode constructed manually in-test', () => {
       it('AVM can add arguments and return result', async () => {
         // ADD 42 + 25
+        // => 67
         const addArg0 = 42n;
         const addArg1 = 25n;
         const calldata = [addArg0, addArg1].map(arg => new Fr(arg));
         const returndata = [addArg0 + addArg1].map(arg => new Fr(arg));
-        await simulateAndCheck(calldata, returndata, addArgsReturnBytecode);
+        await simulateAndCheck(calldata, returndata, addBytecode);
       });
       it('AVM storage operations work', async () => {
         // ADD 42 + S[61]
@@ -179,7 +180,7 @@ describe('ACIR public execution simulator', () => {
         const ret = addArg0 + startValueAtSlot;
         const returndata = [ret].map(arg => new Fr(arg));
 
-        publicContracts.getBytecode.mockResolvedValue(storageBytecode);
+        //publicContracts.getBytecode.mockResolvedValue(storageBytecode);
 
         publicState.storageRead
           .mockResolvedValueOnce(new Fr(startValueAtSlot)) // before sstore
@@ -201,7 +202,7 @@ describe('ACIR public execution simulator', () => {
             sideEffectCounter: 2,
           },
         ]);
-        // results of ADD are SSTOREd into resultSlot
+        // Confirm that ADD result was SSTOREd
         expect(result.contractStorageUpdateRequests).toEqual([
           {
             storageSlot: new Fr(slotArg),
@@ -213,24 +214,36 @@ describe('ACIR public execution simulator', () => {
       });
       it('AVM can perform nested calls', async () => {
         // ADD 42 + 25
+        // => 67
         const nestedCallAddress = 5678n;
         const addArg0 = 42n;
         const addArg1 = 25n;
         const calldata = [nestedCallAddress, addArg0, addArg1].map(arg => new Fr(arg));
         const returndata = [addArg0 + addArg1].map(arg => new Fr(arg));
 
-        await simulateAndCheck(calldata, returndata, nestedCallBytecode, [addArgsReturnBytecode]);
+        // top-level call (nestedCallBytecode) just makes a CALL to addBytecode
+        // which performs an ADD and returns the result
+        // pseudocode:
+        //   fn foo(addr, a, b) {
+        //     return addr::bar(a, b);
+        //   }
+        //   fn bar(a, b) {
+        //     return a + b;
+        //   }
+        await simulateAndCheck(calldata, returndata, nestedCallBytecode, [addBytecode]);
       });
-      it('Can extract public function brillig bytecode', async () => {
-        const addArgsReturnExampleArtifact = TestContractArtifact.functions.find(
-          f => f.name === 'addArgsReturnExample',
+    });
+
+    describe('AVM tests using real Brillig bytecode (test transpile to AVM bytecode)', () => {
+      it('Can transpile a basic add function from brillig and execute in AVM', async () => {
+        const addExampleArtifact = TestContractArtifact.functions.find(
+          f => f.name === 'addExample',
         )!;
-        const acir = Buffer.from(addArgsReturnExampleArtifact.bytecode, 'base64');
+        const acir = Buffer.from(addExampleArtifact.bytecode, 'base64');
         const bytecode = await acirToAvmBytecode(acir);
 
-        //AVMInstruction.fromBytecodeBuffer(bytecode);
-        //publicContracts.getBytecode.mockResolvedValue(bytecode);
-
+        // ADD 42 + 25
+        // => 67
         const addArg0 = 42n;
         const addArg1 = 25n;
         const calldata = [addArg0, addArg1].map(arg => new Fr(arg));
@@ -238,13 +251,83 @@ describe('ACIR public execution simulator', () => {
         await simulateAndCheck(calldata, returndata, bytecode);
       });
 
-      //it('should prove the public vm', async () => {
-      //  //...
-      //  const outAsmPath = await executor.bytecodeToPowdr(execution);
-      //  await executor.generateWitness(outAsmPath);
-      //  await executor.prove();
-      //}, 1_000_000);
+      it('Can transpile a slightly more complex brillig function and execute in AVM', async () => {
+        // ADD 42 + 25
+        // => 67
+        // ADD 67 + 67
+        // => 137
+        // SUB 137 - 30
+        // => 107
+        const arithmeticExample = TestContractArtifact.functions.find(
+          f => f.name === 'arithmeticExample',
+        )!;
+        const acir = Buffer.from(arithmeticExample.bytecode, 'base64');
+        const bytecode = await acirToAvmBytecode(acir);
+
+        const addArg0 = 42n;
+        const addArg1 = 25n;
+        const subArg0 = 30n;
+        const calldata = [addArg0, addArg1, subArg0].map(arg => new Fr(arg));
+        const returndata = [(addArg0 + addArg1) + (addArg0 + addArg1) - subArg0].map(arg => new Fr(arg));
+        await simulateAndCheck(calldata, returndata, bytecode);
+      });
+
+      it('Can transpile a brillig function with storage actions and execute in AVM', async () => {
+        const storageExample = TestContractArtifact.functions.find(
+          f => f.name === 'storageExample',
+        )!;
+        const acir = Buffer.from(storageExample.bytecode, 'base64');
+        const bytecode = await acirToAvmBytecode(acir);
+
+        // ADD 42 + S[61]
+        // ADD 42 + 96
+        // => 138
+        const addArg0 = 42n;
+        const slotArg = 61n;
+        const startValueAtSlot = 96n;
+        const calldata = [addArg0, slotArg].map(arg => new Fr(arg));
+        const ret = addArg0 + startValueAtSlot;
+        const returndata = [ret].map(arg => new Fr(arg));
+
+        publicState.storageRead
+          .mockResolvedValueOnce(new Fr(startValueAtSlot)) // before sstore
+          .mockResolvedValueOnce(new Fr(ret)); // after sstore
+
+        const result = await simulateAndCheck(calldata, returndata, bytecode);
+
+        // VALIDATE STORAGE ACTION TRACE
+        // SLOAD is performed before SSTORE and after
+        expect(result.contractStorageReads).toEqual([
+          {
+            storageSlot: new Fr(slotArg),
+            currentValue: new Fr(startValueAtSlot),
+            sideEffectCounter: 0,
+          },
+          {
+            storageSlot: new Fr(slotArg),
+            currentValue: new Fr(ret),
+            sideEffectCounter: 2,
+          },
+        ]);
+        // Confirm that ADD result was SSTOREd
+        expect(result.contractStorageUpdateRequests).toEqual([
+          {
+            storageSlot: new Fr(slotArg),
+            oldValue: new Fr(startValueAtSlot),
+            newValue: new Fr(ret),
+            sideEffectCounter: 1,
+          },
+        ]);
+      });
     });
+    //describe('AVM tests including calls to C++ witness generation and/or proving', () => {
+    //  it('should prove the public vm', async () => {
+    //    //...
+    //    const outAsmPath = await executor.bytecodeToPowdr(execution);
+    //    await executor.generateWitness(outAsmPath);
+    //    await executor.prove();
+    //  }, 1_000_000);
+    //});
   });
   // TODO: test field addition that could overflow (should just wrap around)
 });

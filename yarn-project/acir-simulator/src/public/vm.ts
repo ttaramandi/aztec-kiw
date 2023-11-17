@@ -29,11 +29,8 @@ import { SideEffectCounter } from '../common/side_effect_counter.js';
  * call was triggered, but is not modified by the call.
  */
 
-/**
- *
- */
 class AVMCallState {
-  static readonly MEM_REGION_WORDS = 1024;
+  static readonly MEM_REGION_WORDS = 4096; // 2**22 ?
   static readonly RETURN_BUFFER_WORDS = 128;
 
   public pc: number = 0; // TODO: should be u32
@@ -48,9 +45,6 @@ class AVMCallState {
   public returnBuffer: Fr[] = new Array<Fr>(AVMCallState.RETURN_BUFFER_WORDS).fill(Fr.ZERO);
 }
 
-/**
- *
- */
 export class AVMExecutor {
   constructor(
     private readonly stateDb: PublicStateDB,
@@ -159,16 +153,36 @@ class AVM {
       /////////////////////////////////////////////////////////////////////////
       case Opcode.ADD: {
         // TODO: consider having a single case for all arithmetic operations and then applying the corresponding function to the args
-        // TODO: actual field addition
+        // TODO: use actual field math
         this.state.fieldMemory[instr.d0] = new Fr((this.state.fieldMemory[instr.s0].toBigInt() + this.state.fieldMemory[instr.s1].toBigInt()) % Fr.MODULUS);
         this.log(`ADD: M[${instr.d0}] = M[${instr.s0}] + M[${instr.s1}] % Fr.MODULUS`);
         this.log(`ADD: M[${instr.d0}] = ${this.state.fieldMemory[instr.s0].toBigInt()} + ${this.state.fieldMemory[instr.s1].toBigInt()} = ${this.state.fieldMemory[instr.d0]}`);
         break;
       }
       case Opcode.SUB: {
-        // TODO: consider having a single case for all arithmetic operations and then applying the corresponding function to the args
-        // TODO: actual field addition
+        // TODO: use actual field math
         this.state.fieldMemory[instr.d0] = new Fr((this.state.fieldMemory[instr.s0].toBigInt() - this.state.fieldMemory[instr.s1].toBigInt()) % Fr.MODULUS);
+        break;
+      }
+      //TODO: case Opcode.MUL
+      case Opcode.DIV: {
+        // TODO: use actual field math
+        this.state.fieldMemory[instr.d0] = new Fr((this.state.fieldMemory[instr.s0].toBigInt() / this.state.fieldMemory[instr.s1].toBigInt()));
+        break;
+      }
+      case Opcode.EQ: {
+        // TODO: use actual field math
+        this.state.fieldMemory[instr.d0] = new Fr((this.state.fieldMemory[instr.s0].toBigInt() == this.state.fieldMemory[instr.s1].toBigInt()));
+        break;
+      }
+      case Opcode.LT: {
+        // TODO: use actual field math
+        this.state.fieldMemory[instr.d0] = new Fr((this.state.fieldMemory[instr.s0].toBigInt() < this.state.fieldMemory[instr.s1].toBigInt()));
+        break;
+      }
+      case Opcode.LTE: {
+        // TODO: use actual field math
+        this.state.fieldMemory[instr.d0] = new Fr((this.state.fieldMemory[instr.s0].toBigInt() <= this.state.fieldMemory[instr.s1].toBigInt()));
         break;
       }
       /////////////////////////////////////////////////////////////////////////
@@ -181,8 +195,17 @@ class AVM {
         break;
       }
       case Opcode.MOV: {
-        this.log(`MOV: M[${instr.d0}] = M[${instr.s0}]`);
-        this.state.fieldMemory[instr.d0] = this.state.fieldMemory[instr.s0];
+        // TODO: use u32 memory for addresses here
+        const srcAddr = instr.s0Indirect ? Number(this.state.fieldMemory[instr.s0].toBigInt()) : instr.s0;
+        const dstAddr = instr.d0Indirect ? Number(this.state.fieldMemory[instr.s0].toBigInt()) : instr.d0;
+        if (instr.s0Indirect) {
+          this.log(`MOV: source is indirect, so srcAddr is M[s0] = M[${instr.s0}] = ${srcAddr}`);
+        }
+        if (instr.d0Indirect) {
+          this.log(`MOV: destination is indirect, so dstAddr is M[d0] = M[${instr.d0}] = ${dstAddr}`);
+        }
+        this.log(`MOV: M[${dstAddr}] = M[${srcAddr}]`);
+        this.state.fieldMemory[dstAddr] = this.state.fieldMemory[srcAddr];
         break;
       }
       // TODO: RETURNDATASIZE and RETURNDATACOPY
@@ -193,6 +216,10 @@ class AVM {
         break;
       }
       case Opcode.CALLDATACOPY: {
+        /**
+         * Might be best if this opcode doesn't truly accept dynamic length (lookups will be a pain)
+         * Opcode can have a max copy size and compiler can break larger copies into smaller components
+         */
         // TODO: srcOffset and copySize should be u32s
         const copySize = Number(this.state.fieldMemory[instr.s1].toBigInt());
         this.log(`CALLDATACOPY: M[${instr.d0}:${instr.d0+copySize}] = calldata[${instr.s0}:${instr.s0+copySize}]`);
@@ -366,19 +393,10 @@ class AVM {
   }
 
   private async fetchAndDecodeBytecode(): Promise<AVMInstruction[]> {
-    // TODO get AVM bytecode directly, not ACIR?
+    this.log(`Fetching and decoding bytecode for ${this.context.contractAddress}:${this.context.functionData.selector}`);
     const bytecode = await this.contractsDb.getBytecode(this.context.contractAddress, this.context.functionData.selector);
     if (!bytecode) throw new Error(`Bytecode not found for ${this.context.contractAddress}:${this.context.functionData.selector}`);
-    if (bytecode.length % AVMInstruction.BYTELEN !== 0) throw new Error(`Invalid bytecode length for ${this.context.contractAddress}:${this.context.functionData.selector}`);
     // TODO: consider decoding instructions individually as they are simulated
     return AVMInstruction.fromBytecodeBuffer(bytecode);
-    //const numInstructions = bytecode.length / AVMInstruction.BYTELEN;
-    //const instructions: AVMInstruction[] = [];
-    //for (let pc = 0; pc < numInstructions; pc++) {
-    //  const instr = AVMInstruction.fromBuffer(bytecode, pc * AVMInstruction.BYTELEN)
-    //  this.log(`Decoded instruction (pc:${pc}): ${Opcode[instr.opcode]}`);
-    //  instructions.push(instr);
-    //}
-    //return instructions;
   }
 }
