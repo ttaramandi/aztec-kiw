@@ -9,8 +9,6 @@ contract Test {
         abi::PrivateContextInputs,
         context::PrivateContext,
         oracle::{
-            avm::{sload, sstore, call},
-            storage::{storage_read_oracle, storage_write_oracle},
             get_public_key::get_public_key,
             context::get_portal_address,
             rand::rand
@@ -177,45 +175,6 @@ contract Test {
     ) -> Field {
         kindaSeed * rand()
     }
-
-    ////////////////////////////////////////////////////////////////////////////////
-    // AVM TESTS (using unconstrained functions for now)
-    ////////////////////////////////////////////////////////////////////////////////
-
-    // FIXME: camelCase to snake_case!
-
-    // Very basic example of a public function that just does an add
-    unconstrained fn addExample(addArg0: Field, addArg1: Field) -> Field {
-        addArg0 + addArg1
-    }
-
-    // Basic example of a public function that does some arithmetic
-    // (unconstrained instead of public for now to force omission of macro-generated boilerplate)
-    unconstrained fn arithmeticExample(addArg0: Field, addArg1: Field, subArg0: Field) -> Field {
-        let added = addArg0 + addArg1;
-        let doubled = added + added;
-        let subbed = doubled - subArg0;
-        subbed
-    }
-
-    unconstrained fn storageExample(addArg0: Field, slotArg: Field) -> Field {
-        let readValue = sload(slotArg);
-        let added = addArg0 + readValue;
-        sstore(slotArg, added);
-        sload(slotArg)
-    }
-
-    unconstrained fn nestedCallExample(nestedCallAddress: Field, addArg0: Field, addArg1: Field) -> Field {
-        let gasLimit = 1234; // limit for nested call
-        let returndata: [Field; 1] = call(gasLimit, nestedCallAddress, [addArg0, addArg1]);
-        // To support dynamic returndata size, we need to first support RETURNDATASIZE/COPY and transpile them in
-        // when a HeapVec is detected as the return type for thiss oracle.
-        //let returndata = call(gasLimit, nestedCallAddress, [addArg0, addArg1]);
-        returndata[0]
-    }
-
-    // END AVM TESTS
-    ////////////////////////////////////////////////////////////////////////////////
 
     struct DummyNote {
         amount: Field,

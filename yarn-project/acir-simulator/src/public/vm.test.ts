@@ -10,7 +10,7 @@ import { AztecAddress } from '@aztec/foundation/aztec-address';
 import { EthAddress } from '@aztec/foundation/eth-address';
 import { Fr } from '@aztec/foundation/fields';
 import {
-  TestContractArtifact,
+  AvmTestContractArtifact,
 } from '@aztec/noir-contracts/artifacts';
 
 import { MockProxy, mock } from 'jest-mock-extended';
@@ -238,7 +238,7 @@ describe('ACIR public execution simulator', () => {
 
     describe('AVM tests using real Brillig bytecode (test transpile to AVM bytecode)', () => {
       it('Can transpile a basic add function from brillig and execute in AVM', async () => {
-        const addExampleArtifact = TestContractArtifact.functions.find(
+        const addExampleArtifact = AvmTestContractArtifact.functions.find(
           f => f.name === 'addExample',
         )!;
         const acir = Buffer.from(addExampleArtifact.bytecode, 'base64');
@@ -260,7 +260,7 @@ describe('ACIR public execution simulator', () => {
         // => 137
         // SUB 137 - 30
         // => 107
-        const arithmeticExample = TestContractArtifact.functions.find(
+        const arithmeticExample = AvmTestContractArtifact.functions.find(
           f => f.name === 'arithmeticExample',
         )!;
         const acir = Buffer.from(arithmeticExample.bytecode, 'base64');
@@ -275,7 +275,7 @@ describe('ACIR public execution simulator', () => {
       });
 
       it('Can transpile a brillig function with storage actions and execute in AVM', async () => {
-        const storageExample = TestContractArtifact.functions.find(
+        const storageExample = AvmTestContractArtifact.functions.find(
           f => f.name === 'storageExample',
         )!;
         const acir = Buffer.from(storageExample.bytecode, 'base64');
@@ -322,7 +322,7 @@ describe('ACIR public execution simulator', () => {
         ]);
       });
       it('Can transpile a brillig function with a nested contract call and execute in AVM', async () => {
-        const nestedCallExample = TestContractArtifact.functions.find(
+        const nestedCallExample = AvmTestContractArtifact.functions.find(
           f => f.name === 'nestedCallExample',
         )!;
         const acir = Buffer.from(nestedCallExample.bytecode, 'base64');

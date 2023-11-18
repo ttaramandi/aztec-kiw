@@ -1,0 +1,9 @@
+[package]
+name = "avm_test_contract"
+authors = [""]
+compiler_version = "0.1"
+type = "contract"
+
+[dependencies]
+aztec = { path = "../../../../aztec-nr/aztec" }
+safe_math = { path = "../../../../aztec-nr/safe-math" }
