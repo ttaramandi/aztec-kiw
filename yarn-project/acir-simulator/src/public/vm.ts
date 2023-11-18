@@ -197,7 +197,7 @@ class AVM {
       case Opcode.MOV: {
         // TODO: use u32 memory for addresses here
         const srcAddr = instr.s0Indirect ? Number(this.state.fieldMemory[instr.s0].toBigInt()) : instr.s0;
-        const dstAddr = instr.d0Indirect ? Number(this.state.fieldMemory[instr.s0].toBigInt()) : instr.d0;
+        const dstAddr = instr.d0Indirect ? Number(this.state.fieldMemory[instr.d0].toBigInt()) : instr.d0;
         if (instr.s0Indirect) {
           this.log(`MOV: source is indirect, so srcAddr is M[s0] = M[${instr.s0}] = ${srcAddr}`);
         }
@@ -205,6 +205,7 @@ class AVM {
           this.log(`MOV: destination is indirect, so dstAddr is M[d0] = M[${instr.d0}] = ${dstAddr}`);
         }
         this.log(`MOV: M[${dstAddr}] = M[${srcAddr}]`);
+        this.log(`MOV: M[${dstAddr}] = ${this.state.fieldMemory[srcAddr]}`);
         this.state.fieldMemory[dstAddr] = this.state.fieldMemory[srcAddr];
         break;
       }
@@ -288,9 +289,9 @@ class AVM {
       /////////////////////////////////////////////////////////////////////////
       case Opcode.CALL: {
         const gas = this.state.fieldMemory[instr.s0];
-        this.log(`CALL was allocated ${gas} gas`);
         const addrFr = this.state.fieldMemory[instr.s1];
         const targetContractAddress = AztecAddress.fromBigInt(addrFr.toBigInt());
+        this.log(`CALL was allocated ${gas} gas to call contract:${targetContractAddress.toString()}`);
 
         // argsAndRetOffset = sd
         // size of argsAndRetOffset is 4:
@@ -299,10 +300,22 @@ class AVM {
         // - retOffset: M[sd + 2]
         // - retSize: M[sd + 3]
         // TODO: use u32 memory for offsets and sizes
-        const argsOffset = Number(this.state.fieldMemory[instr.sd].toBigInt());
-        const argsSize = Number(this.state.fieldMemory[instr.sd + 1].toBigInt());
-        const retOffset = Number(this.state.fieldMemory[instr.sd + 2].toBigInt());
-        const retSize = Number(this.state.fieldMemory[instr.sd + 3].toBigInt());
+        this.log(`CALL: sd=${instr.sd}, M[sd]=${this.state.fieldMemory[instr.sd]}`);
+        const argsAndRetOffset = Number(this.state.fieldMemory[instr.sd].toBigInt());
+        const argsOffset = Number(this.state.fieldMemory[argsAndRetOffset].toBigInt());
+        const argsSize = Number(this.state.fieldMemory[argsAndRetOffset + 1].toBigInt());
+        //const argsSize = argsAndRetOffset + 1;
+        //const argsSize = 2;
+        const retOffset = Number(this.state.fieldMemory[argsAndRetOffset + 2].toBigInt());
+        const retSize = Number(this.state.fieldMemory[argsAndRetOffset + 3].toBigInt());
+        //const argsOffset = Number(this.state.fieldMemory[argsAndRetOffset].toBigInt());
+        //const argsSize = Number(this.state.fieldMemory[argsAndRetOffset + 1].toBigInt());
+        //const retOffset = Number(this.state.fieldMemory[argsAndRetOffset + 2].toBigInt());
+        //const retSize = Number(this.state.fieldMemory[argsAndRetOffset + 3].toBigInt());
+        //const argsOffset = Number(this.state.fieldMemory[instr.sd].toBigInt());
+        //const argsSize = Number(this.state.fieldMemory[instr.sd + 1].toBigInt());
+        //const retOffset = Number(this.state.fieldMemory[instr.sd + 2].toBigInt());
+        //const retSize = Number(this.state.fieldMemory[instr.sd + 3].toBigInt());
         this.log(`CALL: argsOffset=${argsOffset} argsSize=${argsSize} retOffset=${retOffset} retSize=${retSize}`);
 
         const calldata = this.state.fieldMemory.slice(argsOffset, argsOffset + argsSize);

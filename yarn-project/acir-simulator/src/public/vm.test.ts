@@ -95,11 +95,13 @@ const nestedCallExample = [
   new AVMInstruction(Opcode.SET, 12, 0, 200, 0), // SET M[12] = M[200]
   // retSize for CALL: just one return field
   new AVMInstruction(Opcode.SET, 13, 0, 1, 0), // SET M[13] = 1
+  // register 14 will contain the argsAndRetOffset (points to address 10 where M[10,11,12,13] contain argsOffset, argsSize, retOffset, retSize)
+  new AVMInstruction(Opcode.SET, 14, 0, 10, 0), // SET M[14] = 10
   // Make a nested CALL with:
   // - gas: M[100] (1234)
   // - targetAddress: M[1]
-  // - M[10:14] is 4 word memory chunk containing argsOffset, argsSize, retOffset, retSize
-  new AVMInstruction(Opcode.CALL, 0, 10, 100, 1),
+  // - argsAndRetOffset: M[14] (10 which points to M[10,11,12,13] containing argsOffset, argsSize, retOffset, retSize
+  new AVMInstruction(Opcode.CALL, 0, 14, 100, 1),
   // TODO: add support for RETURNDATASIZE/COPY
   new AVMInstruction(Opcode.RETURN, 0, 0, 200, 13), // return M[200] (size 1 from M[13])
 ];
@@ -318,6 +320,31 @@ describe('ACIR public execution simulator', () => {
             sideEffectCounter: 1,
           },
         ]);
+      });
+      it('Can transpile a brillig function with a nested contract call and execute in AVM', async () => {
+        const nestedCallExample = TestContractArtifact.functions.find(
+          f => f.name === 'nestedCallExample',
+        )!;
+        const acir = Buffer.from(nestedCallExample.bytecode, 'base64');
+        const bytecode = await acirToAvmBytecode(acir);
+        // ADD 42 + 25
+        // => 67
+        const nestedCallAddress = 5678n;
+        const addArg0 = 42n;
+        const addArg1 = 25n;
+        const calldata = [nestedCallAddress, addArg0, addArg1].map(arg => new Fr(arg));
+        const returndata = [addArg0 + addArg1].map(arg => new Fr(arg));
+
+        // top-level call (nestedCallBytecode) just makes a CALL to addBytecode
+        // which performs an ADD and returns the result
+        // pseudocode:
+        //   fn foo(addr, a, b) {
+        //     return addr::bar(a, b);
+        //   }
+        //   fn bar(a, b) {
+        //     return a + b;
+        //   }
+        await simulateAndCheck(calldata, returndata, bytecode, [addBytecode]);
       });
     });
     //describe('AVM tests including calls to C++ witness generation and/or proving', () => {

@@ -3,6 +3,7 @@
 // docs:end:oracles-module
 
 mod arguments;
+mod avm;
 mod call_private_function;
 mod context;
 mod debug_log;

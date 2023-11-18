@@ -16,30 +16,53 @@ import { FunctionL2Logs } from '@aztec/types';
 import { InvalidStructSignatureError } from 'viem';
 
 //import { execFile } from 'child_process';
-import {exec} from 'node:child_process';
-import util from 'node:util';
+//import * as child from 'node:child_process';
+import * as child from 'child_process';
+//import util from 'node:util';
 import fs from 'fs';
 import { log } from 'node:console';
 import { AVMExecutor } from './vm.js';
 
-const execPromise = util.promisify(exec);
+//const execPromise = util.promisify(exec);
 
 const POWDR_BINDIR = process.env.POWDR_BINDIR;//'/mnt/user-data/david/projects/3-aztec3/powdr/target/debug/';
 
-async function tryExec(cmd: string) {
-  // promisify exec
+async function tryExec(cmd: string): Promise<string> {
   const log = createDebugLogger('aztec:simulator:public_vm_exec');
-
-  try {
-    const {stdout, stderr} = await execPromise(cmd);
-    log(`STDOUT: ${stdout}`);
-    log(`STDERR: ${stderr}`);
-    return stdout;
-  } catch (error) {
-    log(`ERROR: ${error}`);
-    throw error;
-  }
+  log(`Executing shell command: ${cmd}`);
+  const result = await new Promise<string>((resolve, reject) => {
+    child.exec(
+      cmd,
+      {},
+      (error: child.ExecException | null, stdout: string, stderr: string) => {
+        log(`stdout: ${stdout}`);
+        log(`stderr: ${stderr}`);
+        if (error) {
+          reject(new Error (`Command failed: ${error}`));
+        } else {
+          resolve(stdout);
+        }
+      }
+    );
+  });
+  return result;
 }
+//No overload matches this call.
+//  The last overload gave the following error.
+//    Type '(error: ExecException, stdout: string, stderr: string) => void' has no properties in common with type 'ObjectEncodingOptions & ExecOptions'.ts(2769)
+//child_process.d.ts(934, 14): The last overload is declared here.
+
+
+//  try {
+//    const {stdout, stderr} = await execPromise(cmd);
+//    log(`STDOUT: ${stdout}`);
+//    log(`STDERR: ${stderr}`);
+//    return stdout;
+//  } catch (error) {
+//    log(`ERROR: ${error}`);
+//    throw error;
+//  }
+//}
 /**
  * Handles execution of public functions.
  */

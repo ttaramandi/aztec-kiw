@@ -187,28 +187,6 @@ impl TestPrivateContextInterface {
   }
   
 
-  pub fn sload(
-    self,
-    context: &mut PrivateContext
-  ) -> [Field; RETURN_VALUES_LENGTH] {
-    let mut serialized_args = [0; 0];
-
-    context.call_private_function(self.address, 0x380eb4e0, serialized_args)
-  }
-  
-
-  pub fn sstore(
-    self,
-    context: &mut PrivateContext,
-    _value: Field
-  ) -> [Field; RETURN_VALUES_LENGTH] {
-    let mut serialized_args = [0; 1];
-    serialized_args[0] = _value;
-
-    context.call_private_function(self.address, 0x4c427ee4, serialized_args)
-  }
-  
-
   pub fn testCodeGen(
     self,
     context: &mut PrivateContext,
