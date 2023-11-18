@@ -22,6 +22,7 @@ import { AVMExecutor } from './vm.js';
 import { AVMInstruction, Opcode } from './opcodes.js';
 import { acirToAvmBytecode } from './executor.js';
 import { log } from 'console';
+import { pedersenPlookupCommitWithHashIndexPoint } from '@aztec/circuits.js/barretenberg';
 
 export const createMemDown = () => (memdown as any)() as MemDown<any, any>;
 
@@ -354,6 +355,7 @@ describe('ACIR public execution simulator', () => {
         const bytecode = await acirToAvmBytecode(acir);
 
         const userAddress = AztecAddress.random();
+        const slot = 6n; // slot used in Storage struct in Noir for public balances map
         const startValueAtSlot = 96n;
         const calldata = [userAddress.toField()].map(arg => new Fr(arg));
         const returndata = [startValueAtSlot].map(arg => new Fr(arg));
@@ -361,9 +363,24 @@ describe('ACIR public execution simulator', () => {
         publicState.storageRead
           .mockResolvedValueOnce(new Fr(startValueAtSlot)) // before sstore
 
-        await simulateAndCheck(calldata, returndata, bytecode);
+        const result = await simulateAndCheck(calldata, returndata, bytecode);
+
         // TODO: test that the actual slot read from is correct!
         // Must be sure that AVM's slot-computation is correct for storage maps.
+        const wasm = await CircuitsWasm.get();
+        const hashIndex = 0;
+        const inputs = [new Fr(slot).toBuffer(), userAddress.toBuffer()];
+        const outputBufs = pedersenPlookupCommitWithHashIndexPoint(wasm, inputs, hashIndex);
+        const mapKeySlot = Fr.fromBuffer(outputBufs[0]);
+
+        // VALIDATE STORAGE ACTION TRACE
+        expect(result.contractStorageReads).toEqual([
+          {
+            storageSlot: mapKeySlot,
+            currentValue: new Fr(startValueAtSlot),
+            sideEffectCounter: 0,
+          },
+        ]);
       });
     });
     //describe('AVM tests including calls to C++ witness generation and/or proving', () => {
