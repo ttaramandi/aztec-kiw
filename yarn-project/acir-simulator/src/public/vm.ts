@@ -1,4 +1,4 @@
-import { AztecAddress, CallContext, ContractStorageRead, ContractStorageUpdateRequest, EthAddress, Fr, FunctionData, FunctionSelector } from '@aztec/circuits.js';
+import { AztecAddress, CallContext, CircuitsWasm, ContractStorageRead, ContractStorageUpdateRequest, EthAddress, Fr, FunctionData, FunctionSelector } from '@aztec/circuits.js';
 import { AVMInstruction, Opcode, PC_MODIFIERS } from './opcodes.js';
 import { createDebugLogger } from '@aztec/foundation/log';
 import { PublicCall, PublicExecutionResult } from './execution.js';
@@ -6,6 +6,7 @@ import { PublicContractsDB, PublicStateDB } from './db.js';
 import { FunctionL2Logs } from '@aztec/types';
 import { ContractStorageActionsCollector } from './state_actions.js';
 import { SideEffectCounter } from '../common/side_effect_counter.js';
+import { pedersenPlookupCommitWithHashIndexPoint } from '@aztec/circuits.js/barretenberg';
 
 // TODO: figure out what info needs to go to witgen and prover, and what info
 // is really just for the TS code to keep track of the entire TX/callstack
@@ -295,7 +296,7 @@ class AVM {
         this.log(`SLOAD: M[${instr.d0}] = S[M[${instr.s0}]]`)
         const storageSlot = this.state.fieldMemory[instr.s0];
         this.state.fieldMemory[instr.d0] = await this.sload(storageSlot);
-        this.log(`SLOAD value: ${this.state.fieldMemory[instr.s1]} (S[${storageSlot}])`)
+        this.log(`SLOAD value: ${this.state.fieldMemory[instr.d0]} (S[${storageSlot}])`)
         break;
       }
       case Opcode.SSTORE: {
@@ -312,6 +313,15 @@ class AVM {
         const retSize = Number(retSizeFr.toBigInt());
         this.log(`RETURN: M[${instr.s0}:${instr.s0 + retSize}] (size: ${retSize})`);
         //assert instr.s0 + retSize <= context.fieldMemory.length;
+        this.state.returned = true;
+        return this.state.fieldMemory.slice(instr.s0, instr.s0 + retSize);
+      }
+      case Opcode.REVERT: {
+        const retSizeFr = this.state.fieldMemory[instr.s1];
+        const retSize = Number(retSizeFr.toBigInt());
+        this.log.error(`REVERT M[${instr.s0}:${instr.s0 + retSize}] (size: ${retSize})`);
+        //assert instr.s0 + retSize <= context.fieldMemory.length;
+        this.state.error = true;
         this.state.returned = true;
         return this.state.fieldMemory.slice(instr.s0, instr.s0 + retSize);
       }
@@ -400,6 +410,31 @@ class AVM {
         } else {
           this.state.returnBuffer.splice(0, retSize, ...childExecutionResult.returnValues);
         }
+        break;
+      }
+      /////////////////////////////////////////////////////////////////////////
+      // Blackbox/nasty operations
+      /////////////////////////////////////////////////////////////////////////
+      case Opcode.PEDERSEN: {
+        const wasm = await CircuitsWasm.get();
+
+        const domainSeparator = this.state.fieldMemory[instr.s0];
+        const argsOffset = Number(this.state.fieldMemory[instr.s1].toBigInt());
+        const argsSize = Number(this.state.fieldMemory[instr.sd].toBigInt());
+        const retOffset = Number(this.state.fieldMemory[instr.d0].toBigInt());
+        const retSize = 2;
+        this.log(`PEDERSEN: argsOffset=${argsOffset} argsSize=${argsSize} retOffset=${retOffset} retSize=${retSize}`);
+
+        const hashIndex = Number(domainSeparator.toBigInt());
+        const inputs = this.state.fieldMemory.slice(argsOffset, argsOffset + argsSize);
+        const inputBufs = inputs.map(field => field.toBuffer());
+        this.log(`PEDERSEN: inputs=[${inputs.join(', ')}], hash_index=${hashIndex}`);
+        const outputBufs = pedersenPlookupCommitWithHashIndexPoint(wasm, inputBufs, hashIndex);
+        const output = outputBufs.map(buf => Fr.fromBuffer(buf));
+        this.log(`PEDERSEN: output=[${output.join(', ')}]`);
+
+        this.state.fieldMemory.splice(retOffset, retSize, ...output);
+        //throw new Error("BREAKING AT PEDERSEN");
         break;
       }
       default: throw new Error(`AVM does not know how to process opcode ${Opcode[instr.opcode]} (aka ${instr.opcode}) at pc: ${this.state.pc}`);

@@ -95,6 +95,16 @@ export function pedersenPlookupCommitWithHashIndex(wasm: IWasmModule, inputs: Bu
   return Buffer.from(wasm.getMemorySlice(0, 32));
 }
 
+export function pedersenPlookupCommitWithHashIndexPoint(wasm: IWasmModule, inputs: Buffer[], hashIndex: number): Buffer[] {
+  // If not done already, precompute constants.
+  wasm.call('pedersen__init');
+  const inputVectors = serializeBufferArrayToVector(inputs);
+  wasm.writeMemory(0, inputVectors);
+  wasm.call('pedersen_plookup_commit_with_hash_index', 0, 0, hashIndex);
+  return [Buffer.from(wasm.getMemorySlice(0, 32)),
+          Buffer.from(wasm.getMemorySlice(32, 64))]
+}
+
 /**
  * Compresses an array of buffers.
  * @param wasm - The barretenberg module.

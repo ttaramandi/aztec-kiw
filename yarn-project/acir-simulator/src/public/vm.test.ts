@@ -346,6 +346,25 @@ describe('ACIR public execution simulator', () => {
         //   }
         await simulateAndCheck(calldata, returndata, bytecode, [addBytecode]);
       });
+      it('Can transpile and execute brillig with storage maps', async () => {
+        const publicBalanceExample = AvmTestContractArtifact.functions.find(
+          f => f.name === 'public_balance_example',
+        )!;
+        const acir = Buffer.from(publicBalanceExample.bytecode, 'base64');
+        const bytecode = await acirToAvmBytecode(acir);
+
+        const userAddress = AztecAddress.random();
+        const startValueAtSlot = 96n;
+        const calldata = [userAddress.toField()].map(arg => new Fr(arg));
+        const returndata = [startValueAtSlot].map(arg => new Fr(arg));
+
+        publicState.storageRead
+          .mockResolvedValueOnce(new Fr(startValueAtSlot)) // before sstore
+
+        await simulateAndCheck(calldata, returndata, bytecode);
+        // TODO: test that the actual slot read from is correct!
+        // Must be sure that AVM's slot-computation is correct for storage maps.
+      });
     });
     //describe('AVM tests including calls to C++ witness generation and/or proving', () => {
     //  it('should prove the public vm', async () => {

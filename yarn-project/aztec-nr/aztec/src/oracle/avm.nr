@@ -1,20 +1,20 @@
-//pub fn sload_instruction(
 #[oracle(avm_sload)]
 pub fn sload(
     _storage_slot: Field,
 ) -> Field {}
 
-//unconstrained fn storage_read<N>(_storage_slot: Field)-> [Field; N] {
-//unconstrained pub fn storage_read<T, N>(storage_slot: Field, deserialize: fn ([Field; N]) -> T)-> [Field; N] {
 unconstrained pub fn storage_read<T, N>(storage_slot: Field, deserialize: fn ([Field; N]) -> T)-> T {
     let mut fields = [0; N];
-    for i in 0..N {
-        fields[i] = sload(storage_slot + i);
-    }
+    fields[0] = sload(storage_slot);
+    // FIXME: something seems broken in the transpiler for this loop
+    // ... it might have something to do with the STORE that happens into the array memory?
+    //for i in 0..1 {
+    //    fields[i] = sload(storage_slot + i);
+    //}
+    //fields[0]
     deserialize(fields)
 }
 
-//.pub fn sstore_instruction(
 #[oracle(avm_sstore)]
 pub fn sstore(
     _storage_slot: Field,

@@ -30,7 +30,10 @@ export enum Opcode {
   SSTORE,
   // Contract call control flow
   RETURN,
+  REVERT,
   CALL,
+  // Blackbox ops
+  PEDERSEN,
 }
 
 export const PC_MODIFIERS = [ Opcode.JUMP, Opcode.JUMPI, Opcode.INTERNALCALL, Opcode.INTERNALRETURN ];

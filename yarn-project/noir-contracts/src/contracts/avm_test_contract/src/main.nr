@@ -20,8 +20,9 @@ contract AvmTest {
         },
         types::vec::BoundedVec,
         constants_gen::EMPTY_NULLIFIED_COMMITMENT,
-        //state_vars::{avm_public_state::PublicState, set::Set},
-        state_vars::{map::Map, public_state::PublicState, set::Set},
+        state_vars::{avm_public_state::PublicState},
+        //state_vars::{map::Map, public_state::PublicState, set::Set},
+        state_vars::{map::Map, set::Set},
         types::type_serialization::{
             field_serialization::{FieldSerializationMethods, FIELD_SERIALIZED_LEN},
             bool_serialization::{BoolSerializationMethods, BOOL_SERIALIZED_LEN},
@@ -63,8 +64,9 @@ contract AvmTest {
     //}
 
     struct Storage {
-        admin: PublicState<AztecAddress, AZTEC_ADDRESS_SERIALIZED_LEN>,
-        public_balances: Map<PublicState<SafeU120, SAFE_U120_SERIALIZED_LEN>>,
+        //admin: PublicState<AztecAddress, AZTEC_ADDRESS_SERIALIZED_LEN>,
+        //public_balances: Map<PublicState<SafeU120, SAFE_U120_SERIALIZED_LEN>>,
+        public_balances: Map<PublicState<Field, FIELD_SERIALIZED_LEN>>,
     }
 
     //impl Storage {
@@ -89,11 +91,11 @@ contract AvmTest {
     impl Storage {
         fn init(context: Context) -> pub Self {
             Storage {
-                admin: PublicState::new(
-                    context,
-                    1,
-                    AztecAddressSerializationMethods,
-                ),
+                //admin: PublicState::new(
+                //    context,
+                //    1,
+                //    AztecAddressSerializationMethods,
+                //),
                 public_balances: Map::new(
                     context,
                     6,
@@ -101,7 +103,8 @@ contract AvmTest {
                         PublicState::new(
                             context,
                             slot,
-                            SafeU120SerializationMethods,
+                            FieldSerializationMethods,
+                            //SafeU120SerializationMethods,
                         )
                     },
                 ),
@@ -136,15 +139,17 @@ contract AvmTest {
         let gasLimit = 1234; // limit for nested call
         let returndata: [Field; 1] = call(gasLimit, nestedCallAddress, [addArg0, addArg1]);
         // To support dynamic returndata size, we need to first support RETURNDATASIZE/COPY and transpile them in
-        // when a HeapVec is detected as the return type for thiss oracle.
+        // when a HeapVec is detected as the return type for this oracle.
         //let returndata = call(gasLimit, nestedCallAddress, [addArg0, addArg1]);
         returndata[0]
     }
 
-    unconstrained fn balance_of_public(
+    unconstrained fn public_balance_example(
         owner: AztecAddress,
-    ) -> u120 {
+    ) -> Field {
+    //) -> u120 {
         let storage = Storage::init(Context::none());
-        storage.public_balances.at(owner.address).read().value
+        //storage.public_balances.at(owner.address).read().value
+        storage.public_balances.at(owner.address).read() // as u120
     }
 }
