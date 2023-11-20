@@ -21,7 +21,6 @@ import { PublicCall, PublicExecutionResult } from './execution.js';
 import { AVMExecutor } from './vm.js';
 import { AVMInstruction, Opcode } from './opcodes.js';
 import { acirToAvmBytecode } from './executor.js';
-import { log } from 'console';
 import { pedersenPlookupCommitWithHashIndexPoint } from '@aztec/circuits.js/barretenberg';
 
 export const createMemDown = () => (memdown as any)() as MemDown<any, any>;
