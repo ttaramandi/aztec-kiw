@@ -196,15 +196,14 @@ class AVM {
         this.state.fieldMemory[instr.d0] = new Fr((this.state.fieldMemory[instr.s0].toBigInt() | this.state.fieldMemory[instr.s1].toBigInt()));
         break;
       }
-      //case Opcode.XOR: {
-      //  // TODO: use actual field math
-      //  this.state.fieldMemory[instr.d0] = new Fr((this.state.fieldMemory[instr.s0].toBigInt() ^ this.state.fieldMemory[instr.s1].toBigInt()));
-      //  break;
-      //}
+      case Opcode.XOR: {
+        // TODO: use actual field math
+        this.state.fieldMemory[instr.d0] = new Fr((this.state.fieldMemory[instr.s0].toBigInt() ^ this.state.fieldMemory[instr.s1].toBigInt()));
+        break;
+      }
       case Opcode.NOT: {
         // TODO: use actual field math
-        // FIXME: actual NOT
-        this.state.fieldMemory[instr.d0] = new Fr((!this.state.fieldMemory[instr.s0].toBigInt()));
+        this.state.fieldMemory[instr.d0] = new Fr((~this.state.fieldMemory[instr.s0].toBigInt()));
         break;
       }
       case Opcode.SHL: {
@@ -410,6 +409,13 @@ class AVM {
         } else {
           this.state.returnBuffer.splice(0, retSize, ...childExecutionResult.returnValues);
         }
+        break;
+      }
+      /////////////////////////////////////////////////////////////////////////
+      // Call context operations
+      /////////////////////////////////////////////////////////////////////////
+      case Opcode.SENDER: {
+        this.state.fieldMemory[instr.d0] = this.context.callContext.msgSender.toField();
         break;
       }
       /////////////////////////////////////////////////////////////////////////

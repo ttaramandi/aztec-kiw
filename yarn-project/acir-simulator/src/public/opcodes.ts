@@ -32,6 +32,8 @@ export enum Opcode {
   RETURN,
   REVERT,
   CALL,
+  // Call context
+  SENDER,
   // Blackbox ops
   PEDERSEN,
 }

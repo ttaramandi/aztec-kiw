@@ -33,3 +33,7 @@ pub fn call<ARGS_SIZE, RETURN_SIZE>(
     _target_address: Field,
     _calldata: [Field; ARGS_SIZE],
 ) -> [Field; RETURN_SIZE] {}
+
+#[oracle(avm_sender)]
+pub fn msg_sender(
+) -> Field {}

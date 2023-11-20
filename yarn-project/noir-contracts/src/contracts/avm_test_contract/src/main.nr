@@ -13,7 +13,7 @@ contract AvmTest {
         abi::PrivateContextInputs,
         context::{Context, PrivateContext},
         oracle::{
-            avm::{storage_read, storage_write, sload, sstore, call},
+            avm::{storage_read, storage_write, sload, sstore, call, msg_sender},
             get_public_key::get_public_key,
             context::get_portal_address,
             rand::rand
@@ -21,7 +21,6 @@ contract AvmTest {
         types::vec::BoundedVec,
         constants_gen::EMPTY_NULLIFIED_COMMITMENT,
         state_vars::{avm_public_state::PublicState},
-        //state_vars::{map::Map, public_state::PublicState, set::Set},
         state_vars::{map::Map, set::Set},
         types::type_serialization::{
             field_serialization::{FieldSerializationMethods, FIELD_SERIALIZED_LEN},
@@ -30,7 +29,6 @@ contract AvmTest {
         },
         types::address::{AztecAddress},
     };
-    //use dep::token_portal_content_hash_lib::{get_mint_private_content_hash, get_mint_public_content_hash};
 
     use crate::types::{
         transparent_note::{TransparentNote, TransparentNoteMethods, TRANSPARENT_NOTE_LEN},
@@ -39,55 +37,13 @@ contract AvmTest {
     };
 
 
-    //struct Map<V> {
-    //    storage_slot: Field,
-    //    state_var_constructor: fn(Context, Field) -> V,
-    //}
-    //impl<V> Map<V> {
-    //    pub fn new(
-    //        storage_slot: Field,
-    //        state_var_constructor: fn(Field) -> V,
-    //    ) -> Map<V> {
-    //        assert(storage_slot != 0, "Storage slot 0 not allowed. Storage slots must start from 1.");
-    //        Map {
-    //            storage_slot,
-    //            state_var_constructor,
-    //        }
-    //    }
-    //    pub fn at(self, key: Field) -> V {
-    //        // TODO(#1204): use a generator index for the storage slot
-    //        let derived_storage_slot = dep::std::hash::pedersen([self.storage_slot, key])[0];
-
-    //        let state_var_constructor = self.state_var_constructor;
-    //        state_var_constructor(derived_storage_slot)
-    //    }
-    //}
-
     struct Storage {
         //admin: PublicState<AztecAddress, AZTEC_ADDRESS_SERIALIZED_LEN>,
-        //public_balances: Map<PublicState<SafeU120, SAFE_U120_SERIALIZED_LEN>>,
+        minters: Map<PublicState<bool, BOOL_SERIALIZED_LEN>>,
+        total_supply: PublicState<Field, FIELD_SERIALIZED_LEN>,
         public_balances: Map<PublicState<Field, FIELD_SERIALIZED_LEN>>,
     }
 
-    //impl Storage {
-        //fn init() -> pub Self {
-            //Storage {
-                //admin: PublicState::new(
-                    //1,
-                    //AztecAddressSerializationMethods,
-                //),
-                //public_balances: Map::new(
-                    //2,
-                    //|slot| {
-                        //PublicState::new(
-                            //slot,
-                            //SafeU120SerializationMethods,
-                        //)
-                    //},
-                //),
-            //}
-        //}
-    //}
     impl Storage {
         fn init(context: Context) -> pub Self {
             Storage {
@@ -96,6 +52,23 @@ contract AvmTest {
                 //    1,
                 //    AztecAddressSerializationMethods,
                 //),
+                minters: Map::new(
+                    context,
+                    2,
+                    |context, slot| {
+                        PublicState::new(
+                            context,
+                            slot,
+                            BoolSerializationMethods,
+                        )
+                    },
+                ),
+                total_supply: PublicState::new(
+                    context,
+                    4,
+                    //SafeU120SerializationMethods,
+                    FieldSerializationMethods,
+                ),
                 public_balances: Map::new(
                     context,
                     6,
@@ -144,12 +117,31 @@ contract AvmTest {
         returndata[0]
     }
 
-    unconstrained fn public_balance_example(
+    unconstrained fn context_vars_example() -> Field {
+        msg_sender()
+    }
+
+    unconstrained fn balance_of_public(
         owner: AztecAddress,
     ) -> Field {
     //) -> u120 {
         let storage = Storage::init(Context::none());
         //storage.public_balances.at(owner.address).read().value
         storage.public_balances.at(owner.address).read() // as u120
+    }
+
+    unconstrained fn mint_public(
+        to: AztecAddress,
+        amount: Field,
+    ) -> Field {
+        assert(storage.minters.at(msg_sender()).read(), "caller is not minter");
+        //let amount = SafeU120::new(amount);
+        let new_balance = storage.public_balances.at(to.address).read() + amount;
+        let mut supply = storage.total_supply.read();
+        supply = supply + amount;
+
+        storage.public_balances.at(to.address).write(new_balance);
+        storage.total_supply.write(supply);
+        1
     }
 }

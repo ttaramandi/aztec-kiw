@@ -22,6 +22,7 @@ import { AVMExecutor } from './vm.js';
 import { AVMInstruction, Opcode } from './opcodes.js';
 import { acirToAvmBytecode } from './executor.js';
 import { pedersenPlookupCommitWithHashIndexPoint } from '@aztec/circuits.js/barretenberg';
+import { createDebugLogger } from '@aztec/foundation/log';
 
 export const createMemDown = () => (memdown as any)() as MemDown<any, any>;
 
@@ -108,11 +109,13 @@ const nestedCallExample = [
 const nestedCallBytecode = AVMInstruction.toBytecode(nestedCallExample);
 
 describe('ACIR public execution simulator', () => {
+  const log = createDebugLogger('aztec:acir-simulator:vm.test.ts');
   let publicState: MockProxy<PublicStateDB>;
   let publicContracts: MockProxy<PublicContractsDB>;
   //let commitmentsDb: MockProxy<CommitmentsDB>;
   //let blockData: HistoricBlockData;
   let executor: AVMExecutor; // TODO: replace with AVMSimulator
+  let msgSender: AztecAddress;
 
   beforeEach(() => {
     publicState = mock<PublicStateDB>();
@@ -120,6 +123,8 @@ describe('ACIR public execution simulator', () => {
     //commitmentsDb = mock<CommitmentsDB>();
     //blockData = HistoricBlockData.empty();
     executor = new AVMExecutor(publicState, publicContracts);
+
+    msgSender = AztecAddress.random();
   }, 10000);
 
   async function simulateAndCheck(
@@ -131,7 +136,6 @@ describe('ACIR public execution simulator', () => {
     const contractAddress = AztecAddress.random();
     const functionSelector = new FunctionSelector(0x1234);
     const functionData = new FunctionData(functionSelector, false, false, false);
-    const msgSender = AztecAddress.random();
     const callContext = CallContext.from({
       msgSender,
       storageContractAddress: contractAddress,
@@ -236,8 +240,8 @@ describe('ACIR public execution simulator', () => {
       });
     });
 
-    describe('AVM tests using real Brillig bytecode (test transpile to AVM bytecode)', () => {
-      it('Can transpile a basic add function from brillig and execute in AVM', async () => {
+    describe('AVM tests that transpile Brillig bytecode to AVM before executing', () => {
+      it('Noir function that just does a basic add', async () => {
         const addExampleArtifact = AvmTestContractArtifact.functions.find(
           f => f.name === 'addExample',
         )!;
@@ -252,8 +256,7 @@ describe('ACIR public execution simulator', () => {
         const returndata = [addArg0 + addArg1].map(arg => new Fr(arg));
         await simulateAndCheck(calldata, returndata, bytecode);
       });
-
-      it('Can transpile a slightly more complex brillig function and execute in AVM', async () => {
+      it('Noir function with slightly more complex arithmetic', async () => {
         // ADD 42 + 25
         // => 67
         // ADD 67 + 67
@@ -274,7 +277,7 @@ describe('ACIR public execution simulator', () => {
         await simulateAndCheck(calldata, returndata, bytecode);
       });
 
-      it('Can transpile a brillig function with storage actions and execute in AVM', async () => {
+      it('Noir function with storage actions', async () => {
         const storageExample = AvmTestContractArtifact.functions.find(
           f => f.name === 'storageExample',
         )!;
@@ -321,7 +324,7 @@ describe('ACIR public execution simulator', () => {
           },
         ]);
       });
-      it('Can transpile a brillig function with a nested contract call and execute in AVM', async () => {
+      it('Noir function with a nested contract call', async () => {
         const nestedCallExample = AvmTestContractArtifact.functions.find(
           f => f.name === 'nestedCallExample',
         )!;
@@ -346,11 +349,11 @@ describe('ACIR public execution simulator', () => {
         //   }
         await simulateAndCheck(calldata, returndata, bytecode, [addBytecode]);
       });
-      it('Can transpile and execute brillig with storage maps', async () => {
-        const publicBalanceExample = AvmTestContractArtifact.functions.find(
-          f => f.name === 'public_balance_example',
+      it('Noir function with storage maps', async () => {
+        const balanceOfPublic = AvmTestContractArtifact.functions.find(
+          f => f.name === 'balance_of_public',
         )!;
-        const acir = Buffer.from(publicBalanceExample.bytecode, 'base64');
+        const acir = Buffer.from(balanceOfPublic.bytecode, 'base64');
         const bytecode = await acirToAvmBytecode(acir);
 
         const userAddress = AztecAddress.random();
@@ -381,7 +384,99 @@ describe('ACIR public execution simulator', () => {
           },
         ]);
       });
+      it('Noir function that accesses context variables/constants', async () => {
+        const contextVarsExample = AvmTestContractArtifact.functions.find(
+          f => f.name === 'context_vars_example',
+        )!;
+        const acir = Buffer.from(contextVarsExample.bytecode, 'base64');
+        const bytecode = await acirToAvmBytecode(acir);
+
+        const calldata: Fr[] = [];
+        const returndata = [msgSender.toField()];
+        await simulateAndCheck(calldata, returndata, bytecode);
+      });
+      it('Noir function to mint_public', async () => {
+        const mintPublic = AvmTestContractArtifact.functions.find(
+          f => f.name === 'mint_public',
+        )!;
+        const acir = Buffer.from(mintPublic.bytecode, 'base64');
+        const bytecode = await acirToAvmBytecode(acir);
+
+        const receiverAddress = AztecAddress.random();
+
+        // slots used in Storage struct in Noir
+        const mintersSlot = 2n;
+        const totalSupplySlot = 4n;
+        const publicBalancesSlot = 6n;
+
+        const mintAmount = 42n;
+        const receiverStartBal = 96n;
+        const startTotalSupply = 123n;
+        const receiverEndBal = receiverStartBal + mintAmount;
+        const endTotalSupply = startTotalSupply + mintAmount;
+
+        const calldata = [receiverAddress.toField(), new Fr(mintAmount)];
+        const returndata = [new Fr(1)].map(arg => new Fr(arg)); // returns 1 for success
+
+        publicState.storageRead
+          .mockResolvedValueOnce(new Fr(1)) // assert sender in minters map
+          .mockResolvedValueOnce(new Fr(receiverStartBal)) // receiver's original balance
+          .mockResolvedValueOnce(new Fr(startTotalSupply));
+
+        const result = await simulateAndCheck(calldata, returndata, bytecode);
+
+        // TODO: test that the actual slot read from is correct!
+        // Must be sure that AVM's slot-computation is correct for storage maps.
+        const wasm = await CircuitsWasm.get();
+        const hashIndex = 0;
+        // Compute minters slot for map key (msgSender address)
+        let inputs = [new Fr(mintersSlot).toBuffer(), msgSender.toBuffer()];
+        let outputBufs = pedersenPlookupCommitWithHashIndexPoint(wasm, inputs, hashIndex);
+        const mintersKeySlot = Fr.fromBuffer(outputBufs[0]);
+        // Compute public balances slot for map key (receiver address)
+        inputs = [new Fr(publicBalancesSlot).toBuffer(), receiverAddress.toBuffer()];
+        outputBufs = pedersenPlookupCommitWithHashIndexPoint(wasm, inputs, hashIndex);
+        const publicBalancesKeySlot = Fr.fromBuffer(outputBufs[0]);
+
+        log(`expected/computed mintersKeySlot: ${mintersKeySlot}`);
+        log(`expected/computed publicBalancesKeySlot: ${publicBalancesKeySlot}`);
+
+        // VALIDATE STORAGE ACTION TRACE
+        expect(result.contractStorageReads).toEqual([
+          {
+            storageSlot: mintersKeySlot,
+            currentValue: new Fr(1),
+            sideEffectCounter: 0,
+          },
+          {
+            storageSlot: publicBalancesKeySlot,
+            currentValue: new Fr(receiverStartBal),
+            sideEffectCounter: 1,
+          },
+          {
+            storageSlot: new Fr(totalSupplySlot),
+            currentValue: new Fr(startTotalSupply),
+            sideEffectCounter: 2,
+          },
+        ]);
+        // Confirm that balance and total supply were written properly
+        expect(result.contractStorageUpdateRequests).toEqual([
+          {
+            storageSlot: publicBalancesKeySlot,
+            oldValue: new Fr(receiverStartBal),
+            newValue: new Fr(receiverEndBal),
+            sideEffectCounter: 3,
+          },
+          {
+            storageSlot: new Fr(totalSupplySlot),
+            oldValue: new Fr(startTotalSupply),
+            newValue: new Fr(endTotalSupply),
+            sideEffectCounter: 4,
+          },
+        ]);
+      });
     });
+
     //describe('AVM tests including calls to C++ witness generation and/or proving', () => {
     //  it('should prove the public vm', async () => {
     //    //...
