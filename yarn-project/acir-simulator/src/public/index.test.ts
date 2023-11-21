@@ -27,7 +27,7 @@ import { buildL1ToL2Message } from '../test/utils.js';
 import { computeSlotForMapping } from '../utils.js';
 import { CommitmentsDB, PublicContractsDB, PublicStateDB } from './db.js';
 import { PublicExecution } from './execution.js';
-import { PublicExecutor } from './executor.js';
+import { ACVMPublicExecutor, PublicExecutor } from './executor.js';
 
 export const createMemDown = () => (memdown as any)() as MemDown<any, any>;
 
@@ -49,7 +49,7 @@ describe('ACIR public execution simulator', () => {
     commitmentsDb = mock<CommitmentsDB>();
 
     blockData = HistoricBlockData.empty();
-    executor = new PublicExecutor(publicState, publicContracts, commitmentsDb, blockData);
+    executor = new ACVMPublicExecutor(publicState, publicContracts, commitmentsDb, blockData);
   }, 10000);
 
   describe('Token contract', () => {

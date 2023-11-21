@@ -1,4 +1,5 @@
 import {
+  ACVMPublicExecutor,
   AVMExecutor,
   CommitmentsDB,
   MessageLoadOracleInputs,
@@ -22,28 +23,25 @@ export function getPublicExecutor(
   publicContractsDB: PublicContractsDB,
   l1toL2MessageSource: L1ToL2MessageSource,
   blockData: HistoricBlockData,
-) {
-  return new PublicExecutor(
-    new WorldStatePublicDB(merkleTree),
-    publicContractsDB,
-    new WorldStateDB(merkleTree, l1toL2MessageSource),
-    blockData,
-  );
+  avmExecution: boolean = false,
+ ): PublicExecutor {
+  if (avmExecution) {
+    return new AVMExecutor(
+      new WorldStatePublicDB(merkleTree),
+      publicContractsDB,
+      new WorldStateDB(merkleTree, l1toL2MessageSource),
+      blockData,
+    );
+  } else {
+    return new ACVMPublicExecutor(
+      new WorldStatePublicDB(merkleTree),
+      publicContractsDB,
+      new WorldStateDB(merkleTree, l1toL2MessageSource),
+      blockData,
+    );
+  }
 }
 
-export function getAVMExecutor(
-  merkleTree: MerkleTreeOperations,
-  publicContractsDB: PublicContractsDB,
-  l1toL2MessageSource: L1ToL2MessageSource,
-  blockData: HistoricBlockData,
-) {
-  return new AVMExecutor(
-    new WorldStatePublicDB(merkleTree),
-    publicContractsDB,
-    //new WorldStateDB(merkleTree, l1toL2MessageSource),
-    //blockData,
-  );
-}
 /**
  * Implements the PublicContractsDB using a ContractDataSource.
  * Progressively records contracts in transaction as they are processed in a block.

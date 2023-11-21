@@ -1,13 +1,14 @@
-import { AztecAddress, CallContext, CircuitsWasm, ContractStorageRead, ContractStorageUpdateRequest, EthAddress, Fr, FunctionData, FunctionSelector, GlobalVariables } from '@aztec/circuits.js';
+import { AztecAddress, CallContext, CircuitsWasm, ContractStorageRead, ContractStorageUpdateRequest, EthAddress, Fr, FunctionData, FunctionSelector, GlobalVariables, HistoricBlockData } from '@aztec/circuits.js';
 import { AVMInstruction, Opcode, PC_MODIFIERS } from './opcodes.js';
 import { createDebugLogger } from '@aztec/foundation/log';
 import { PublicCall, PublicExecution, PublicExecutionResult } from '../public/execution.js';
-import { PublicContractsDB, PublicStateDB } from '../public/db.js';
+import { CommitmentsDB, PublicContractsDB, PublicStateDB } from '../public/db.js';
 import { FunctionL2Logs, PackedArguments } from '@aztec/types';
 import { ContractStorageActionsCollector } from '../public/state_actions.js';
 import { SideEffectCounter } from '../common/side_effect_counter.js';
 import { pedersenPlookupCommitWithHashIndexPoint } from '@aztec/circuits.js/barretenberg';
 import { keccak } from '@aztec/foundation/crypto';
+import { PublicExecutor } from '../index.js';
 
 // TODO: figure out what info needs to go to witgen and prover, and what info
 // is really just for the TS code to keep track of the entire TX/callstack
@@ -47,10 +48,12 @@ class AVMCallState {
   public returnBuffer: Fr[] = new Array<Fr>(AVMCallState.RETURN_BUFFER_WORDS).fill(Fr.ZERO);
 }
 
-export class AVMExecutor {
+export class AVMExecutor implements PublicExecutor {
   constructor(
     private readonly stateDb: PublicStateDB,
     private readonly contractsDb: PublicContractsDB,
+    private readonly commitmentsDb?: CommitmentsDB,
+    private readonly blockData?: HistoricBlockData,
   ) {}
 
   public async simulate(context: PublicCall | PublicExecution, _globalVariables: GlobalVariables = GlobalVariables.empty()): Promise<PublicExecutionResult> {
@@ -537,3 +540,13 @@ class AVM {
     return AVMInstruction.fromBytecodeBuffer(bytecode);
   }
 }
+
+//  public async generateWitness(outAsmPath: string) {
+//    await tryExec(`cd ../../barretenberg/cpp/ && ${POWDR_BINDIR}/powdr pil ${outAsmPath} --field bn254 --force`);
+//  }
+//  public async prove() {
+//    const log = createDebugLogger('aztec:simulator:public_vm_prove');
+//    log(`Proving public vm`);
+//
+//    await tryExec('cd ../../barretenberg/cpp/build/ && ./bin/publicvm_cli dummy-path');
+//  }

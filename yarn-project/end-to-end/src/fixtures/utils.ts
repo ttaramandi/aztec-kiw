@@ -237,7 +237,7 @@ export type EndToEndContext = {
  * @param numberOfAccounts - The number of new accounts to be created once the PXE is initiated.
  * @param opts - Options to pass to the node initialization and to the setup script.
  */
-export async function setup(numberOfAccounts = 1, opts: SetupOptions = {}): Promise<EndToEndContext> {
+export async function setup(numberOfAccounts = 1, opts: SetupOptions = {}, useAVM: boolean = false): Promise<EndToEndContext> {
   const config = { ...getConfigEnvVars(), ...opts };
 
   // Enable logging metrics to a local file named after the test suite
@@ -270,6 +270,7 @@ export async function setup(numberOfAccounts = 1, opts: SetupOptions = {}): Prom
     deployL1ContractsValues.l1ContractAddresses.contractDeploymentEmitterAddress;
   config.l1Contracts.inboxAddress = deployL1ContractsValues.l1ContractAddresses.inboxAddress;
   config.l1Contracts.outboxAddress = deployL1ContractsValues.l1ContractAddresses.outboxAddress;
+  config.useAVM = useAVM;
 
   logger('Creating and synching an aztec node...');
   const aztecNode = await AztecNodeService.createAndSync(config);

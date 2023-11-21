@@ -31,7 +31,8 @@ describe('e2e_avm_token_contract', () => {
   let tokenSim: AvmTokenSimulator;
 
   beforeAll(async () => {
-    ({ teardown, logger, wallets, accounts } = await setup(3));
+    // Important that we pass true here for "useAVM" otherwise PublicProcessor will use ACVM for public execution
+    ({ teardown, logger, wallets, accounts } = await setup(3, {}, true /*useAVM*/));
 
     asset = await AvmTestContract.deploy(wallets[0], accounts[0]).send().deployed();
     logger(`Token deployed to ${asset.address}`);

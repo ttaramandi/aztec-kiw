@@ -14,4 +14,8 @@ export interface SequencerConfig {
    * The minimum number of txs to include in a block.
    */
   minTxsPerBlock?: number;
+  /**
+   * Should the sequencer use the AVM to execute public functions?
+   */
+  useAVM?: boolean;
 }

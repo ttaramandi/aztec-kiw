@@ -422,6 +422,7 @@ export class AztecNodeService implements AztecNode {
       merkleTrees.asLatest(),
       this.contractDataSource,
       this.l1ToL2MessageSource,
+      this.config.useAVM
     );
     const processor = await publicProcessorFactory.create(prevGlobalVariables, newGlobalVariables);
     const [, failedTxs] = await processor.process([tx]);

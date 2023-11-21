@@ -15,8 +15,8 @@ import {
 import { PackedArgsCache, SideEffectCounter } from '../common/index.js';
 import { CommitmentsDB, PublicContractsDB, PublicStateDB } from './db.js';
 import { PublicExecution, PublicExecutionResult } from './execution.js';
+import { executePublicFunction } from './executor.js';
 import { ContractStorageActionsCollector } from './state_actions.js';
-import { AVMExecutor } from '../public-vm/avm.js';
 
 /**
  * The execution context for a public tx simulation.
@@ -93,7 +93,7 @@ export class PublicExecutionContext extends TypedOracle {
    * @param args - Arguments to pack
    */
   public packArguments(args: Fr[]): Promise<Fr> {
-    return this.packedArgsCache.pack(args);
+    return Promise.resolve(this.packedArgsCache.pack(args));
   }
 
   /**
@@ -184,8 +184,10 @@ export class PublicExecutionContext extends TypedOracle {
       throw new Error(`ERR: Method not found - ${targetContractAddress.toString()}:${functionSelector.toString()}`);
     }
 
-    //const acir = await this.contractsDb.getBytecode(targetContractAddress, functionSelector);
-    //if (!acir) throw new Error(`Bytecode not found for ${targetContractAddress}:${functionSelector}`);
+    const acir = await this.contractsDb.getBytecode(targetContractAddress, functionSelector);
+    if (!acir) {
+      throw new Error(`Bytecode not found for ${targetContractAddress}:${functionSelector}`);
+    }
 
     const functionData = new FunctionData(functionSelector, isInternal, false, false);
 
@@ -199,36 +201,26 @@ export class PublicExecutionContext extends TypedOracle {
       isStaticCall: false,
     });
 
-    const context = {
-      contractAddress:targetContractAddress,
+    const nestedExecution: PublicExecution = {
+      args,
+      contractAddress: targetContractAddress,
       functionData,
-      calldata: args,
-      callContext
+      callContext,
     };
 
-    const avm = new AVMExecutor(
+    const context = new PublicExecutionContext(
+      nestedExecution,
+      this.historicBlockData,
+      this.globalVariables,
+      this.packedArgsCache,
+      this.sideEffectCounter,
       this.stateDb,
       this.contractsDb,
+      this.commitmentsDb,
+      this.log,
     );
 
-    //const context = new PublicVmExecutionContext(
-    //  nestedExecution,
-    //);
-    //const context: Public
-    //const context = new PublicExecutionContext(
-    //  nestedExecution,
-    //  this.historicBlockData,
-    //  this.globalVariables,
-    //  this.packedArgsCache,
-    //  this.sideEffectCounter,
-    //  this.stateDb,
-    //  this.contractsDb,
-    //  this.commitmentsDb,
-    //  this.log,
-    //);
-
-    //const childExecutionResult = await executePublicFunction(context, acir);
-    const childExecutionResult = await avm.simulate(context);
+    const childExecutionResult = await executePublicFunction(context, acir);
 
     this.nestedExecutions.push(childExecutionResult);
     this.log(`Returning from nested call: ret=${childExecutionResult.returnValues.join(', ')}`);

@@ -5,6 +5,7 @@ import {
   collectPublicDataReads,
   collectPublicDataUpdateRequests,
   isPublicExecutionResult,
+  PublicExecutor,
 } from '@aztec/acir-simulator';
 import {
   AztecAddress,
@@ -48,7 +49,7 @@ import { getVerificationKeys } from '../index.js';
 import { EmptyPublicProver } from '../prover/empty.js';
 import { PublicProver } from '../prover/index.js';
 import { PublicKernelCircuitSimulator } from '../simulator/index.js';
-import { ContractsDataSourcePublicDB, getPublicExecutor, getAVMExecutor } from '../simulator/public_executor.js';
+import { ContractsDataSourcePublicDB, getPublicExecutor } from '../simulator/public_executor.js';
 import { WasmPublicKernelCircuitSimulator } from '../simulator/public_kernel.js';
 import { FailedTx, ProcessedTx, makeEmptyProcessedTx, makeProcessedTx } from './processed_tx.js';
 import { getHistoricBlockData } from './utils.js';
@@ -61,6 +62,7 @@ export class PublicProcessorFactory {
     private merkleTree: MerkleTreeOperations,
     private contractDataSource: ContractDataSource,
     private l1Tol2MessagesDataSource: L1ToL2MessageSource,
+    private useAVM: boolean = false,
   ) {}
 
   /**
@@ -78,8 +80,7 @@ export class PublicProcessorFactory {
     const publicContractsDB = new ContractsDataSourcePublicDB(this.contractDataSource);
     return new PublicProcessor(
       this.merkleTree,
-      //getPublicExecutor(this.merkleTree, publicContractsDB, this.l1Tol2MessagesDataSource, blockData),
-      getAVMExecutor(this.merkleTree, publicContractsDB, this.l1Tol2MessagesDataSource, blockData),
+      getPublicExecutor(this.merkleTree, publicContractsDB, this.l1Tol2MessagesDataSource, blockData, this.useAVM),
       new WasmPublicKernelCircuitSimulator(),
       new EmptyPublicProver(),
       globalVariables,
@@ -96,7 +97,7 @@ export class PublicProcessorFactory {
 export class PublicProcessor {
   constructor(
     protected db: MerkleTreeOperations,
-    protected publicExecutor: AVMExecutor,
+    protected publicExecutor: PublicExecutor,
     protected publicKernel: PublicKernelCircuitSimulator,
     protected publicProver: PublicProver,
     protected globalVariables: GlobalVariables,
