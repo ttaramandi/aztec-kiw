@@ -7,4 +7,3 @@ export {
   collectPublicDataUpdateRequests,
 } from './execution.js';
 export { PublicExecutor } from './executor.js';
-export { AVMExecutor } from './vm.js';

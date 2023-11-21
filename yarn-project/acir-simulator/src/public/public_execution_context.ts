@@ -16,7 +16,7 @@ import { PackedArgsCache, SideEffectCounter } from '../common/index.js';
 import { CommitmentsDB, PublicContractsDB, PublicStateDB } from './db.js';
 import { PublicExecution, PublicExecutionResult } from './execution.js';
 import { ContractStorageActionsCollector } from './state_actions.js';
-import { AVMExecutor } from './vm.js';
+import { AVMExecutor } from '../public-vm/avm.js';
 
 /**
  * The execution context for a public tx simulation.

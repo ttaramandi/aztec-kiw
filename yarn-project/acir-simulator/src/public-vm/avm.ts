@@ -1,13 +1,12 @@
 import { AztecAddress, CallContext, CircuitsWasm, ContractStorageRead, ContractStorageUpdateRequest, EthAddress, Fr, FunctionData, FunctionSelector, GlobalVariables } from '@aztec/circuits.js';
 import { AVMInstruction, Opcode, PC_MODIFIERS } from './opcodes.js';
 import { createDebugLogger } from '@aztec/foundation/log';
-import { PublicCall, PublicExecution, PublicExecutionResult } from './execution.js';
-import { PublicContractsDB, PublicStateDB } from './db.js';
+import { PublicCall, PublicExecution, PublicExecutionResult } from '../public/execution.js';
+import { PublicContractsDB, PublicStateDB } from '../public/db.js';
 import { FunctionL2Logs, PackedArguments } from '@aztec/types';
-import { ContractStorageActionsCollector } from './state_actions.js';
+import { ContractStorageActionsCollector } from '../public/state_actions.js';
 import { SideEffectCounter } from '../common/side_effect_counter.js';
 import { pedersenPlookupCommitWithHashIndexPoint } from '@aztec/circuits.js/barretenberg';
-import { PublicExecutionContext } from './public_execution_context.js';
 import { keccak } from '@aztec/foundation/crypto';
 
 // TODO: figure out what info needs to go to witgen and prover, and what info
@@ -113,6 +112,7 @@ class AVM {
     this.log(`Simulating the Aztec Public VM`);
 
     const returnValues = await this.simulateInternal();
+    // Note: not collecting storage actions because we actually want the full uncollapsed lists of actions
     //const [contractStorageReads, contractStorageUpdateRequests] = this.collapsedStorageActions.collect();
 
     // just rename args to calldata...
@@ -130,7 +130,7 @@ class AVM {
       contractStorageReads: this.allStorageReads,
       contractStorageUpdateRequests: this.allStorageUpdates,
       returnValues: returnValues,
-      nestedExecutions: [],
+      nestedExecutions: this.nestedExecutions,
       unencryptedLogs: FunctionL2Logs.empty(),
     };
   }

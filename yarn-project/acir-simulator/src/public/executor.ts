@@ -1,7 +1,6 @@
 import { GlobalVariables, HistoricBlockData, PublicCircuitPublicInputs } from '@aztec/circuits.js';
 import { DebugLogger, createDebugLogger } from '@aztec/foundation/log';
 
-import { AVMInstruction, Opcode } from './opcodes.js';
 import { Oracle } from '../acvm/index.js';
 import { ExecutionError, createSimulationError } from '../common/errors.js';
 import { SideEffectCounter } from '../common/index.js';
@@ -15,7 +14,7 @@ import { Fr } from '@aztec/circuits.js';
 import { FunctionL2Logs } from '@aztec/types';
 import { InvalidStructSignatureError } from 'viem';
 
-import { AVMExecutor } from './vm.js';
+import { AVMExecutor } from '../public-vm/avm.js';
 
 /**
  * Handles execution of public functions.
@@ -53,9 +52,6 @@ export class PublicExecutor {
 
     //const sideEffectCounter = new SideEffectCounter();
 
-    //const context = new PublicVmExecutionContext(
-    //  execution,
-    //);
     //const context = new PublicExecutionContext(
     //  execution,
     //  this.blockData,
