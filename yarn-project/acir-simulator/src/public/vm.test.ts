@@ -5,7 +5,7 @@ import {
   GlobalVariables,
   HistoricBlockData,
 } from '@aztec/circuits.js';
-import { FunctionSelector, encodeArguments } from '@aztec/foundation/abi';
+import { ContractArtifact, FunctionSelector, FunctionType, encodeArguments } from '@aztec/foundation/abi';
 import { AztecAddress } from '@aztec/foundation/aztec-address';
 import { EthAddress } from '@aztec/foundation/eth-address';
 import { Fr } from '@aztec/foundation/fields';
@@ -14,17 +14,14 @@ import {
 } from '@aztec/noir-contracts/artifacts';
 
 import { MockProxy, mock } from 'jest-mock-extended';
-import { type MemDown, default as memdown } from 'memdown';
 
 import { CommitmentsDB, PublicContractsDB, PublicStateDB } from './db.js';
 import { PublicCall, PublicExecutionResult } from './execution.js';
 import { AVMExecutor } from './vm.js';
 import { AVMInstruction, Opcode } from './opcodes.js';
-import { acirToAvmBytecode } from './executor.js';
 import { pedersenPlookupCommitWithHashIndexPoint } from '@aztec/circuits.js/barretenberg';
 import { createDebugLogger } from '@aztec/foundation/log';
 
-export const createMemDown = () => (memdown as any)() as MemDown<any, any>;
 
 // function addExample(addArg0, addArg1) {
 //  return addArg0 + addArg1;
@@ -245,8 +242,7 @@ describe('ACIR public execution simulator', () => {
         const addExampleArtifact = AvmTestContractArtifact.functions.find(
           f => f.name === 'addExample',
         )!;
-        const acir = Buffer.from(addExampleArtifact.bytecode, 'base64');
-        const bytecode = await acirToAvmBytecode(acir);
+        const bytecode = Buffer.from(addExampleArtifact.bytecode, 'base64');
 
         // ADD 42 + 25
         // => 67
@@ -266,8 +262,7 @@ describe('ACIR public execution simulator', () => {
         const arithmeticExample = AvmTestContractArtifact.functions.find(
           f => f.name === 'arithmeticExample',
         )!;
-        const acir = Buffer.from(arithmeticExample.bytecode, 'base64');
-        const bytecode = await acirToAvmBytecode(acir);
+        const bytecode = Buffer.from(arithmeticExample.bytecode, 'base64');
 
         const addArg0 = 42n;
         const addArg1 = 25n;
@@ -281,8 +276,7 @@ describe('ACIR public execution simulator', () => {
         const storageExample = AvmTestContractArtifact.functions.find(
           f => f.name === 'storageExample',
         )!;
-        const acir = Buffer.from(storageExample.bytecode, 'base64');
-        const bytecode = await acirToAvmBytecode(acir);
+        const bytecode = Buffer.from(storageExample.bytecode, 'base64');
 
         // ADD 42 + S[61]
         // ADD 42 + 96
@@ -328,8 +322,7 @@ describe('ACIR public execution simulator', () => {
         const nestedCallExample = AvmTestContractArtifact.functions.find(
           f => f.name === 'nestedCallExample',
         )!;
-        const acir = Buffer.from(nestedCallExample.bytecode, 'base64');
-        const bytecode = await acirToAvmBytecode(acir);
+        const bytecode = Buffer.from(nestedCallExample.bytecode, 'base64');
         // ADD 42 + 25
         // => 67
         const nestedCallAddress = 5678n;
@@ -353,8 +346,7 @@ describe('ACIR public execution simulator', () => {
         const balanceOfPublic = AvmTestContractArtifact.functions.find(
           f => f.name === 'balance_of_public',
         )!;
-        const acir = Buffer.from(balanceOfPublic.bytecode, 'base64');
-        const bytecode = await acirToAvmBytecode(acir);
+        const bytecode = Buffer.from(balanceOfPublic.bytecode, 'base64');
 
         const userAddress = AztecAddress.random();
         const slot = 6n; // slot used in Storage struct in Noir for public balances map
@@ -388,8 +380,7 @@ describe('ACIR public execution simulator', () => {
         const contextVarsExample = AvmTestContractArtifact.functions.find(
           f => f.name === 'context_vars_example',
         )!;
-        const acir = Buffer.from(contextVarsExample.bytecode, 'base64');
-        const bytecode = await acirToAvmBytecode(acir);
+        const bytecode = Buffer.from(contextVarsExample.bytecode, 'base64');
 
         const calldata: Fr[] = [];
         const returndata = [msgSender.toField()];
@@ -399,8 +390,7 @@ describe('ACIR public execution simulator', () => {
         const mintPublic = AvmTestContractArtifact.functions.find(
           f => f.name === 'mint_public',
         )!;
-        const acir = Buffer.from(mintPublic.bytecode, 'base64');
-        const bytecode = await acirToAvmBytecode(acir);
+        const bytecode = Buffer.from(mintPublic.bytecode, 'base64');
 
         const receiverAddress = AztecAddress.random();
 

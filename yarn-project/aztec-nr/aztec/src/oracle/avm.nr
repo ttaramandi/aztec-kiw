@@ -37,3 +37,15 @@ pub fn call<ARGS_SIZE, RETURN_SIZE>(
 #[oracle(avm_sender)]
 pub fn msg_sender(
 ) -> Field {}
+
+#[oracle(avm_address)]
+pub fn this_address(
+) -> Field {}
+
+#[oracle(avm_selector)]
+pub fn selector(
+) -> Field {}
+
+#[oracle(avm_argshash)]
+pub fn args_hash(
+) -> Field {}

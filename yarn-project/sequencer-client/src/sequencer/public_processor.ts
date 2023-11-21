@@ -1,7 +1,7 @@
 import {
   PublicExecution,
   PublicExecutionResult,
-  PublicExecutor,
+  AVMExecutor,
   collectPublicDataReads,
   collectPublicDataUpdateRequests,
   isPublicExecutionResult,
@@ -48,7 +48,7 @@ import { getVerificationKeys } from '../index.js';
 import { EmptyPublicProver } from '../prover/empty.js';
 import { PublicProver } from '../prover/index.js';
 import { PublicKernelCircuitSimulator } from '../simulator/index.js';
-import { ContractsDataSourcePublicDB, getPublicExecutor } from '../simulator/public_executor.js';
+import { ContractsDataSourcePublicDB, getPublicExecutor, getAVMExecutor } from '../simulator/public_executor.js';
 import { WasmPublicKernelCircuitSimulator } from '../simulator/public_kernel.js';
 import { FailedTx, ProcessedTx, makeEmptyProcessedTx, makeProcessedTx } from './processed_tx.js';
 import { getHistoricBlockData } from './utils.js';
@@ -78,7 +78,8 @@ export class PublicProcessorFactory {
     const publicContractsDB = new ContractsDataSourcePublicDB(this.contractDataSource);
     return new PublicProcessor(
       this.merkleTree,
-      getPublicExecutor(this.merkleTree, publicContractsDB, this.l1Tol2MessagesDataSource, blockData),
+      //getPublicExecutor(this.merkleTree, publicContractsDB, this.l1Tol2MessagesDataSource, blockData),
+      getAVMExecutor(this.merkleTree, publicContractsDB, this.l1Tol2MessagesDataSource, blockData),
       new WasmPublicKernelCircuitSimulator(),
       new EmptyPublicProver(),
       globalVariables,
@@ -95,7 +96,7 @@ export class PublicProcessorFactory {
 export class PublicProcessor {
   constructor(
     protected db: MerkleTreeOperations,
-    protected publicExecutor: PublicExecutor,
+    protected publicExecutor: AVMExecutor,
     protected publicKernel: PublicKernelCircuitSimulator,
     protected publicProver: PublicProver,
     protected globalVariables: GlobalVariables,

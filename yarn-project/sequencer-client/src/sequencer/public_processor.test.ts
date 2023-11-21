@@ -1,4 +1,4 @@
-import { PublicExecution, PublicExecutionResult, PublicExecutor } from '@aztec/acir-simulator';
+import { AVMExecutor, PublicExecution, PublicExecutionResult, PublicExecutor } from '@aztec/acir-simulator';
 import {
   ARGS_LENGTH,
   AztecAddress,
@@ -41,7 +41,8 @@ import { PublicProcessor } from './public_processor.js';
 
 describe('public_processor', () => {
   let db: MockProxy<MerkleTreeOperations>;
-  let publicExecutor: MockProxy<PublicExecutor>;
+  //let publicExecutor: MockProxy<PublicExecutor>;
+  let publicExecutor: MockProxy<AVMExecutor>;
   let publicProver: MockProxy<PublicProver>;
   let publicContractsDB: MockProxy<ContractsDataSourcePublicDB>;
 
@@ -52,7 +53,8 @@ describe('public_processor', () => {
 
   beforeEach(() => {
     db = mock<MerkleTreeOperations>();
-    publicExecutor = mock<PublicExecutor>();
+    //publicExecutor = mock<PublicExecutor>();
+    publicExecutor = mock<AVMExecutor>();
     publicProver = mock<PublicProver>();
     publicContractsDB = mock<ContractsDataSourcePublicDB>();
 

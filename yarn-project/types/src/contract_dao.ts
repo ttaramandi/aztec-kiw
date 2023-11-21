@@ -57,7 +57,7 @@ export function toContractDao(
  */
 export function getNewContractPublicFunctions(newContract: ContractDao) {
   return newContract.functions
-    .filter(c => c.functionType === FunctionType.OPEN)
+    .filter(c => (c.functionType === FunctionType.OPEN))
     .map(
       fn =>
         new EncodedContractFunction(

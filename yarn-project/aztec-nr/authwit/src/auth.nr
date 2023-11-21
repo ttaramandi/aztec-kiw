@@ -1,6 +1,7 @@
 use dep::std::hash::pedersen_with_separator;
 
 use dep::aztec::{
+  oracle::avm::{call, msg_sender, this_address, selector, args_hash},
   context::{PrivateContext, PublicContext, Context},
   constants_gen::{EMPTY_NULLIFIED_COMMITMENT, GENERATOR_INDEX__SIGNATURE_PAYLOAD},
   types::address::AztecAddress,
@@ -53,6 +54,22 @@ pub fn assert_current_call_valid_authwit_public(context: &mut PublicContext, on_
   assert_valid_authwit_public(context, on_behalf_of, message_hash);
 }
 // docs:end:assert_current_call_valid_authwit_public
+
+// FIXME: authwit not working in AVM
+pub fn assert_valid_authwit_public_avm(on_behalf_of: AztecAddress, message_hash: Field) {
+  let returndata: [Field; 1] = call(1234, on_behalf_of.address, [IS_VALID_PUBLIC_SELECTOR, message_hash]);
+  let result = returndata[0];
+  //context.push_new_nullifier(message_hash, EMPTY_NULLIFIED_COMMITMENT);
+  assert(result == IS_VALID_SELECTOR, "Message not authorized by account");
+}
+pub fn assert_current_call_valid_authwit_public_avm(on_behalf_of: AztecAddress) {
+  // message_hash = H(caller, contract_this, selector, args_hash)
+  let message_hash = pedersen_with_separator(
+    [msg_sender(), this_address(), selector(), args_hash()],
+    GENERATOR_INDEX__SIGNATURE_PAYLOAD
+  )[0];
+  assert_valid_authwit_public_avm(on_behalf_of, message_hash);
+}
 
 // docs:start:compute_authwit_message_hash
 // Compute the message hash to be used by an authentication witness 

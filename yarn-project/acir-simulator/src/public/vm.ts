@@ -1,12 +1,14 @@
-import { AztecAddress, CallContext, CircuitsWasm, ContractStorageRead, ContractStorageUpdateRequest, EthAddress, Fr, FunctionData, FunctionSelector } from '@aztec/circuits.js';
+import { AztecAddress, CallContext, CircuitsWasm, ContractStorageRead, ContractStorageUpdateRequest, EthAddress, Fr, FunctionData, FunctionSelector, GlobalVariables } from '@aztec/circuits.js';
 import { AVMInstruction, Opcode, PC_MODIFIERS } from './opcodes.js';
 import { createDebugLogger } from '@aztec/foundation/log';
-import { PublicCall, PublicExecutionResult } from './execution.js';
+import { PublicCall, PublicExecution, PublicExecutionResult } from './execution.js';
 import { PublicContractsDB, PublicStateDB } from './db.js';
-import { FunctionL2Logs } from '@aztec/types';
+import { FunctionL2Logs, PackedArguments } from '@aztec/types';
 import { ContractStorageActionsCollector } from './state_actions.js';
 import { SideEffectCounter } from '../common/side_effect_counter.js';
 import { pedersenPlookupCommitWithHashIndexPoint } from '@aztec/circuits.js/barretenberg';
+import { PublicExecutionContext } from './public_execution_context.js';
+import { keccak } from '@aztec/foundation/crypto';
 
 // TODO: figure out what info needs to go to witgen and prover, and what info
 // is really just for the TS code to keep track of the entire TX/callstack
@@ -52,9 +54,18 @@ export class AVMExecutor {
     private readonly contractsDb: PublicContractsDB,
   ) {}
 
-  public async simulate(context: PublicCall): Promise<PublicExecutionResult> {
+  public async simulate(context: PublicCall | PublicExecution, _globalVariables: GlobalVariables = GlobalVariables.empty()): Promise<PublicExecutionResult> {
+    // We just want to rename args>calldata
+    const publicCall: PublicCall = {
+        contractAddress: context.contractAddress,
+        functionData: context.functionData,
+        calldata: (context as PublicCall).calldata !== undefined
+          ? (context as PublicCall).calldata
+          : (context as PublicExecution).args, // RENAME
+        callContext: context.callContext,
+      };
     const avm = new AVM(
-      context,
+      publicCall,
       new SideEffectCounter(),
       this.stateDb,
       this.contractsDb
@@ -174,6 +185,8 @@ class AVM {
       case Opcode.EQ: {
         // TODO: use actual field math
         this.state.fieldMemory[instr.d0] = new Fr((this.state.fieldMemory[instr.s0].toBigInt() == this.state.fieldMemory[instr.s1].toBigInt()));
+        this.log(`EQ: M[${instr.d0}] = M[${instr.s0}] == M[${instr.s1}]`);
+        this.log(`EQ: M[${instr.d0}] = ${this.state.fieldMemory[instr.s0].toBigInt()} == ${this.state.fieldMemory[instr.s1].toBigInt()} = ${this.state.fieldMemory[instr.d0]}`);
         break;
       }
       case Opcode.LT: {
@@ -267,10 +280,12 @@ class AVM {
       // Control flow
       /////////////////////////////////////////////////////////////////////////
       case Opcode.JUMP: {
+        this.log(`JUMP: to pc:${instr.s0} from pc:${this.state.pc}`)
         this.state.pc = instr.s0;
         break;
       }
       case Opcode.JUMPI: {
+        this.log(`JUMPI: if (M[${instr.sd}]:${this.state.fieldMemory[instr.sd]}) to pc:${instr.s0} from pc:${this.state.pc}`)
         this.state.pc = !this.state.fieldMemory[instr.sd].isZero() ? instr.s0 : this.state.pc + 1;
         break;
       }
@@ -322,7 +337,9 @@ class AVM {
         //assert instr.s0 + retSize <= context.fieldMemory.length;
         this.state.error = true;
         this.state.returned = true;
-        return this.state.fieldMemory.slice(instr.s0, instr.s0 + retSize);
+        throw new Error(`AVM reverted execution in contract:${this.context.contractAddress}, function:${this.context.callContext.functionSelector}`);
+        // TODO: return data and allow caller to handle revert
+        //return this.state.fieldMemory.slice(instr.s0, instr.s0 + retSize);
       }
       /////////////////////////////////////////////////////////////////////////
       // Contract call control flow
@@ -418,6 +435,20 @@ class AVM {
         this.state.fieldMemory[instr.d0] = this.context.callContext.msgSender.toField();
         break;
       }
+      case Opcode.ADDRESS: {
+        this.state.fieldMemory[instr.d0] = this.context.callContext.storageContractAddress.toField();
+        break;
+      }
+      case Opcode.SELECTOR: {
+        this.state.fieldMemory[instr.d0] = this.context.callContext.functionSelector.toField();
+        break;
+      }
+      case Opcode.ARGSHASH: {
+        const wasm = await CircuitsWasm.get();
+        const hash = (await PackedArguments.fromArgs(this.context.calldata, wasm)).hash.value;
+        this.state.fieldMemory[instr.d0] = new Fr(hash);
+        break;
+      }
       /////////////////////////////////////////////////////////////////////////
       // Blackbox/nasty operations
       /////////////////////////////////////////////////////////////////////////
@@ -440,7 +471,28 @@ class AVM {
         this.log(`PEDERSEN: output=[${output.join(', ')}]`);
 
         this.state.fieldMemory.splice(retOffset, retSize, ...output);
-        //throw new Error("BREAKING AT PEDERSEN");
+        break;
+      }
+      case Opcode.KECCAK256: {
+        // FIXME: not working!!!! this is unfinished
+        // FIXME: need to properly handle byte-array inputs and outputs!
+        const argsOffset = Number(this.state.fieldMemory[instr.s1].toBigInt());
+        const argsSize = Number(this.state.fieldMemory[instr.sd].toBigInt());
+        const retOffset = Number(this.state.fieldMemory[instr.d0].toBigInt());
+        const retSize = 1;
+        this.log(`KECCAK256: argsOffset=${argsOffset} argsSize=${argsSize} retOffset=${retOffset} retSize=${retSize}`);
+
+        const inputs = this.state.fieldMemory.slice(argsOffset, argsOffset + argsSize);
+        const inputBufs = inputs.map(field => field.toBuffer());
+        this.log(`KECCAK256: inputs=[${inputs.join(', ')}]`);
+        const inputCattedBuf = Buffer.concat(inputBufs);
+        const outputBuf = keccak(inputCattedBuf);
+        const output = Fr.fromBuffer(outputBuf);
+        //this.log(`KECCAK256: output=[${output.join(', ')}]`);
+        this.log(`KECCAK256: output=${output}`);
+
+        //this.state.fieldMemory.splice(retOffset, retSize, ...output);
+        this.state.fieldMemory[retOffset] = output;
         break;
       }
       default: throw new Error(`AVM does not know how to process opcode ${Opcode[instr.opcode]} (aka ${instr.opcode}) at pc: ${this.state.pc}`);

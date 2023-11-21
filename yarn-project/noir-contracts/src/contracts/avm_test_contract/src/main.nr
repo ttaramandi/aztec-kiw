@@ -28,6 +28,12 @@ contract AvmTest {
             aztec_address_serialization::{AztecAddressSerializationMethods, AZTEC_ADDRESS_SERIALIZED_LEN},
         },
         types::address::{AztecAddress},
+        selector::compute_selector,
+    };
+    use dep::authwit::{
+        auth::{
+            assert_current_call_valid_authwit_public_avm,
+        },
     };
 
     use crate::types::{
@@ -38,7 +44,7 @@ contract AvmTest {
 
 
     struct Storage {
-        //admin: PublicState<AztecAddress, AZTEC_ADDRESS_SERIALIZED_LEN>,
+        admin: PublicState<AztecAddress, AZTEC_ADDRESS_SERIALIZED_LEN>,
         minters: Map<PublicState<bool, BOOL_SERIALIZED_LEN>>,
         total_supply: PublicState<Field, FIELD_SERIALIZED_LEN>,
         public_balances: Map<PublicState<Field, FIELD_SERIALIZED_LEN>>,
@@ -47,11 +53,11 @@ contract AvmTest {
     impl Storage {
         fn init(context: Context) -> pub Self {
             Storage {
-                //admin: PublicState::new(
-                //    context,
-                //    1,
-                //    AztecAddressSerializationMethods,
-                //),
+                admin: PublicState::new(
+                    context,
+                    1,
+                    AztecAddressSerializationMethods,
+                ),
                 minters: Map::new(
                     context,
                     2,
@@ -83,6 +89,21 @@ contract AvmTest {
                 ),
             }
         }
+    }
+
+    #[aztec(private)]
+    fn constructor(admin: AztecAddress) {
+        // FIXME: need to get AVM keccak256 working to use compute_selector
+        //let selector = compute_selector("_initialize((Field))");
+        let selector = 0x76c992eb;
+        context.call_public_function(context.this_address(), selector, [admin.address]);
+    }
+
+    unconstrained fn _initialize(
+        new_admin: AztecAddress,
+    ) {
+        storage.admin.write(new_admin);
+        storage.minters.at(new_admin.address).write(true);
     }
 
     // FIXME: camelCase to snake_case!
@@ -121,6 +142,44 @@ contract AvmTest {
         msg_sender()
     }
 
+    unconstrained fn transfer_public(
+        from: AztecAddress,
+        to: AztecAddress,
+        amount: Field,
+        nonce: Field,
+    ) -> Field {
+        if (from.address != msg_sender()) {
+            assert_current_call_valid_authwit_public_avm(from);
+        } else {
+            assert(nonce == 0, "invalid nonce");
+        }
+
+        //let amount = SafeU120::new(amount);
+        let from_balance = storage.public_balances.at(from.address).read() - amount;
+        storage.public_balances.at(from.address).write(from_balance);
+
+        let to_balance = storage.public_balances.at(to.address).read() + amount;
+        storage.public_balances.at(to.address).write(to_balance);
+
+        1
+    }
+
+    unconstrained fn admin() -> Field {
+        storage.admin.read().address
+    }
+
+    unconstrained fn is_minter(
+        minter: AztecAddress,
+    ) -> bool {
+        storage.minters.at(minter.address).read()
+    }
+
+    //unconstrained fn total_supply() -> u120 {
+    unconstrained fn total_supply() -> Field {
+        //storage.total_supply.read().value
+        storage.total_supply.read()
+    }
+
     unconstrained fn balance_of_public(
         owner: AztecAddress,
     ) -> Field {
@@ -130,17 +189,33 @@ contract AvmTest {
         storage.public_balances.at(owner.address).read() // as u120
     }
 
+    unconstrained fn set_admin(
+        new_admin: AztecAddress,
+    ) {
+        assert(storage.admin.read().eq(AztecAddress::new(msg_sender())), "caller is not admin");
+        storage.admin.write(new_admin);
+    }
+
+    unconstrained fn set_minter(
+        minter: AztecAddress,
+        approve: bool,
+    ) {
+        assert(storage.admin.read().eq(AztecAddress::new(msg_sender())), "caller is not admin");
+        storage.minters.at(minter.address).write(approve);
+    }
+
     unconstrained fn mint_public(
         to: AztecAddress,
         amount: Field,
     ) -> Field {
         assert(storage.minters.at(msg_sender()).read(), "caller is not minter");
         //let amount = SafeU120::new(amount);
-        let new_balance = storage.public_balances.at(to.address).read() + amount;
+        let storageSlot = storage.public_balances.at(to.address);
+        let new_balance = storageSlot.read() + amount;
         let mut supply = storage.total_supply.read();
         supply = supply + amount;
 
-        storage.public_balances.at(to.address).write(new_balance);
+        storageSlot.write(new_balance);
         storage.total_supply.write(supply);
         1
     }

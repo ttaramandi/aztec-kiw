@@ -1,4 +1,4 @@
-import { ContractArtifact } from '@aztec/foundation/abi';
+import { ContractArtifact, FunctionArtifact, FunctionType } from '@aztec/foundation/abi';
 import { createConsoleLogger } from '@aztec/foundation/log';
 import {
   generateContractArtifact,
@@ -6,6 +6,7 @@ import {
   generateTypescriptContractInterface,
 } from '@aztec/noir-compiler';
 
+import * as child from 'child_process';
 import { readFileSync, writeFileSync } from 'fs';
 import camelCase from 'lodash.camelcase';
 import omit from 'lodash.omit';
@@ -45,7 +46,62 @@ function writeToProject(artifact: any) {
   }
 }
 
-const main = () => {
+const TRANSPILER_BIN = process.env.TRANSPILER_BIN;
+
+async function tryExec(cmd: string): Promise<string> {
+  log(`Executing shell command: ${cmd}`);
+  const result = await new Promise<string>((resolve, reject) => {
+    child.exec(
+      cmd,
+      {},
+      (error: child.ExecException | null, stdout: string, stderr: string) => {
+        log(`stdout: ${stdout}`);
+        log(`stderr: ${stderr}`);
+        if (error) {
+          reject(new Error (`Command failed: ${error}`));
+        } else {
+          resolve(stdout);
+        }
+      }
+    );
+  });
+  return result;
+}
+
+async function acirToAvmBytecode(acir: Buffer): Promise<string> {
+  const acirPath = (await tryExec('mktemp')).replace(/\n/, '');
+  const outBrilligPath = (await tryExec('mktemp')).replace(/\n/, '');
+  log(`temporarily writing acir to: ${acirPath}`);
+  log(`temporarily generating brillig at: ${outBrilligPath}`);
+  await tryExec(`echo -n ${acir.toString('base64')} > ${acirPath}`);
+  await tryExec(`cd ../../barretenberg/cpp/ && ${TRANSPILER_BIN} ${acirPath} ${outBrilligPath}`);
+  const avmBytecode = readFileSync(outBrilligPath, {encoding: 'base64'});
+  // cleanup
+  await tryExec(`rm ${acirPath} ${outBrilligPath}`);
+  return avmBytecode
+}
+
+async function transpileUnconstrainedToAVM(artifact: ContractArtifact) {
+  for (const func of artifact.functions) {
+    if (func.functionType === FunctionType.UNCONSTRAINED && !/^view_/.test(func.name)) {
+      // First, save the original unconstrained version of this function with modified name for view-only calls
+      // This allows us to execute view-only unconstrained functions in the Brillig VM
+      // but execute them in the AVM when in a public TX
+      const origFunc: FunctionArtifact = {
+        ...func,
+        name: "view_" + func.name,
+      }
+      artifact.functions.push(origFunc);
+      // Next transpile the originally-named function in-place and flag it as OPEN/public
+      log(`Transpiling unconstrained function "${func.name}" from AVM test contract`);
+      const avmBytecode = await acirToAvmBytecode(Buffer.from(func.bytecode, 'base64'));
+      func.bytecode = avmBytecode;
+      func.functionType = FunctionType.OPEN;
+    }
+  }
+}
+
+const main = async () => {
   const name = process.argv[2];
   if (!name) throw new Error(`Missing argument contract name`);
 
@@ -60,18 +116,30 @@ const main = () => {
   const debugArtifactFile = `debug_${artifactFile}`;
   let debug = undefined;
 
-  try {
-    const debugJsonFilePath = `./target/${debugArtifactFile}`;
-    const debugJson = JSON.parse(readFileSync(debugJsonFilePath).toString());
-    if (debugJson) {
-      debug = debugJson;
+  const isAvmContract = /^avm_/.test(projectName);
+
+  log(`Is this an AVM contract? ${isAvmContract}`);
+  // debug info gets messed up by transpilation and function-renaming for AVM contracts
+  if (!isAvmContract) {
+    log(`Attempting to read debug info from ${debugArtifactFile}`);
+    try {
+      const debugJsonFilePath = `./target/${debugArtifactFile}`;
+      const debugJson = JSON.parse(readFileSync(debugJsonFilePath).toString());
+      if (debugJson) {
+        debug = debugJson;
+      }
+    } catch (err) {
+      // Ignore
     }
-  } catch (err) {
-    // Ignore
   }
 
   // Remove extraneous information from the buildJson (which was output by Nargo) to hone in on the function data we actually care about:
   const artifactJson: ContractArtifact = generateContractArtifact({ contract: buildJson, debug });
+
+  if (isAvmContract) {
+    // mutates artifactJson by transpiling contract's unconstrained bytecode to AVM and tagging them as OPEN
+    await transpileUnconstrainedToAVM(artifactJson)
+  }
 
   // Write the artifact:
   const artifactsDir = 'src/artifacts';
@@ -102,7 +170,7 @@ const main = () => {
 };
 
 try {
-  main();
+  await main();
 } catch (err: unknown) {
   log(format(`Error copying build output`, err));
   process.exit(1);

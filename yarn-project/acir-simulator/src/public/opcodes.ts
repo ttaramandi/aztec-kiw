@@ -34,8 +34,12 @@ export enum Opcode {
   CALL,
   // Call context
   SENDER,
+  ADDRESS,
+  SELECTOR,
+  ARGSHASH,
   // Blackbox ops
   PEDERSEN,
+  KECCAK256,
 }
 
 export const PC_MODIFIERS = [ Opcode.JUMP, Opcode.JUMPI, Opcode.INTERNALCALL, Opcode.INTERNALRETURN ];
