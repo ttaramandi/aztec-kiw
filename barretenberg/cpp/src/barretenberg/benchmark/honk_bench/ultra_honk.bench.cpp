@@ -9,14 +9,14 @@ using namespace proof_system;
 
 /**
  * @brief Benchmark: Construction of a Ultra Honk proof for a circuit determined by the provided circuit function
- */
-static void construct_proof_ultrahonk(State& state,
-                                      void (*test_circuit_function)(UltraCircuitBuilder&, size_t)) noexcept
-{
-    size_t num_iterations = 10; // 10x the circuit
-    bench_utils::construct_proof_with_specified_num_iterations<honk::UltraComposer>(
-        state, test_circuit_function, num_iterations);
-}
+//  */
+// static void construct_proof_ultrahonk(State& state,
+//                                       void (*test_circuit_function)(UltraCircuitBuilder&, size_t)) noexcept
+// {
+//     size_t num_iterations = 10; // 10x the circuit
+//     bench_utils::construct_proof_with_specified_num_iterations<honk::UltraComposer>(
+//         state, test_circuit_function, num_iterations);
+// }
 
 /**
  * @brief Benchmark: Construction of a Ultra Plonk proof with 2**n gates
@@ -28,21 +28,37 @@ static void construct_proof_ultrahonk_power_of_2(State& state) noexcept
         state, &bench_utils::generate_basic_arithmetic_circuit<UltraCircuitBuilder>, log2_of_gates);
 }
 
+static void witness_generation_power_of_2(State& state) noexcept
+{
+    auto log2_of_gates = static_cast<size_t>(state.range(0));
+    barretenberg::srs::init_crs_factory("../srs_db/ignition");
+
+    honk::UltraComposer composer;
+
+    for (auto _ : state) {
+        auto prover = bench_utils::get_prover(
+            composer, bench_utils::generate_basic_arithmetic_circuit<UltraCircuitBuilder>, log2_of_gates);
+    }
+}
 // Define benchmarks
-BENCHMARK_CAPTURE(construct_proof_ultrahonk, sha256, &bench_utils::generate_sha256_test_circuit<UltraCircuitBuilder>)
-    ->Unit(kMillisecond);
-BENCHMARK_CAPTURE(construct_proof_ultrahonk, keccak, &bench_utils::generate_keccak_test_circuit<UltraCircuitBuilder>)
-    ->Unit(kMillisecond);
-BENCHMARK_CAPTURE(construct_proof_ultrahonk,
-                  ecdsa_verification,
-                  &bench_utils::generate_ecdsa_verification_test_circuit<UltraCircuitBuilder>)
-    ->Unit(kMillisecond);
-BENCHMARK_CAPTURE(construct_proof_ultrahonk,
-                  merkle_membership,
-                  &bench_utils::generate_merkle_membership_test_circuit<UltraCircuitBuilder>)
-    ->Unit(kMillisecond);
+// BENCHMARK_CAPTURE(construct_proof_ultrahonk, sha256, &bench_utils::generate_sha256_test_circuit<UltraCircuitBuilder>)
+//     ->Unit(kMillisecond);
+// BENCHMARK_CAPTURE(construct_proof_ultrahonk, keccak, &bench_utils::generate_keccak_test_circuit<UltraCircuitBuilder>)
+//     ->Unit(kMillisecond);
+// BENCHMARK_CAPTURE(construct_proof_ultrahonk,
+//                   ecdsa_verification,
+//                   &bench_utils::generate_ecdsa_verification_test_circuit<UltraCircuitBuilder>)
+//     ->Unit(kMillisecond);
+// BENCHMARK_CAPTURE(construct_proof_ultrahonk,
+//                   merkle_membership,
+//                   &bench_utils::generate_merkle_membership_test_circuit<UltraCircuitBuilder>)
+//     ->Unit(kMillisecond);
 
 BENCHMARK(construct_proof_ultrahonk_power_of_2)
-    // 2**13 gates to 2**18 gates
-    ->DenseRange(13, 18)
+    // 2**13 gates to 2**24 gates
+    ->DenseRange(13, 24)
+    ->Unit(kMillisecond);
+BENCHMARK(witness_generation_power_of_2)
+    // 2**13 gates to 2**24 gates
+    ->DenseRange(13, 24)
     ->Unit(kMillisecond);
