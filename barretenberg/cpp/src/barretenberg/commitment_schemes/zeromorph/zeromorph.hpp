@@ -334,6 +334,7 @@ template <typename Curve> class ZeroMorphProver_ {
         std::span<FF> u_challenge = multilinear_challenge;
         size_t log_N = u_challenge.size();
         size_t N = 1 << log_N;
+        std::cout << "RHO:" << rho << std::endl;
 
         // Compute batching of unshifted polynomials f_i and to-be-shifted polynomials g_i:
         // f_batched = sum_{i=0}^{m-1}\rho^i*f_i and g_batched = sum_{i=0}^{l-1}\rho^{m+i}*g_i,
@@ -345,17 +346,23 @@ template <typename Curve> class ZeroMorphProver_ {
         Polynomial f_batched(N); // batched unshifted polynomials
         FF batching_scalar = FF(1);
         for (auto [f_poly, f_eval] : zip_view(f_polynomials, f_evaluations)) {
+            std::cout << "B:" << batching_scalar << std::endl;
             f_batched.add_scaled(f_poly, batching_scalar);
             batched_evaluation += batching_scalar * f_eval;
             batching_scalar *= rho;
         }
+        std::cout << "Bafter:" << batching_scalar << std::endl;
 
-        Polynomial g_batched(N); // batched to-be-shifted polynomials
+        int i = 0;
+        Polynomial g_batched{ N }; // batched to-be-shifted polynomials
         for (auto [g_poly, g_shift_eval] : zip_view(g_polynomials, g_shift_evaluations)) {
+            std::cout << "I:" << (i++) << " gp " << g_poly[0] << " batch " << batching_scalar << std::endl;
+            std::cout << "I:" << (i++) << g_batched << std::endl;
             g_batched.add_scaled(g_poly, batching_scalar);
             batched_evaluation += batching_scalar * g_shift_eval;
             batching_scalar *= rho;
         };
+        std::cout << "Iafter:" << (i++) << g_batched << std::endl;
 
         size_t num_groups = concatenation_groups.size();
         size_t num_chunks_per_group = concatenation_groups.empty() ? 0 : concatenation_groups[0].size();
