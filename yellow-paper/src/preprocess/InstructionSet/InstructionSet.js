@@ -7,8 +7,8 @@ const TOPICS_IN_SECTIONS = [
     "Name", "Summary", "Category", "Flags", "Args", "Expression", "Details", "Tag checks", "Tag updates", "Bit-size",
 ];
 
-const IN_TAG_DESCRIPTION = "The [tag/size](./state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.";
-const DST_TAG_DESCRIPTION = "The [tag/size](./state-model#tags-and-tagged-memory) to tag the destination with but not to check inputs against.";
+const IN_TAG_DESCRIPTION = "The [tag/size](./memory-state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.";
+const DST_TAG_DESCRIPTION = "The [tag/size](./memory-state-model#tags-and-tagged-memory) to tag the destination with but not to check inputs against.";
 const INDIRECT_FLAG_DESCRIPTION = "Toggles whether each memory-offset argument is an indirect offset. 0th bit corresponds to 0th offset arg, etc. Indirect offsets result in memory accesses like `M[M[offset]]` instead of the more standard `M[offset]`.";
 
 const INSTRUCTION_SET_RAW = [

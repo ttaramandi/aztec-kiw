@@ -1,6 +1,10 @@
-# State Model
+---
+sidebar_position: 2
+---
 
-The goal of this note is to describe the VM state model and to specify "internal" VM abstractions that can be mapped to circuit designs.
+# Memory Model
+
+The goal of this document is to describe the VM's memory model and to touch on the circuit-centric reasoning behind a memory-only model tagged memory.
 
 ## A memory-only state model
 
@@ -12,18 +16,23 @@ All data regions are linear blocks of memory where each memory cell stores a fin
 
 #### Main Memory
 
-Main memory stores the internal state of the current program being executed.
-Can be written to as well as read.
+Main memory is a read-write data structure that stores the internal state of the current program being executed.
 
-The main memory region stores _type tags_ alongside data values. [Type tags are explained further on in this document](#type tags).
+Main memory stores _type tags_ alongside data values. [Type tags are explained further on in this document](#type tags).
 
 #### Calldata
 
-Read-only data structure that stores the input data when executing a public function.
+Calldata is a read-only data structure that stores a public call's input data.
+
+> When the VM encounters a `CALL` instruction, its `argsOffset` and `argsSize` arguments specify the region of main memory that will become the calldata for the nested call.
+> Calldata can be copied into main memory via the `CALLDATACOPY` instruction.
 
 #### Returndata
 
-When a function is called from within the public VM, the return parameters of the called function are present in returndata.
+Returndata is a read-only data structure that stores data returned from a nested public call.
+
+> When the VM encounters a `CALL` instruction, its `retOffset` and `retSize` arguments specify the region of main memory to copy returndata into after the nested call completes.
+> When the VM encounters a `RETURN` instruction, its `retOffset` and `retSize` arguments specify the region of main memory containing data to return to the caller.
 
 ### Registers (and their absence in the AVM)
 

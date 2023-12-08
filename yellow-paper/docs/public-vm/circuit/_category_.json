@@ -1,0 +1,8 @@
+{
+  "label": "AVM Circuit",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "Aztec's Public VM circuit..."
+  }
+}

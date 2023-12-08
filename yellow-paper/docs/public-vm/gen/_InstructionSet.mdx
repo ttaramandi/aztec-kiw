@@ -466,7 +466,7 @@ Addition (a + b)
 - **Category**: arithmetic
 - **Flags**: 
 	- **indirect**: Toggles whether each memory-offset argument is an indirect offset. 0th bit corresponds to 0th offset arg, etc. Indirect offsets result in memory accesses like `M[M[offset]]` instead of the more standard `M[offset]`.
-	- **in-tag**: The [tag/size](./state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
+	- **in-tag**: The [tag/size](./memory-state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
 - **Args**: 
 	- **aOffset**: memory offset of the operation's left input
 	- **bOffset**: memory offset of the operation's right input
@@ -486,7 +486,7 @@ Subtraction (a - b)
 - **Category**: arithmetic
 - **Flags**: 
 	- **indirect**: Toggles whether each memory-offset argument is an indirect offset. 0th bit corresponds to 0th offset arg, etc. Indirect offsets result in memory accesses like `M[M[offset]]` instead of the more standard `M[offset]`.
-	- **in-tag**: The [tag/size](./state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
+	- **in-tag**: The [tag/size](./memory-state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
 - **Args**: 
 	- **aOffset**: memory offset of the operation's left input
 	- **bOffset**: memory offset of the operation's right input
@@ -506,7 +506,7 @@ Unsigned division (a / b)
 - **Category**: arithmetic
 - **Flags**: 
 	- **indirect**: Toggles whether each memory-offset argument is an indirect offset. 0th bit corresponds to 0th offset arg, etc. Indirect offsets result in memory accesses like `M[M[offset]]` instead of the more standard `M[offset]`.
-	- **in-tag**: The [tag/size](./state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
+	- **in-tag**: The [tag/size](./memory-state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
 - **Args**: 
 	- **aOffset**: memory offset of the operation's left input
 	- **bOffset**: memory offset of the operation's right input
@@ -526,7 +526,7 @@ Equality check (a == b)
 - **Category**: conditional
 - **Flags**: 
 	- **indirect**: Toggles whether each memory-offset argument is an indirect offset. 0th bit corresponds to 0th offset arg, etc. Indirect offsets result in memory accesses like `M[M[offset]]` instead of the more standard `M[offset]`.
-	- **in-tag**: The [tag/size](./state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
+	- **in-tag**: The [tag/size](./memory-state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
 - **Args**: 
 	- **aOffset**: memory offset of the operation's left input
 	- **bOffset**: memory offset of the operation's right input
@@ -546,7 +546,7 @@ Less-than check (a < b)
 - **Category**: conditional
 - **Flags**: 
 	- **indirect**: Toggles whether each memory-offset argument is an indirect offset. 0th bit corresponds to 0th offset arg, etc. Indirect offsets result in memory accesses like `M[M[offset]]` instead of the more standard `M[offset]`.
-	- **in-tag**: The [tag/size](./state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
+	- **in-tag**: The [tag/size](./memory-state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
 - **Args**: 
 	- **aOffset**: memory offset of the operation's left input
 	- **bOffset**: memory offset of the operation's right input
@@ -566,7 +566,7 @@ Less-than-or-equals check (a <= b)
 - **Category**: conditional
 - **Flags**: 
 	- **indirect**: Toggles whether each memory-offset argument is an indirect offset. 0th bit corresponds to 0th offset arg, etc. Indirect offsets result in memory accesses like `M[M[offset]]` instead of the more standard `M[offset]`.
-	- **in-tag**: The [tag/size](./state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
+	- **in-tag**: The [tag/size](./memory-state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
 - **Args**: 
 	- **aOffset**: memory offset of the operation's left input
 	- **bOffset**: memory offset of the operation's right input
@@ -586,7 +586,7 @@ Bitwise AND (a & b)
 - **Category**: bitwise
 - **Flags**: 
 	- **indirect**: Toggles whether each memory-offset argument is an indirect offset. 0th bit corresponds to 0th offset arg, etc. Indirect offsets result in memory accesses like `M[M[offset]]` instead of the more standard `M[offset]`.
-	- **in-tag**: The [tag/size](./state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
+	- **in-tag**: The [tag/size](./memory-state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
 - **Args**: 
 	- **aOffset**: memory offset of the operation's left input
 	- **bOffset**: memory offset of the operation's right input
@@ -606,7 +606,7 @@ Bitwise OR (a | b)
 - **Category**: bitwise
 - **Flags**: 
 	- **indirect**: Toggles whether each memory-offset argument is an indirect offset. 0th bit corresponds to 0th offset arg, etc. Indirect offsets result in memory accesses like `M[M[offset]]` instead of the more standard `M[offset]`.
-	- **in-tag**: The [tag/size](./state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
+	- **in-tag**: The [tag/size](./memory-state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
 - **Args**: 
 	- **aOffset**: memory offset of the operation's left input
 	- **bOffset**: memory offset of the operation's right input
@@ -626,7 +626,7 @@ Bitwise XOR (a ^ b)
 - **Category**: bitwise
 - **Flags**: 
 	- **indirect**: Toggles whether each memory-offset argument is an indirect offset. 0th bit corresponds to 0th offset arg, etc. Indirect offsets result in memory accesses like `M[M[offset]]` instead of the more standard `M[offset]`.
-	- **in-tag**: The [tag/size](./state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
+	- **in-tag**: The [tag/size](./memory-state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
 - **Args**: 
 	- **aOffset**: memory offset of the operation's left input
 	- **bOffset**: memory offset of the operation's right input
@@ -646,7 +646,7 @@ Bitwise NOT (inversion)
 - **Category**: bitwise
 - **Flags**: 
 	- **indirect**: Toggles whether each memory-offset argument is an indirect offset. 0th bit corresponds to 0th offset arg, etc. Indirect offsets result in memory accesses like `M[M[offset]]` instead of the more standard `M[offset]`.
-	- **in-tag**: The [tag/size](./state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
+	- **in-tag**: The [tag/size](./memory-state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
 - **Args**: 
 	- **aOffset**: memory offset of the operation's input
 	- **dstOffset**: memory offset specifying where to store operation's result
@@ -665,7 +665,7 @@ Bitwise leftward shift (a << b)
 - **Category**: bitwise
 - **Flags**: 
 	- **indirect**: Toggles whether each memory-offset argument is an indirect offset. 0th bit corresponds to 0th offset arg, etc. Indirect offsets result in memory accesses like `M[M[offset]]` instead of the more standard `M[offset]`.
-	- **in-tag**: The [tag/size](./state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
+	- **in-tag**: The [tag/size](./memory-state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
 - **Args**: 
 	- **aOffset**: memory offset of the operation's left input
 	- **bOffset**: memory offset of the operation's right input
@@ -685,7 +685,7 @@ Bitwise rightward shift (a >> b)
 - **Category**: bitwise
 - **Flags**: 
 	- **indirect**: Toggles whether each memory-offset argument is an indirect offset. 0th bit corresponds to 0th offset arg, etc. Indirect offsets result in memory accesses like `M[M[offset]]` instead of the more standard `M[offset]`.
-	- **in-tag**: The [tag/size](./state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
+	- **in-tag**: The [tag/size](./memory-state-model#tags-and-tagged-memory) to check inputs against and tag the destination with.
 - **Args**: 
 	- **aOffset**: memory offset of the operation's left input
 	- **bOffset**: memory offset of the operation's right input
@@ -705,7 +705,7 @@ Type cast
 - **Category**: types
 - **Flags**: 
 	- **indirect**: Toggles whether each memory-offset argument is an indirect offset. 0th bit corresponds to 0th offset arg, etc. Indirect offsets result in memory accesses like `M[M[offset]]` instead of the more standard `M[offset]`.
-	- **dst-tag**: The [tag/size](./state-model#tags-and-tagged-memory) to tag the destination with but not to check inputs against.
+	- **dst-tag**: The [tag/size](./memory-state-model#tags-and-tagged-memory) to tag the destination with but not to check inputs against.
 - **Args**: 
 	- **aOffset**: memory offset of word to cast
 	- **dstOffset**: memory offset specifying where to store operation's result
