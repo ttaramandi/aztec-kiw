@@ -59,6 +59,16 @@
       }
     },
     {
+      "name": "release-dbg",
+      "displayName": "Debugging build with Clang-16",
+      "description": "Build with globally installed Clang-16 in debug mode",
+      "inherits": "clang16",
+      "binaryDir": "build",
+      "environment": {
+        "CMAKE_BUILD_TYPE": "RelDebugAssert"
+      }
+    },
+    {
       "name": "asan",
       "displayName": "Debugging build with address sanitizer on Clang-16",
       "description": "Build with address sanitizer on clang16 with debugging information",
@@ -285,6 +295,11 @@
       "name": "clang16-dbg",
       "inherits": "default",
       "configurePreset": "clang16-dbg"
+    },
+    {
+      "name": "release-dbg",
+      "inherits": "default",
+      "configurePreset": "clang16"
     },
     {
       "name": "asan",

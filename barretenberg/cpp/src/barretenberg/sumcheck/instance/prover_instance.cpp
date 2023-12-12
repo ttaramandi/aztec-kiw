@@ -287,6 +287,8 @@ template <class Flavor> void ProverInstance_<Flavor>::initialize_prover_polynomi
     for (auto [prover_poly, key_poly] : zip_view(prover_polynomials.get_shifted(), proving_key->get_to_be_shifted())) {
         prover_poly = key_poly.shifted();
     }
+    ASSERT(prover_polynomials.get_unshifted().size() + prover_polynomials.get_shifted().size() ==
+           prover_polynomials.get_all().size());
 
     std::span<FF> public_wires_source = prover_polynomials.w_r;
 
