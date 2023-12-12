@@ -14,6 +14,7 @@
 
 #ifdef BBERG_DEBUG_LOG
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -78,6 +79,8 @@ template <typename... FuncArgs> void _debug_log(const char* func_name, const cha
     // Using fold expression to append args to stringstream
     ((ss << _summarize(&args) << " "), ...);
     std::string log_str = ss.str();
+    // Remove all newline characters
+    log_str.erase(std::remove(log_str.begin(), log_str.end(), '\n'), log_str.end());
     // Want to be able to catch offending statements in a debugger, this throws if we match an env variable pattern
     _debug_log_check_abort_condition(log_str);
     std::cout << log_str << std::endl;

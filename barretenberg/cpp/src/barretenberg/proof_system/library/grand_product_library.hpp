@@ -53,7 +53,6 @@ void compute_grand_product(const size_t circuit_size,
                            typename Flavor::ProverPolynomials& full_polynomials,
                            proof_system::RelationParameters<typename Flavor::FF>& relation_parameters)
 {
-    DEBUG_LOG_ALL(full_polynomials.get_all());
     using FF = typename Flavor::FF;
     using Polynomial = typename Flavor::Polynomial;
     using Accumulator = std::tuple_element_t<0, typename GrandProdRelation::SumcheckArrayOfValuesOverSubrelations>;
@@ -68,6 +67,7 @@ void compute_grand_product(const size_t circuit_size,
     const size_t num_threads = circuit_size >= get_num_cpus_pow2() ? get_num_cpus_pow2() : 1;
     const size_t block_size = circuit_size / num_threads;
     auto full_polynomials_view = full_polynomials.get_all();
+    DEBUG_LOG(full_polynomials_view[0]);
     parallel_for(num_threads, [&](size_t thread_idx) {
         const size_t start = thread_idx * block_size;
         const size_t end = (thread_idx + 1) * block_size;
@@ -83,8 +83,8 @@ void compute_grand_product(const size_t circuit_size,
         }
     });
 
-    DEBUG_LOG_ALL(numerator);
-    DEBUG_LOG_ALL(denominator);
+    DEBUG_LOG(numerator);
+    DEBUG_LOG(denominator);
 
     // Step (2)
     // Compute the accumulating product of the numerator and denominator terms.
@@ -111,9 +111,6 @@ void compute_grand_product(const size_t circuit_size,
         partial_numerators[thread_idx] = numerator[end - 1];
         partial_denominators[thread_idx] = denominator[end - 1];
     });
-
-    DEBUG_LOG_ALL(partial_numerators);
-    DEBUG_LOG_ALL(partial_denominators);
 
     parallel_for(num_threads, [&](size_t thread_idx) {
         const size_t start = thread_idx * block_size;
@@ -146,8 +143,6 @@ void compute_grand_product(const size_t circuit_size,
             grand_product_polynomial[i + 1] = numerator[i] * denominator[i];
         }
     });
-
-    DEBUG_LOG_ALL(grand_product_polynomial);
 }
 
 template <typename Flavor>
