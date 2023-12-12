@@ -187,7 +187,7 @@ class GoblinUltra {
     template <typename DataType>
     class WitnessEntities : public WireEntities<DataType>, public DerivedEntities<DataType> {
       public:
-        DEFINE_COMPOUND_GET_ALL(WireEntities<DataType>::get_all(), DerivedEntities<DataType>::get_all())
+        DEFINE_COMPOUND_GET_ALL(WireEntities<DataType>, DerivedEntities<DataType>)
 
         RefVector<DataType> get_wires() { return WireEntities<DataType>::get_all(); };
         RefVector<DataType> get_ecc_op_wires()
@@ -228,9 +228,7 @@ class GoblinUltra {
                         public WitnessEntities<DataType>,
                         public ShiftedEntities<DataType> {
       public:
-        DEFINE_COMPOUND_GET_ALL(PrecomputedEntities<DataType>::get_all(),
-                                WitnessEntities<DataType>::get_all(),
-                                ShiftedEntities<DataType>::get_all())
+        DEFINE_COMPOUND_GET_ALL(PrecomputedEntities<DataType>, WitnessEntities<DataType>, ShiftedEntities<DataType>)
 
         RefVector<DataType> get_wires() { return { this->w_l, this->w_r, this->w_o, this->w_4 }; };
         RefVector<DataType> get_ecc_op_wires()

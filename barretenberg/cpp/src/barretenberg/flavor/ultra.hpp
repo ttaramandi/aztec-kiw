@@ -178,9 +178,7 @@ class Ultra {
                         public WitnessEntities<DataType>,
                         public ShiftedEntities<DataType> {
       public:
-        DEFINE_COMPOUND_GET_ALL(PrecomputedEntities<DataType>::get_all(),
-                                WitnessEntities<DataType>::get_all(),
-                                ShiftedEntities<DataType>::get_all());
+        DEFINE_COMPOUND_GET_ALL(PrecomputedEntities<DataType>, WitnessEntities<DataType>, ShiftedEntities<DataType>);
         // get_wires inherited from WitnessEntities
         // Gemini-specific getters.
         RefVector<DataType> get_unshifted()
