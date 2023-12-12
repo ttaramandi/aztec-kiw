@@ -1,5 +1,4 @@
 #include "ultra_prover.hpp"
-#include "barretenberg/common/debug_log.hpp"
 #include "barretenberg/honk/proof_system/power_polynomial.hpp"
 #include "barretenberg/sumcheck/sumcheck.hpp"
 
@@ -179,32 +178,25 @@ template <UltraFlavor Flavor> plonk::proof& UltraProver_<Flavor>::export_proof()
 
 template <UltraFlavor Flavor> plonk::proof& UltraProver_<Flavor>::construct_proof()
 {
-    DEBUG_LOG_ALL(instance->prover_polynomials.get_all());
     // Add circuit size public input size and public inputs to transcript->
     execute_preamble_round();
 
-    DEBUG_LOG_ALL(instance->prover_polynomials.get_all());
     // Compute first three wire commitments
     execute_wire_commitments_round();
 
-    DEBUG_LOG_ALL(instance->prover_polynomials.get_all());
     // Compute sorted list accumulator and commitment
     execute_sorted_list_accumulator_round();
 
-    DEBUG_LOG_ALL(instance->prover_polynomials.get_all());
     // Fiat-Shamir: beta & gamma
     execute_log_derivative_inverse_round();
 
-    DEBUG_LOG_ALL(instance->prover_polynomials.get_all());
     // Compute grand product(s) and commitments.
     execute_grand_product_computation_round();
 
-    DEBUG_LOG_ALL(instance->prover_polynomials.get_all());
     // Fiat-Shamir: alpha
     // Run sumcheck subprotocol.
     execute_relation_check_rounds();
 
-    DEBUG_LOG_ALL(instance->prover_polynomials.get_all());
     // Fiat-Shamir: rho, y, x, z
     // Execute Zeromorph multilinear PCS
     execute_zeromorph_rounds();

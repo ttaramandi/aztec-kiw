@@ -7,3 +7,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "RelWithAssert")
   add_compile_options(-O3)
   remove_definitions(-DNDEBUG)
 endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL "RelDebugAssert")
+  add_compile_options(-O2 -g)
+  remove_definitions(-DNDEBUG)
+endif()
