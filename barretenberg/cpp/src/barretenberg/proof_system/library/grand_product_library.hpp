@@ -67,6 +67,7 @@ void compute_grand_product(const size_t circuit_size,
     const size_t num_threads = circuit_size >= get_num_cpus_pow2() ? get_num_cpus_pow2() : 1;
     const size_t block_size = circuit_size / num_threads;
     auto full_polynomials_view = full_polynomials.get_all();
+    DEBUG_LOG(full_polynomials_view[0]);
     parallel_for(num_threads, [&](size_t thread_idx) {
         const size_t start = thread_idx * block_size;
         const size_t end = (thread_idx + 1) * block_size;
@@ -111,8 +112,6 @@ void compute_grand_product(const size_t circuit_size,
         partial_denominators[thread_idx] = denominator[end - 1];
     });
 
-    DEBUG_LOG_ALL(partial_numerators);
-    DEBUG_LOG_ALL(partial_denominators);
     parallel_for(num_threads, [&](size_t thread_idx) {
         const size_t start = thread_idx * block_size;
         const size_t end = (thread_idx + 1) * block_size;
@@ -134,8 +133,6 @@ void compute_grand_product(const size_t circuit_size,
         FF::batch_invert(std::span{ &denominator[start], block_size });
     });
 
-    DEBUG_LOG(numerator);
-    DEBUG_LOG(denominator);
     // Step (3) Compute z_perm[i] = numerator[i] / denominator[i]
     auto& grand_product_polynomial = GrandProdRelation::get_grand_product_polynomial(full_polynomials);
     grand_product_polynomial[0] = 0;
@@ -146,7 +143,6 @@ void compute_grand_product(const size_t circuit_size,
             grand_product_polynomial[i + 1] = numerator[i] * denominator[i];
         }
     });
-    DEBUG_LOG(grand_product_polynomial);
 }
 
 template <typename Flavor>
@@ -166,7 +162,7 @@ void compute_grand_products(std::shared_ptr<typename Flavor::ProvingKey>& key,
         // For example, for LookupRelation, this will be `full_polynomials.z_lookup`
         barretenberg::Polynomial<FF>& full_polynomial =
             GrandProdRelation::get_grand_product_polynomial(full_polynomials);
-        barretenberg::Polynomial<FF>& key_polynomial = GrandProdRelation::get_grand_product_polynomial(*key);
+        auto& key_polynomial = GrandProdRelation::get_grand_product_polynomial(*key);
         full_polynomial = key_polynomial.share();
 
         compute_grand_product<Flavor, GrandProdRelation>(key->circuit_size, full_polynomials, relation_parameters);
