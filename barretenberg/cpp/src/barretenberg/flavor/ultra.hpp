@@ -194,12 +194,7 @@ class Ultra {
             return { this->table_1, this->table_2, this->table_3,      this->table_4, this->w_l,     this->w_r,
                      this->w_o,     this->w_4,     this->sorted_accum, this->z_perm,  this->z_lookup };
         };
-        RefVector<DataType> get_shifted()
-        {
-            return { this->table_1_shift,      this->table_2_shift, this->table_3_shift, this->table_4_shift,
-                     this->w_l_shift,          this->w_r_shift,     this->w_o_shift,     this->w_4_shift,
-                     this->sorted_accum_shift, this->z_perm_shift,  this->z_lookup_shift };
-        };
+        RefVector<DataType> get_shifted() { return ShiftedEntities<DataType>::get_all(); };
     };
 
   public:

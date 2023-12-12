@@ -281,6 +281,7 @@ std::shared_ptr<typename Flavor::ProvingKey> ProverInstance_<Flavor>::compute_pr
 
 template <class Flavor> void ProverInstance_<Flavor>::initialize_prover_polynomials()
 {
+    // TODO(AD): Copying all of these with
     prover_polynomials.q_c = proving_key->q_c;
     prover_polynomials.q_l = proving_key->q_l;
     prover_polynomials.q_r = proving_key->q_r;
@@ -342,6 +343,9 @@ template <class Flavor> void ProverInstance_<Flavor>::initialize_prover_polynomi
     prover_polynomials.z_lookup = proving_key->z_lookup;
     prover_polynomials.z_perm_shift = proving_key->z_perm.shifted();
     prover_polynomials.z_lookup_shift = proving_key->z_lookup.shifted();
+    for (auto& [label, x] : zip_view(prover_polynomials.get_labels(), prover_polynomials.get_all())) {
+        std::cout << label << ", " << x << std::endl;
+    }
 
     std::span<FF> public_wires_source = prover_polynomials.w_r;
 
