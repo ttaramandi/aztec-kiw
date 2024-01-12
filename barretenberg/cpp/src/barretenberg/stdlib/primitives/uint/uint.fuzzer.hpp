@@ -32,13 +32,13 @@ FastRandom VarianceRNG(0);
  */
 template <typename Builder> class UintFuzzBase {
   private:
-    typedef proof_system::plonk::stdlib::bool_t<Builder> bool_t;
-    typedef proof_system::plonk::stdlib::uint<Builder, uint8_t> uint_8_t;
-    typedef proof_system::plonk::stdlib::uint<Builder, uint16_t> uint_16_t;
-    typedef proof_system::plonk::stdlib::uint<Builder, uint32_t> uint_32_t;
-    typedef proof_system::plonk::stdlib::uint<Builder, uint64_t> uint_64_t;
-    typedef proof_system::plonk::stdlib::field_t<Builder> field_t;
-    typedef proof_system::plonk::stdlib::byte_array<Builder> byte_array_t;
+    typedef proof_system::stdlib::bool_t<Builder> bool_t;
+    typedef proof_system::stdlib::uint<Builder, uint8_t> uint_8_t;
+    typedef proof_system::stdlib::uint<Builder, uint16_t> uint_16_t;
+    typedef proof_system::stdlib::uint<Builder, uint32_t> uint_32_t;
+    typedef proof_system::stdlib::uint<Builder, uint64_t> uint_64_t;
+    typedef proof_system::stdlib::field_t<Builder> field_t;
+    typedef proof_system::stdlib::byte_array<Builder> byte_array_t;
 
     template <class From, class To> static To from_to(const From& in, const std::optional<size_t> size = std::nullopt)
     {

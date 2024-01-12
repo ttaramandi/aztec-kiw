@@ -5,10 +5,11 @@
 #include <benchmark/benchmark.h>
 
 using namespace benchmark;
-using namespace bb::plonk::stdlib::merkle_tree;
+using namespace bb::stdlib
 
-namespace {
-auto& engine = numeric::random::get_debug_engine();
+    namespace
+{
+    auto& engine = numeric::random::get_debug_engine();
 }
 
 constexpr size_t DEPTH = 256;

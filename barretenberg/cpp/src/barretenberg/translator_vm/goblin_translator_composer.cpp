@@ -11,7 +11,7 @@
 #include "barretenberg/proof_system/composer/composer_lib.hpp"
 #include "barretenberg/proof_system/composer/permutation_lib.hpp"
 
-namespace bb::honk {
+namespace bb {
 using Flavor = honk::flavor::GoblinTranslator;
 using Curve = typename Flavor::Curve;
 using FF = typename Flavor::FF;
@@ -314,4 +314,4 @@ std::shared_ptr<VerificationKey> GoblinTranslatorComposer::compute_verification_
 
     return verification_key;
 }
-} // namespace bb::honk
+} // namespace bb

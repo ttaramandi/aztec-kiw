@@ -5,7 +5,7 @@
 #include "barretenberg/srs/global_crs.hpp"
 #include "barretenberg/sumcheck/sumcheck.hpp"
 
-namespace bb::honk {
+namespace bb {
 template <typename Flavor> class UltraVerifier_ {
     using FF = typename Flavor::FF;
     using Commitment = typename Flavor::Commitment;
@@ -35,4 +35,4 @@ template <typename Flavor> class UltraVerifier_ {
 using UltraVerifier = UltraVerifier_<honk::flavor::Ultra>;
 using GoblinUltraVerifier = UltraVerifier_<honk::flavor::GoblinUltra>;
 
-} // namespace bb::honk
+} // namespace bb

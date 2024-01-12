@@ -5,9 +5,9 @@
 #include "barretenberg/transcript/transcript.hpp"
 
 using namespace bb;
-using namespace bb::honk::sumcheck;
+using namespace bb;
 
-namespace bb::honk {
+namespace bb {
 
 template <typename Flavor>
 DeciderVerifier_<Flavor>::DeciderVerifier_(const std::shared_ptr<Transcript>& transcript,
@@ -110,4 +110,4 @@ template <typename Flavor> bool DeciderVerifier_<Flavor>::verify_proof(const plo
 template class DeciderVerifier_<honk::flavor::Ultra>;
 template class DeciderVerifier_<honk::flavor::GoblinUltra>;
 
-} // namespace bb::honk
+} // namespace bb

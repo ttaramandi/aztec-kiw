@@ -8,7 +8,7 @@
 #include <cstddef>
 #include <utility>
 
-namespace bb::srs::factories {
+namespace bb::srs {
 
 /**
  * Create reference strings given a path to a directory of transcript files.
@@ -86,4 +86,4 @@ template <> class FileVerifierCrs<curve::Grumpkin> : public VerifierCrs<curve::G
     std::shared_ptr<Curve::AffineElement[]> monomials_;
 };
 
-} // namespace bb::srs::factories
+} // namespace bb::srs

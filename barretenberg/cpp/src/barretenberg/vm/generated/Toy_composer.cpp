@@ -6,7 +6,7 @@
 #include "barretenberg/proof_system/composer/permutation_lib.hpp"
 #include "barretenberg/vm/generated/Toy_verifier.hpp"
 
-namespace bb::honk {
+namespace bb {
 
 using Flavor = honk::flavor::ToyFlavor;
 void ToyComposer::compute_witness(CircuitConstructor& circuit)
@@ -82,4 +82,4 @@ std::shared_ptr<Flavor::VerificationKey> ToyComposer::compute_verification_key(C
     return verification_key;
 }
 
-} // namespace bb::honk
+} // namespace bb

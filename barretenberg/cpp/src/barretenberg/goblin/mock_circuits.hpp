@@ -19,7 +19,7 @@ class GoblinMockCircuits {
     using GoblinUltraBuilder = proof_system::GoblinUltraCircuitBuilder;
     using Flavor = bb::GoblinUltra;
     using RecursiveFlavor = bb::GoblinUltraRecursive;
-    using RecursiveVerifier = proof_system::plonk::stdlib::recursion::honk::GoblinRecursiveVerifier;
+    using RecursiveVerifier = proof_system::stdlib::recursion::honk::GoblinRecursiveVerifier;
     using KernelInput = Goblin::AccumulationOutput;
     static constexpr size_t NUM_OP_QUEUE_COLUMNS = Flavor::NUM_WIRES;
 

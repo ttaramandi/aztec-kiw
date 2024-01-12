@@ -31,9 +31,9 @@ FastRandom VarianceRNG(0);
  */
 template <typename Builder> class ByteArrayFuzzBase {
   private:
-    typedef proof_system::plonk::stdlib::byte_array<Builder> byte_array_t;
-    typedef proof_system::plonk::stdlib::field_t<Builder> field_t;
-    typedef proof_system::plonk::stdlib::safe_uint_t<Builder> suint_t;
+    typedef proof_system::stdlib::byte_array<Builder> byte_array_t;
+    typedef proof_system::stdlib::field_t<Builder> field_t;
+    typedef proof_system::stdlib::safe_uint_t<Builder> suint_t;
 
     template <class From, class To> static To from_to(const From& in, const std::optional<size_t> size = std::nullopt)
     {

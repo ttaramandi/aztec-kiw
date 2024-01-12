@@ -267,10 +267,10 @@ class GoblinUltraRecursive;
 } // namespace bb
 
 // Forward declare plonk flavors
-namespace bb::plonk::flavor {
+namespace bb {
 class Standard;
 class Ultra;
-} // namespace bb::plonk::flavor
+} // namespace bb
 
 // Establish concepts for testing flavor attributes
 namespace bb {

@@ -4,7 +4,7 @@
 #include "barretenberg/polynomials/polynomial.hpp"
 #include <typeinfo>
 
-namespace bb::honk::permutation_library {
+namespace bb {
 
 /**
  * @brief Compute a permutation grand product polynomial Z_perm(X)
@@ -428,4 +428,4 @@ template <typename Flavor> inline void compute_lagrange_polynomials_for_goblin_t
     proving_key->lagrange_second = lagrange_polynomial_second.share();
 }
 
-} // namespace bb::honk::permutation_library
+} // namespace bb

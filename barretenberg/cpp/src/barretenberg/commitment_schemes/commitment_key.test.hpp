@@ -13,7 +13,7 @@
 
 #include <gtest/gtest.h>
 
-namespace bb::honk::pcs {
+namespace bb {
 
 template <class CK> inline std::shared_ptr<CK> CreateCommitmentKey();
 
@@ -206,4 +206,4 @@ using IpaCommitmentSchemeParams = ::testing::Types<curve::Grumpkin>;
 // using CommitmentSchemeParams =
 //     ::testing::Types<fake::Params<barretenberg::g1>, fake::Params<grumpkin::g1>, kzg::Params>;
 
-} // namespace bb::honk::pcs
+} // namespace bb

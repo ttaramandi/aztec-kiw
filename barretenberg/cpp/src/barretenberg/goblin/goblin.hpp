@@ -66,7 +66,7 @@ class Goblin {
     using TranslatorBuilder = proof_system::GoblinTranslatorCircuitBuilder;
     using TranslatorComposer = proof_system::honk::GoblinTranslatorComposer;
     using RecursiveMergeVerifier =
-        proof_system::plonk::stdlib::recursion::goblin::MergeRecursiveVerifier_<GoblinUltraCircuitBuilder>;
+        proof_system::stdlib::recursion::goblin::MergeRecursiveVerifier_<GoblinUltraCircuitBuilder>;
     using MergeVerifier = proof_system::honk::MergeVerifier_<GUHFlavor>;
 
     std::shared_ptr<OpQueue> op_queue = std::make_shared<OpQueue>();

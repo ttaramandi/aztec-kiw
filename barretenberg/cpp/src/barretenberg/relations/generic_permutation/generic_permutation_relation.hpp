@@ -15,7 +15,7 @@
 #include "barretenberg/polynomials/univariate.hpp"
 #include "barretenberg/relations/relation_types.hpp"
 
-namespace bb::honk::sumcheck {
+namespace bb {
 /**
  * @brief Specifies positions of elements in the tuple of entities received from methods in the Settings class
  *
@@ -215,4 +215,4 @@ using GenericPermutationRelation = Relation<GenericPermutationRelationImpl<Setti
 
 template <typename Settings, typename FF> using GenericPermutation = GenericPermutationRelationImpl<Settings, FF>;
 
-} // namespace bb::honk::sumcheck
+} // namespace bb

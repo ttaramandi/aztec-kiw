@@ -1,6 +1,6 @@
 #include "pedersen.hpp"
 #include "barretenberg/ecc/curves/grumpkin/grumpkin.hpp"
-namespace bb::plonk::stdlib {
+namespace bb::stdlib {
 
 using namespace bb;
 using namespace bb;
@@ -90,4 +90,4 @@ template class pedersen_hash<proof_system::StandardCircuitBuilder>;
 template class pedersen_hash<proof_system::UltraCircuitBuilder>;
 template class pedersen_hash<proof_system::GoblinUltraCircuitBuilder>;
 
-} // namespace bb::plonk::stdlib
+} // namespace bb::stdlib

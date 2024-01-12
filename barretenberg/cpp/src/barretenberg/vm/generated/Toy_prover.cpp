@@ -11,7 +11,7 @@
 #include "barretenberg/relations/permutation_relation.hpp"
 #include "barretenberg/sumcheck/sumcheck.hpp"
 
-namespace bb::honk {
+namespace bb {
 
 using Flavor = honk::flavor::ToyFlavor;
 
@@ -128,4 +128,4 @@ plonk::proof& ToyProver::construct_proof()
     return export_proof();
 }
 
-} // namespace bb::honk
+} // namespace bb

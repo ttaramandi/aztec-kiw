@@ -27,8 +27,8 @@ FastRandom VarianceRNG(0);
  */
 template <typename Builder> class BoolFuzzBase {
   private:
-    typedef proof_system::plonk::stdlib::bool_t<Builder> bool_t;
-    typedef proof_system::plonk::stdlib::witness_t<Builder> witness_t;
+    typedef proof_system::stdlib::bool_t<Builder> bool_t;
+    typedef proof_system::stdlib::witness_t<Builder> witness_t;
 
   public:
     /**

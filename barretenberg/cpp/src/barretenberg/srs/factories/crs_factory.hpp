@@ -10,7 +10,7 @@ namespace bb::pairing {
 struct miller_lines;
 } // namespace bb::pairing
 
-namespace bb::srs::factories {
+namespace bb::srs {
 
 /**
  * A prover crs representation.
@@ -82,4 +82,4 @@ template <typename Curve> class CrsFactory {
     }
 };
 
-} // namespace bb::srs::factories
+} // namespace bb::srs

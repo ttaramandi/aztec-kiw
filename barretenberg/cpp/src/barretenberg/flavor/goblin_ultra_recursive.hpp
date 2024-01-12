@@ -41,7 +41,7 @@ namespace bb {
 class GoblinUltraRecursive {
   public:
     using CircuitBuilder = GoblinUltraCircuitBuilder;
-    using Curve = plonk::stdlib::bn254<CircuitBuilder>;
+    using Curve = stdlib::bn254<CircuitBuilder>;
     using GroupElement = Curve::Element;
     using FF = Curve::ScalarField;
     using Commitment = Curve::Element;
@@ -152,7 +152,7 @@ class GoblinUltraRecursive {
     // Reuse the VerifierCommitments from GoblinUltra
     using VerifierCommitments = GoblinUltra::VerifierCommitments_<Commitment, VerificationKey>;
     // Reuse the transcript from GoblinUltra
-    using Transcript = proof_system::plonk::stdlib::recursion::honk::Transcript<CircuitBuilder>;
+    using Transcript = proof_system::stdlib::recursion::honk::Transcript<CircuitBuilder>;
 };
 
 } // namespace bb

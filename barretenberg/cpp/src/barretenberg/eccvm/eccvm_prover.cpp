@@ -10,7 +10,7 @@
 #include "barretenberg/relations/permutation_relation.hpp"
 #include "barretenberg/sumcheck/sumcheck.hpp"
 
-namespace bb::honk {
+namespace bb {
 
 /**
  * Create ECCVMProver_ from proving key, witness and manifest.
@@ -309,4 +309,4 @@ template <ECCVMFlavor Flavor> plonk::proof& ECCVMProver_<Flavor>::construct_proo
 
 template class ECCVMProver_<honk::flavor::ECCVM>;
 
-} // namespace bb::honk
+} // namespace bb

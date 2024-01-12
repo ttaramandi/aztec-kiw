@@ -5,7 +5,7 @@
 #include "barretenberg/stdlib/recursion/honk/transcript/transcript.hpp"
 #include "barretenberg/sumcheck/sumcheck.hpp"
 
-namespace bb::plonk::stdlib::recursion::honk {
+namespace bb::stdlib {
 template <typename Flavor> class UltraRecursiveVerifier_ {
   public:
     using FF = typename Flavor::FF;
@@ -41,4 +41,4 @@ template <typename Flavor> class UltraRecursiveVerifier_ {
 // arithmetization.
 using UltraRecursiveVerifier = UltraRecursiveVerifier_<UltraCircuitBuilder>;
 using GoblinRecursiveVerifier = UltraRecursiveVerifier_<bb::GoblinUltraRecursive>;
-} // namespace bb::plonk::stdlib::recursion::honk
+} // namespace bb::stdlib

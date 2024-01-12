@@ -32,7 +32,7 @@ using g1 = barretenberg::group<barretenberg::fr, barretenberg::fq, GrumpkinG1Par
 
 }; // namespace grumpkin
 
-namespace curve {
+namespace bb::curve {
 class Grumpkin {
   public:
     using ScalarField = barretenberg::fq;
@@ -46,4 +46,4 @@ class Grumpkin {
     // with stdlib types, and "native" verification will be acheived via a simulated builder.
     static constexpr bool is_stdlib_type = false;
 };
-} // namespace curve
+} // namespace bb::curve

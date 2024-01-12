@@ -18,7 +18,7 @@
  * The challenges are ρ (batching) and r (random evaluation).
  *
  */
-namespace bb::honk::pcs::shplonk {
+namespace bb {
 
 /**
  * @brief Polynomial G(X) = Q(X) - ∑ₖ ẑₖ(r)⋅( Bₖ(X) − Tₖ(z) ), where Q(X) = ∑ₖ ( Bₖ(X) − Tₖ(X) ) / zₖ(X)
@@ -271,4 +271,4 @@ template <typename Curve> class ShplonkVerifier_ {
         return { { z_challenge, Fr(0) }, G_commitment };
     };
 };
-} // namespace bb::honk::pcs::shplonk
+} // namespace bb

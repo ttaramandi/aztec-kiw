@@ -10,11 +10,12 @@ namespace proofs {
 namespace join_split {
 
 using namespace join_split_example::proofs::join_split;
-using namespace bb::plonk::stdlib;
+using namespace bb::stdlib;
 using namespace join_split_example::proofs::notes::native;
-using namespace bb::plonk::stdlib::merkle_tree;
+using namespace bb::stdlib
 
-join_split_tx noop_tx()
+    join_split_tx
+    noop_tx()
 {
     grumpkin::fr priv_key = grumpkin::fr::random_element();
     grumpkin::g1::affine_element pub_key = grumpkin::g1::one * priv_key;

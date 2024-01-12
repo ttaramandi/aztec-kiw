@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <utility>
 
-namespace bb::srs::factories {
+namespace bb::srs {
 
 /**
  * Create reference strings given pointers to in memory buffers.
@@ -25,4 +25,4 @@ class MemGrumpkinCrsFactory : public CrsFactory<curve::Grumpkin> {
     std::shared_ptr<barretenberg::srs::factories::VerifierCrs<curve::Grumpkin>> verifier_crs_;
 };
 
-} // namespace bb::srs::factories
+} // namespace bb::srs

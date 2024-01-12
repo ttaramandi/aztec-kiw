@@ -32,11 +32,9 @@ namespace bench_utils {
  */
 template <typename Builder> void generate_basic_arithmetic_circuit(Builder& builder, size_t log2_num_gates)
 {
-    proof_system::plonk::stdlib::field_t a(
-        proof_system::plonk::stdlib::witness_t(&builder, barretenberg::fr::random_element()));
-    proof_system::plonk::stdlib::field_t b(
-        proof_system::plonk::stdlib::witness_t(&builder, barretenberg::fr::random_element()));
-    proof_system::plonk::stdlib::field_t c(&builder);
+    proof_system::stdlib::field_t a(proof_system::stdlib::witness_t(&builder, barretenberg::fr::random_element()));
+    proof_system::stdlib::field_t b(proof_system::stdlib::witness_t(&builder, barretenberg::fr::random_element()));
+    proof_system::stdlib::field_t c(&builder);
     size_t passes = (1UL << log2_num_gates) / 4 - 4;
     if (static_cast<int>(passes) <= 0) {
         throw std::runtime_error("too few gates");
@@ -60,9 +58,9 @@ template <typename Builder> void generate_sha256_test_circuit(Builder& builder, 
 {
     std::string in;
     in.resize(32);
-    proof_system::plonk::stdlib::packed_byte_array<Builder> input(&builder, in);
+    proof_system::stdlib::packed_byte_array<Builder> input(&builder, in);
     for (size_t i = 0; i < num_iterations; i++) {
-        input = proof_system::plonk::stdlib::sha256<Builder>(input);
+        input = proof_system::stdlib::sha256<Builder>(input);
     }
 }
 
@@ -76,9 +74,9 @@ template <typename Builder> void generate_keccak_test_circuit(Builder& builder, 
 {
     std::string in = "abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz01";
 
-    proof_system::plonk::stdlib::byte_array<Builder> input(&builder, in);
+    proof_system::stdlib::byte_array<Builder> input(&builder, in);
     for (size_t i = 0; i < num_iterations; i++) {
-        input = proof_system::plonk::stdlib::keccak<Builder>::hash(input);
+        input = proof_system::stdlib::keccak<Builder>::hash(input);
     }
 }
 
@@ -90,7 +88,7 @@ template <typename Builder> void generate_keccak_test_circuit(Builder& builder, 
  */
 template <typename Builder> void generate_ecdsa_verification_test_circuit(Builder& builder, size_t num_iterations)
 {
-    using curve = proof_system::plonk::stdlib::secp256k1<Builder>;
+    using curve = proof_system::stdlib::secp256k1<Builder>;
     using fr = typename curve::fr;
     using fq = typename curve::fq;
     using g1 = typename curve::g1;
@@ -116,19 +114,18 @@ template <typename Builder> void generate_ecdsa_verification_test_circuit(Builde
 
         typename curve::g1_bigfr_ct public_key = curve::g1_bigfr_ct::from_witness(&builder, account.public_key);
 
-        proof_system::plonk::stdlib::ecdsa::signature<Builder> sig{ typename curve::byte_array_ct(&builder, rr),
-                                                                    typename curve::byte_array_ct(&builder, ss),
-                                                                    proof_system::plonk::stdlib::uint8<Builder>(
-                                                                        &builder, vv) };
+        proof_system::stdlib::ecdsa::signature<Builder> sig{ typename curve::byte_array_ct(&builder, rr),
+                                                             typename curve::byte_array_ct(&builder, ss),
+                                                             proof_system::stdlib::uint8<Builder>(&builder, vv) };
 
         typename curve::byte_array_ct message(&builder, message_string);
 
         // Verify ecdsa signature
-        proof_system::plonk::stdlib::ecdsa::verify_signature<Builder,
-                                                             curve,
-                                                             typename curve::fq_ct,
-                                                             typename curve::bigfr_ct,
-                                                             typename curve::g1_bigfr_ct>(message, public_key, sig);
+        proof_system::stdlib::ecdsa::verify_signature<Builder,
+                                                      curve,
+                                                      typename curve::fq_ct,
+                                                      typename curve::bigfr_ct,
+                                                      typename curve::g1_bigfr_ct>(message, public_key, sig);
     }
 }
 
@@ -140,7 +137,7 @@ template <typename Builder> void generate_ecdsa_verification_test_circuit(Builde
  */
 template <typename Builder> void generate_merkle_membership_test_circuit(Builder& builder, size_t num_iterations)
 {
-    using namespace bb::plonk::stdlib;
+    using namespace bb::stdlib;
     using field_ct = field_t<Builder>;
     using witness_ct = witness_t<Builder>;
     using witness_ct = witness_t<Builder>;

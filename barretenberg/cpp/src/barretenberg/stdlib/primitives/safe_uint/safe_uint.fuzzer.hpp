@@ -110,11 +110,11 @@ FastRandom VarianceRNG(0);
  */
 template <typename Builder> class SafeUintFuzzBase {
   private:
-    typedef proof_system::plonk::stdlib::bool_t<Builder> bool_t;
-    typedef proof_system::plonk::stdlib::field_t<Builder> field_t;
-    typedef proof_system::plonk::stdlib::safe_uint_t<Builder> suint_t;
-    typedef proof_system::plonk::stdlib::witness_t<Builder> witness_t;
-    typedef proof_system::plonk::stdlib::public_witness_t<Builder> public_witness_t;
+    typedef proof_system::stdlib::bool_t<Builder> bool_t;
+    typedef proof_system::stdlib::field_t<Builder> field_t;
+    typedef proof_system::stdlib::safe_uint_t<Builder> suint_t;
+    typedef proof_system::stdlib::witness_t<Builder> witness_t;
+    typedef proof_system::stdlib::public_witness_t<Builder> public_witness_t;
 
   public:
     /**

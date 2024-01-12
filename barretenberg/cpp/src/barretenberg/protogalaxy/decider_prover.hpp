@@ -8,7 +8,7 @@
 #include "barretenberg/sumcheck/sumcheck_output.hpp"
 #include "barretenberg/transcript/transcript.hpp"
 
-namespace bb::honk {
+namespace bb {
 
 template <UltraFlavor Flavor> class DeciderProver_ {
     using FF = typename Flavor::FF;
@@ -57,4 +57,4 @@ template <UltraFlavor Flavor> class DeciderProver_ {
 
 using DeciderProver = DeciderProver_<honk::flavor::Ultra>;
 
-} // namespace bb::honk
+} // namespace bb

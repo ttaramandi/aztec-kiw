@@ -49,7 +49,7 @@ namespace bb {
 template <typename BuilderType> class UltraRecursive_ {
   public:
     using CircuitBuilder = BuilderType; // Determines arithmetization of circuit instantiated with this flavor
-    using Curve = plonk::stdlib::bn254<CircuitBuilder>;
+    using Curve = stdlib::bn254<CircuitBuilder>;
     using GroupElement = typename Curve::Element;
     using Commitment = typename Curve::Element;
     using CommitmentHandle = typename Curve::Element;
@@ -378,7 +378,7 @@ template <typename BuilderType> class UltraRecursive_ {
         }
     };
 
-    using Transcript = proof_system::plonk::stdlib::recursion::honk::Transcript<CircuitBuilder>;
+    using Transcript = proof_system::stdlib::recursion::honk::Transcript<CircuitBuilder>;
 };
 
 } // namespace bb

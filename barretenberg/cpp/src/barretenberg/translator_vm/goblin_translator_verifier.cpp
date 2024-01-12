@@ -4,9 +4,9 @@
 #include "barretenberg/transcript/transcript.hpp"
 
 using namespace bb;
-using namespace bb::honk::sumcheck;
+using namespace bb;
 
-namespace bb::honk {
+namespace bb {
 
 GoblinTranslatorVerifier::GoblinTranslatorVerifier(
     const std::shared_ptr<typename Flavor::VerificationKey>& verifier_key,
@@ -312,4 +312,4 @@ bool GoblinTranslatorVerifier::verify_translation(const TranslationEvaluations& 
     return is_value_reconstructed;
 }
 
-} // namespace bb::honk
+} // namespace bb

@@ -4,7 +4,7 @@
 #include "barretenberg/ecc/scalar_multiplication/scalar_multiplication.hpp"
 #include "barretenberg/srs/factories/crs_factory.hpp"
 
-namespace bb::srs::factories {
+namespace bb::srs {
 // Common to both Grumpkin and Bn254, and generally curves regardless of pairing-friendliness
 template <typename Curve> class MemProverCrs : public ProverCrs<Curve> {
   public:
@@ -25,4 +25,4 @@ template <typename Curve> class MemProverCrs : public ProverCrs<Curve> {
     std::shared_ptr<typename Curve::AffineElement[]> monomials_;
 };
 
-} // namespace bb::srs::factories
+} // namespace bb::srs

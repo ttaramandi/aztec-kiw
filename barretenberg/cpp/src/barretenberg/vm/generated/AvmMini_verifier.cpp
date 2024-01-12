@@ -6,9 +6,9 @@
 #include "barretenberg/transcript/transcript.hpp"
 
 using namespace bb;
-using namespace bb::honk::sumcheck;
+using namespace bb;
 
-namespace bb::honk {
+namespace bb {
 AvmMiniVerifier::AvmMiniVerifier(std::shared_ptr<Flavor::VerificationKey> verifier_key)
     : key(verifier_key)
 {}
@@ -147,4 +147,4 @@ bool AvmMiniVerifier::verify_proof(const plonk::proof& proof)
     return sumcheck_verified.value();
 }
 
-} // namespace bb::honk
+} // namespace bb

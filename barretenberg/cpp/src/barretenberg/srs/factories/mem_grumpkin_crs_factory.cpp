@@ -9,7 +9,7 @@ namespace {
 
 using namespace curve;
 using namespace bb;
-using namespace bb::srs::factories;
+using namespace bb::srs;
 
 using Curve = curve::Grumpkin;
 
@@ -35,7 +35,7 @@ class MemVerifierCrs : public VerifierCrs<Grumpkin> {
 
 } // namespace
 
-namespace bb::srs::factories {
+namespace bb::srs {
 
 MemGrumpkinCrsFactory::MemGrumpkinCrsFactory(std::vector<Grumpkin::AffineElement> const& points)
     : prover_crs_(std::make_shared<MemProverCrs<Grumpkin>>(points))
@@ -52,4 +52,4 @@ std::shared_ptr<barretenberg::srs::factories::VerifierCrs<Grumpkin>> MemGrumpkin
     return verifier_crs_;
 }
 
-} // namespace bb::srs::factories
+} // namespace bb::srs

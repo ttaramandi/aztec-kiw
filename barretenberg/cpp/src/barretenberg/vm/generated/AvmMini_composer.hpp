@@ -8,7 +8,7 @@
 #include "barretenberg/vm/generated/AvmMini_prover.hpp"
 #include "barretenberg/vm/generated/AvmMini_verifier.hpp"
 
-namespace bb::honk {
+namespace bb {
 class AvmMiniComposer {
   public:
     using Flavor = honk::flavor::AvmMiniFlavor;
@@ -66,4 +66,4 @@ class AvmMiniComposer {
     };
 };
 
-} // namespace bb::honk
+} // namespace bb

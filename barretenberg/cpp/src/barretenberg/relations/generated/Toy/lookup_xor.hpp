@@ -7,7 +7,7 @@
 #include <cstddef>
 #include <tuple>
 
-namespace bb::honk::sumcheck {
+namespace bb {
 
 /**
  * @brief This class contains an example of how to set LookupSettings classes used by the
@@ -171,4 +171,4 @@ class lookup_xor_lookup_settings {
 template <typename FF_> using lookup_xor_relation = GenericLookupRelation<lookup_xor_lookup_settings, FF_>;
 template <typename FF_> using lookup_xor = GenericLookup<lookup_xor_lookup_settings, FF_>;
 
-} // namespace bb::honk::sumcheck
+} // namespace bb

@@ -6,7 +6,7 @@
 
 #include "../../primitives/circuit_builders/circuit_builders.hpp"
 
-namespace proof_system::plonk::stdlib {
+namespace bb {
 
 using namespace bb;
 /**
@@ -32,4 +32,4 @@ template <typename Builder> class poseidon2 {
 
 extern template class poseidon2<proof_system::GoblinUltraCircuitBuilder>;
 
-} // namespace proof_system::plonk::stdlib
+} // namespace bb
