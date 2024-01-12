@@ -5,7 +5,6 @@
 #include "barretenberg/transcript/transcript.hpp"
 
 using namespace bb;
-using namespace bb;
 
 namespace bb {
 template <typename Flavor>
@@ -281,6 +280,6 @@ template <typename Flavor> bool ECCVMVerifier_<Flavor>::verify_proof(const plonk
     return sumcheck_verified.value() && multivariate_opening_verified && univariate_opening_verified;
 }
 
-template class ECCVMVerifier_<honk::flavor::ECCVM>;
+template class ECCVMVerifier_<ECCVM>;
 
 } // namespace bb

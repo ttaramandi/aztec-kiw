@@ -32,7 +32,7 @@ AvmMiniVerifier& AvmMiniVerifier::operator=(AvmMiniVerifier&& other) noexcept
  */
 bool AvmMiniVerifier::verify_proof(const plonk::proof& proof)
 {
-    using Flavor = honk::flavor::AvmMiniFlavor;
+    using Flavor = AvmMiniFlavor;
     using FF = Flavor::FF;
     using Commitment = Flavor::Commitment;
     // using Curve = Flavor::Curve;

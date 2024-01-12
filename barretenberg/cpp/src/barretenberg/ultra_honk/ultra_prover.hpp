@@ -58,7 +58,7 @@ template <UltraFlavor Flavor> class UltraProver_ {
     plonk::proof proof;
 };
 
-using UltraProver = UltraProver_<honk::flavor::Ultra>;
-using GoblinUltraProver = UltraProver_<honk::flavor::GoblinUltra>;
+using UltraProver = UltraProver_<Ultra>;
+using GoblinUltraProver = UltraProver_<GoblinUltra>;
 
 } // namespace bb

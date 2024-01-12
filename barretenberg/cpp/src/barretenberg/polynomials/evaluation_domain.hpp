@@ -67,5 +67,5 @@ template <typename FF> class EvaluationDomain {
 };
 
 // add alias for compatibility
-using evaluation_domain = EvaluationDomain<barretenberg::fr>;
+using evaluation_domain = EvaluationDomain<bb::fr>;
 } // namespace bb

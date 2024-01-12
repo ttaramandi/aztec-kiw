@@ -68,7 +68,7 @@ TEST(stdlib_keccak, keccak_rho_output_table)
 {
     Builder builder = Builder();
 
-    barretenberg::constexpr_for<0, 25, 1>([&]<size_t i> {
+    bb::constexpr_for<0, 25, 1>([&]<size_t i> {
         uint256_t extended_native = 0;
         uint256_t binary_native = 0;
         for (size_t j = 0; j < 64; ++j) {

@@ -42,12 +42,12 @@ MemGrumpkinCrsFactory::MemGrumpkinCrsFactory(std::vector<Grumpkin::AffineElement
     , verifier_crs_(std::make_shared<MemVerifierCrs>(points))
 {}
 
-std::shared_ptr<barretenberg::srs::factories::ProverCrs<Grumpkin>> MemGrumpkinCrsFactory::get_prover_crs(size_t)
+std::shared_ptr<bb::srs::factories::ProverCrs<Grumpkin>> MemGrumpkinCrsFactory::get_prover_crs(size_t)
 {
     return prover_crs_;
 }
 
-std::shared_ptr<barretenberg::srs::factories::VerifierCrs<Grumpkin>> MemGrumpkinCrsFactory::get_verifier_crs(size_t)
+std::shared_ptr<bb::srs::factories::VerifierCrs<Grumpkin>> MemGrumpkinCrsFactory::get_verifier_crs(size_t)
 {
     return verifier_crs_;
 }

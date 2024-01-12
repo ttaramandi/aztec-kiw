@@ -273,6 +273,6 @@ bool ProtoGalaxyVerifier_<VerifierInstances>::verify_folding_proof(std::vector<u
     return verified;
 }
 
-template class ProtoGalaxyVerifier_<VerifierInstances_<honk::flavor::Ultra, 2>>;
-template class ProtoGalaxyVerifier_<VerifierInstances_<honk::flavor::GoblinUltra, 2>>;
+template class ProtoGalaxyVerifier_<VerifierInstances_<Ultra, 2>>;
+template class ProtoGalaxyVerifier_<VerifierInstances_<GoblinUltra, 2>>;
 } // namespace bb

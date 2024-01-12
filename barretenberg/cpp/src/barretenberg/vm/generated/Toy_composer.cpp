@@ -8,7 +8,7 @@
 
 namespace bb {
 
-using Flavor = honk::flavor::ToyFlavor;
+using Flavor = ToyFlavor;
 void ToyComposer::compute_witness(CircuitConstructor& circuit)
 {
     if (computed_witness) {

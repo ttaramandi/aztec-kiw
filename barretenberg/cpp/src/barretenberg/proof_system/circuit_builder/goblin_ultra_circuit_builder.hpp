@@ -208,5 +208,5 @@ template <typename FF> class GoblinUltraCircuitBuilder_ : public UltraCircuitBui
 
     bool check_circuit();
 };
-using GoblinUltraCircuitBuilder = GoblinUltraCircuitBuilder_<barretenberg::fr>;
+using GoblinUltraCircuitBuilder = GoblinUltraCircuitBuilder_<bb::fr>;
 } // namespace bb

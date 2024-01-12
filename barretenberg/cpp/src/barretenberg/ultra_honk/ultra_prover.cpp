@@ -212,7 +212,7 @@ template <UltraFlavor Flavor> plonk::proof& UltraProver_<Flavor>::construct_proo
     return export_proof();
 }
 
-template class UltraProver_<honk::flavor::Ultra>;
-template class UltraProver_<honk::flavor::GoblinUltra>;
+template class UltraProver_<Ultra>;
+template class UltraProver_<GoblinUltra>;
 
 } // namespace bb

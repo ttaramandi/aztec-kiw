@@ -78,9 +78,9 @@ TEST(GoblinTranslatorCircuitBuilder, CircuitBuilderBaseCase)
  */
 TEST(GoblinTranslatorCircuitBuilder, SeveralOperationCorrectness)
 {
-    using point = barretenberg::g1::affine_element;
-    using scalar = barretenberg::fr;
-    using Fq = barretenberg::fq;
+    using point = bb::g1::affine_element;
+    using scalar = bb::fr;
+    using Fq = bb::fq;
 
     auto P1 = point::random_element();
     auto P2 = point::random_element();

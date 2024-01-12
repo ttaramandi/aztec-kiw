@@ -425,7 +425,7 @@ template <class Flavor> void ProverInstance_<Flavor>::compute_grand_product_poly
     grand_product_library::compute_grand_products<Flavor>(proving_key, prover_polynomials, relation_parameters);
 }
 
-template class ProverInstance_<honk::flavor::Ultra>;
-template class ProverInstance_<honk::flavor::GoblinUltra>;
+template class ProverInstance_<Ultra>;
+template class ProverInstance_<GoblinUltra>;
 
 } // namespace bb

@@ -307,6 +307,6 @@ template <ECCVMFlavor Flavor> plonk::proof& ECCVMProver_<Flavor>::construct_proo
     return export_proof();
 }
 
-template class ECCVMProver_<honk::flavor::ECCVM>;
+template class ECCVMProver_<ECCVM>;
 
 } // namespace bb

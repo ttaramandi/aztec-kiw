@@ -8,7 +8,7 @@
 
 namespace bb {
 
-using Flavor = honk::flavor::AvmMiniFlavor;
+using Flavor = AvmMiniFlavor;
 void AvmMiniComposer::compute_witness(CircuitConstructor& circuit)
 {
     if (computed_witness) {

@@ -6,7 +6,7 @@ using namespace barretenberg;
 
 TEST(fr, Msgpack)
 {
-    auto [actual, expected] = msgpack_roundtrip(barretenberg::fr{ 1ULL, 2ULL, 3ULL, 4ULL });
+    auto [actual, expected] = msgpack_roundtrip(bb::fr{ 1ULL, 2ULL, 3ULL, 4ULL });
     EXPECT_EQ(actual, expected);
 }
 

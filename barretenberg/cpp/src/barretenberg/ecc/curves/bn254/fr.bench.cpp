@@ -126,8 +126,8 @@ uint64_t rdtsc()
 
 constexpr size_t NUM_POINTS = 1 << 24;
 constexpr size_t NUM_INVERSIONS = 1 << 20;
-std::vector<barretenberg::fr> oldx;
-std::vector<barretenberg::fr> oldy;
+std::vector<bb::fr> oldx;
+std::vector<bb::fr> oldy;
 
 fr accx;
 fr accy;

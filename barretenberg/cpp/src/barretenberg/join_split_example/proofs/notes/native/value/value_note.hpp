@@ -18,9 +18,9 @@ struct value_note {
     uint32_t asset_id;
     bool account_required;
     grumpkin::g1::affine_element owner;
-    barretenberg::fr secret;
-    barretenberg::fr creator_pubkey;
-    barretenberg::fr input_nullifier;
+    bb::fr secret;
+    bb::fr creator_pubkey;
+    bb::fr input_nullifier;
 
     bool operator==(value_note const&) const = default;
 

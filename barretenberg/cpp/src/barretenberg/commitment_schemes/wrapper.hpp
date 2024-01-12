@@ -6,9 +6,9 @@
 namespace bb {
 
 struct OpeningProof {
-    std::vector<barretenberg::g1::affine_element> gemini;
-    barretenberg::g1::affine_element shplonk;
-    barretenberg::g1::affine_element kzg;
+    std::vector<bb::g1::affine_element> gemini;
+    bb::g1::affine_element shplonk;
+    bb::g1::affine_element kzg;
 };
 
 } // namespace bb

@@ -12,7 +12,7 @@ namespace bb {
 
 class AvmMiniProver {
 
-    using Flavor = honk::flavor::AvmMiniFlavor;
+    using Flavor = AvmMiniFlavor;
     using FF = Flavor::FF;
     using PCS = Flavor::PCS;
     using PCSCommitmentKey = Flavor::CommitmentKey;

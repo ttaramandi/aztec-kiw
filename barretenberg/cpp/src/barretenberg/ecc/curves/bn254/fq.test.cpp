@@ -16,7 +16,7 @@ void shallow_copy(const fq& in, fq& out)
 };
 TEST(fq, Msgpack)
 {
-    auto [actual, expected] = msgpack_roundtrip(barretenberg::fq{ 1ULL, 2ULL, 3ULL, 4ULL });
+    auto [actual, expected] = msgpack_roundtrip(bb::fq{ 1ULL, 2ULL, 3ULL, 4ULL });
     EXPECT_EQ(actual, expected);
 }
 

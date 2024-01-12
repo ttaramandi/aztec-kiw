@@ -286,7 +286,7 @@ uint_plookup<Builder, Native> uint_plookup<Builder, Native>::logic_operator(cons
     }
     uint_plookup<Builder, Native> result(ctx);
     // result.accumulators.resize(num_accumulators());
-    field_t<Builder> scaling_factor(context, barretenberg::fr(1ULL << bits_per_limb));
+    field_t<Builder> scaling_factor(context, bb::fr(1ULL << bits_per_limb));
 
     // N.B. THIS LOOP ONLY WORKS IF THE LOGIC TABLE SLICE SIZE IS HALF THAT OF `bits_per_limb`
     for (size_t i = 0; i < num_accumulators(); ++i) {

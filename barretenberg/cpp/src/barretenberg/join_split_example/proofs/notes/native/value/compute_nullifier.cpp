@@ -18,7 +18,7 @@ fr compute_nullifier(grumpkin::fq const& note_commitment,
     auto hashed_pk = crypto::pedersen_commitment::commit_native(
         { fr(account_private_key) }, GeneratorIndex::JOIN_SPLIT_NULLIFIER_ACCOUNT_PRIVATE_KEY);
 
-    std::vector<barretenberg::fr> buf{
+    std::vector<bb::fr> buf{
         note_commitment,
         hashed_pk.x,
         hashed_pk.y,

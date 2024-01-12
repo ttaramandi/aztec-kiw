@@ -26,11 +26,10 @@ template <typename FF_> class Ultra;
 } // namespace arithmetization
 namespace bb {
 template <class FF> class StandardCircuitBuilder_;
-using StandardCircuitBuilder = StandardCircuitBuilder_<barretenberg::field<barretenberg::Bn254FrParams>>;
-using StandardGrumpkinCircuitBuilder = StandardCircuitBuilder_<barretenberg::field<barretenberg::Bn254FqParams>>;
+using StandardCircuitBuilder = StandardCircuitBuilder_<bb::field<bb::Bn254FrParams>>;
+using StandardGrumpkinCircuitBuilder = StandardCircuitBuilder_<bb::field<bb::Bn254FqParams>>;
 template <class Arithmetization> class UltraCircuitBuilder_;
-using UltraCircuitBuilder =
-    UltraCircuitBuilder_<arithmetization::Ultra<barretenberg::field<barretenberg::Bn254FrParams>>>;
+using UltraCircuitBuilder = UltraCircuitBuilder_<arithmetization::Ultra<bb::field<bb::Bn254FrParams>>>;
 template <class FF> class GoblinUltraCircuitBuilder_;
-using GoblinUltraCircuitBuilder = GoblinUltraCircuitBuilder_<barretenberg::field<barretenberg::Bn254FrParams>>;
+using GoblinUltraCircuitBuilder = GoblinUltraCircuitBuilder_<bb::field<bb::Bn254FrParams>>;
 } // namespace bb

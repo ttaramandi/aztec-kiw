@@ -17,8 +17,8 @@ using Composer = proof_system::plonk::StandardComposer;
 
 void generate_test_plonk_circuit(Builder& builder, size_t num_gates)
 {
-    stdlib::field_t a(stdlib::witness_t(&builder, barretenberg::fr::random_element()));
-    stdlib::field_t b(stdlib::witness_t(&builder, barretenberg::fr::random_element()));
+    stdlib::field_t a(stdlib::witness_t(&builder, bb::fr::random_element()));
+    stdlib::field_t b(stdlib::witness_t(&builder, bb::fr::random_element()));
     stdlib::field_t c(&builder);
     for (size_t i = 0; i < (num_gates / 4) - 4; ++i) {
         c = a + b;

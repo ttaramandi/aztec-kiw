@@ -23,7 +23,7 @@ UltraVerifier_<Flavor>::UltraVerifier_(const std::shared_ptr<Transcript>& transc
 template <typename Flavor>
 UltraVerifier_<Flavor>::UltraVerifier_(const std::shared_ptr<VerificationKey>& verifier_key)
     : key(verifier_key)
-    , pcs_verification_key(std::make_unique<VerifierCommitmentKey>(0, barretenberg::srs::get_crs_factory()))
+    , pcs_verification_key(std::make_unique<VerifierCommitmentKey>(0, bb::srs::get_crs_factory()))
     , transcript(std::make_shared<Transcript>())
 {}
 
@@ -163,7 +163,7 @@ template <typename Flavor> bool UltraVerifier_<Flavor>::verify_proof(const plonk
     return sumcheck_verified.value() && verified;
 }
 
-template class UltraVerifier_<honk::flavor::Ultra>;
-template class UltraVerifier_<honk::flavor::GoblinUltra>;
+template class UltraVerifier_<Ultra>;
+template class UltraVerifier_<GoblinUltra>;
 
 } // namespace bb

@@ -6,11 +6,11 @@
 
 namespace bb {
 
-// We won't compile this class with honk::flavor::Standard, but we will like want to compile it (at least for testing)
+// We won't compile this class with Standard, but we will like want to compile it (at least for testing)
 // with a flavor that uses the curve Grumpkin, or a flavor that does/does not have zk, etc.
 class GoblinTranslatorProver {
 
-    using Flavor = honk::flavor::GoblinTranslator;
+    using Flavor = GoblinTranslator;
     using FF = typename Flavor::FF;
     using BF = typename Flavor::BF;
     using Commitment = typename Flavor::Commitment;

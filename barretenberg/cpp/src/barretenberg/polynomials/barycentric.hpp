@@ -238,7 +238,7 @@ template <typename T> struct is_field_type {
     static constexpr bool value = false;
 };
 
-template <typename Params> struct is_field_type<barretenberg::field<Params>> {
+template <typename Params> struct is_field_type<bb::field<Params>> {
     static constexpr bool value = true;
 };
 

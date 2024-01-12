@@ -26,6 +26,6 @@ template <typename Flavor> class DeciderVerifier_ {
     std::shared_ptr<Transcript> transcript;
 };
 
-using DeciderVerifier = DeciderVerifier_<honk::flavor::Ultra>;
+using DeciderVerifier = DeciderVerifier_<Ultra>;
 
 } // namespace bb

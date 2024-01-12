@@ -13,7 +13,7 @@
 
 namespace bb {
 
-using Flavor = honk::flavor::ToyFlavor;
+using Flavor = ToyFlavor;
 
 /**
  * Create ToyProver from proving key, witness and manifest.

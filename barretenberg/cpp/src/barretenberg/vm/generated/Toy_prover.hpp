@@ -12,7 +12,7 @@ namespace bb {
 
 class ToyProver {
 
-    using Flavor = honk::flavor::ToyFlavor;
+    using Flavor = ToyFlavor;
     using FF = Flavor::FF;
     using PCS = Flavor::PCS;
     using PCSCommitmentKey = Flavor::CommitmentKey;

@@ -130,6 +130,6 @@ DeciderVerifier_<Flavor> UltraComposer_<Flavor>::create_decider_verifier(const s
     return output_state;
 }
 
-template class UltraComposer_<honk::flavor::Ultra>;
-template class UltraComposer_<honk::flavor::GoblinUltra>;
+template class UltraComposer_<Ultra>;
+template class UltraComposer_<GoblinUltra>;
 } // namespace bb

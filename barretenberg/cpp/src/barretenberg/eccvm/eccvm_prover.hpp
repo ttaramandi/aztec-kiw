@@ -10,7 +10,7 @@
 
 namespace bb {
 
-// We won't compile this class with honk::flavor::Standard, but we will like want to compile it (at least for testing)
+// We won't compile this class with Standard, but we will like want to compile it (at least for testing)
 // with a flavor that uses the curve Grumpkin, or a flavor that does/does not have zk, etc.
 template <ECCVMFlavor Flavor> class ECCVMProver_ {
 
@@ -23,7 +23,7 @@ template <ECCVMFlavor Flavor> class ECCVMProver_ {
     using CommitmentLabels = typename Flavor::CommitmentLabels;
     using Curve = typename Flavor::Curve;
     using Transcript = typename Flavor::Transcript;
-    using TranslationEvaluations = barretenberg::TranslationEvaluations;
+    using TranslationEvaluations = bb::TranslationEvaluations;
 
   public:
     explicit ECCVMProver_(const std::shared_ptr<ProvingKey>& input_key,

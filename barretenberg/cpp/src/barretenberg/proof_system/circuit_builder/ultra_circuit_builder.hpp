@@ -274,8 +274,8 @@ class UltraCircuitBuilder_ : public CircuitBuilderBase<typename Arithmetization:
      * restore the circuit to the state before the finalization.
      */
     struct CircuitDataBackup {
-        using WireVector = std::vector<uint32_t, barretenberg::ContainerSlabAllocator<uint32_t>>;
-        using SelectorVector = std::vector<FF, barretenberg::ContainerSlabAllocator<FF>>;
+        using WireVector = std::vector<uint32_t, bb::ContainerSlabAllocator<uint32_t>>;
+        using SelectorVector = std::vector<FF, bb::ContainerSlabAllocator<FF>>;
 
         std::vector<uint32_t> public_inputs;
         std::vector<FF> variables;
@@ -564,7 +564,7 @@ class UltraCircuitBuilder_ : public CircuitBuilderBase<typename Arithmetization:
         }
     };
 
-    std::array<std::vector<uint32_t, barretenberg::ContainerSlabAllocator<uint32_t>>, NUM_WIRES> wires;
+    std::array<std::vector<uint32_t, bb::ContainerSlabAllocator<uint32_t>>, NUM_WIRES> wires;
     Arithmetization selectors;
 
     using WireVector = std::vector<uint32_t, ContainerSlabAllocator<uint32_t>>;
@@ -988,7 +988,7 @@ class UltraCircuitBuilder_ : public CircuitBuilderBase<typename Arithmetization:
     /**
      * Plookup Methods
      **/
-    void add_table_column_selector_poly_to_proving_key(barretenberg::polynomial& small, const std::string& tag);
+    void add_table_column_selector_poly_to_proving_key(bb::polynomial& small, const std::string& tag);
     void initialize_precomputed_table(const plookup::BasicTableId id,
                                       bool (*generator)(std::vector<FF>&, std::vector<FF>&, std::vector<FF>&),
                                       std::array<FF, 2> (*get_values_from_key)(const std::array<uint64_t, 2>));
@@ -1162,5 +1162,5 @@ class UltraCircuitBuilder_ : public CircuitBuilderBase<typename Arithmetization:
 
     bool check_circuit();
 };
-using UltraCircuitBuilder = UltraCircuitBuilder_<arithmetization::Ultra<barretenberg::fr>>;
+using UltraCircuitBuilder = UltraCircuitBuilder_<arithmetization::Ultra<bb::fr>>;
 } // namespace bb

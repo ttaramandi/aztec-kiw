@@ -7,7 +7,7 @@
 
 namespace bb {
 class AvmMiniVerifier {
-    using Flavor = honk::flavor::AvmMiniFlavor;
+    using Flavor = AvmMiniFlavor;
     using FF = Flavor::FF;
     using Commitment = Flavor::Commitment;
     using VerificationKey = Flavor::VerificationKey;

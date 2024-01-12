@@ -55,6 +55,6 @@ template <UltraFlavor Flavor> class DeciderProver_ {
     plonk::proof proof;
 };
 
-using DeciderProver = DeciderProver_<honk::flavor::Ultra>;
+using DeciderProver = DeciderProver_<Ultra>;
 
 } // namespace bb

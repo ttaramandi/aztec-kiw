@@ -13,7 +13,7 @@
 
 namespace bb {
 
-using Flavor = honk::flavor::AvmMiniFlavor;
+using Flavor = AvmMiniFlavor;
 
 /**
  * Create AvmMiniProver from proving key, witness and manifest.

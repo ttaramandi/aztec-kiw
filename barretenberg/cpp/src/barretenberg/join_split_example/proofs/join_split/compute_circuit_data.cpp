@@ -60,8 +60,7 @@ using namespace bb::stdlib
     return tx;
 }
 
-circuit_data get_circuit_data(std::shared_ptr<barretenberg::srs::factories::CrsFactory<curve::BN254>> const& srs,
-                              bool mock)
+circuit_data get_circuit_data(std::shared_ptr<bb::srs::factories::CrsFactory<curve::BN254>> const& srs, bool mock)
 {
     std::cerr << "Getting join-split circuit data..." << std::endl;
 

@@ -32,7 +32,7 @@ ToyVerifier& ToyVerifier::operator=(ToyVerifier&& other) noexcept
  */
 bool ToyVerifier::verify_proof(const plonk::proof& proof)
 {
-    using Flavor = honk::flavor::ToyFlavor;
+    using Flavor = ToyFlavor;
     using FF = Flavor::FF;
     using Commitment = Flavor::Commitment;
     // using Curve = Flavor::Curve;

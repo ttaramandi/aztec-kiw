@@ -9,7 +9,7 @@
 namespace bb::plonk {
 namespace stdlib {
 
-using barretenberg::fr;
+using bb::fr;
 using numeric::uint256_t;
 using stdlib::bool_t;
 using stdlib::cycle_group;

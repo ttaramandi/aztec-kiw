@@ -913,7 +913,7 @@ TEST(polynomials, fft_linear_poly_product)
 
 template <typename FF> class PolynomialTests : public ::testing::Test {};
 
-using FieldTypes = ::testing::Types<barretenberg::fr, grumpkin::fr>;
+using FieldTypes = ::testing::Types<bb::fr, grumpkin::fr>;
 
 TYPED_TEST_SUITE(PolynomialTests, FieldTypes);
 

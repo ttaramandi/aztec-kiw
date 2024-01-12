@@ -6,13 +6,13 @@
 namespace bb {
 class GoblinTranslatorVerifier {
   public:
-    using Flavor = honk::flavor::GoblinTranslator;
+    using Flavor = GoblinTranslator;
     using FF = typename Flavor::FF;
     using BF = typename Flavor::BF;
     using Commitment = typename Flavor::Commitment;
     using VerificationKey = typename Flavor::VerificationKey;
     using VerifierCommitmentKey = typename Flavor::VerifierCommitmentKey;
-    using TranslationEvaluations = barretenberg::TranslationEvaluations;
+    using TranslationEvaluations = bb::TranslationEvaluations;
     using Transcript = typename Flavor::Transcript;
 
     BF evaluation_input_x = 0;

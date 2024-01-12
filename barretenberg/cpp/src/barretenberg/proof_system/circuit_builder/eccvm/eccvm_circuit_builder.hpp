@@ -24,21 +24,21 @@ template <typename Flavor> class ECCVMCircuitBuilder {
     using Element = typename CycleGroup::element;
     using AffineElement = typename CycleGroup::affine_element;
 
-    static constexpr size_t NUM_SCALAR_BITS = proof_system_eccvm::NUM_SCALAR_BITS;
-    static constexpr size_t WNAF_SLICE_BITS = proof_system_eccvm::WNAF_SLICE_BITS;
-    static constexpr size_t NUM_WNAF_SLICES = proof_system_eccvm::NUM_WNAF_SLICES;
-    static constexpr uint64_t WNAF_MASK = proof_system_eccvm::WNAF_MASK;
-    static constexpr size_t POINT_TABLE_SIZE = proof_system_eccvm::POINT_TABLE_SIZE;
-    static constexpr size_t WNAF_SLICES_PER_ROW = proof_system_eccvm::WNAF_SLICES_PER_ROW;
-    static constexpr size_t ADDITIONS_PER_ROW = proof_system_eccvm::ADDITIONS_PER_ROW;
+    static constexpr size_t NUM_SCALAR_BITS = eccvm::NUM_SCALAR_BITS;
+    static constexpr size_t WNAF_SLICE_BITS = eccvm::WNAF_SLICE_BITS;
+    static constexpr size_t NUM_WNAF_SLICES = eccvm::NUM_WNAF_SLICES;
+    static constexpr uint64_t WNAF_MASK = eccvm::WNAF_MASK;
+    static constexpr size_t POINT_TABLE_SIZE = eccvm::POINT_TABLE_SIZE;
+    static constexpr size_t WNAF_SLICES_PER_ROW = eccvm::WNAF_SLICES_PER_ROW;
+    static constexpr size_t ADDITIONS_PER_ROW = eccvm::ADDITIONS_PER_ROW;
 
     static constexpr size_t NUM_POLYNOMIALS = Flavor::NUM_ALL_ENTITIES;
     static constexpr size_t NUM_WIRES = Flavor::NUM_WIRES;
 
-    using MSM = proof_system_eccvm::MSM<CycleGroup>;
-    using VMOperation = proof_system_eccvm::VMOperation<CycleGroup>;
+    using MSM = eccvm::MSM<CycleGroup>;
+    using VMOperation = eccvm::VMOperation<CycleGroup>;
     std::shared_ptr<ECCOpQueue> op_queue;
-    using ScalarMul = proof_system_eccvm::ScalarMul<CycleGroup>;
+    using ScalarMul = eccvm::ScalarMul<CycleGroup>;
     using ProverPolynomials = typename Flavor::ProverPolynomials;
 
     ECCVMCircuitBuilder()

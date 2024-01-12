@@ -7,7 +7,7 @@
 
 namespace bb {
 class ToyVerifier {
-    using Flavor = honk::flavor::ToyFlavor;
+    using Flavor = ToyFlavor;
     using FF = Flavor::FF;
     using Commitment = Flavor::Commitment;
     using VerificationKey = Flavor::VerificationKey;

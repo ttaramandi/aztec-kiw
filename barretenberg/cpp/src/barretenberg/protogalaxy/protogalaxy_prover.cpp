@@ -311,6 +311,6 @@ FoldingResult<typename ProverInstances::Flavor> ProtoGalaxyProver_<ProverInstanc
     return res;
 }
 
-template class ProtoGalaxyProver_<ProverInstances_<honk::flavor::Ultra, 2>>;
-template class ProtoGalaxyProver_<ProverInstances_<honk::flavor::GoblinUltra, 2>>;
+template class ProtoGalaxyProver_<ProverInstances_<Ultra, 2>>;
+template class ProtoGalaxyProver_<ProverInstances_<GoblinUltra, 2>>;
 } // namespace bb

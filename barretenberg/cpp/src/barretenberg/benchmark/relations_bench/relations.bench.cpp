@@ -12,7 +12,7 @@ using namespace bb;
 
 namespace bb {
 
-using Fr = barretenberg::fr;
+using Fr = bb::fr;
 using Fq = grumpkin::fr;
 
 template <typename Flavor, typename Relation> void execute_relation(::benchmark::State& state)
@@ -33,27 +33,27 @@ template <typename Flavor, typename Relation> void execute_relation(::benchmark:
         Relation::accumulate(accumulator, new_value, params, 1);
     }
 }
-BENCHMARK(execute_relation<honk::flavor::Ultra, UltraArithmeticRelation<Fr>>);
-BENCHMARK(execute_relation<honk::flavor::Ultra, GenPermSortRelation<Fr>>);
-BENCHMARK(execute_relation<honk::flavor::Ultra, EllipticRelation<Fr>>);
-BENCHMARK(execute_relation<honk::flavor::Ultra, AuxiliaryRelation<Fr>>);
-BENCHMARK(execute_relation<honk::flavor::Ultra, LookupRelation<Fr>>);
-BENCHMARK(execute_relation<honk::flavor::Ultra, UltraPermutationRelation<Fr>>);
+BENCHMARK(execute_relation<Ultra, UltraArithmeticRelation<Fr>>);
+BENCHMARK(execute_relation<Ultra, GenPermSortRelation<Fr>>);
+BENCHMARK(execute_relation<Ultra, EllipticRelation<Fr>>);
+BENCHMARK(execute_relation<Ultra, AuxiliaryRelation<Fr>>);
+BENCHMARK(execute_relation<Ultra, LookupRelation<Fr>>);
+BENCHMARK(execute_relation<Ultra, UltraPermutationRelation<Fr>>);
 
-BENCHMARK(execute_relation<honk::flavor::GoblinUltra, EccOpQueueRelation<Fr>>);
+BENCHMARK(execute_relation<GoblinUltra, EccOpQueueRelation<Fr>>);
 
-BENCHMARK(execute_relation<honk::flavor::GoblinTranslator, GoblinTranslatorDecompositionRelation<Fr>>);
-BENCHMARK(execute_relation<honk::flavor::GoblinTranslator, GoblinTranslatorOpcodeConstraintRelation<Fr>>);
-BENCHMARK(execute_relation<honk::flavor::GoblinTranslator, GoblinTranslatorAccumulatorTransferRelation<Fr>>);
-BENCHMARK(execute_relation<honk::flavor::GoblinTranslator, GoblinTranslatorGenPermSortRelation<Fr>>);
-BENCHMARK(execute_relation<honk::flavor::GoblinTranslator, GoblinTranslatorNonNativeFieldRelation<Fr>>);
-BENCHMARK(execute_relation<honk::flavor::GoblinTranslator, GoblinTranslatorPermutationRelation<Fr>>);
+BENCHMARK(execute_relation<GoblinTranslator, GoblinTranslatorDecompositionRelation<Fr>>);
+BENCHMARK(execute_relation<GoblinTranslator, GoblinTranslatorOpcodeConstraintRelation<Fr>>);
+BENCHMARK(execute_relation<GoblinTranslator, GoblinTranslatorAccumulatorTransferRelation<Fr>>);
+BENCHMARK(execute_relation<GoblinTranslator, GoblinTranslatorGenPermSortRelation<Fr>>);
+BENCHMARK(execute_relation<GoblinTranslator, GoblinTranslatorNonNativeFieldRelation<Fr>>);
+BENCHMARK(execute_relation<GoblinTranslator, GoblinTranslatorPermutationRelation<Fr>>);
 
-BENCHMARK(execute_relation<honk::flavor::ECCVM, ECCVMLookupRelation<Fq>>);
-BENCHMARK(execute_relation<honk::flavor::ECCVM, ECCVMMSMRelation<Fq>>);
-BENCHMARK(execute_relation<honk::flavor::ECCVM, ECCVMPointTableRelation<Fq>>);
-BENCHMARK(execute_relation<honk::flavor::ECCVM, ECCVMSetRelation<Fq>>);
-BENCHMARK(execute_relation<honk::flavor::ECCVM, ECCVMTranscriptRelation<Fq>>);
-BENCHMARK(execute_relation<honk::flavor::ECCVM, ECCVMWnafRelation<Fq>>);
+BENCHMARK(execute_relation<ECCVM, ECCVMLookupRelation<Fq>>);
+BENCHMARK(execute_relation<ECCVM, ECCVMMSMRelation<Fq>>);
+BENCHMARK(execute_relation<ECCVM, ECCVMPointTableRelation<Fq>>);
+BENCHMARK(execute_relation<ECCVM, ECCVMSetRelation<Fq>>);
+BENCHMARK(execute_relation<ECCVM, ECCVMTranscriptRelation<Fq>>);
+BENCHMARK(execute_relation<ECCVM, ECCVMWnafRelation<Fq>>);
 
 } // namespace bb

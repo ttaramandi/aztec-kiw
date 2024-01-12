@@ -174,7 +174,7 @@ template <typename Flavor> class RelationUtils {
 
     /**
      * @brief Set each element in a tuple of arrays to zero.
-     * @details FF's default constructor may not initialize to zero (e.g., barretenberg::fr), hence we can't rely on
+     * @details FF's default constructor may not initialize to zero (e.g., bb::fr), hence we can't rely on
      * aggregate initialization of the evaluations array.
      */
     template <size_t idx = 0> static void zero_elements(auto& tuple)

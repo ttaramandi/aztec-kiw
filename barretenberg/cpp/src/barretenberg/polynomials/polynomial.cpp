@@ -521,7 +521,7 @@ template <typename Fr> Polynomial<Fr> Polynomial<Fr>::partial_evaluate_mle(std::
     return result;
 }
 
-template class Polynomial<barretenberg::fr>;
+template class Polynomial<bb::fr>;
 template class Polynomial<grumpkin::fr>;
 
 } // namespace bb

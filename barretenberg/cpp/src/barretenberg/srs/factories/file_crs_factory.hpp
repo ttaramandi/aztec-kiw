@@ -18,15 +18,15 @@ template <typename Curve> class FileCrsFactory : public CrsFactory<Curve> {
     FileCrsFactory(std::string path, size_t initial_degree = 0);
     FileCrsFactory(FileCrsFactory&& other) = default;
 
-    std::shared_ptr<barretenberg::srs::factories::ProverCrs<Curve>> get_prover_crs(size_t degree) override;
+    std::shared_ptr<bb::srs::factories::ProverCrs<Curve>> get_prover_crs(size_t degree) override;
 
-    std::shared_ptr<barretenberg::srs::factories::VerifierCrs<Curve>> get_verifier_crs(size_t degree = 0) override;
+    std::shared_ptr<bb::srs::factories::VerifierCrs<Curve>> get_verifier_crs(size_t degree = 0) override;
 
   private:
     std::string path_;
     size_t degree_;
-    std::shared_ptr<barretenberg::srs::factories::ProverCrs<Curve>> prover_crs_;
-    std::shared_ptr<barretenberg::srs::factories::VerifierCrs<Curve>> verifier_crs_;
+    std::shared_ptr<bb::srs::factories::ProverCrs<Curve>> prover_crs_;
+    std::shared_ptr<bb::srs::factories::VerifierCrs<Curve>> verifier_crs_;
 };
 
 template <typename Curve> class FileProverCrs : public ProverCrs<Curve> {

@@ -115,7 +115,7 @@ template <UltraFlavor Flavor> plonk::proof& DeciderProver_<Flavor>::construct_pr
     return export_proof();
 }
 
-template class DeciderProver_<honk::flavor::Ultra>;
-template class DeciderProver_<honk::flavor::GoblinUltra>;
+template class DeciderProver_<Ultra>;
+template class DeciderProver_<GoblinUltra>;
 
 } // namespace bb

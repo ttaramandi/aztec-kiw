@@ -12,7 +12,7 @@
 #include "barretenberg/proof_system/composer/permutation_lib.hpp"
 
 namespace bb {
-using Flavor = honk::flavor::GoblinTranslator;
+using Flavor = GoblinTranslator;
 using Curve = typename Flavor::Curve;
 using FF = typename Flavor::FF;
 using CircuitBuilder = typename Flavor::CircuitBuilder;

@@ -40,7 +40,7 @@ template <> class VerifierCrs<curve::BN254> {
      * @brief As the G_2 element of the CRS is fixed, we can precompute the operations performed on it during the
      * pairing algorithm to optimize pairing computations.
      */
-    virtual barretenberg::pairing::miller_lines const* get_precomputed_g2_lines() const = 0;
+    virtual bb::pairing::miller_lines const* get_precomputed_g2_lines() const = 0;
     /**
      *  @brief Returns the first G_1 element from the CRS, used by the Shplonk verifier to compute the final
      * commtiment.
@@ -74,9 +74,8 @@ template <typename Curve> class CrsFactory {
     CrsFactory() = default;
     CrsFactory(CrsFactory&& other) = default;
     virtual ~CrsFactory() = default;
-    virtual std::shared_ptr<barretenberg::srs::factories::ProverCrs<Curve>> get_prover_crs(size_t) { return nullptr; }
-    virtual std::shared_ptr<barretenberg::srs::factories::VerifierCrs<Curve>> get_verifier_crs(
-        [[maybe_unused]] size_t degree = 0)
+    virtual std::shared_ptr<bb::srs::factories::ProverCrs<Curve>> get_prover_crs(size_t) { return nullptr; }
+    virtual std::shared_ptr<bb::srs::factories::VerifierCrs<Curve>> get_verifier_crs([[maybe_unused]] size_t degree = 0)
     {
         return nullptr;
     }
