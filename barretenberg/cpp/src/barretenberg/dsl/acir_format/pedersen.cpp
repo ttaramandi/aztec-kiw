@@ -2,7 +2,7 @@
 
 namespace acir_format {
 
-using namespace proof_system::plonk;
+using namespace bb::plonk;
 
 template <typename Builder> void create_pedersen_constraint(Builder& builder, const PedersenConstraint& input)
 {

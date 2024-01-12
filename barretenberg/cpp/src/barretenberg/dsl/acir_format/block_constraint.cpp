@@ -2,7 +2,7 @@
 #include "barretenberg/stdlib/primitives/memory/ram_table.hpp"
 #include "barretenberg/stdlib/primitives/memory/rom_table.hpp"
 
-using namespace proof_system::plonk;
+using namespace bb::plonk;
 
 namespace acir_format {
 

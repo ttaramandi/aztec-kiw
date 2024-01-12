@@ -2,7 +2,7 @@
 #include "barretenberg/env/data_store.hpp"
 #include "barretenberg/polynomials/polynomial.hpp"
 
-namespace proof_system {
+namespace bb {
 
 template <typename Fr> void PolynomialStoreWasm<Fr>::put(std::string const& key, Polynomial&& value)
 {
@@ -21,4 +21,4 @@ template <typename Fr> barretenberg::Polynomial<Fr> PolynomialStoreWasm<Fr>::get
 
 template class PolynomialStoreWasm<barretenberg::fr>;
 
-} // namespace proof_system
+} // namespace bb

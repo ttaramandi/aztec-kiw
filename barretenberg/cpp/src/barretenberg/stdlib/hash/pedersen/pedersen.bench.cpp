@@ -10,7 +10,7 @@
 #define BARRETENBERG_SRS_PATH "../srs_db/ignition"
 
 using namespace benchmark;
-using namespace proof_system::plonk;
+using namespace bb::plonk;
 
 using Builder = proof_system::UltraCircuitBuilder;
 using Composer = proof_system::plonk::UltraComposer;

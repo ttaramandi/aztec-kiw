@@ -19,7 +19,7 @@
 #include "barretenberg/transcript/transcript.hpp"
 #include "relation_definitions.hpp"
 
-namespace proof_system::honk::flavor {
+namespace bb {
 
 class GoblinUltra {
   public:
@@ -623,4 +623,4 @@ class GoblinUltra {
     using Transcript = Transcript_<Commitment>;
 };
 
-} // namespace proof_system::honk::flavor
+} // namespace bb

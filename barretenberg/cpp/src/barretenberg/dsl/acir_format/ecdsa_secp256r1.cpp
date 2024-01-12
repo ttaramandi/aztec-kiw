@@ -5,7 +5,7 @@
 
 namespace acir_format {
 
-using namespace proof_system::plonk;
+using namespace bb::plonk;
 
 secp256r1_ct::g1_ct ecdsa_convert_inputs(Builder* ctx, const secp256r1::g1::affine_element& input)
 {

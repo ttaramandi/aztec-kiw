@@ -6,7 +6,7 @@
 #include <barretenberg/ecc/curves/bn254/g1.hpp>
 #include <barretenberg/ecc/curves/bn254/g2.hpp>
 
-using namespace barretenberg;
+using namespace bb;
 
 /**
  * We are not passed a vector (length prefixed), but the buffer and num points independently.

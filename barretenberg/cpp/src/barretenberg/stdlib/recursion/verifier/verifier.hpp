@@ -14,7 +14,7 @@
 #include "barretenberg/stdlib/recursion/transcript/transcript.hpp"
 #include "barretenberg/stdlib/recursion/verifier/program_settings.hpp"
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 namespace stdlib {
 namespace recursion {
 
@@ -431,4 +431,4 @@ aggregation_state<bn254<typename Flavor::CircuitBuilder>> verify_proof(
 
 } // namespace recursion
 } // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::plonk

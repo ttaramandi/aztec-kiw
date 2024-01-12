@@ -22,7 +22,7 @@
 #include "barretenberg/stdlib/primitives/field/field.hpp"
 #include "barretenberg/stdlib/recursion/honk/transcript/transcript.hpp"
 
-namespace proof_system::honk::flavor {
+namespace bb {
 
 /**
  * @brief The recursive counterpart to the "native" Goblin Ultra flavor.
@@ -155,4 +155,4 @@ class GoblinUltraRecursive {
     using Transcript = proof_system::plonk::stdlib::recursion::honk::Transcript<CircuitBuilder>;
 };
 
-} // namespace proof_system::honk::flavor
+} // namespace bb

@@ -1,9 +1,9 @@
 #include "pedersen.hpp"
 #include "barretenberg/ecc/curves/grumpkin/grumpkin.hpp"
-namespace proof_system::plonk::stdlib {
+namespace bb::plonk::stdlib {
 
-using namespace barretenberg;
-using namespace proof_system;
+using namespace bb;
+using namespace bb;
 
 template <typename C>
 field_t<C> pedersen_hash<C>::hash(const std::vector<field_ct>& inputs, const GeneratorContext context)
@@ -90,4 +90,4 @@ template class pedersen_hash<proof_system::StandardCircuitBuilder>;
 template class pedersen_hash<proof_system::UltraCircuitBuilder>;
 template class pedersen_hash<proof_system::GoblinUltraCircuitBuilder>;
 
-} // namespace proof_system::plonk::stdlib
+} // namespace bb::plonk::stdlib

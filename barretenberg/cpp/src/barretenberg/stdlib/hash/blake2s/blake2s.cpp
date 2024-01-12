@@ -3,7 +3,7 @@
 #include "blake2s_plookup.hpp"
 #include "blake_util.hpp"
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 namespace stdlib {
 
 namespace {
@@ -144,4 +144,4 @@ template byte_array<proof_system::GoblinUltraCircuitBuilder> blake2s(
     const byte_array<proof_system::GoblinUltraCircuitBuilder>& input);
 
 } // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::plonk

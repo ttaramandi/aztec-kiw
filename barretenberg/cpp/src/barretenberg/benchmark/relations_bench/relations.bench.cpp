@@ -8,9 +8,9 @@ namespace {
 auto& engine = numeric::random::get_debug_engine();
 }
 
-using namespace proof_system::honk::sumcheck;
+using namespace bb::honk::sumcheck;
 
-namespace proof_system::benchmark::relations {
+namespace bb::benchmark::relations {
 
 using Fr = barretenberg::fr;
 using Fq = grumpkin::fr;
@@ -56,4 +56,4 @@ BENCHMARK(execute_relation<honk::flavor::ECCVM, ECCVMSetRelation<Fq>>);
 BENCHMARK(execute_relation<honk::flavor::ECCVM, ECCVMTranscriptRelation<Fq>>);
 BENCHMARK(execute_relation<honk::flavor::ECCVM, ECCVMWnafRelation<Fq>>);
 
-} // namespace proof_system::benchmark::relations
+} // namespace bb::benchmark::relations

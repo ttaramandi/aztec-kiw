@@ -10,9 +10,9 @@
 #include <unordered_map>
 #include <unordered_set>
 
-using namespace barretenberg;
+using namespace bb;
 
-namespace proof_system {
+namespace bb {
 
 template <typename Arithmetization> void UltraCircuitBuilder_<Arithmetization>::finalize_circuit()
 {
@@ -3489,4 +3489,4 @@ template class UltraCircuitBuilder_<arithmetization::UltraHonk<barretenberg::fr>
 // To enable this we need to template plookup
 // template class UltraCircuitBuilder_<grumpkin::fr>;
 
-} // namespace proof_system
+} // namespace bb

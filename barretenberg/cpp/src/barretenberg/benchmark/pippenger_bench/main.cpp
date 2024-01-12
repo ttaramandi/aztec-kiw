@@ -15,7 +15,7 @@
 //  CALLGRIND_STOP_INSTRUMENTATION;
 //  CALLGRIND_DUMP_STATS;
 
-using namespace barretenberg;
+using namespace bb;
 
 // constexpr size_t NUM_GATES = 1 << 10;
 

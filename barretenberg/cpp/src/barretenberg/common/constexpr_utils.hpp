@@ -13,7 +13,7 @@
  * constexpr_for : loop over a range , where the size_t iterator `i` is a constexpr variable
  * constexpr_find : find if an element is in an array
  */
-namespace barretenberg {
+namespace bb {
 
 /**
  * @brief Implements a loop using a compile-time iterator. Requires c++20.
@@ -159,4 +159,4 @@ template <typename T, size_t N> constexpr std::array<T, N> create_empty_array()
 {
     return create_array(T(0), std::make_index_sequence<N>());
 }
-}; // namespace barretenberg
+}; // namespace bb

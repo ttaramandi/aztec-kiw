@@ -16,9 +16,9 @@
 #include "barretenberg/relations/generated/Toy/toy_avm.hpp"
 #include "barretenberg/relations/generated/Toy/two_column_perm.hpp"
 
-using namespace barretenberg;
+using namespace bb;
 
-namespace proof_system {
+namespace bb {
 
 template <typename FF> struct ToyFullRow {
     FF toy_first{};
@@ -42,7 +42,7 @@ template <typename FF> struct ToyFullRow {
 
 class ToyCircuitBuilder {
   public:
-    using Flavor = proof_system::honk::flavor::ToyFlavor;
+    using Flavor = bb::ToyFlavor;
     using FF = Flavor::FF;
     using Row = ToyFullRow<FF>;
 
@@ -183,4 +183,4 @@ class ToyCircuitBuilder {
         return num_rows_pow2;
     }
 };
-} // namespace proof_system
+} // namespace bb

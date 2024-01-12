@@ -6,7 +6,7 @@
 #include "polynomial_arithmetic.hpp"
 #include <fstream>
 
-namespace barretenberg {
+namespace bb {
 enum class DontZeroMemory { FLAG };
 
 template <typename Fr> class Polynomial {
@@ -275,7 +275,7 @@ template <typename Fr> inline std::ostream& operator<<(std::ostream& os, Polynom
 
 using polynomial = Polynomial<barretenberg::fr>;
 
-} // namespace barretenberg
+} // namespace bb
 
 /**
  * The static_assert below ensure that that our Polynomial class correctly models an `std::ranges::contiguous_range`,

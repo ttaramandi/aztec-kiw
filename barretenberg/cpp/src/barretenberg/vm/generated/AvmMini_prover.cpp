@@ -11,7 +11,7 @@
 #include "barretenberg/relations/permutation_relation.hpp"
 #include "barretenberg/sumcheck/sumcheck.hpp"
 
-namespace proof_system::honk {
+namespace bb::honk {
 
 using Flavor = honk::flavor::AvmMiniFlavor;
 
@@ -130,4 +130,4 @@ plonk::proof& AvmMiniProver::construct_proof()
     return export_proof();
 }
 
-} // namespace proof_system::honk
+} // namespace bb::honk

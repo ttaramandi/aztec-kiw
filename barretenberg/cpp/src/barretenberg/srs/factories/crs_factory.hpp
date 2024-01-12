@@ -6,11 +6,11 @@
 #include "barretenberg/ecc/curves/grumpkin/grumpkin.hpp"
 #include <cstddef>
 
-namespace barretenberg::pairing {
+namespace bb::pairing {
 struct miller_lines;
-} // namespace barretenberg::pairing
+} // namespace bb::pairing
 
-namespace barretenberg::srs::factories {
+namespace bb::srs::factories {
 
 /**
  * A prover crs representation.
@@ -82,4 +82,4 @@ template <typename Curve> class CrsFactory {
     }
 };
 
-} // namespace barretenberg::srs::factories
+} // namespace bb::srs::factories

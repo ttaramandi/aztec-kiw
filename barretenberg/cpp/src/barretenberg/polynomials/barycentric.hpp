@@ -16,7 +16,7 @@
 
    3) There should be more thorough testing of this class in isolation.
  */
-namespace barretenberg {
+namespace bb {
 
 /**
  * @todo: TODO(https://github.com/AztecProtocol/barretenberg/issues/713) Optimize with lookup tables?
@@ -256,4 +256,4 @@ using BarycentricData = std::conditional_t<is_field_type_v<Fr>,
                                            BarycentricDataCompileTime<Fr, domain_end, num_evals, domain_start>,
                                            BarycentricDataRunTime<Fr, domain_end, num_evals, domain_start>>;
 
-} // namespace barretenberg
+} // namespace bb

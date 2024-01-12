@@ -8,7 +8,7 @@
 #include "barretenberg/sumcheck/sumcheck_output.hpp"
 #include "barretenberg/transcript/transcript.hpp"
 
-namespace proof_system::honk {
+namespace bb::honk {
 
 class ToyProver {
 
@@ -59,4 +59,4 @@ class ToyProver {
     plonk::proof proof;
 };
 
-} // namespace proof_system::honk
+} // namespace bb::honk

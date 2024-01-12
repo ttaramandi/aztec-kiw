@@ -3,9 +3,9 @@
 #include "barretenberg/polynomials/polynomial.hpp"
 #include "barretenberg/polynomials/polynomial_arithmetic.hpp"
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 
-using namespace barretenberg;
+using namespace bb;
 
 work_queue::work_queue(proving_key* prover_key, transcript::StandardTranscript* prover_transcript)
     : key(prover_key)
@@ -225,7 +225,7 @@ void work_queue::process_queue()
         // About 20% of the cost of a scalar multiplication. For WASM, might be a bit more expensive
         // due to the need to copy memory between web workers
         // case WorkType::SMALL_FFT: {
-        //     using namespace barretenberg;
+        //     using namespace bb;
         //     const size_t n = key->circuit_size;
         //     auto wire = key->polynomial_store.get(item.tag);
 
@@ -249,7 +249,7 @@ void work_queue::process_queue()
         //     break;
         // }
         case WorkType::FFT: {
-            using namespace barretenberg;
+            using namespace bb;
             auto wire = key->polynomial_store.get(item.tag);
             polynomial wire_fft(wire, 4 * key->circuit_size + 4);
 
@@ -264,7 +264,7 @@ void work_queue::process_queue()
         }
         // 1/4 the cost of an fft (each fft has 1/4 the number of elements)
         case WorkType::IFFT: {
-            using namespace barretenberg;
+            using namespace bb;
             // retrieve wire in lagrange form
             auto wire_lagrange = key->polynomial_store.get(item.tag + "_lagrange");
 
@@ -287,4 +287,4 @@ std::vector<work_queue::work_item> work_queue::get_queue() const
     return work_item_queue;
 }
 
-} // namespace proof_system::plonk
+} // namespace bb::plonk

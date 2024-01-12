@@ -1,11 +1,11 @@
 #pragma once
 #include "hash_path.hpp"
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 namespace stdlib {
 namespace merkle_tree {
 
-using namespace barretenberg;
+using namespace bb;
 
 /**
  * A MemoryTree is structured as follows:
@@ -45,4 +45,4 @@ class MemoryTree {
 
 } // namespace merkle_tree
 } // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::plonk

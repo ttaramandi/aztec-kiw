@@ -12,9 +12,9 @@ namespace join_split_example {
 namespace proofs {
 namespace join_split {
 
-using namespace proof_system::plonk;
+using namespace bb::plonk;
 using namespace notes::circuit;
-using namespace proof_system::plonk::stdlib::merkle_tree;
+using namespace bb::plonk::stdlib::merkle_tree;
 using namespace crypto::schnorr;
 
 /**

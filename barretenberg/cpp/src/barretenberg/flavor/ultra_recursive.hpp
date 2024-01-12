@@ -30,7 +30,7 @@
 #include "barretenberg/stdlib/primitives/curves/bn254.hpp"
 #include "barretenberg/stdlib/primitives/field/field.hpp"
 
-namespace proof_system::honk::flavor {
+namespace bb {
 
 /**
  * @brief The recursive counterpart to the "native" Ultra flavor.
@@ -381,4 +381,4 @@ template <typename BuilderType> class UltraRecursive_ {
     using Transcript = proof_system::plonk::stdlib::recursion::honk::Transcript<CircuitBuilder>;
 };
 
-} // namespace proof_system::honk::flavor
+} // namespace bb

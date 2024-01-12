@@ -6,7 +6,7 @@
 
 namespace join_split_example::proofs::notes::native {
 
-using namespace barretenberg;
+using namespace bb;
 
 /**
  * Computes a nullifier for a _value_ note

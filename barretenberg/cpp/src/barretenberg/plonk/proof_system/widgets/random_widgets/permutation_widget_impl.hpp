@@ -8,7 +8,7 @@
 #include "barretenberg/polynomials/polynomial_arithmetic.hpp"
 #include "barretenberg/transcript/transcript.hpp"
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 
 template <size_t program_width, bool idpolys, const size_t num_roots_cut_out_of_vanishing_polynomial>
 ProverPermutationWidget<program_width, idpolys, num_roots_cut_out_of_vanishing_polynomial>::ProverPermutationWidget(
@@ -789,4 +789,4 @@ template class VerifierPermutationWidget<barretenberg::fr,
                                          barretenberg::g1::affine_element,
                                          transcript::StandardTranscript>;
 
-} // namespace proof_system::plonk
+} // namespace bb::plonk

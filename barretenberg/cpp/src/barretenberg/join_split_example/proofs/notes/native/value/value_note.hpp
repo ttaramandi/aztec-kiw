@@ -11,7 +11,7 @@ namespace notes {
 namespace native {
 namespace value {
 
-using namespace barretenberg;
+using namespace bb;
 
 struct value_note {
     uint256_t value;

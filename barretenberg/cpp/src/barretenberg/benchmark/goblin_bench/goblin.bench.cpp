@@ -8,8 +8,8 @@
 #include "barretenberg/ultra_honk/ultra_composer.hpp"
 
 using namespace benchmark;
-using namespace barretenberg;
-using namespace proof_system;
+using namespace bb;
+using namespace bb;
 
 namespace {
 void goblin_full(State& state) noexcept

@@ -12,7 +12,7 @@
 #include "barretenberg/proof_system/op_queue/ecc_op_queue.hpp"
 #include "barretenberg/relations/relation_parameters.hpp"
 
-namespace proof_system {
+namespace bb {
 
 template <typename Flavor> class ECCVMCircuitBuilder {
   public:
@@ -599,4 +599,4 @@ template <typename Flavor> class ECCVMCircuitBuilder {
         return num_rows_pow2;
     }
 };
-} // namespace proof_system
+} // namespace bb

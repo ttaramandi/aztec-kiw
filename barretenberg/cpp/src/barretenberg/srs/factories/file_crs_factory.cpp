@@ -7,7 +7,7 @@
 #include "barretenberg/ecc/scalar_multiplication/point_table.hpp"
 #include "barretenberg/ecc/scalar_multiplication/scalar_multiplication.hpp"
 
-namespace barretenberg::srs::factories {
+namespace bb::srs::factories {
 
 FileVerifierCrs<curve::BN254>::FileVerifierCrs(std::string const& path, const size_t)
     : precomputed_g2_lines(
@@ -78,4 +78,4 @@ template class FileProverCrs<curve::Grumpkin>;
 template class FileCrsFactory<curve::BN254>;
 template class FileCrsFactory<curve::Grumpkin>;
 
-} // namespace barretenberg::srs::factories
+} // namespace bb::srs::factories

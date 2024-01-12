@@ -9,12 +9,12 @@
 #include "barretenberg/translator_vm/goblin_translator_composer.hpp"
 #include "barretenberg/ultra_honk/ultra_composer.hpp"
 
-namespace barretenberg {
+namespace bb {
 
 class Goblin {
     using HonkProof = proof_system::plonk::proof;
 
-    using GUHFlavor = proof_system::honk::flavor::GoblinUltra;
+    using GUHFlavor = bb::GoblinUltra;
     using GoblinUltraCircuitBuilder = proof_system::GoblinUltraCircuitBuilder;
 
     using GUHVerificationKey = GUHFlavor::VerificationKey;
@@ -59,7 +59,7 @@ class Goblin {
     using GoblinUltraVerifier = proof_system::honk::UltraVerifier_<GUHFlavor>;
     using Builder = GoblinUltraCircuitBuilder;
     using OpQueue = proof_system::ECCOpQueue;
-    using ECCVMFlavor = proof_system::honk::flavor::ECCVM;
+    using ECCVMFlavor = bb::ECCVM;
     using ECCVMBuilder = proof_system::ECCVMCircuitBuilder<ECCVMFlavor>;
     using ECCVMComposer = proof_system::honk::ECCVMComposer;
     using ECCVMProver = proof_system::honk::ECCVMProver_<ECCVMFlavor>;
@@ -272,4 +272,4 @@ class Goblin {
         return verified;
     }
 };
-} // namespace barretenberg
+} // namespace bb

@@ -3,16 +3,16 @@
 #include "barretenberg/proof_system/plookup_tables/types.hpp"
 #include "barretenberg/stdlib/primitives/circuit_builders/circuit_builders.hpp"
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 class UltraPlonkBuilder;
-} // namespace proof_system::plonk
+} // namespace bb::plonk
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 namespace stdlib {
 
 using plookup::ColumnIdx;
 using plookup::MultiTableId;
-using namespace barretenberg;
+using namespace bb;
 
 template <typename Builder>
 plookup::ReadData<field_t<Builder>> plookup_read<Builder>::get_lookup_accumulators(const MultiTableId id,
@@ -94,4 +94,4 @@ field_t<Builder> plookup_read<Builder>::read_from_1_to_2_table(const MultiTableI
 template class plookup_read<proof_system::UltraCircuitBuilder>;
 template class plookup_read<proof_system::GoblinUltraCircuitBuilder>;
 } // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::plonk

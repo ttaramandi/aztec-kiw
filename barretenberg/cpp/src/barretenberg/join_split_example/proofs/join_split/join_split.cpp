@@ -8,8 +8,8 @@ namespace join_split_example {
 namespace proofs {
 namespace join_split {
 
-using namespace proof_system::plonk;
-using namespace proof_system::plonk::stdlib::merkle_tree;
+using namespace bb::plonk;
+using namespace bb::plonk::stdlib::merkle_tree;
 
 static std::shared_ptr<plonk::proving_key> proving_key;
 static std::shared_ptr<plonk::verification_key> verification_key;

@@ -1,4 +1,4 @@
-namespace proof_system {
+namespace bb {
 
 /**
  * Write a solidity file containing the vk params to the given stream.
@@ -159,4 +159,4 @@ inline void output_vk_sol(std::ostream& os, std::shared_ptr<plonk::verification_
     }
     }
 }
-} // namespace proof_system
+} // namespace bb

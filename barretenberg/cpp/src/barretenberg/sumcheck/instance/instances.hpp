@@ -2,7 +2,7 @@
 #include "barretenberg/sumcheck/instance/prover_instance.hpp"
 #include "barretenberg/sumcheck/instance/verifier_instance.hpp"
 
-namespace proof_system::honk {
+namespace bb::honk {
 
 template <typename Flavor_, size_t NUM_> struct ProverInstances_ {
   public:
@@ -105,4 +105,4 @@ template <typename Flavor_, size_t NUM_> struct VerifierInstances_ {
         std::generate(_data.begin(), _data.end(), []() { return std::make_unique<Instance>(); });
     };
 };
-} // namespace proof_system::honk
+} // namespace bb::honk

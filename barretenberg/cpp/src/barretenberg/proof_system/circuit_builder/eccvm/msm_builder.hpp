@@ -4,7 +4,7 @@
 
 #include "./eccvm_builder_types.hpp"
 
-namespace proof_system {
+namespace bb {
 
 template <typename Flavor> class ECCVMMSMMBuilder {
   public:
@@ -279,4 +279,4 @@ template <typename Flavor> class ECCVMMSMMBuilder {
         return msm_state;
     }
 };
-} // namespace proof_system
+} // namespace bb

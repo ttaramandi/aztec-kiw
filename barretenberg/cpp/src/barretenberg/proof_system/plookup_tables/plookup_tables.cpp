@@ -3,7 +3,7 @@
 
 namespace plookup {
 
-using namespace barretenberg;
+using namespace bb;
 
 namespace {
 // TODO(@zac-williamson) convert these into static const members of a struct

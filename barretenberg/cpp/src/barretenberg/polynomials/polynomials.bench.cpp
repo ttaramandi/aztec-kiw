@@ -12,7 +12,7 @@
 #include <benchmark/benchmark.h>
 
 using namespace benchmark;
-using namespace barretenberg;
+using namespace bb;
 
 constexpr size_t MAX_GATES = 1 << 20;
 constexpr size_t START = (1 << 20) >> 7;

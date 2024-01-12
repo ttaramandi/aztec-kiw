@@ -4,7 +4,7 @@
 
 namespace examples::simple {
 
-using namespace proof_system::plonk;
+using namespace bb::plonk;
 using namespace stdlib::types;
 
 struct BuilderComposerPtrs {

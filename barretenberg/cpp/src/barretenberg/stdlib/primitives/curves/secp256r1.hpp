@@ -6,7 +6,7 @@
 
 #include "barretenberg/ecc/curves/secp256r1/secp256r1.hpp"
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 namespace stdlib {
 
 template <typename CircuitType> struct secp256r1 {
@@ -30,4 +30,4 @@ template <typename CircuitType> struct secp256r1 {
     typedef element<Builder, fq_ct, bigfr_ct, g1> g1_bigfr_ct;
 };
 } // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::plonk

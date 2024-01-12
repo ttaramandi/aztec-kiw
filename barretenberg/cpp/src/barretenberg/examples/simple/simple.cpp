@@ -6,7 +6,7 @@
 
 namespace examples::simple {
 
-using namespace proof_system::plonk;
+using namespace bb::plonk;
 using namespace stdlib::types;
 
 const size_t CIRCUIT_SIZE = 1 << 19;

@@ -1,10 +1,10 @@
 #include "../circuit_builders/circuit_builders.hpp"
 #include "uint.hpp"
 
-using namespace barretenberg;
-using namespace proof_system;
+using namespace bb;
+using namespace bb;
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 namespace stdlib {
 
 template <typename Builder, typename Native>
@@ -529,4 +529,4 @@ template class uint<proof_system::StandardCircuitBuilder, uint32_t>;
 template class uint<proof_system::StandardCircuitBuilder, uint64_t>;
 
 } // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::plonk

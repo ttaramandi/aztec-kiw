@@ -9,7 +9,7 @@
 #include "barretenberg/srs/global_crs.hpp"
 #include <map>
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 
 struct verification_key_data {
     uint32_t circuit_type;
@@ -144,4 +144,4 @@ inline std::ostream& operator<<(std::ostream& os, verification_key const& key)
     return os << key.as_data();
 };
 
-} // namespace proof_system::plonk
+} // namespace bb::plonk

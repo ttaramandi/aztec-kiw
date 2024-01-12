@@ -16,7 +16,7 @@
 #include "barretenberg/relations/ultra_arithmetic_relation.hpp"
 #include "barretenberg/transcript/transcript.hpp"
 
-namespace proof_system::honk::flavor {
+namespace bb {
 
 class Ultra {
   public:
@@ -603,4 +603,4 @@ class Ultra {
     };
 };
 
-} // namespace proof_system::honk::flavor
+} // namespace bb

@@ -4,7 +4,7 @@
 #include "barretenberg/plonk/proof_system/constants.hpp"
 #include "barretenberg/polynomials/evaluation_domain.hpp"
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 
 /**
  * @brief Hashes the evaluation domain to match the 'circuit' approach taken in
@@ -152,4 +152,4 @@ sha256::hash verification_key::sha256_hash()
     return sha256::sha256(to_buffer(vk_data));
 }
 
-} // namespace proof_system::plonk
+} // namespace bb::plonk

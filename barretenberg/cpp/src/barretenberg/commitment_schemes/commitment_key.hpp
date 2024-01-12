@@ -19,7 +19,7 @@
 #include <memory>
 #include <string_view>
 
-namespace proof_system::honk::pcs {
+namespace bb::honk::pcs {
 
 /**
  * @brief CommitmentKey object over a pairing group 𝔾₁.
@@ -75,4 +75,4 @@ template <class Curve> class CommitmentKey {
     std::shared_ptr<barretenberg::srs::factories::ProverCrs<Curve>> srs;
 };
 
-} // namespace proof_system::honk::pcs
+} // namespace bb::honk::pcs

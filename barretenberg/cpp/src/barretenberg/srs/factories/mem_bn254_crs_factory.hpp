@@ -6,7 +6,7 @@
 #include <cstddef>
 #include <utility>
 
-namespace barretenberg::srs::factories {
+namespace bb::srs::factories {
 
 /**
  * Create reference strings given pointers to in memory buffers.
@@ -28,4 +28,4 @@ class MemBn254CrsFactory : public CrsFactory<curve::BN254> {
     std::shared_ptr<barretenberg::srs::factories::VerifierCrs<curve::BN254>> verifier_crs_;
 };
 
-} // namespace barretenberg::srs::factories
+} // namespace bb::srs::factories

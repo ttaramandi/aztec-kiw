@@ -4,7 +4,7 @@
 
 namespace acir_format {
 
-using namespace proof_system::plonk::stdlib;
+using namespace bb::plonk::stdlib;
 
 template <typename Builder>
 crypto::schnorr::signature convert_signature(Builder& builder, std::vector<uint32_t> signature)

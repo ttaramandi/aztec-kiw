@@ -93,7 +93,7 @@
     current_offset += 16;                                                                                              \
     schedule_it += 16;
 
-namespace barretenberg::scalar_multiplication {
+namespace bb::scalar_multiplication {
 
 /**
  * The pippppenger point table computes for each point P = (x,y), a point P' = (\beta * x, -y) which enables us
@@ -1058,6 +1058,6 @@ template curve::Grumpkin::Element pippenger_without_endomorphism_basis_points<cu
     const size_t num_initial_points,
     pippenger_runtime_state<curve::Grumpkin>& state);
 
-} // namespace barretenberg::scalar_multiplication
+} // namespace bb::scalar_multiplication
 
 // NOLINTEND(cppcoreguidelines-avoid-c-arrays, google-readability-casting)

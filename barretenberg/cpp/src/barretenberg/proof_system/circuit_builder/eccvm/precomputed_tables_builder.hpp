@@ -2,7 +2,7 @@
 
 #include "./eccvm_builder_types.hpp"
 
-namespace proof_system {
+namespace bb {
 
 template <typename Flavor> class ECCVMPrecomputedTablesBuilder {
   public:
@@ -108,4 +108,4 @@ template <typename Flavor> class ECCVMPrecomputedTablesBuilder {
         return precompute_state;
     }
 };
-} // namespace proof_system
+} // namespace bb

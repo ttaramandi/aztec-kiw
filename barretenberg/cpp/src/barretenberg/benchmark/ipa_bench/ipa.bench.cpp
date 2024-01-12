@@ -2,7 +2,7 @@
 #include <benchmark/benchmark.h>
 
 using namespace benchmark;
-using namespace barretenberg;
+using namespace bb;
 using namespace proof_system;
 using namespace proof_system::honk::pcs::ipa;
 namespace {

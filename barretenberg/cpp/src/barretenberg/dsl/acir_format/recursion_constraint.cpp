@@ -7,7 +7,7 @@
 
 namespace acir_format {
 
-using namespace proof_system::plonk;
+using namespace bb::plonk;
 
 // `NUM_LIMB_BITS_IN_FIELD_SIMULATION` is the limb size when simulating a non-native field using the bigfield class
 // A aggregation object is two acir_format::g1_ct types where each coordinate in a point is a non-native field.

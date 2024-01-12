@@ -9,7 +9,7 @@
 #include <memory.h>
 #include <memory>
 
-namespace barretenberg::polynomial_arithmetic {
+namespace bb::polynomial_arithmetic {
 
 namespace {
 
@@ -1441,4 +1441,4 @@ template void compute_efficient_interpolation<grumpkin::fr>(const grumpkin::fr*,
                                                             const grumpkin::fr*,
                                                             const size_t);
 
-} // namespace barretenberg::polynomial_arithmetic
+} // namespace bb::polynomial_arithmetic

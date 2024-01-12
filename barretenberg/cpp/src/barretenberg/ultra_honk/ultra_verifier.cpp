@@ -3,10 +3,10 @@
 #include "barretenberg/numeric/bitop/get_msb.hpp"
 #include "barretenberg/transcript/transcript.hpp"
 
-using namespace barretenberg;
-using namespace proof_system::honk::sumcheck;
+using namespace bb;
+using namespace bb::honk::sumcheck;
 
-namespace proof_system::honk {
+namespace bb::honk {
 template <typename Flavor>
 UltraVerifier_<Flavor>::UltraVerifier_(const std::shared_ptr<Transcript>& transcript,
                                        const std::shared_ptr<VerificationKey>& verifier_key)
@@ -166,4 +166,4 @@ template <typename Flavor> bool UltraVerifier_<Flavor>::verify_proof(const plonk
 template class UltraVerifier_<honk::flavor::Ultra>;
 template class UltraVerifier_<honk::flavor::GoblinUltra>;
 
-} // namespace proof_system::honk
+} // namespace bb::honk

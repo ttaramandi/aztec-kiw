@@ -2,7 +2,7 @@
 #include "blake2s.hpp"
 #include <barretenberg/common/wasm_export.hpp>
 
-using namespace barretenberg;
+using namespace bb;
 
 extern "C" {
 

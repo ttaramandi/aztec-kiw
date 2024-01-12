@@ -9,9 +9,9 @@
 #include "../bit_array/bit_array.hpp"
 #include "../field/field.hpp"
 
-using namespace barretenberg;
+using namespace bb;
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 namespace stdlib {
 
 template <typename Builder, typename T>
@@ -2941,4 +2941,4 @@ std::pair<bool, size_t> bigfield<Builder, T>::get_quotient_reduction_info(const 
 }
 
 } // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::plonk

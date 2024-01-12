@@ -14,7 +14,7 @@
 #include <iostream>
 #include <sstream>
 
-namespace barretenberg::detail {
+namespace bb::detail {
 template <typename... Args> constexpr std::size_t _va_count(Args&&... /*unused*/)
 {
     return sizeof...(Args);
@@ -35,7 +35,7 @@ template <typename T, typename... BaseClass> auto _concatenate_base_class_get_la
 {
     return concatenate(static_cast<const BaseClass&>(arg).get_labels()...);
 }
-} // namespace barretenberg::detail
+} // namespace bb::detail
 
 #define DEFINE_REF_VIEW(...)                                                                                           \
     [[nodiscard]] auto get_all()                                                                                       \

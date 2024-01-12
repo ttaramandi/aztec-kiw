@@ -1,9 +1,9 @@
 #include "uint.hpp"
 #include "../../circuit_builders/circuit_builders.hpp"
 
-using namespace barretenberg;
+using namespace bb;
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 namespace stdlib {
 
 template <typename Builder, typename Native>
@@ -250,4 +250,4 @@ template class uint_plookup<proof_system::UltraCircuitBuilder, uint64_t>;
 template class uint_plookup<proof_system::GoblinUltraCircuitBuilder, uint64_t>;
 
 } // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::plonk

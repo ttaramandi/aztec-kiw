@@ -5,7 +5,7 @@
 #include "barretenberg/transcript/transcript.hpp"
 #include "sumcheck_round.hpp"
 
-namespace proof_system::honk::sumcheck {
+namespace bb::honk::sumcheck {
 
 template <typename Flavor> class SumcheckProver {
 
@@ -257,4 +257,4 @@ template <typename Flavor> class SumcheckVerifier {
         return SumcheckOutput<Flavor>{ multivariate_challenge, purported_evaluations, verified };
     };
 };
-} // namespace proof_system::honk::sumcheck
+} // namespace bb::honk::sumcheck

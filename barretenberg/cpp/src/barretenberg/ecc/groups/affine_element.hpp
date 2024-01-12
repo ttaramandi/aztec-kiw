@@ -5,7 +5,7 @@
 #include <type_traits>
 #include <vector>
 
-namespace barretenberg::group_elements {
+namespace bb::group_elements {
 template <typename T>
 concept SupportsHashToCurve = T::can_hash_to_curve;
 template <typename Fq, typename Fr, typename Params> class alignas(64) affine_element {
@@ -184,6 +184,6 @@ template <typename Fq, typename Fr, typename Params> class alignas(64) affine_el
     // for serialization: update with new fields
     MSGPACK_FIELDS(x, y);
 };
-} // namespace barretenberg::group_elements
+} // namespace bb::group_elements
 
 #include "./affine_element_impl.hpp"

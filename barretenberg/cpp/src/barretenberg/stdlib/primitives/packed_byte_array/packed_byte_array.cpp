@@ -2,9 +2,9 @@
 
 #include "../circuit_builders/circuit_builders.hpp"
 
-using namespace barretenberg;
+using namespace bb;
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 namespace stdlib {
 
 namespace {
@@ -271,4 +271,4 @@ template class packed_byte_array<proof_system::UltraCircuitBuilder>;
 template class packed_byte_array<proof_system::GoblinUltraCircuitBuilder>;
 
 } // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::plonk

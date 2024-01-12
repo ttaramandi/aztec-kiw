@@ -5,7 +5,7 @@
 #include "./cycle_group.hpp"
 #include "barretenberg/proof_system/plookup_tables/types.hpp"
 #include "barretenberg/stdlib/primitives/plookup/plookup.hpp"
-namespace proof_system::plonk::stdlib {
+namespace bb::plonk::stdlib {
 
 template <typename Composer>
 cycle_group<Composer>::cycle_group(Composer* _context)
@@ -1362,4 +1362,4 @@ template class cycle_group<proof_system::StandardCircuitBuilder>;
 template class cycle_group<proof_system::UltraCircuitBuilder>;
 template class cycle_group<proof_system::GoblinUltraCircuitBuilder>;
 
-} // namespace proof_system::plonk::stdlib
+} // namespace bb::plonk::stdlib

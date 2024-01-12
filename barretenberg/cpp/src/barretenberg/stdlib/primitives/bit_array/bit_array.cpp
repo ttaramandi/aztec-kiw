@@ -3,7 +3,7 @@
 
 #include <bitset>
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 namespace stdlib {
 
 template <typename Builder>
@@ -162,4 +162,4 @@ template class bit_array<proof_system::UltraCircuitBuilder>;
 template class bit_array<proof_system::GoblinUltraCircuitBuilder>;
 
 } // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::plonk

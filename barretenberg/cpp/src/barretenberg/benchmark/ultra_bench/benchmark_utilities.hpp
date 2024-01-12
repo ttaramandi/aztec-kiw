@@ -140,7 +140,7 @@ template <typename Builder> void generate_ecdsa_verification_test_circuit(Builde
  */
 template <typename Builder> void generate_merkle_membership_test_circuit(Builder& builder, size_t num_iterations)
 {
-    using namespace proof_system::plonk::stdlib;
+    using namespace bb::plonk::stdlib;
     using field_ct = field_t<Builder>;
     using witness_ct = witness_t<Builder>;
     using witness_ct = witness_t<Builder>;

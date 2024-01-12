@@ -12,7 +12,7 @@
 #include "circuit_builder_base.hpp"
 #include <optional>
 
-namespace proof_system {
+namespace bb {
 
 template <typename FF> struct non_native_field_witnesses {
     // first 4 array elements = limbs
@@ -25,7 +25,7 @@ template <typename FF> struct non_native_field_witnesses {
     FF modulus;
 };
 
-using namespace barretenberg;
+using namespace bb;
 
 template <typename Arithmetization>
 class UltraCircuitBuilder_ : public CircuitBuilderBase<typename Arithmetization::FF> {
@@ -1168,4 +1168,4 @@ class UltraCircuitBuilder_ : public CircuitBuilderBase<typename Arithmetization:
     bool check_circuit();
 };
 using UltraCircuitBuilder = UltraCircuitBuilder_<arithmetization::Ultra<barretenberg::fr>>;
-} // namespace proof_system
+} // namespace bb

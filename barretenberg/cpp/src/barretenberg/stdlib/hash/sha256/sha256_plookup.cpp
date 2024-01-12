@@ -7,9 +7,9 @@
 #include "barretenberg/stdlib/primitives/plookup/plookup.hpp"
 #include "barretenberg/stdlib/primitives/uint/uint.hpp"
 
-using namespace barretenberg;
+using namespace bb;
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 namespace stdlib {
 namespace sha256_plookup {
 
@@ -369,4 +369,4 @@ template packed_byte_array<proof_system::GoblinUltraCircuitBuilder> sha256(
     const packed_byte_array<proof_system::GoblinUltraCircuitBuilder>& input);
 } // namespace sha256_plookup
 } // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::plonk

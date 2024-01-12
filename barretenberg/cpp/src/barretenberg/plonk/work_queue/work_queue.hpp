@@ -3,9 +3,9 @@
 #include "barretenberg/plonk/proof_system/proving_key/proving_key.hpp"
 #include "barretenberg/plonk/transcript/transcript_wrappers.hpp"
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 
-using namespace barretenberg;
+using namespace bb;
 
 // TODO(Cody): Template by flavor?
 class work_queue {
@@ -68,4 +68,4 @@ class work_queue {
     transcript::StandardTranscript* transcript;
     std::vector<work_item> work_item_queue;
 };
-} // namespace proof_system::plonk
+} // namespace bb::plonk

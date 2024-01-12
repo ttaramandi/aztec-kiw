@@ -8,7 +8,7 @@
 #include "barretenberg/sumcheck/sumcheck_output.hpp"
 #include "barretenberg/transcript/transcript.hpp"
 
-namespace proof_system::honk {
+namespace bb::honk {
 
 class AvmMiniProver {
 
@@ -59,4 +59,4 @@ class AvmMiniProver {
     plonk::proof proof;
 };
 
-} // namespace proof_system::honk
+} // namespace bb::honk

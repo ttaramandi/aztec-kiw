@@ -1,10 +1,10 @@
 #include "bool.hpp"
 #include "../circuit_builders/circuit_builders.hpp"
 
-using namespace barretenberg;
-using namespace proof_system;
+using namespace bb;
+using namespace bb;
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 namespace stdlib {
 
 template <typename Builder>
@@ -553,4 +553,4 @@ template class bool_t<proof_system::UltraCircuitBuilder>;
 template class bool_t<proof_system::GoblinUltraCircuitBuilder>;
 
 } // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::plonk

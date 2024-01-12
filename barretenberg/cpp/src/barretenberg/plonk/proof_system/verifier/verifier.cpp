@@ -8,9 +8,9 @@
 #include "barretenberg/plonk/proof_system/constants.hpp"
 #include "barretenberg/polynomials/polynomial_arithmetic.hpp"
 
-using namespace barretenberg;
+using namespace bb;
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 template <typename program_settings>
 VerifierBase<program_settings>::VerifierBase(std::shared_ptr<verification_key> verifier_key,
                                              const transcript::Manifest& input_manifest)
@@ -243,4 +243,4 @@ template class VerifierBase<ultra_verifier_settings>;
 template class VerifierBase<ultra_to_standard_verifier_settings>;
 template class VerifierBase<ultra_with_keccak_verifier_settings>;
 
-} // namespace proof_system::plonk
+} // namespace bb::plonk

@@ -2,9 +2,9 @@
 
 #include "../circuit_builders/circuit_builders.hpp"
 
-using namespace barretenberg;
+using namespace bb;
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 namespace stdlib {
 
 template <typename Builder> rom_table<Builder>::rom_table(const std::vector<field_pt>& table_entries)
@@ -125,4 +125,4 @@ template <typename Builder> field_t<Builder> rom_table<Builder>::operator[](cons
 template class rom_table<proof_system::UltraCircuitBuilder>;
 template class rom_table<proof_system::GoblinUltraCircuitBuilder>;
 } // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::plonk

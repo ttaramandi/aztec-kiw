@@ -3,7 +3,7 @@
 #include "barretenberg/ecc/curves/bn254/bn254.hpp"
 #include "barretenberg/proof_system/circuit_builder/eccvm/eccvm_builder_types.hpp"
 
-namespace proof_system {
+namespace bb {
 
 enum EccOpCode { NULL_OP, ADD_ACCUM, MUL_ACCUM, EQUALITY };
 
@@ -209,4 +209,4 @@ class ECCOpQueue {
     }
 };
 
-} // namespace proof_system
+} // namespace bb

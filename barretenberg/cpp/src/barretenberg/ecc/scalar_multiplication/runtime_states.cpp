@@ -6,7 +6,7 @@
 #include "barretenberg/numeric/bitop/get_msb.hpp"
 
 // NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
-namespace barretenberg::scalar_multiplication {
+namespace bb::scalar_multiplication {
 
 size_t get_num_pippenger_rounds(const size_t num_points)
 {
@@ -206,6 +206,6 @@ template struct affine_product_runtime_state<curve::BN254>;
 template struct affine_product_runtime_state<curve::Grumpkin>;
 template struct pippenger_runtime_state<curve::BN254>;
 template struct pippenger_runtime_state<curve::Grumpkin>;
-} // namespace barretenberg::scalar_multiplication
+} // namespace bb::scalar_multiplication
 
 // NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast)

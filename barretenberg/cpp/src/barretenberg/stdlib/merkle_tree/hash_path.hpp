@@ -4,9 +4,9 @@
 #include <algorithm>
 #include <vector>
 
-namespace proof_system::plonk::stdlib::merkle_tree {
+namespace bb::plonk::stdlib::merkle_tree {
 
-using namespace barretenberg;
+using namespace bb;
 
 using fr_hash_path = std::vector<std::pair<fr, fr>>;
 using fr_sibling_path = std::vector<fr>;
@@ -61,7 +61,7 @@ inline fr zero_hash_at_height(size_t height)
     return current;
 }
 
-} // namespace proof_system::plonk::stdlib::merkle_tree
+} // namespace bb::plonk::stdlib::merkle_tree
 
 // We add to std namespace as fr_hash_path is actually a std::vector, and this is the only way
 // to achieve effective ADL.

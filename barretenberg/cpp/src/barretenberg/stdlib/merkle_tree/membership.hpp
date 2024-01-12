@@ -4,7 +4,7 @@
 #include "barretenberg/stdlib/primitives/field/field.hpp"
 #include "hash_path.hpp"
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 namespace stdlib {
 namespace merkle_tree {
 
@@ -318,4 +318,4 @@ void batch_update_membership(field_t<Builder> const& new_root,
 
 } // namespace merkle_tree
 } // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::plonk

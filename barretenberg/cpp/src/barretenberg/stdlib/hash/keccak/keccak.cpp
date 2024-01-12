@@ -3,7 +3,7 @@
 #include "barretenberg/numeric/bitop/sparse_form.hpp"
 #include "barretenberg/stdlib/primitives/logic/logic.hpp"
 #include "barretenberg/stdlib/primitives/uint/uint.hpp"
-namespace proof_system::plonk {
+namespace bb::plonk {
 namespace stdlib {
 
 using namespace plookup;
@@ -893,4 +893,4 @@ template class keccak<proof_system::UltraCircuitBuilder>;
 template class keccak<proof_system::GoblinUltraCircuitBuilder>;
 
 } // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::plonk

@@ -3,7 +3,7 @@
 
 namespace acir_format {
 
-using namespace proof_system::plonk;
+using namespace bb::plonk;
 
 template <typename Builder>
 crypto::ecdsa::signature ecdsa_convert_signature(Builder& builder, std::vector<uint32_t> signature)

@@ -4,7 +4,7 @@
 #include "barretenberg/proof_system/library/grand_product_delta.hpp"
 #include "barretenberg/transcript/transcript.hpp"
 
-namespace proof_system::plonk::stdlib::recursion::honk {
+namespace bb::plonk::stdlib::recursion::honk {
 
 template <typename Flavor>
 UltraRecursiveVerifier_<Flavor>::UltraRecursiveVerifier_(
@@ -125,7 +125,7 @@ std::array<typename Flavor::GroupElement, 2> UltraRecursiveVerifier_<Flavor>::ve
     return pairing_points;
 }
 
-template class UltraRecursiveVerifier_<proof_system::honk::flavor::UltraRecursive_<UltraCircuitBuilder>>;
-template class UltraRecursiveVerifier_<proof_system::honk::flavor::UltraRecursive_<GoblinUltraCircuitBuilder>>;
-template class UltraRecursiveVerifier_<proof_system::honk::flavor::GoblinUltraRecursive>;
-} // namespace proof_system::plonk::stdlib::recursion::honk
+template class UltraRecursiveVerifier_<bb::UltraRecursive_<UltraCircuitBuilder>>;
+template class UltraRecursiveVerifier_<bb::UltraRecursive_<GoblinUltraCircuitBuilder>>;
+template class UltraRecursiveVerifier_<bb::GoblinUltraRecursive>;
+} // namespace bb::plonk::stdlib::recursion::honk

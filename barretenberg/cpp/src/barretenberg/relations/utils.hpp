@@ -5,7 +5,7 @@
 #include "barretenberg/polynomials/pow.hpp"
 #include "barretenberg/relations/relation_parameters.hpp"
 
-namespace barretenberg {
+namespace bb {
 
 template <typename Flavor> class RelationUtils {
   public:
@@ -241,4 +241,4 @@ template <typename Flavor> class RelationUtils {
         }
     }
 };
-} // namespace barretenberg
+} // namespace bb

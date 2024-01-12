@@ -10,7 +10,7 @@ std::shared_ptr<barretenberg::srs::factories::CrsFactory<curve::BN254>> crs_fact
 std::shared_ptr<barretenberg::srs::factories::CrsFactory<curve::Grumpkin>> grumpkin_crs_factory;
 } // namespace
 
-namespace barretenberg::srs {
+namespace bb::srs {
 
 // Initializes the crs using the memory buffers
 void init_crs_factory(std::vector<g1::affine_element> const& points, g2::affine_element const g2_point)
@@ -50,4 +50,4 @@ std::shared_ptr<factories::CrsFactory<curve::Grumpkin>> get_grumpkin_crs_factory
     }
     return grumpkin_crs_factory;
 }
-} // namespace barretenberg::srs
+} // namespace bb::srs

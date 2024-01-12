@@ -4,9 +4,9 @@
 #include "barretenberg/ecc/curves/grumpkin/grumpkin.hpp"
 #include <functional>
 
-using namespace proof_system;
+using namespace bb;
 
-namespace proof_system::plonk {
+namespace bb::plonk {
 namespace stdlib {
 
 template <typename Builder>
@@ -1151,4 +1151,4 @@ template class field_t<proof_system::UltraCircuitBuilder>;
 template class field_t<proof_system::GoblinUltraCircuitBuilder>;
 
 } // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::plonk

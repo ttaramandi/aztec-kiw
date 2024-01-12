@@ -8,8 +8,8 @@
 
 namespace {
 
-using namespace barretenberg;
-using namespace barretenberg::srs::factories;
+using namespace bb;
+using namespace bb::srs::factories;
 
 class MemVerifierCrs : public VerifierCrs<curve::BN254> {
   public:
@@ -38,7 +38,7 @@ class MemVerifierCrs : public VerifierCrs<curve::BN254> {
 
 } // namespace
 
-namespace barretenberg::srs::factories {
+namespace bb::srs::factories {
 
 MemBn254CrsFactory::MemBn254CrsFactory(std::vector<g1::affine_element> const& points,
                                        g2::affine_element const& g2_point)
@@ -56,4 +56,4 @@ std::shared_ptr<barretenberg::srs::factories::VerifierCrs<curve::BN254>> MemBn25
     return verifier_crs_;
 }
 
-} // namespace barretenberg::srs::factories
+} // namespace bb::srs::factories

@@ -10,7 +10,7 @@
 #include <random>
 #include <vector>
 
-namespace barretenberg::group_elements {
+namespace bb::group_elements {
 
 /**
  * @brief element class. Implements ecc group arithmetic using Jacobian coordinates
@@ -144,7 +144,7 @@ template <class Fq, class Fr, class Params> std::ostream& operator<<(std::ostrea
 // constexpr element<Fq, Fr, Params>::one = element<Fq, Fr, Params>{ Params::one_x, Params::one_y, Fq::one() };
 // constexpr element<Fq, Fr, Params>::point_at_infinity = one.set_infinity();
 // constexpr element<Fq, Fr, Params>::curve_b = Params::b;
-} // namespace barretenberg::group_elements
+} // namespace bb::group_elements
 
 #include "./element_impl.hpp"
 

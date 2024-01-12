@@ -9,7 +9,7 @@
 #include "barretenberg/stdlib/recursion/verifier/verifier.hpp"
 #include "barretenberg/transcript/transcript.hpp"
 
-using namespace proof_system::plonk;
+using namespace bb::plonk;
 using namespace stdlib;
 using numeric::uint256_t;
 
