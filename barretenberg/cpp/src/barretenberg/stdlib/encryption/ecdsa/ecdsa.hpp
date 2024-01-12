@@ -4,8 +4,7 @@
 #include "../../primitives/circuit_builders/circuit_builders_fwd.hpp"
 #include "../../primitives/uint/uint.hpp"
 #include "barretenberg/crypto/ecdsa/ecdsa.hpp"
-namespace bb::plonk {
-namespace stdlib {
+namespace bb::stdlib {
 namespace ecdsa {
 
 template <typename Builder> struct signature {
@@ -43,7 +42,6 @@ template <typename Builder> static signature<Builder> from_witness(Builder* ctx,
 }
 
 } // namespace ecdsa
-} // namespace stdlib
-} // namespace bb::plonk
+} // namespace bb::stdlib
 
 #include "./ecdsa_impl.hpp"

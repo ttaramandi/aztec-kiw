@@ -5,7 +5,7 @@
 
 #include "schnorr.hpp"
 
-namespace crypto {
+namespace bb::crypto {
 namespace schnorr {
 
 /**
@@ -153,4 +153,4 @@ bool verify_signature(const std::string& message, const typename G1::affine_elem
     return std::equal(sig.e.begin(), sig.e.end(), target_e.begin(), target_e.end());
 }
 } // namespace schnorr
-} // namespace crypto
+} // namespace bb::crypto

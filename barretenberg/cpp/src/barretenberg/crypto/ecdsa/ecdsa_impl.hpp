@@ -4,7 +4,7 @@
 #include "barretenberg/common/serialize.hpp"
 #include "barretenberg/numeric/uint256/uint256.hpp"
 
-namespace crypto {
+namespace bb::crypto {
 namespace ecdsa {
 
 template <typename Hash, typename Fq, typename Fr, typename G1>
@@ -170,4 +170,4 @@ bool verify_signature(const std::string& message, const typename G1::affine_elem
     return result == r;
 }
 } // namespace ecdsa
-} // namespace crypto
+} // namespace bb::crypto

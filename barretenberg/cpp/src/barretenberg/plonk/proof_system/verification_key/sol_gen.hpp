@@ -154,7 +154,7 @@ inline void output_vk_sol(std::ostream& os, std::shared_ptr<plonk::verification_
         break;
     }
     default: {
-        std::cerr << "proof_system::output_vk_sol unsupported composer type. Defaulting to standard composer" << std::endl;
+        std::cerr << "bb::output_vk_sol unsupported composer type. Defaulting to standard composer" << std::endl;
         return output_vk_sol_standard(os, key, class_name);
     }
     }

@@ -14,7 +14,7 @@
 #include <cstdint>
 
 #include <iostream>
-namespace crypto {
+namespace bb::crypto {
 namespace aes128 {
 
 void expand_key(const uint8_t* key, uint8_t* round_key);
@@ -61,4 +61,4 @@ static constexpr uint8_t sbox_inverse[256] = {
     0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d
 };
 } // namespace aes128
-} // namespace crypto
+} // namespace bb::crypto

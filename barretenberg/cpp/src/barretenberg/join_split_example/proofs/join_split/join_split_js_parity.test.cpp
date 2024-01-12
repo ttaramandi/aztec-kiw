@@ -13,8 +13,8 @@ namespace proofs {
 namespace join_split {
 
 using namespace barretenberg;
-// using namespace proof_system::plonk::stdlib::types;
-using namespace proof_system::plonk::stdlib::merkle_tree;
+// using namespace bb::stdlib;
+using namespace bb::stdlib;
 using namespace join_split_example::proofs::notes::native;
 using key_pair = join_split_example::fixtures::grumpkin_key_pair;
 

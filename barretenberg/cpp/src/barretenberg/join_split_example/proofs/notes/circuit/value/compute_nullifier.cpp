@@ -40,7 +40,7 @@ field_ct compute_nullifier(field_ct const& note_commitment,
      * eth address.
      */
     auto blake_input = byte_array_ct(hashed_inputs);
-    auto blake_result = proof_system::stdlib::blake2s(blake_input);
+    auto blake_result = bb::stdlib::blake2s(blake_input);
     return field_ct(blake_result);
 }
 

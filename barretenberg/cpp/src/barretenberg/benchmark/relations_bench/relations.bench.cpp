@@ -21,7 +21,7 @@ template <typename Flavor, typename Relation> void execute_relation(::benchmark:
     using AllValues = typename Flavor::AllValues;
     using SumcheckArrayOfValuesOverSubrelations = typename Relation::SumcheckArrayOfValuesOverSubrelations;
 
-    auto params = proof_system::RelationParameters<FF>::get_random();
+    auto params = bb::RelationParameters<FF>::get_random();
 
     // Extract an array containing all the polynomial evaluations at a given row i
     AllValues new_value{};

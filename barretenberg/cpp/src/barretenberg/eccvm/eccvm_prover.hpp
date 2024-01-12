@@ -51,7 +51,7 @@ template <ECCVMFlavor Flavor> class ECCVMProver_ {
 
     std::vector<FF> public_inputs;
 
-    proof_system::RelationParameters<FF> relation_parameters;
+    bb::RelationParameters<FF> relation_parameters;
 
     std::shared_ptr<ProvingKey> key;
 

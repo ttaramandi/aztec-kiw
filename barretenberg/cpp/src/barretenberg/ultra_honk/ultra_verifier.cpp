@@ -54,7 +54,7 @@ template <typename Flavor> bool UltraVerifier_<Flavor>::verify_proof(const plonk
     using VerifierCommitments = typename Flavor::VerifierCommitments;
     using CommitmentLabels = typename Flavor::CommitmentLabels;
 
-    proof_system::RelationParameters<FF> relation_parameters;
+    bb::RelationParameters<FF> relation_parameters;
 
     transcript = std::make_shared<Transcript>(proof.proof_data);
 

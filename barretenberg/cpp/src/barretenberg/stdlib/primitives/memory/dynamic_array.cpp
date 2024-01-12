@@ -3,7 +3,7 @@
 #include "../bool/bool.hpp"
 #include "../circuit_builders/circuit_builders.hpp"
 
-namespace bb::plonk {
+namespace bb::stdlib {
 namespace stdlib {
 
 /**
@@ -273,7 +273,7 @@ template <typename Builder> void DynamicArray<Builder>::conditional_pop(const bo
     _length -= predicate;
 }
 
-template class DynamicArray<proof_system::UltraCircuitBuilder>;
-template class DynamicArray<proof_system::GoblinUltraCircuitBuilder>;
+template class DynamicArray<bb::UltraCircuitBuilder>;
+template class DynamicArray<bb::GoblinUltraCircuitBuilder>;
 } // namespace stdlib
-} // namespace bb::plonk
+} // namespace bb::stdlib

@@ -8,7 +8,7 @@
 namespace bb {
 class Standard {
   public:
-    using CircuitBuilder = proof_system::StandardCircuitBuilder;
+    using CircuitBuilder = bb::StandardCircuitBuilder;
     using ProvingKey = plonk::proving_key;
     using Curve = curve::BN254;
     using FF = Curve::ScalarField;
@@ -20,7 +20,7 @@ class Standard {
 
 class Ultra {
   public:
-    using CircuitBuilder = proof_system::UltraCircuitBuilder;
+    using CircuitBuilder = bb::UltraCircuitBuilder;
     using ProvingKey = plonk::proving_key;
     using Curve = curve::BN254;
     using FF = Curve::ScalarField;

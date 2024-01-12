@@ -16,8 +16,6 @@
 
 using namespace proof_system;
 
-namespace proof_system::ultra_relation_consistency_tests {
-
 using Flavor = honk::flavor::GoblinTranslator;
 using FF = typename Flavor::FF;
 using InputElements = typename Flavor::AllValues;
@@ -947,5 +945,3 @@ TEST_F(GoblinTranslatorRelationConsistency, NonNativeFieldRelation)
     run_test(/*random_inputs=*/false);
     run_test(/*random_inputs=*/true);
 };
-
-} // namespace proof_system::ultra_relation_consistency_tests

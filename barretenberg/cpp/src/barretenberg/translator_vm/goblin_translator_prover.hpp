@@ -40,7 +40,7 @@ class GoblinTranslatorProver {
 
     std::shared_ptr<Transcript> transcript = std::make_shared<Transcript>();
 
-    proof_system::RelationParameters<FF> relation_parameters;
+    bb::RelationParameters<FF> relation_parameters;
 
     std::shared_ptr<ProvingKey> key;
 

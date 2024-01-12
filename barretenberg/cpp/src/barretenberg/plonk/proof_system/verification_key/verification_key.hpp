@@ -113,7 +113,7 @@ struct verification_key {
         *this = verification_key{ std::move(data), bb::srs::get_crs_factory()->get_verifier_crs() };
     }
     // Alias verification_key as verification_key_data in the schema
-    void msgpack_schema(auto& packer) const { packer.pack_schema(proof_system::plonk::verification_key_data{}); }
+    void msgpack_schema(auto& packer) const { packer.pack_schema(bb::plonk::verification_key_data{}); }
 };
 
 template <typename B> inline void read(B& buf, verification_key& key)

@@ -6,7 +6,7 @@
 #include <cstdint>
 
 #include <iostream>
-namespace crypto {
+namespace bb::crypto {
 namespace aes128 {
 
 namespace {
@@ -263,4 +263,4 @@ void decrypt_buffer_cbc(uint8_t* buffer, uint8_t* iv, const uint8_t* key, const 
 }
 
 } // namespace aes128
-} // namespace crypto
+} // namespace bb::crypto

@@ -12,8 +12,8 @@
 using namespace benchmark;
 using namespace bb::plonk;
 
-using Builder = proof_system::UltraCircuitBuilder;
-using Composer = proof_system::plonk::UltraComposer;
+using Builder = bb::UltraCircuitBuilder;
+using Composer = bb::plonk::UltraComposer;
 
 constexpr size_t NUM_CIRCUITS = 10;
 
@@ -45,7 +45,7 @@ void generate_test_pedersen_hash_circuit(Builder& builder, size_t num_repetition
     stdlib::field_t<Builder> out(stdlib::witness_t(&builder, bb::fr::random_element()));
 
     for (size_t i = 0; i < num_repetitions; ++i) {
-        out = proof_system::stdlib::pedersen_hash<Builder>::hash({ left, out });
+        out = bb::stdlib::pedersen_hash<Builder>::hash({ left, out });
     }
 }
 
@@ -56,7 +56,7 @@ void generate_test_pedersen_hash_buffer_circuit(Builder& builder, size_t num_rep
         stdlib::byte_array<Builder> tmp(stdlib::witness_t(&builder, bb::fr::random_element()));
         input.write(tmp);
     }
-    auto out = proof_system::stdlib::pedersen_hash<Builder>::hash_buffer(input);
+    auto out = bb::stdlib::pedersen_hash<Builder>::hash_buffer(input);
     (void)out;
 }
 

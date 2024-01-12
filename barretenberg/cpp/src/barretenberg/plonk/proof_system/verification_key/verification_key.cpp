@@ -44,7 +44,7 @@ bb::fr verification_key_data::hash_native(const size_t hash_index) const
 
     std::vector<uint8_t> preimage_data;
 
-    preimage_data.push_back(static_cast<uint8_t>(proof_system::CircuitType(circuit_type)));
+    preimage_data.push_back(static_cast<uint8_t>(bb::CircuitType(circuit_type)));
 
     const uint256_t domain = eval_domain.domain;
     const uint256_t generator = eval_domain.generator;

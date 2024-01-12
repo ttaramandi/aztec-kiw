@@ -46,7 +46,7 @@ template <class Flavor> class ProverInstance_ {
     // instances
     size_t pub_inputs_offset = 0;
     RelationSeparator alphas;
-    proof_system::RelationParameters<FF> relation_parameters;
+    bb::RelationParameters<FF> relation_parameters;
     std::vector<uint32_t> recursive_proof_public_input_indices;
 
     bool is_accumulator = false;

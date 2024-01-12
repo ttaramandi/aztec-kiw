@@ -4,7 +4,7 @@
 using namespace bb;
 using namespace bb;
 
-namespace bb::plonk {
+namespace bb::stdlib {
 namespace stdlib {
 
 template <typename Builder>
@@ -548,9 +548,9 @@ template <typename Builder> bool_t<Builder> bool_t<Builder>::normalize() const
     return *this;
 }
 
-template class bool_t<proof_system::StandardCircuitBuilder>;
-template class bool_t<proof_system::UltraCircuitBuilder>;
-template class bool_t<proof_system::GoblinUltraCircuitBuilder>;
+template class bool_t<bb::StandardCircuitBuilder>;
+template class bool_t<bb::UltraCircuitBuilder>;
+template class bool_t<bb::GoblinUltraCircuitBuilder>;
 
 } // namespace stdlib
-} // namespace bb::plonk
+} // namespace bb::stdlib

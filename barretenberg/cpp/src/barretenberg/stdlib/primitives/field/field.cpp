@@ -6,7 +6,7 @@
 
 using namespace bb;
 
-namespace bb::plonk {
+namespace bb::stdlib {
 namespace stdlib {
 
 template <typename Builder>
@@ -724,7 +724,7 @@ void field_t<Builder>::create_range_constraint(const size_t num_bits, std::strin
             if constexpr (HasPlookup<Builder>) {
                 context->decompose_into_default_range(normalize().get_witness_index(),
                                                       num_bits,
-                                                      proof_system::UltraCircuitBuilder::DEFAULT_PLOOKUP_RANGE_BITNUM,
+                                                      bb::UltraCircuitBuilder::DEFAULT_PLOOKUP_RANGE_BITNUM,
                                                       msg);
             } else {
                 context->decompose_into_base4_accumulators(normalize().get_witness_index(), num_bits, msg);
@@ -1140,9 +1140,9 @@ std::vector<bool_t<Builder>> field_t<Builder>::decompose_into_bits(
     return result;
 }
 
-template class field_t<proof_system::StandardCircuitBuilder>;
-template class field_t<proof_system::UltraCircuitBuilder>;
-template class field_t<proof_system::GoblinUltraCircuitBuilder>;
+template class field_t<bb::StandardCircuitBuilder>;
+template class field_t<bb::UltraCircuitBuilder>;
+template class field_t<bb::GoblinUltraCircuitBuilder>;
 
 } // namespace stdlib
-} // namespace bb::plonk
+} // namespace bb::stdlib

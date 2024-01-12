@@ -7,7 +7,7 @@
 #include <array>
 // namespace bb::plonk
 
-namespace bb::plonk {
+namespace bb::stdlib {
 namespace stdlib {
 template <typename Builder> class bit_array;
 
@@ -25,4 +25,4 @@ template <typename Builder> field_t<Builder> sha256_to_field(const packed_byte_a
 }
 
 } // namespace stdlib
-} // namespace bb::plonk
+} // namespace bb::stdlib

@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 
 using namespace barretenberg;
-using namespace crypto::schnorr;
+using namespace bb::crypto;
 
 crypto::schnorr::key_pair<grumpkin::fr, grumpkin::g1> generate_signature()
 {

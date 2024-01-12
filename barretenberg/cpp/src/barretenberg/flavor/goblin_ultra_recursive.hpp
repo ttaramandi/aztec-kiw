@@ -152,7 +152,7 @@ class GoblinUltraRecursive {
     // Reuse the VerifierCommitments from GoblinUltra
     using VerifierCommitments = GoblinUltra::VerifierCommitments_<Commitment, VerificationKey>;
     // Reuse the transcript from GoblinUltra
-    using Transcript = proof_system::stdlib::recursion::honk::Transcript<CircuitBuilder>;
+    using Transcript = bb::stdlib::recursion::honk::Transcript<CircuitBuilder>;
 };
 
 } // namespace bb

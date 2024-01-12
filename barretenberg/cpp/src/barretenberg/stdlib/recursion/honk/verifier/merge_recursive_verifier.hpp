@@ -11,8 +11,8 @@ template <typename CircuitBuilder> class MergeRecursiveVerifier_ {
     using FF = typename Curve::ScalarField;
     using Commitment = typename Curve::Element;
     using GroupElement = typename Curve::Element;
-    using KZG = ::proof_system::honk::pcs::kzg::KZG<Curve>;
-    using OpeningClaim = ::proof_system::honk::pcs::OpeningClaim<Curve>;
+    using KZG = ::bb::honk::pcs::kzg::KZG<Curve>;
+    using OpeningClaim = ::bb::honk::pcs::OpeningClaim<Curve>;
     using PairingPoints = std::array<GroupElement, 2>;
     using Transcript = honk::Transcript<CircuitBuilder>;
 

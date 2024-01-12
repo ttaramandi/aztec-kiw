@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 using namespace barretenberg;
-using namespace proof_system::plonk::stdlib::merkle_tree;
+using namespace bb::stdlib;
 
 static std::vector<fr> VALUES = []() {
     std::vector<fr> values(4);

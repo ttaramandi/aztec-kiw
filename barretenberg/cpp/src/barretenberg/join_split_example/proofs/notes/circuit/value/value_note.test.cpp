@@ -7,7 +7,7 @@
 
 namespace join_split_example {
 using namespace barretenberg;
-using namespace proof_system::plonk::stdlib;
+using namespace bb::plonk::stdlib;
 using namespace join_split_example::proofs::notes;
 using namespace join_split_example::proofs::notes::circuit::value;
 

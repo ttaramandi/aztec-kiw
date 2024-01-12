@@ -14,12 +14,12 @@ class GoblinMockCircuits {
     using FF = Curve::ScalarField;
     using Fbase = Curve::BaseField;
     using Point = Curve::AffineElement;
-    using CommitmentKey = proof_system::honk::pcs::CommitmentKey<Curve>;
-    using OpQueue = proof_system::ECCOpQueue;
-    using GoblinUltraBuilder = proof_system::GoblinUltraCircuitBuilder;
+    using CommitmentKey = bb::honk::pcs::CommitmentKey<Curve>;
+    using OpQueue = bb::ECCOpQueue;
+    using GoblinUltraBuilder = bb::GoblinUltraCircuitBuilder;
     using Flavor = bb::GoblinUltra;
     using RecursiveFlavor = bb::GoblinUltraRecursive;
-    using RecursiveVerifier = proof_system::stdlib::recursion::honk::GoblinRecursiveVerifier;
+    using RecursiveVerifier = bb::stdlib::recursion::honk::GoblinRecursiveVerifier;
     using KernelInput = Goblin::AccumulationOutput;
     static constexpr size_t NUM_OP_QUEUE_COLUMNS = Flavor::NUM_WIRES;
 
@@ -61,10 +61,9 @@ class GoblinMockCircuits {
      *
      * @param op_queue
      */
-    static void perform_op_queue_interactions_for_mock_first_circuit(
-        std::shared_ptr<proof_system::ECCOpQueue>& op_queue)
+    static void perform_op_queue_interactions_for_mock_first_circuit(std::shared_ptr<bb::ECCOpQueue>& op_queue)
     {
-        proof_system::GoblinUltraCircuitBuilder builder{ op_queue };
+        bb::GoblinUltraCircuitBuilder builder{ op_queue };
 
         // Add some goblinized ecc ops
         construct_goblin_ecc_op_circuit(builder);

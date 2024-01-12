@@ -23,7 +23,7 @@ namespace bb::stdlib {
 
 using namespace bb::plonk;
 
-using Builder = proof_system::UltraCircuitBuilder;
+using Builder = bb::UltraCircuitBuilder;
 using Composer = plonk::UltraComposer;
 
 // TODO(Cody): These might be wrong depending on desired F-S hash.

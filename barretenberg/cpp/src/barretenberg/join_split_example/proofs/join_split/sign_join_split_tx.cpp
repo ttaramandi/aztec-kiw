@@ -6,7 +6,7 @@ namespace join_split_example {
 namespace proofs {
 namespace join_split {
 
-using namespace crypto::schnorr;
+using namespace bb::crypto;
 
 signature sign_join_split_tx(join_split_tx const& tx, key_pair<grumpkin::fr, grumpkin::g1> const& keys)
 {

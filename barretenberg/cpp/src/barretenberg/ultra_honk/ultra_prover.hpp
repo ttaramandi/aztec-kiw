@@ -42,7 +42,7 @@ template <UltraFlavor Flavor> class UltraProver_ {
 
     std::shared_ptr<Transcript> transcript;
 
-    proof_system::RelationParameters<FF> relation_parameters;
+    bb::RelationParameters<FF> relation_parameters;
 
     CommitmentLabels commitment_labels;
 

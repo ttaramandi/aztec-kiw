@@ -71,7 +71,7 @@ std::shared_ptr<plonk::verification_key> compute_verification_key_common(
     }
 
     // Set the polynomial manifest in verification key.
-    circuit_verification_key->polynomial_manifest = proof_system::plonk::PolynomialManifest(proving_key->circuit_type);
+    circuit_verification_key->polynomial_manifest = bb::plonk::PolynomialManifest(proving_key->circuit_type);
 
     return circuit_verification_key;
 }

@@ -7,7 +7,7 @@
 
 using namespace barretenberg;
 using namespace proof_system;
-using namespace proof_system::plonk;
+using namespace bb::plonk;
 
 namespace {
 auto& engine = numeric::random::get_debug_engine();
