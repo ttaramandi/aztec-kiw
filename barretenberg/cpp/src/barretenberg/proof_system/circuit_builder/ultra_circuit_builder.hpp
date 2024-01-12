@@ -1,7 +1,4 @@
 #pragma once
-// #include "barretenberg/plonk/proof_system/constants.hpp"
-// #include "barretenberg/plonk/proof_system/types/polynomial_manifest.hpp"
-// #include "barretenberg/plonk/proof_system/types/prover_settings.hpp"
 #include "barretenberg/polynomials/polynomial.hpp"
 #include "barretenberg/proof_system/op_queue/ecc_op_queue.hpp"
 #include "barretenberg/proof_system/plookup_tables/plookup_tables.hpp"
@@ -24,8 +21,6 @@ template <typename FF> struct non_native_field_witnesses {
     std::array<FF, 5> neg_modulus;
     FF modulus;
 };
-
-using namespace bb;
 
 template <typename Arithmetization>
 class UltraCircuitBuilder_ : public CircuitBuilderBase<typename Arithmetization::FF> {
