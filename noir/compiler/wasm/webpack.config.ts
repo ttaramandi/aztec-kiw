@@ -25,10 +25,30 @@ const config: webpack.Configuration = {
   },
 };
 
+const wasmConfig: webpack.Configuration = {
+  name: 'wasm',
+  entry: './src/wasm.entrypoint.js',
+  plugins: [
+    new WasmPackPlugin({
+      crateDirectory: resolve(__dirname),
+      outDir: resolve(__dirname, './build/esm'),
+      extraArgs: '--target web',
+      forceMode: process.env.WASM_OPT === 'true' ? 'production' : 'development',
+    }),
+    new WasmPackPlugin({
+      crateDirectory: resolve(__dirname),
+      outDir: resolve(__dirname, './build/cjs'),
+      extraArgs: '--target nodejs',
+      forceMode: process.env.WASM_OPT === 'true' ? 'production' : 'development',
+    }),
+  ],
+};
+
 const webConfig: webpack.Configuration = {
   name: 'web',
   entry: './src/index.mts',
   ...config,
+  dependencies: ['wasm'],
   experiments: { asyncWebAssembly: true, outputModule: true },
   output: {
     filename: 'main.mjs',
@@ -39,12 +59,6 @@ const webConfig: webpack.Configuration = {
     },
   },
   plugins: [
-    new WasmPackPlugin({
-      crateDirectory: resolve(__dirname),
-      outDir: resolve(__dirname, './build/esm'),
-      extraArgs: '--target web',
-      forceMode: process.env.WASM_OPT === 'true' ? 'production' : 'development',
-    }),
     new HtmlWebpackPlugin({
       title: 'Noir Wasm ESM',
     }),
@@ -89,6 +103,7 @@ const nodeConfig: webpack.Configuration = {
   name: 'node',
   entry: './src/index.cts',
   ...config,
+  dependencies: ['wasm'],
   output: {
     ...config.output,
     path: resolve(__dirname, 'dist/node'),
@@ -98,12 +113,6 @@ const nodeConfig: webpack.Configuration = {
   },
   target: 'node',
   plugins: [
-    new WasmPackPlugin({
-      crateDirectory: resolve(__dirname),
-      outDir: resolve(__dirname, './build/cjs'),
-      extraArgs: '--target nodejs',
-      forceMode: process.env.WASM_OPT === 'true' ? 'production' : 'development',
-    }),
     new CopyWebpackPlugin({
       patterns: [
         {
@@ -131,4 +140,4 @@ const nodeConfig: webpack.Configuration = {
   },
 };
 
-export default [webConfig, nodeConfig];
+export default [wasmConfig, webConfig, nodeConfig];
