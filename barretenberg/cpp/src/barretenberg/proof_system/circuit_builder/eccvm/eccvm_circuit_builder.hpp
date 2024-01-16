@@ -505,8 +505,7 @@ template <typename Flavor> class ECCVMCircuitBuilder {
 
         auto polynomials = compute_polynomials();
         const size_t num_rows = polynomials.get_polynomial_size();
-        bb::honk::logderivative_library::compute_logderivative_inverse<Flavor, honk::sumcheck::ECCVMLookupRelation<FF>>(
-            polynomials, params, num_rows);
+        compute_logderivative_inverse<Flavor, honk::sumcheck::ECCVMLookupRelation<FF>>(polynomials, params, num_rows);
 
         honk::permutation_library::compute_permutation_grand_product<Flavor, honk::sumcheck::ECCVMSetRelation<FF>>(
             num_rows, polynomials, params);

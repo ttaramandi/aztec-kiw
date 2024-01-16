@@ -57,7 +57,7 @@ template <typename BuilderType> class UltraRecursive_ {
     using NativeVerificationKey = flavor::Ultra::VerificationKey;
 
     // Note(luke): Eventually this may not be needed at all
-    using VerifierCommitmentKey = pcs::VerifierCommitmentKey<Curve>;
+    using VerifierCommitmentKey = bb::VerifierCommitmentKey<Curve>;
 
     static constexpr size_t NUM_WIRES = flavor::Ultra::NUM_WIRES;
     // The number of multivariate polynomials on which a sumcheck prover sumcheck operates (including shifts). We often

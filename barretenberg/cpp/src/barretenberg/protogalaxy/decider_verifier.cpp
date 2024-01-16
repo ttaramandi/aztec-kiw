@@ -28,7 +28,7 @@ template <typename Flavor> bool DeciderVerifier_<Flavor>::verify_proof(const plo
     using FF = typename Flavor::FF;
     using Commitment = typename Flavor::Commitment;
     using Curve = typename Flavor::Curve;
-    using ZeroMorph = pcs::zeromorph::ZeroMorphVerifier_<Curve>;
+    using ZeroMorph = bb::zeromorph::ZeroMorphVerifier_<Curve>;
     using Instance = VerifierInstance_<Flavor>;
     using VerifierCommitments = typename Flavor::VerifierCommitments;
 

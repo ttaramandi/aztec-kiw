@@ -53,7 +53,7 @@ class ToyProver {
 
     std::shared_ptr<PCSCommitmentKey> commitment_key;
 
-    using ZeroMorph = pcs::zeromorph::ZeroMorphProver_<Curve>;
+    using ZeroMorph = bb::zeromorph::ZeroMorphProver_<Curve>;
 
   private:
     plonk::proof proof;

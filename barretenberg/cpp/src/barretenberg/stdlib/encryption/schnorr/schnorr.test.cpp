@@ -176,5 +176,3 @@ TEST(stdlib_schnorr, signature_verification_result_failure)
     bool verification_result = builder.check_circuit();
     EXPECT_EQ(verification_result, true);
 }
-
-} // namespace bb::test_stdlib_schnorr

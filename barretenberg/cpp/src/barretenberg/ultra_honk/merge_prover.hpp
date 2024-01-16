@@ -21,8 +21,8 @@ template <typename Flavor> class MergeProver_ {
     using Commitment = typename Flavor::Commitment;
     using PCS = typename Flavor::PCS;
     using Curve = typename Flavor::Curve;
-    using OpeningClaim = typename pcs::ProverOpeningClaim<Curve>;
-    using OpeningPair = typename pcs::OpeningPair<Curve>;
+    using OpeningClaim = typename bb::ProverOpeningClaim<Curve>;
+    using OpeningPair = typename bb::OpeningPair<Curve>;
     using Transcript = BaseTranscript;
 
   public:

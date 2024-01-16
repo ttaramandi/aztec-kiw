@@ -137,8 +137,7 @@ class ToyCircuitBuilder {
 
         const auto evaluate_logderivative = [&]<typename LogDerivativeSettings>(const std::string& lookup_name) {
             // Check the logderivative relation
-            bb::honk::logderivative_library::compute_logderivative_inverse<Flavor, LogDerivativeSettings>(
-                polys, params, num_rows);
+            compute_logderivative_inverse<Flavor, LogDerivativeSettings>(polys, params, num_rows);
 
             typename LogDerivativeSettings::SumcheckArrayOfValuesOverSubrelations lookup_result;
 

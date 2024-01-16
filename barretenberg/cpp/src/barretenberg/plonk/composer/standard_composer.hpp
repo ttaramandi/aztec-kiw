@@ -13,7 +13,7 @@
 namespace bb::plonk {
 class StandardComposer {
   public:
-    using Flavor = plonk::flavor::Standard;
+    using Flavor = PlonkStandard;
 
     using CircuitBuilder = StandardCircuitBuilder;
 

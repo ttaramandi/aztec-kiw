@@ -204,6 +204,6 @@ using CommitmentSchemeParams = ::testing::Types<curve::BN254>;
 using IpaCommitmentSchemeParams = ::testing::Types<curve::Grumpkin>;
 // IMPROVEMENT: reinstate typed-tests for multiple field types, i.e.:
 // using CommitmentSchemeParams =
-//     ::testing::Types<fake::Params<bb::g1>, fake::Params<grumpkin::g1>, kzg::Params>;
+//     ::testing::Types<fake::Params<bb::g1>, fake::Params<grumpkin::g1>, Params>;
 
 } // namespace bb

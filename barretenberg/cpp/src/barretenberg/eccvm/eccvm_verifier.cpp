@@ -38,12 +38,12 @@ template <typename Flavor> bool ECCVMVerifier_<Flavor>::verify_proof(const plonk
     using Commitment = typename Flavor::Commitment;
     using PCS = typename Flavor::PCS;
     using Curve = typename Flavor::Curve;
-    using Gemini = pcs::gemini::GeminiVerifier_<Curve>;
-    using Shplonk = pcs::shplonk::ShplonkVerifier_<Curve>;
+    using Gemini = bb::gemini::GeminiVerifier_<Curve>;
+    using Shplonk = bb::shplonk::ShplonkVerifier_<Curve>;
     using VerifierCommitments = typename Flavor::VerifierCommitments;
     using CommitmentLabels = typename Flavor::CommitmentLabels;
     using Transcript = typename Flavor::Transcript;
-    using OpeningClaim = typename pcs::OpeningClaim<Curve>;
+    using OpeningClaim = typename bb::OpeningClaim<Curve>;
 
     RelationParameters<FF> relation_parameters;
 
@@ -182,7 +182,7 @@ template <typename Flavor> bool ECCVMVerifier_<Flavor>::verify_proof(const plonk
     const size_t NUM_POLYNOMIALS = Flavor::NUM_ALL_ENTITIES;
     // Compute powers of batching challenge rho
     FF rho = transcript->get_challenge("rho");
-    std::vector<FF> rhos = pcs::gemini::powers_of_rho(rho, NUM_POLYNOMIALS);
+    std::vector<FF> rhos = bb::gemini::powers_of_rho(rho, NUM_POLYNOMIALS);
 
     // Compute batched multivariate evaluation
     FF batched_evaluation = FF::zero();

@@ -22,7 +22,7 @@ std::array<typename Flavor::GroupElement, 2> UltraRecursiveVerifier_<Flavor>::ve
 {
     using Sumcheck = ::bb::honk::sumcheck::SumcheckVerifier<Flavor>;
     using Curve = typename Flavor::Curve;
-    using ZeroMorph = ::bb::honk::pcs::zeromorph::ZeroMorphVerifier_<Curve>;
+    using ZeroMorph = bb::zeromorph::ZeroMorphVerifier_<Curve>;
     using VerifierCommitments = typename Flavor::VerifierCommitments;
     using CommitmentLabels = typename Flavor::CommitmentLabels;
     using RelationParams = ::bb::RelationParameters<FF>;

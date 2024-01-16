@@ -407,7 +407,7 @@ void ProverInstance_<Flavor>::compute_logderivative_inverse(FF beta, FF gamma)
     relation_parameters.gamma = gamma;
 
     // Compute permutation and lookup grand product polynomials
-    logderivative_library::compute_logderivative_inverse<Flavor, typename Flavor::LogDerivLookupRelation>(
+    compute_logderivative_inverse<Flavor, typename Flavor::LogDerivLookupRelation>(
         prover_polynomials, relation_parameters, proving_key->circuit_size);
 }
 

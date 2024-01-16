@@ -50,7 +50,7 @@ template <typename Flavor> bool UltraVerifier_<Flavor>::verify_proof(const plonk
     using FF = typename Flavor::FF;
     using Commitment = typename Flavor::Commitment;
     using Curve = typename Flavor::Curve;
-    using ZeroMorph = pcs::zeromorph::ZeroMorphVerifier_<Curve>;
+    using ZeroMorph = bb::zeromorph::ZeroMorphVerifier_<Curve>;
     using VerifierCommitments = typename Flavor::VerifierCommitments;
     using CommitmentLabels = typename Flavor::CommitmentLabels;
 

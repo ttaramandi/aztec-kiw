@@ -468,9 +468,9 @@ template <typename Settings, typename FF_> class GenericLookupRelationImpl {
                            const Parameters& params,
                            const FF& scaling_factor)
     {
-        logderivative_library::
-            accumulate_logderivative_lookup_subrelation_contributions<FF, GenericLookupRelationImpl<Settings, FF>>(
-                accumulator, in, params, scaling_factor);
+
+        accumulate_logderivative_lookup_subrelation_contributions<FF, GenericLookupRelationImpl<Settings, FF>>(
+            accumulator, in, params, scaling_factor);
     }
 };
 

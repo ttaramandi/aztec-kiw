@@ -72,12 +72,12 @@ template <ECCVMFlavor Flavor> class ECCVMProver_ {
     FF translation_batching_challenge_v; // to be rederived by the translator verifier
 
     sumcheck::SumcheckOutput<Flavor> sumcheck_output;
-    pcs::gemini::ProverOutput<Curve> gemini_output;
-    pcs::shplonk::ProverOutput<Curve> shplonk_output;
+    bb::gemini::ProverOutput<Curve> gemini_output;
+    bb::shplonk::ProverOutput<Curve> shplonk_output;
     std::shared_ptr<PCSCommitmentKey> commitment_key;
 
-    using Gemini = pcs::gemini::GeminiProver_<Curve>;
-    using Shplonk = pcs::shplonk::ShplonkProver_<Curve>;
+    using Gemini = bb::gemini::GeminiProver_<Curve>;
+    using Shplonk = bb::shplonk::ShplonkProver_<Curve>;
 
   private:
     plonk::proof proof;

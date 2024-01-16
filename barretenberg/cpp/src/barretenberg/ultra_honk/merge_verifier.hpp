@@ -22,7 +22,7 @@ template <typename Flavor> class MergeVerifier_ {
     using Commitment = typename Flavor::Commitment;
     using PCS = typename Flavor::PCS;
     using Curve = typename Flavor::Curve;
-    using OpeningClaim = typename pcs::OpeningClaim<Curve>;
+    using OpeningClaim = typename bb::OpeningClaim<Curve>;
     using VerificationKey = typename Flavor::VerificationKey;
     using VerifierCommitmentKey = typename Flavor::VerifierCommitmentKey;
     using Transcript = typename Flavor::Transcript;

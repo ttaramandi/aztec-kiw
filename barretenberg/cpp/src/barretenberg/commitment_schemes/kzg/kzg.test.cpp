@@ -12,8 +12,6 @@
 #include <gtest/gtest.h>
 #include <vector>
 
-namespace bb::honk::pcs::kzg {
-
 template <class Curve> class KZGTest : public CommitmentTest<Curve> {
   public:
     using Fr = typename Curve::ScalarField;
@@ -176,5 +174,3 @@ TYPED_TEST(KZGTest, GeminiShplonkKzgWithShift)
 
     EXPECT_EQ(verified, true);
 }
-
-} // namespace bb::honk::pcs::kzg

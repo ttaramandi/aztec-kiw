@@ -5,7 +5,7 @@
 #include "barretenberg/proof_system/circuit_builder/standard_circuit_builder.hpp"
 #include "barretenberg/proof_system/circuit_builder/ultra_circuit_builder.hpp"
 
-namespace bb {
+namespace bb::plonk {
 class Standard {
   public:
     using CircuitBuilder = bb::StandardCircuitBuilder;
@@ -151,4 +151,4 @@ class Ultra {
         return output;
     }
 };
-} // namespace bb
+} // namespace bb::plonk

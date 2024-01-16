@@ -25,7 +25,7 @@ void ECCVMLookupRelationImpl<FF>::accumulate(ContainerOverSubrelations& accumula
                                              const Parameters& params,
                                              const FF& scaling_factor)
 {
-    logderivative_library::accumulate_logderivative_lookup_subrelation_contributions<FF, ECCVMLookupRelationImpl<FF>>(
+    accumulate_logderivative_lookup_subrelation_contributions<FF, ECCVMLookupRelationImpl<FF>>(
         accumulator, in, params, scaling_factor);
 }
 

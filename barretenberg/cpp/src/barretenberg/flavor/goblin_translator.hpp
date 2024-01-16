@@ -24,12 +24,12 @@ class GoblinTranslator {
     static constexpr size_t mini_circuit_size = 2048;
     using CircuitBuilder = GoblinTranslatorCircuitBuilder;
     using Curve = curve::BN254;
-    using PCS = pcs::kzg::KZG<Curve>;
+    using PCS = KZG<Curve>;
     using GroupElement = Curve::Element;
     using Commitment = Curve::AffineElement;
     using CommitmentHandle = Curve::AffineElement;
-    using CommitmentKey = pcs::CommitmentKey<Curve>;
-    using VerifierCommitmentKey = pcs::VerifierCommitmentKey<Curve>;
+    using CommitmentKey = bb::CommitmentKey<Curve>;
+    using VerifierCommitmentKey = bb::VerifierCommitmentKey<Curve>;
     using FF = Curve::ScalarField;
     using BF = Curve::BaseField;
     using Polynomial = bb::Polynomial<FF>;

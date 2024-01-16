@@ -36,7 +36,7 @@ bool ToyVerifier::verify_proof(const plonk::proof& proof)
     using FF = Flavor::FF;
     using Commitment = Flavor::Commitment;
     // using Curve = Flavor::Curve;
-    // using ZeroMorph = pcs::zeromorph::ZeroMorphVerifier_<Curve>;
+    // using ZeroMorph = bb::zeromorph::ZeroMorphVerifier_<Curve>;
     using VerifierCommitments = Flavor::VerifierCommitments;
     using CommitmentLabels = Flavor::CommitmentLabels;
 

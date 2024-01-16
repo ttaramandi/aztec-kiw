@@ -14,7 +14,7 @@ class GoblinMockCircuits {
     using FF = Curve::ScalarField;
     using Fbase = Curve::BaseField;
     using Point = Curve::AffineElement;
-    using CommitmentKey = bb::honk::pcs::CommitmentKey<Curve>;
+    using CommitmentKey = bb::CommitmentKey<Curve>;
     using OpQueue = bb::ECCOpQueue;
     using GoblinUltraBuilder = bb::GoblinUltraCircuitBuilder;
     using Flavor = bb::GoblinUltra;

@@ -202,9 +202,9 @@ template <typename Settings, typename FF_> class GenericPermutationRelationImpl 
                            const Parameters& params,
                            const FF& scaling_factor)
     {
-        logderivative_library::accumulate_logderivative_permutation_subrelation_contributions<
-            FF,
-            GenericPermutationRelationImpl<Settings, FF>>(accumulator, in, params, scaling_factor);
+        accumulate_logderivative_permutation_subrelation_contributions<FF,
+                                                                       GenericPermutationRelationImpl<Settings, FF>>(
+            accumulator, in, params, scaling_factor);
     }
 };
 

@@ -68,6 +68,7 @@
 #include "barretenberg/common/std_array.hpp"
 #include "barretenberg/common/std_vector.hpp"
 #include "barretenberg/common/zip_view.hpp"
+#include "barretenberg/flavor/plonk_flavors.hpp"
 #include "barretenberg/polynomials/barycentric.hpp"
 #include "barretenberg/polynomials/evaluation_domain.hpp"
 #include "barretenberg/polynomials/univariate.hpp"
@@ -283,7 +284,7 @@ namespace bb {
 // clang-format off
 
 template <typename T>
-concept IsPlonkFlavor = IsAnyOf<T, plonk::flavor::Standard, plonk::flavor::Ultra>;
+concept IsPlonkFlavor = IsAnyOf<T, plonk::Standard, plonk::Ultra>;
 
 template <typename T> 
 concept IsHonkFlavor = IsAnyOf<T, Ultra, GoblinUltra>;

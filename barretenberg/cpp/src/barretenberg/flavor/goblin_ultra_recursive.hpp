@@ -49,7 +49,7 @@ class GoblinUltraRecursive {
     using NativeVerificationKey = flavor::GoblinUltra::VerificationKey;
 
     // Note(luke): Eventually this may not be needed at all
-    using VerifierCommitmentKey = pcs::VerifierCommitmentKey<Curve>;
+    using VerifierCommitmentKey = bb::VerifierCommitmentKey<Curve>;
 
     static constexpr size_t NUM_WIRES = flavor::GoblinUltra::NUM_WIRES;
     // The number of multivariate polynomials on which a sumcheck prover sumcheck operates (including shifts). We often

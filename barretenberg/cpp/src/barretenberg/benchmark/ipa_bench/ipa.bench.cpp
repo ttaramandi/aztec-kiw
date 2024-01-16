@@ -7,11 +7,11 @@ namespace {
 using Curve = curve::Grumpkin;
 using Fr = Curve::ScalarField;
 using IPA = IPA<Curve>;
-using OpeningPair = honk::pcs::OpeningPair<Curve>;
-using OpeningClaim = honk::pcs::OpeningClaim<Curve>;
+using OpeningPair = bb::OpeningPair<Curve>;
+using OpeningClaim = bb::OpeningClaim<Curve>;
 using Polynomial = Polynomial<Curve::ScalarField>;
-using CommitmentKey = honk::pcs::CommitmentKey<Curve>;
-using VerifierCommitmentKey = honk::pcs::VerifierCommitmentKey<Curve>;
+using CommitmentKey = bb::CommitmentKey<Curve>;
+using VerifierCommitmentKey = bb::VerifierCommitmentKey<Curve>;
 
 constexpr size_t MIN_POLYNOMIAL_DEGREE_LOG2 = 10;
 constexpr size_t MAX_POLYNOMIAL_DEGREE_LOG2 = 16;

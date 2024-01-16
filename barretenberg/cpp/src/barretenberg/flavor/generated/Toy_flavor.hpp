@@ -24,7 +24,7 @@ class ToyFlavor {
   public:
     using Curve = curve::BN254;
     using G1 = Curve::Group;
-    using PCS = pcs::kzg::KZG<Curve>;
+    using PCS = KZG<Curve>;
 
     using FF = G1::subgroup_field;
     using Polynomial = bb::Polynomial<FF>;
@@ -32,8 +32,8 @@ class ToyFlavor {
     using GroupElement = G1::element;
     using Commitment = G1::affine_element;
     using CommitmentHandle = G1::affine_element;
-    using CommitmentKey = pcs::CommitmentKey<Curve>;
-    using VerifierCommitmentKey = pcs::VerifierCommitmentKey<Curve>;
+    using CommitmentKey = bb::CommitmentKey<Curve>;
+    using VerifierCommitmentKey = bb::VerifierCommitmentKey<Curve>;
     using RelationSeparator = FF;
 
     static constexpr size_t NUM_PRECOMPUTED_ENTITIES = 1;

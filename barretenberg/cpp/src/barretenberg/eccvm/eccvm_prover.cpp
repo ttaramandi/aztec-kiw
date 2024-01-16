@@ -83,7 +83,7 @@ template <ECCVMFlavor Flavor> void ECCVMProver_<Flavor>::execute_log_derivative_
         gamma * (gamma + beta_sqr) * (gamma + beta_sqr + beta_sqr) * (gamma + beta_sqr + beta_sqr + beta_sqr);
     relation_parameters.eccvm_set_permutation_delta = relation_parameters.eccvm_set_permutation_delta.invert();
     // Compute inverse polynomial for our logarithmic-derivative lookup method
-    logderivative_library::compute_logderivative_inverse<Flavor, typename Flavor::LookupRelation>(
+    compute_logderivative_inverse<Flavor, typename Flavor::LookupRelation>(
         prover_polynomials, relation_parameters, key->circuit_size);
     transcript->send_to_verifier(commitment_labels.lookup_inverses, commitment_key->commit(key->lookup_inverses));
     prover_polynomials.lookup_inverses = key->lookup_inverses.share();
@@ -129,7 +129,7 @@ template <ECCVMFlavor Flavor> void ECCVMProver_<Flavor>::execute_univariatizatio
 
     // Generate batching challenge ρ and powers 1,ρ,…,ρᵐ⁻¹
     FF rho = transcript->get_challenge("rho");
-    std::vector<FF> rhos = pcs::gemini::powers_of_rho(rho, NUM_POLYNOMIALS);
+    std::vector<FF> rhos = bb::gemini::powers_of_rho(rho, NUM_POLYNOMIALS);
 
     // Batch the unshifted polynomials and the to-be-shifted polynomials using ρ
     Polynomial batched_poly_unshifted(key->circuit_size); // batched unshifted polynomials
