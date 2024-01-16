@@ -19,7 +19,7 @@
 #include <utility>
 
 namespace test_stdlib_bigfield {
-using namespace barretenberg;
+using namespace bb;
 using namespace bb::plonk;
 
 /* A note regarding Plookup:

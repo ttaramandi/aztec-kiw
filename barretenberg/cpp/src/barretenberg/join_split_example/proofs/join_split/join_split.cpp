@@ -4,7 +4,7 @@
 #include "compute_circuit_data.hpp"
 #include "join_split_circuit.hpp"
 
-namespace join_split_example {
+namespace bb::join_split_example {
 namespace proofs {
 namespace join_split {
 
@@ -100,4 +100,4 @@ std::shared_ptr<plonk::verification_key> get_verification_key()
 
 } // namespace join_split
 } // namespace proofs
-} // namespace join_split_example
+} // namespace bb::join_split_example

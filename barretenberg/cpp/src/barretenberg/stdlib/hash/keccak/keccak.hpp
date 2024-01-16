@@ -5,7 +5,6 @@
 #include <array>
 
 namespace bb::stdlib {
-namespace stdlib {
 template <typename Builder> class bit_array;
 
 /**
@@ -202,5 +201,4 @@ template <typename Builder> class keccak {
                                                                Builder* context);
 };
 
-} // namespace stdlib
 } // namespace bb::stdlib

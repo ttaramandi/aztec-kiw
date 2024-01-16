@@ -5,7 +5,6 @@
 #include "../field/field.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 
 template <typename Builder> class packed_byte_array {
   private:
@@ -63,5 +62,4 @@ template <typename Builder> inline std::ostream& operator<<(std::ostream& os, pa
     os.flags(f);
     return os;
 }
-} // namespace stdlib
 } // namespace bb::stdlib

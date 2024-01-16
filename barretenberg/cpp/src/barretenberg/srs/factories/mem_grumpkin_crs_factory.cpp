@@ -17,10 +17,10 @@ class MemVerifierCrs : public VerifierCrs<Grumpkin> {
   public:
     MemVerifierCrs(std::vector<Grumpkin::AffineElement> const& points)
         : num_points(points.size())
-        , monomials_(scalar_multiplication::point_table_alloc<Grumpkin::AffineElement>(points.size()))
+        , monomials_(point_table_alloc<Grumpkin::AffineElement>(points.size()))
     {
         std::copy(points.begin(), points.end(), monomials_.get());
-        scalar_multiplication::generate_pippenger_point_table<Grumpkin>(monomials_.get(), monomials_.get(), num_points);
+        generate_pippenger_point_table<Grumpkin>(monomials_.get(), monomials_.get(), num_points);
     }
 
     virtual ~MemVerifierCrs() = default;
@@ -42,12 +42,12 @@ MemGrumpkinCrsFactory::MemGrumpkinCrsFactory(std::vector<Grumpkin::AffineElement
     , verifier_crs_(std::make_shared<MemVerifierCrs>(points))
 {}
 
-std::shared_ptr<bb::srs::factories::ProverCrs<Grumpkin>> MemGrumpkinCrsFactory::get_prover_crs(size_t)
+std::shared_ptr<bb::srs::ProverCrs<Grumpkin>> MemGrumpkinCrsFactory::get_prover_crs(size_t)
 {
     return prover_crs_;
 }
 
-std::shared_ptr<bb::srs::factories::VerifierCrs<Grumpkin>> MemGrumpkinCrsFactory::get_verifier_crs(size_t)
+std::shared_ptr<bb::srs::VerifierCrs<Grumpkin>> MemGrumpkinCrsFactory::get_verifier_crs(size_t)
 {
     return verifier_crs_;
 }

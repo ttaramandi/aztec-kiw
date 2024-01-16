@@ -6,7 +6,6 @@
 #include "../../plookup/plookup.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 
 template <typename Builder, typename Native> class uint_plookup {
   public:
@@ -172,5 +171,4 @@ template <typename T, typename w> inline std::ostream& operator<<(std::ostream& 
 {
     return os << v.get_value();
 }
-} // namespace stdlib
 } // namespace bb::stdlib

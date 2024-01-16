@@ -10,9 +10,9 @@
 #include <gtest/gtest.h>
 
 namespace test_stdlib_plookups {
-using namespace barretenberg;
+using namespace bb;
 using namespace bb::plonk;
-using namespace plookup;
+using namespace bb::plookup;
 
 // Defining ultra-specific types for local testing.
 using Builder = bb::UltraCircuitBuilder;

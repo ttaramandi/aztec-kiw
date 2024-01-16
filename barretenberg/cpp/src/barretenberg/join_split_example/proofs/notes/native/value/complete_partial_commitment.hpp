@@ -2,7 +2,7 @@
 #include "../../constants.hpp"
 #include "barretenberg/crypto/pedersen_hash/pedersen.hpp"
 
-namespace join_split_example::proofs::notes::native::value {
+namespace bb::join_split_example {
 
 inline auto complete_partial_commitment(grumpkin::fq const& partial_commitment,
                                         uint256_t const& value,
@@ -13,4 +13,4 @@ inline auto complete_partial_commitment(grumpkin::fq const& partial_commitment,
                                        GeneratorIndex::VALUE_NOTE_COMMITMENT);
 };
 
-} // namespace join_split_example::proofs::notes::native::value
+} // namespace bb::join_split_example

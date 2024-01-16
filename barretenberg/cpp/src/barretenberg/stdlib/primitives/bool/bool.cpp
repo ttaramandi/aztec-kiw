@@ -5,7 +5,6 @@ using namespace bb;
 using namespace bb;
 
 namespace bb::stdlib {
-namespace stdlib {
 
 template <typename Builder>
 bool_t<Builder>::bool_t(const bool value)
@@ -552,5 +551,4 @@ template class bool_t<bb::StandardCircuitBuilder>;
 template class bool_t<bb::UltraCircuitBuilder>;
 template class bool_t<bb::GoblinUltraCircuitBuilder>;
 
-} // namespace stdlib
 } // namespace bb::stdlib

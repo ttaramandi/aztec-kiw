@@ -4,7 +4,7 @@
 #include "keccak.hpp"
 #include <gtest/gtest.h>
 
-using namespace barretenberg;
+using namespace bb;
 using namespace bb::plonk;
 
 typedef bb::UltraCircuitBuilder Builder;

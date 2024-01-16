@@ -2,7 +2,7 @@
 #include "barretenberg/serialize/test_helper.hpp"
 #include <gtest/gtest.h>
 
-using namespace barretenberg;
+using namespace bb;
 
 // Used to ensure variables are evaluated at runtime and not compile time.
 // If EXPECT_EQ macro params are evaluated at compile-time, compiler can optimize them away.

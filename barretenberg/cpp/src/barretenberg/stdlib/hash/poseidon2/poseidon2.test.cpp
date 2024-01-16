@@ -5,7 +5,7 @@
 #include "barretenberg/stdlib/primitives/curves/bn254.hpp"
 
 namespace test_StdlibPoseidon2 {
-using namespace barretenberg;
+using namespace bb;
 using namespace bb::plonk;
 namespace {
 auto& engine = numeric::random::get_debug_engine();

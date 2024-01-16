@@ -4,7 +4,7 @@
 #include "barretenberg/common/constexpr_utils.hpp"
 #include "barretenberg/numeric/bitop/pow.hpp"
 
-namespace plookup {
+namespace bb::plookup {
 namespace keccak_tables {
 
 /**
@@ -250,4 +250,4 @@ class Chi {
     }
 };
 } // namespace keccak_tables
-} // namespace plookup
+} // namespace bb::plookup

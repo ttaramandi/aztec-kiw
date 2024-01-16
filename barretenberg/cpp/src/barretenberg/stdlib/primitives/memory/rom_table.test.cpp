@@ -6,7 +6,7 @@
 #include "rom_table.hpp"
 
 namespace test_stdlib_rom_array {
-using namespace barretenberg;
+using namespace bb;
 using namespace bb::plonk;
 
 // Defining ultra-specific types for local testing.

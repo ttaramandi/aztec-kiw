@@ -8,7 +8,7 @@
 #include "barretenberg/polynomials/polynomial.hpp"
 #include "barretenberg/polynomials/polynomial_arithmetic.hpp"
 #include <gtest/gtest.h>
-using namespace barretenberg;
+using namespace bb;
 namespace bb::honk::pcs::ipa::test {
 
 using Curve = curve::Grumpkin;

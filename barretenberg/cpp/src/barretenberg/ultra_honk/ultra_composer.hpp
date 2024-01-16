@@ -25,7 +25,7 @@ template <UltraFlavor Flavor> class UltraComposer_ {
     using Instance = ProverInstance;
     using FF = typename Flavor::FF;
     using Transcript = typename Flavor::Transcript;
-    using CRSFactory = srs::factories::CrsFactory<typename Flavor::Curve>;
+    using CRSFactory = srs::CrsFactory<typename Flavor::Curve>;
 
     static constexpr size_t NUM_FOLDING = 2;
     using ProverInstances = ProverInstances_<Flavor, NUM_FOLDING>;

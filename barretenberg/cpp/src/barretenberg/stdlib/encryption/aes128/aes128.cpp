@@ -11,7 +11,7 @@ using namespace bb;
 
 namespace {
 template <typename Builder> using byte_pair = std::pair<field_t<Builder>, field_t<Builder>>;
-using namespace plookup;
+using namespace bb::plookup;
 using namespace bb::stdlib;
 
 constexpr uint32_t AES128_BASE = 9;

@@ -6,7 +6,6 @@
  *
  **/
 namespace bb::stdlib {
-namespace stdlib {
 
 template <typename C, class Fq, class Fr, class G>
 template <typename, typename>
@@ -140,5 +139,4 @@ element<C, Fq, Fr, G> element<C, Fq, Fr, G>::secp256k1_ecdsa_mul(const element& 
 
     return accumulator;
 }
-} // namespace stdlib
 } // namespace bb::stdlib

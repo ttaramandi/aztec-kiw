@@ -12,7 +12,7 @@
 #include "barretenberg/ultra_honk/ultra_composer.hpp"
 #include <gtest/gtest.h>
 
-using namespace bb::honk;
+using namespace bb;
 
 namespace test_honk_relations {
 
@@ -377,7 +377,7 @@ TEST_F(RelationCorrectnessTests, GoblinTranslatorPermutationRelationCorrectness)
     using FF = typename Flavor::FF;
     using ProverPolynomials = typename Flavor::ProverPolynomials;
     using Polynomial = bb::Polynomial<FF>;
-    using namespace bb::honk::permutation_library;
+    using namespace bb;
     auto& engine = numeric::random::get_debug_engine();
     auto circuit_size = Flavor::MINI_CIRCUIT_SIZE * Flavor::CONCATENATION_INDEX;
 

@@ -6,7 +6,7 @@
 
 namespace proof_system {
 
-using namespace barretenberg;
+using namespace bb;
 using Fr = bb::fr;
 using Polynomial = bb::Polynomial<Fr>;
 

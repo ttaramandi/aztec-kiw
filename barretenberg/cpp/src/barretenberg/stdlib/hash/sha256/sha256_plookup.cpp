@@ -10,10 +10,9 @@
 using namespace bb;
 
 namespace bb::stdlib {
-namespace stdlib {
 namespace sha256_plookup {
 
-using namespace plookup;
+using namespace bb::plookup;
 
 namespace internal {
 
@@ -367,5 +366,4 @@ template packed_byte_array<bb::UltraCircuitBuilder> sha256(const packed_byte_arr
 template packed_byte_array<bb::GoblinUltraCircuitBuilder> sha256(
     const packed_byte_array<bb::GoblinUltraCircuitBuilder>& input);
 } // namespace sha256_plookup
-} // namespace stdlib
 } // namespace bb::stdlib

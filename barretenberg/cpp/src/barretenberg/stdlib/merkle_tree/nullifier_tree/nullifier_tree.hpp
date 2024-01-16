@@ -4,7 +4,6 @@
 #include "nullifier_leaf.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 namespace merkle_tree {
 
 using namespace bb;
@@ -39,5 +38,4 @@ template <typename Store> class NullifierTree : public MerkleTree<Store> {
 };
 
 } // namespace merkle_tree
-} // namespace stdlib
 } // namespace bb::stdlib

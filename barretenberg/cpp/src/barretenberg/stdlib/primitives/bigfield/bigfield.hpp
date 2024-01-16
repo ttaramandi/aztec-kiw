@@ -12,7 +12,6 @@
 #include "../circuit_builders/circuit_builders_fwd.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 
 template <typename Builder, typename T> class bigfield {
 
@@ -490,14 +489,11 @@ template <typename Builder, typename T> class bigfield {
                                  const bigfield& remainder);
     void reduction_check(const size_t num_products = 1) const;
 
-}; // namespace stdlib
+    template <typename C, typename T> inline std::ostream& operator<<(std::ostream& os, bigfield<T, C> const& v)
+    {
+        return os << v.get_value();
+    }
 
-template <typename C, typename T> inline std::ostream& operator<<(std::ostream& os, bigfield<T, C> const& v)
-{
-    return os << v.get_value();
-}
-
-} // namespace stdlib
 } // namespace bb::stdlib
 
 #include "bigfield_impl.hpp"

@@ -5,7 +5,6 @@ using namespace bb;
 using namespace bb;
 
 namespace bb::stdlib {
-namespace stdlib {
 
 /**
  * @brief Return a uint which, if range constrained, would be proven to be the sum of `self` and `other`.
@@ -396,5 +395,4 @@ template class uint<bb::StandardCircuitBuilder, uint16_t>;
 template class uint<bb::StandardCircuitBuilder, uint32_t>;
 template class uint<bb::StandardCircuitBuilder, uint64_t>;
 
-} // namespace stdlib
 } // namespace bb::stdlib

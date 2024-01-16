@@ -43,11 +43,11 @@ struct proving_key {
         RELATIVE_LOOKUP,
     };
 
-    proving_key(proving_key_data&& data, std::shared_ptr<bb::srs::factories::ProverCrs<curve::BN254>> const& crs);
+    proving_key(proving_key_data&& data, std::shared_ptr<bb::srs::ProverCrs<curve::BN254>> const& crs);
 
     proving_key(const size_t num_gates,
                 const size_t num_inputs,
-                std::shared_ptr<bb::srs::factories::ProverCrs<curve::BN254>> const& crs,
+                std::shared_ptr<bb::srs::ProverCrs<curve::BN254>> const& crs,
                 CircuitType type = CircuitType::UNDEFINED);
 
     proving_key(std::ostream& is, std::string const& crs_path);
@@ -75,7 +75,7 @@ struct proving_key {
 
     // The reference_string object contains the monomial SRS. We can access it using:
     // Monomial SRS: reference_string->get_monomial_points()
-    std::shared_ptr<bb::srs::factories::ProverCrs<curve::BN254>> reference_string;
+    std::shared_ptr<bb::srs::ProverCrs<curve::BN254>> reference_string;
 
     bb::polynomial quotient_polynomial_parts[plonk::NUM_QUOTIENT_PARTS];
 

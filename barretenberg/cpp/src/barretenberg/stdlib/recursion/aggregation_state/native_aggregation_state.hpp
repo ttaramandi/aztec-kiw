@@ -4,7 +4,6 @@
 #include "barretenberg/ecc/groups/affine_element.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 namespace recursion {
 
 /**
@@ -40,5 +39,4 @@ inline std::ostream& operator<<(std::ostream& os, native_aggregation_state const
 };
 
 } // namespace recursion
-} // namespace stdlib
 } // namespace bb::stdlib

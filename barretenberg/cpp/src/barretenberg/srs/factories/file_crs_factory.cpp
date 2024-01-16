@@ -13,7 +13,7 @@ FileVerifierCrs<curve::BN254>::FileVerifierCrs(std::string const& path, const si
     : precomputed_g2_lines((bb::pairing::miller_lines*)(aligned_alloc(64, sizeof(bb::pairing::miller_lines) * 2)))
 {
     using Curve = curve::BN254;
-    auto point_buf = scalar_multiplication::point_table_alloc<Curve::AffineElement>(1);
+    auto point_buf = point_table_alloc<Curve::AffineElement>(1);
     srs::IO<Curve>::read_transcript_g1(point_buf.get(), 1, path);
     srs::IO<curve::BN254>::read_transcript_g2(g2_x, path);
     bb::pairing::precompute_miller_lines(bb::g2::one, precomputed_g2_lines[0]);
@@ -30,9 +30,9 @@ FileVerifierCrs<curve::Grumpkin>::FileVerifierCrs(std::string const& path, const
     : num_points(num_points)
 {
     using Curve = curve::Grumpkin;
-    monomials_ = scalar_multiplication::point_table_alloc<Curve::AffineElement>(num_points);
+    monomials_ = point_table_alloc<Curve::AffineElement>(num_points);
     srs::IO<Curve>::read_transcript_g1(monomials_.get(), num_points, path);
-    scalar_multiplication::generate_pippenger_point_table<Curve>(monomials_.get(), monomials_.get(), num_points);
+    generate_pippenger_point_table<Curve>(monomials_.get(), monomials_.get(), num_points);
     first_g1 = monomials_[0];
 };
 
@@ -53,7 +53,7 @@ FileCrsFactory<Curve>::FileCrsFactory(std::string path, size_t initial_degree)
 {}
 
 template <typename Curve>
-std::shared_ptr<bb::srs::factories::ProverCrs<Curve>> FileCrsFactory<Curve>::get_prover_crs(size_t degree)
+std::shared_ptr<bb::srs::ProverCrs<Curve>> FileCrsFactory<Curve>::get_prover_crs(size_t degree)
 {
     if (degree != degree_ || !prover_crs_) {
         prover_crs_ = std::make_shared<FileProverCrs<Curve>>(degree, path_);
@@ -63,7 +63,7 @@ std::shared_ptr<bb::srs::factories::ProverCrs<Curve>> FileCrsFactory<Curve>::get
 }
 
 template <typename Curve>
-std::shared_ptr<bb::srs::factories::VerifierCrs<Curve>> FileCrsFactory<Curve>::get_verifier_crs(size_t degree)
+std::shared_ptr<bb::srs::VerifierCrs<Curve>> FileCrsFactory<Curve>::get_verifier_crs(size_t degree)
 {
     if (degree != degree_ || !verifier_crs_) {
         verifier_crs_ = std::make_shared<FileVerifierCrs<Curve>>(path_, degree);

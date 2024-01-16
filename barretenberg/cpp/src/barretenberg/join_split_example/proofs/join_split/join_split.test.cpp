@@ -11,7 +11,7 @@
 #include "index.hpp"
 #include "join_split_circuit.hpp"
 
-namespace join_split_example::proofs::join_split {
+namespace bb::join_split_example {
 
 using namespace bb::stdlib;
 
@@ -25,7 +25,7 @@ constexpr bool CIRCUIT_CHANGE_EXPECTED = false;
 constexpr bool CIRCUIT_CHANGE_EXPECTED = false;
 #endif
 
-using namespace barretenberg;
+using namespace bb;
 using namespace bb::plonk::stdlib;
 using namespace bb::stdlib;
 using namespace join_split_example::proofs::notes::native;
@@ -45,7 +45,7 @@ class join_split_tests : public ::testing::Test {
     {
         bb::srs::init_crs_factory("../srs_db/ignition");
         init_proving_key(false);
-        auto crs_factory = std::make_unique<bb::srs::factories::FileCrsFactory<curve::BN254>>("../srs_db/ignition");
+        auto crs_factory = std::make_unique<bb::srs::FileCrsFactory<curve::BN254>>("../srs_db/ignition");
         init_verification_key();
         info("vk hash: ", get_verification_key()->sha256_hash());
     }
@@ -2514,4 +2514,4 @@ TEST_F(join_split_tests, test_send_two_virtual_notes_full_proof)
     EXPECT_TRUE(verify_proof(proof));
 }
 
-} // namespace join_split_example::proofs::join_split
+} // namespace bb::join_split_example

@@ -1,7 +1,7 @@
 #include "g2.hpp"
 #include <gtest/gtest.h>
 
-using namespace barretenberg;
+using namespace bb;
 
 TEST(g2, RandomElement)
 {

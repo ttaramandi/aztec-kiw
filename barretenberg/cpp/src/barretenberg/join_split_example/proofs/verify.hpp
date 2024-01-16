@@ -5,7 +5,7 @@
 #include "barretenberg/stdlib/recursion/aggregation_state/aggregation_state.hpp"
 #include "barretenberg/stdlib/recursion/verifier/verifier.hpp"
 
-namespace join_split_example {
+namespace bb::join_split_example {
 namespace proofs {
 
 template <typename Composer> struct verify_result {
@@ -27,7 +27,7 @@ template <typename Composer> struct verify_result {
 
 template <typename Composer>
 inline bool pairing_check(stdlib::recursion::aggregation_state<stdlib::bn254<Composer>> aggregation_state,
-                          std::shared_ptr<bb::srs::factories::VerifierCrs> const& srs)
+                          std::shared_ptr<bb::srs::VerifierCrs> const& srs)
 {
     g1::affine_element P[2];
     P[0].x = bb::fq(aggregation_state.P0.x.get_value().lo);
@@ -71,4 +71,4 @@ auto verify_logic_internal(Builder& builder, Tx& tx, CircuitData const& cd, char
 }
 
 } // namespace proofs
-} // namespace join_split_example
+} // namespace bb::join_split_example

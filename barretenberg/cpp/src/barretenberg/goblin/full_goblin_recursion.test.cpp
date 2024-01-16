@@ -11,7 +11,7 @@
 
 #include <gtest/gtest.h>
 
-using namespace bb::honk;
+using namespace bb;
 namespace goblin_recursion_tests {
 
 class GoblinRecursionTests : public ::testing::Test {

@@ -4,7 +4,7 @@
 #include "barretenberg/crypto/pedersen_commitment/pedersen.hpp"
 #include "barretenberg/ecc/curves/grumpkin/grumpkin.hpp"
 
-namespace join_split_example {
+namespace bb::join_split_example {
 namespace proofs {
 namespace notes {
 namespace native {
@@ -47,4 +47,4 @@ inline void write(std::vector<uint8_t>& buf, partial_claim_note_data const& note
 } // namespace native
 } // namespace notes
 } // namespace proofs
-} // namespace join_split_example
+} // namespace bb::join_split_example

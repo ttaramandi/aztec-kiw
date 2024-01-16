@@ -7,7 +7,6 @@
 #include "barretenberg/stdlib/primitives/witness/witness.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 
 using bb::fr;
 using numeric::uint256_t;
@@ -143,5 +142,4 @@ template <typename Builder> class address_t {
     friend std::ostream& operator<<(std::ostream& os, address_t<Builder> const& v) { return os << v.address_; }
 };
 
-} // namespace stdlib
 } // namespace bb::stdlib

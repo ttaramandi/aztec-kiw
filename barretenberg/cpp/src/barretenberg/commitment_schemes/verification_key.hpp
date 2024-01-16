@@ -43,8 +43,7 @@ template <> class VerifierCommitmentKey<curve::BN254> {
      * @param num_points
      * @param srs verifier G2 point
      */
-    VerifierCommitmentKey([[maybe_unused]] size_t num_points,
-                          std::shared_ptr<bb::srs::factories::CrsFactory<Curve>> crs_factory)
+    VerifierCommitmentKey([[maybe_unused]] size_t num_points, std::shared_ptr<bb::srs::CrsFactory<Curve>> crs_factory)
         : srs(crs_factory->get_verifier_crs())
     {}
 
@@ -65,7 +64,7 @@ template <> class VerifierCommitmentKey<curve::BN254> {
         return (result == Curve::TargetField::one());
     }
 
-    std::shared_ptr<bb::srs::factories::VerifierCrs<Curve>> srs;
+    std::shared_ptr<bb::srs::VerifierCrs<Curve>> srs;
 };
 
 /**
@@ -88,14 +87,14 @@ template <> class VerifierCommitmentKey<curve::Grumpkin> {
      * @param num_points specifies the length of the SRS
      * @param path is the location to the SRS file
      */
-    VerifierCommitmentKey(size_t num_points, std::shared_ptr<bb::srs::factories::CrsFactory<Curve>> crs_factory)
+    VerifierCommitmentKey(size_t num_points, std::shared_ptr<bb::srs::CrsFactory<Curve>> crs_factory)
         : pippenger_runtime_state(num_points)
         , srs(crs_factory->get_verifier_crs(num_points))
 
     {}
 
-    bb::scalar_multiplication::pippenger_runtime_state<Curve> pippenger_runtime_state;
-    std::shared_ptr<bb::srs::factories::VerifierCrs<Curve>> srs;
+    bb::pippenger_runtime_state<Curve> pippenger_runtime_state;
+    std::shared_ptr<bb::srs::VerifierCrs<Curve>> srs;
 };
 
 } // namespace bb

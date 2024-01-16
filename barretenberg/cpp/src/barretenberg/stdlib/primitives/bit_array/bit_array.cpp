@@ -4,7 +4,6 @@
 #include <bitset>
 
 namespace bb::stdlib {
-namespace stdlib {
 
 template <typename Builder>
 bit_array<Builder>::bit_array(Builder* parent_context, const size_t n)
@@ -161,5 +160,4 @@ template class bit_array<bb::StandardCircuitBuilder>;
 template class bit_array<bb::UltraCircuitBuilder>;
 template class bit_array<bb::GoblinUltraCircuitBuilder>;
 
-} // namespace stdlib
 } // namespace bb::stdlib

@@ -10,7 +10,6 @@
 #include <sstream>
 
 namespace bb::stdlib {
-namespace stdlib {
 namespace merkle_tree {
 
 using namespace bb;
@@ -86,5 +85,4 @@ template <typename Store> fr NullifierTree<Store>::update_element(fr const& valu
 template class NullifierTree<MemoryStore>;
 
 } // namespace merkle_tree
-} // namespace stdlib
 } // namespace bb::stdlib

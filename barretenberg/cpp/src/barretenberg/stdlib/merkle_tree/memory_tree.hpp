@@ -2,7 +2,6 @@
 #include "hash_path.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 namespace merkle_tree {
 
 using namespace bb;
@@ -44,5 +43,4 @@ class MemoryTree {
 };
 
 } // namespace merkle_tree
-} // namespace stdlib
 } // namespace bb::stdlib

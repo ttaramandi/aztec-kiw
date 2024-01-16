@@ -12,7 +12,7 @@
 #include "barretenberg/relations/relation_parameters.hpp"
 #include "barretenberg/sumcheck/sumcheck_round.hpp"
 
-using namespace bb::honk;
+using namespace bb;
 
 namespace test_eccvm_composer {
 

@@ -3,7 +3,7 @@
 #include "barretenberg/srs/factories/crs_factory.hpp"
 #include "join_split_tx.hpp"
 
-namespace join_split_example {
+namespace bb::join_split_example {
 namespace proofs {
 namespace join_split {
 
@@ -23,4 +23,4 @@ std::shared_ptr<plonk::verification_key> get_verification_key();
 
 } // namespace join_split
 } // namespace proofs
-} // namespace join_split_example
+} // namespace bb::join_split_example

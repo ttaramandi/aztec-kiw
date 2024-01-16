@@ -5,7 +5,6 @@
 #include "hash_path.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 namespace merkle_tree {
 
 template <typename Builder> using bit_vector = std::vector<bool_t<Builder>>;
@@ -317,5 +316,4 @@ void batch_update_membership(field_t<Builder> const& new_root,
 }
 
 } // namespace merkle_tree
-} // namespace stdlib
 } // namespace bb::stdlib

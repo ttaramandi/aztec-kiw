@@ -4,7 +4,6 @@
 #include "field.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 
 /**
  * Gets the number of contiguous nonzero values of an array from the start.
@@ -175,5 +174,4 @@ void push_array_to_array(std::array<field_t<Builder>, size_1> const& source,
     }
 }
 
-} // namespace stdlib
 } // namespace bb::stdlib

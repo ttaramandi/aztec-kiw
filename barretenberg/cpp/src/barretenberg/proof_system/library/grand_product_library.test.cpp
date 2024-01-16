@@ -7,7 +7,7 @@
 #include "barretenberg/srs/factories/file_crs_factory.hpp"
 #include <gtest/gtest.h>
 
-using namespace bb::honk;
+using namespace bb;
 namespace grand_product_library_tests {
 
 template <class FF> class GrandProductTests : public testing::Test {

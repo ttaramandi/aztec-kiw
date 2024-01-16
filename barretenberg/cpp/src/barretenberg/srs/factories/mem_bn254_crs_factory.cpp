@@ -46,12 +46,12 @@ MemBn254CrsFactory::MemBn254CrsFactory(std::vector<g1::affine_element> const& po
     , verifier_crs_(std::make_shared<MemVerifierCrs>(g2_point))
 {}
 
-std::shared_ptr<bb::srs::factories::ProverCrs<curve::BN254>> MemBn254CrsFactory::get_prover_crs(size_t)
+std::shared_ptr<bb::srs::ProverCrs<curve::BN254>> MemBn254CrsFactory::get_prover_crs(size_t)
 {
     return prover_crs_;
 }
 
-std::shared_ptr<bb::srs::factories::VerifierCrs<curve::BN254>> MemBn254CrsFactory::get_verifier_crs(size_t)
+std::shared_ptr<bb::srs::VerifierCrs<curve::BN254>> MemBn254CrsFactory::get_verifier_crs(size_t)
 {
     return verifier_crs_;
 }

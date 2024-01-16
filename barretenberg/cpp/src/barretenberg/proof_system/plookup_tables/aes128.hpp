@@ -8,7 +8,7 @@
 #include "sparse.hpp"
 #include "types.hpp"
 
-namespace plookup {
+namespace bb::plookup {
 namespace aes128_tables {
 static constexpr uint64_t AES_BASE = 9;
 static constexpr uint64_t aes_normalization_table[AES_BASE]{
@@ -174,4 +174,4 @@ inline MultiTable get_aes_sbox_table(const MultiTableId id = AES_SBOX)
     return table;
 }
 } // namespace aes128_tables
-} // namespace plookup
+} // namespace bb::plookup

@@ -4,7 +4,7 @@
 #include "blake2s_plookup.hpp"
 #include <gtest/gtest.h>
 
-using namespace barretenberg;
+using namespace bb;
 using namespace bb::stdlib;
 
 using Builder = bb::UltraCircuitBuilder;

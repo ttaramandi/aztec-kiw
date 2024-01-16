@@ -8,7 +8,7 @@ namespace bb::stdlib {
 
 namespace blake_util {
 
-using namespace plookup;
+using namespace bb::plookup;
 
 // constants
 enum blake_constant { BLAKE3_STATE_SIZE = 16 };

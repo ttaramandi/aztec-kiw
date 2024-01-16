@@ -2,8 +2,6 @@
 #include "barretenberg/ecc/curves/bn254/fr.hpp"
 #include <gtest/gtest.h>
 
-namespace bb::test_univariate {
-
 template <typename FF> class UnivariateTest : public testing::Test {
   public:
     template <size_t view_length> using UnivariateView = UnivariateView<FF, view_length>;
@@ -172,5 +170,3 @@ TYPED_TEST(UnivariateTest, EvaluationCustomDomain)
         EXPECT_EQ(poly.evaluate(FF(2)), FF(294330751));
     }();
 }
-
-} // namespace bb::test_univariate

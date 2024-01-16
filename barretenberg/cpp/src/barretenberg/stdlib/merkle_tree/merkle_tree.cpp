@@ -9,7 +9,6 @@
 #include <sstream>
 
 namespace bb::stdlib {
-namespace stdlib {
 namespace merkle_tree {
 
 using namespace bb;
@@ -354,5 +353,4 @@ template <typename Store> void MerkleTree<Store>::remove(fr const& key)
 template class MerkleTree<MemoryStore>;
 
 } // namespace merkle_tree
-} // namespace stdlib
 } // namespace bb::stdlib

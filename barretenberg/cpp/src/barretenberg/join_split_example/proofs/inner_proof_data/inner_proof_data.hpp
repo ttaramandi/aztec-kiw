@@ -5,7 +5,7 @@
 #include "barretenberg/numeric/uint256/uint256.hpp"
 #include <array>
 
-namespace join_split_example {
+namespace bb::join_split_example {
 namespace proofs {
 
 namespace InnerProofFields {
@@ -99,4 +99,4 @@ inline std::ostream& operator<<(std::ostream& os, inner_proof_data const& data)
 }
 
 } // namespace proofs
-} // namespace join_split_example
+} // namespace bb::join_split_example

@@ -4,8 +4,8 @@
 
 #include <gtest/gtest.h>
 
-using namespace bb::honk;
-using namespace bb::honk::sumcheck;
+using namespace bb;
+using namespace bb;
 
 using bb::BarycentricData;
 using bb::Univariate;

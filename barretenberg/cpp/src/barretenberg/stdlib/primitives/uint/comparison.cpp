@@ -4,7 +4,6 @@
 using namespace bb;
 
 namespace bb::stdlib {
-namespace stdlib {
 
 template <typename Builder, typename Native>
 /**
@@ -101,5 +100,4 @@ template class uint<bb::StandardCircuitBuilder, uint8_t>;
 template class uint<bb::StandardCircuitBuilder, uint16_t>;
 template class uint<bb::StandardCircuitBuilder, uint32_t>;
 template class uint<bb::StandardCircuitBuilder, uint64_t>;
-} // namespace stdlib
 } // namespace bb::stdlib

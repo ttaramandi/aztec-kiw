@@ -48,11 +48,10 @@ inline bool operator==(verification_key_data const& lhs, verification_key_data c
 struct verification_key {
     // default constructor needed for msgpack unpack
     verification_key() = default;
-    verification_key(verification_key_data&& data,
-                     std::shared_ptr<bb::srs::factories::VerifierCrs<curve::BN254>> const& crs);
+    verification_key(verification_key_data&& data, std::shared_ptr<bb::srs::VerifierCrs<curve::BN254>> const& crs);
     verification_key(size_t num_gates,
                      size_t num_inputs,
-                     std::shared_ptr<bb::srs::factories::VerifierCrs<curve::BN254>> const& crs,
+                     std::shared_ptr<bb::srs::VerifierCrs<curve::BN254>> const& crs,
                      CircuitType circuit_type);
 
     verification_key(const verification_key& other);
@@ -82,7 +81,7 @@ struct verification_key {
 
     bb::evaluation_domain domain;
 
-    std::shared_ptr<bb::srs::factories::VerifierCrs<curve::BN254>> reference_string;
+    std::shared_ptr<bb::srs::VerifierCrs<curve::BN254>> reference_string;
 
     std::map<std::string, bb::g1::affine_element> commitments;
 

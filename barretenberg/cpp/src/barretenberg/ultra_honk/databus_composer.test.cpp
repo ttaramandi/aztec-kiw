@@ -10,7 +10,7 @@
 #include "barretenberg/ultra_honk/ultra_composer.hpp"
 #include "barretenberg/ultra_honk/ultra_prover.hpp"
 
-using namespace bb::honk;
+using namespace bb;
 
 namespace test_ultra_honk_composer {
 

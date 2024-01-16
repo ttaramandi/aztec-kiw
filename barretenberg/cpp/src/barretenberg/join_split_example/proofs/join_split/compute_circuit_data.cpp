@@ -5,7 +5,7 @@
 #include "join_split_circuit.hpp"
 #include "sign_join_split_tx.hpp"
 
-namespace join_split_example {
+namespace bb::join_split_example {
 namespace proofs {
 namespace join_split {
 
@@ -60,7 +60,7 @@ using namespace bb::stdlib
     return tx;
 }
 
-circuit_data get_circuit_data(std::shared_ptr<bb::srs::factories::CrsFactory<curve::BN254>> const& srs, bool mock)
+circuit_data get_circuit_data(std::shared_ptr<bb::srs::CrsFactory<curve::BN254>> const& srs, bool mock)
 {
     std::cerr << "Getting join-split circuit data..." << std::endl;
 
@@ -75,4 +75,4 @@ circuit_data get_circuit_data(std::shared_ptr<bb::srs::factories::CrsFactory<cur
 
 } // namespace join_split
 } // namespace proofs
-} // namespace join_split_example
+} // namespace bb::join_split_example

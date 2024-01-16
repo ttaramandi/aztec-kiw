@@ -5,7 +5,6 @@
 #include <set>
 
 namespace bb::stdlib {
-namespace stdlib {
 namespace merkle_tree {
 
 class MemoryStore {
@@ -87,5 +86,4 @@ class MemoryStore {
 };
 
 } // namespace merkle_tree
-} // namespace stdlib
 } // namespace bb::stdlib

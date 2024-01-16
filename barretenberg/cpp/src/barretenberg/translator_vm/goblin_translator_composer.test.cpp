@@ -8,7 +8,7 @@
 
 #include <gtest/gtest.h>
 
-using namespace bb::honk;
+using namespace bb;
 using CircuitBuilder = flavor::GoblinTranslator::CircuitBuilder;
 using Transcript = flavor::GoblinTranslator::Transcript;
 using OpQueue = bb::ECCOpQueue;

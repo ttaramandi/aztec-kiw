@@ -6,8 +6,7 @@
 #include "barretenberg/sumcheck/instance/instances.hpp"
 #include <gtest/gtest.h>
 
-using namespace bb::honk;
-namespace bb::test_protogalaxy_prover {
+using namespace bb;
 using Flavor = bb::honk::flavor::Ultra;
 using Polynomial = typename Flavor::Polynomial;
 using FF = typename Flavor::FF;
@@ -190,5 +189,3 @@ TEST(Protogalaxy, CombinerOn4Instances)
     };
     run_test();
 };
-
-} // namespace bb::test_protogalaxy_prover

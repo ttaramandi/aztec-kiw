@@ -4,7 +4,7 @@
 #include "barretenberg/common/constexpr_utils.hpp"
 #include "barretenberg/numeric/bitop/pow.hpp"
 
-namespace plookup {
+namespace bb::plookup {
 namespace keccak_tables {
 
 /**
@@ -293,4 +293,4 @@ template <size_t TABLE_BITS = 0, size_t LANE_INDEX = 0> class Rho {
 };
 
 } // namespace keccak_tables
-} // namespace plookup
+} // namespace bb::plookup

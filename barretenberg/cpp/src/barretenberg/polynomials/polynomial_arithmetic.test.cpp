@@ -9,7 +9,7 @@
 #include <gtest/gtest.h>
 #include <utility>
 
-using namespace barretenberg;
+using namespace bb;
 
 /**
  * @brief Ensure evaluate() gives consistent result for polynomials of different size but same non-zero coefficients.

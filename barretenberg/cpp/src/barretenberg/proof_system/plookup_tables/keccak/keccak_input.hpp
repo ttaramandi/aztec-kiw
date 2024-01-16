@@ -5,7 +5,7 @@
 #include "barretenberg/numeric/bitop/pow.hpp"
 #include "barretenberg/numeric/bitop/sparse_form.hpp"
 
-namespace plookup {
+namespace bb::plookup {
 namespace keccak_tables {
 
 /**
@@ -141,4 +141,4 @@ class KeccakInput {
 };
 
 } // namespace keccak_tables
-} // namespace plookup
+} // namespace bb::plookup

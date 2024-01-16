@@ -11,7 +11,7 @@ namespace {
 auto& engine = numeric::random::get_debug_engine();
 }
 
-using namespace barretenberg;
+using namespace bb;
 using namespace bb::stdlib;
 using namespace bb::stdlib;
 

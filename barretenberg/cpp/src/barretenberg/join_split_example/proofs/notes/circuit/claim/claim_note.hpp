@@ -7,7 +7,7 @@
 #include "create_partial_commitment.hpp"
 #include "witness_data.hpp"
 
-namespace join_split_example {
+namespace bb::join_split_example {
 namespace proofs {
 namespace notes {
 namespace circuit {
@@ -66,4 +66,4 @@ struct claim_note {
 } // namespace circuit
 } // namespace notes
 } // namespace proofs
-} // namespace join_split_example
+} // namespace bb::join_split_example

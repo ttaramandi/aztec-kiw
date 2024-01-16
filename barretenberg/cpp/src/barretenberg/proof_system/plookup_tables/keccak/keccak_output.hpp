@@ -7,7 +7,7 @@
 #include "../sparse.hpp"
 #include "../types.hpp"
 
-namespace plookup {
+namespace bb::plookup {
 namespace keccak_tables {
 
 /**
@@ -172,4 +172,4 @@ class KeccakOutput {
 };
 
 } // namespace keccak_tables
-} // namespace plookup
+} // namespace bb::plookup

@@ -4,7 +4,6 @@
 #include "blake3s_plookup.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 
 namespace blake3_internal {
 
@@ -242,7 +241,7 @@ using namespace blake3_internal;
 template <typename Builder> byte_array<Builder> blake3s(const byte_array<Builder>& input)
 {
     if constexpr (HasPlookup<Builder>) {
-        return blake3s_plookup::blake3s<Builder>(input);
+        return plookup::blake3s<Builder>(input);
     }
 
     blake3_hasher<Builder> hasher = {};
@@ -257,5 +256,4 @@ template <typename Builder> byte_array<Builder> blake3s(const byte_array<Builder
 template byte_array<bb::StandardCircuitBuilder> blake3s(const byte_array<bb::StandardCircuitBuilder>& input);
 template byte_array<bb::UltraCircuitBuilder> blake3s(const byte_array<bb::UltraCircuitBuilder>& input);
 template byte_array<bb::GoblinUltraCircuitBuilder> blake3s(const byte_array<bb::GoblinUltraCircuitBuilder>& input);
-} // namespace stdlib
 } // namespace bb::stdlib

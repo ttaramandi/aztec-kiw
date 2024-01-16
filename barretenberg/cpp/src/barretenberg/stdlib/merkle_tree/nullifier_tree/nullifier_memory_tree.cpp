@@ -2,7 +2,6 @@
 #include "../hash.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 namespace merkle_tree {
 
 NullifierMemoryTree::NullifierMemoryTree(size_t depth)
@@ -73,5 +72,4 @@ fr NullifierMemoryTree::update_element(fr const& value)
 }
 
 } // namespace merkle_tree
-} // namespace stdlib
 } // namespace bb::stdlib

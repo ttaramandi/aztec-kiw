@@ -267,9 +267,9 @@ void organize_buckets(uint64_t* point_schedule, const size_t num_points)
     const size_t num_rounds = get_num_rounds(num_points);
 
     parallel_for(num_rounds, [&](size_t i) {
-        scalar_multiplication::process_buckets(&point_schedule[i * num_points],
-                                               num_points,
-                                               static_cast<uint32_t>(get_optimal_bucket_width(num_points / 2)) + 1);
+        process_buckets(&point_schedule[i * num_points],
+                        num_points,
+                        static_cast<uint32_t>(get_optimal_bucket_width(num_points / 2)) + 1);
     });
 }
 
@@ -951,7 +951,7 @@ typename Curve::Element pippenger_without_endomorphism_basis_points(typename Cur
                                                                     pippenger_runtime_state<Curve>& state)
 {
     std::vector<typename Curve::AffineElement> G_mod(num_initial_points * 2);
-    bb::scalar_multiplication::generate_pippenger_point_table<Curve>(points, &G_mod[0], num_initial_points);
+    bb::generate_pippenger_point_table<Curve>(points, &G_mod[0], num_initial_points);
     return pippenger(scalars, &G_mod[0], num_initial_points, state, false);
 }
 

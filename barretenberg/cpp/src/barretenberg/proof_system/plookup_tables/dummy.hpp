@@ -9,7 +9,7 @@
 
 #include "types.hpp"
 
-namespace plookup {
+namespace bb::plookup {
 namespace dummy_tables {
 
 /**
@@ -94,4 +94,4 @@ inline MultiTable get_honk_dummy_multitable()
     return table;
 }
 } // namespace dummy_tables
-} // namespace plookup
+} // namespace bb::plookup

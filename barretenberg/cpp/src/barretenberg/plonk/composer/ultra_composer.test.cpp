@@ -9,7 +9,7 @@
 #include "barretenberg/proof_system/plookup_tables/sha256.hpp"
 #include "barretenberg/stdlib/primitives/plookup/plookup.hpp"
 
-using namespace barretenberg;
+using namespace bb;
 using namespace proof_system;
 using namespace bb::plonk;
 

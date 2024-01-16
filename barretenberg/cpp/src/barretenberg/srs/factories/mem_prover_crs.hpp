@@ -10,10 +10,10 @@ template <typename Curve> class MemProverCrs : public ProverCrs<Curve> {
   public:
     MemProverCrs(std::vector<typename Curve::AffineElement> const& points)
         : num_points(points.size())
-        , monomials_(scalar_multiplication::point_table_alloc<typename Curve::AffineElement>(points.size()))
+        , monomials_(point_table_alloc<typename Curve::AffineElement>(points.size()))
     {
         std::copy(points.begin(), points.end(), monomials_.get());
-        scalar_multiplication::generate_pippenger_point_table<Curve>(monomials_.get(), monomials_.get(), num_points);
+        generate_pippenger_point_table<Curve>(monomials_.get(), monomials_.get(), num_points);
     }
 
     typename Curve::AffineElement* get_monomial_points() override { return monomials_.get(); }

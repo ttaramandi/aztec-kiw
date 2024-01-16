@@ -1,6 +1,6 @@
 #include "inner_proof_data.hpp"
 
-namespace join_split_example {
+namespace bb::join_split_example {
 namespace proofs {
 
 using namespace bb;
@@ -26,4 +26,4 @@ inner_proof_data::inner_proof_data(std::vector<uint8_t> const& proof_data)
 }
 
 } // namespace proofs
-} // namespace join_split_example
+} // namespace bb::join_split_example

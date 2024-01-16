@@ -3,7 +3,6 @@
 #include "../field/field.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 
 // A runtime-defined read-only memory table. Table entries must be initialized in the constructor.
 // Each entry contains a pair of values
@@ -42,5 +41,4 @@ template <typename Builder> class twin_rom_table {
     mutable bool initialized = false;
     mutable Builder* context = nullptr;
 };
-} // namespace stdlib
 } // namespace bb::stdlib

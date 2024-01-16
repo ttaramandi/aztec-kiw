@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-using namespace bb::honk::sumcheck;
+using namespace bb;
 namespace test_sumcheck_polynomials {
 
 template <typename Flavor> class PartialEvaluationTests : public testing::Test {};

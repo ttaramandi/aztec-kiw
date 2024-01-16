@@ -4,7 +4,7 @@
 #include "blake3s_plookup.hpp"
 #include <gtest/gtest.h>
 
-using namespace barretenberg;
+using namespace bb;
 using namespace bb::plonk;
 
 using byte_array = stdlib::byte_array<bb::StandardCircuitBuilder>;

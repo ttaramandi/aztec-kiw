@@ -6,7 +6,7 @@
 #include "barretenberg/transcript/transcript.hpp"
 #include <gtest/gtest.h>
 
-using namespace bb::honk;
+using namespace bb;
 
 template <typename Flavor> class ECCVMTranscriptTests : public ::testing::Test {
   public:

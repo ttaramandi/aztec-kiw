@@ -3,7 +3,6 @@
 #include "hash_path.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 namespace merkle_tree {
 
 using namespace bb;
@@ -98,5 +97,4 @@ template <typename Store> class MerkleTree {
 };
 
 } // namespace merkle_tree
-} // namespace stdlib
 } // namespace bb::stdlib

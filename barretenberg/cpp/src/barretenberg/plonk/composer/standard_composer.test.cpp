@@ -5,7 +5,7 @@
 #include "barretenberg/proof_system/circuit_builder/standard_circuit_builder.hpp"
 #include <gtest/gtest.h>
 
-using namespace barretenberg;
+using namespace bb;
 using namespace proof_system;
 using namespace bb::plonk;
 
@@ -45,7 +45,7 @@ TEST_F(StandardPlonkComposer, ComposerFromSerializedKeys)
     auto pk_data = from_buffer<plonk::proving_key_data>(pk_buf);
     auto vk_data = from_buffer<plonk::verification_key_data>(vk_buf);
 
-    auto crs = std::make_unique<bb::srs::factories::FileCrsFactory<curve::BN254>>("../srs_db/ignition");
+    auto crs = std::make_unique<bb::srs::FileCrsFactory<curve::BN254>>("../srs_db/ignition");
     auto proving_key =
         std::make_shared<plonk::proving_key>(std::move(pk_data), crs->get_prover_crs(pk_data.circuit_size + 1));
     auto verification_key = std::make_shared<plonk::verification_key>(std::move(vk_data), crs->get_verifier_crs());

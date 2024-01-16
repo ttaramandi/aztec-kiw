@@ -4,7 +4,6 @@
 #include "barretenberg/stdlib/recursion/transcript/transcript.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 namespace recursion {
 
 template <typename Curve> class recursive_ultra_verifier_settings : public plonk::ultra_verifier_settings {
@@ -102,5 +101,4 @@ class recursive_ultra_to_standard_verifier_settings : public recursive_ultra_ver
 };
 
 } // namespace recursion
-} // namespace stdlib
 } // namespace bb::stdlib

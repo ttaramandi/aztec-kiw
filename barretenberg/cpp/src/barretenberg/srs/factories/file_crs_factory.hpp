@@ -18,15 +18,15 @@ template <typename Curve> class FileCrsFactory : public CrsFactory<Curve> {
     FileCrsFactory(std::string path, size_t initial_degree = 0);
     FileCrsFactory(FileCrsFactory&& other) = default;
 
-    std::shared_ptr<bb::srs::factories::ProverCrs<Curve>> get_prover_crs(size_t degree) override;
+    std::shared_ptr<bb::srs::ProverCrs<Curve>> get_prover_crs(size_t degree) override;
 
-    std::shared_ptr<bb::srs::factories::VerifierCrs<Curve>> get_verifier_crs(size_t degree = 0) override;
+    std::shared_ptr<bb::srs::VerifierCrs<Curve>> get_verifier_crs(size_t degree = 0) override;
 
   private:
     std::string path_;
     size_t degree_;
-    std::shared_ptr<bb::srs::factories::ProverCrs<Curve>> prover_crs_;
-    std::shared_ptr<bb::srs::factories::VerifierCrs<Curve>> verifier_crs_;
+    std::shared_ptr<bb::srs::ProverCrs<Curve>> prover_crs_;
+    std::shared_ptr<bb::srs::VerifierCrs<Curve>> verifier_crs_;
 };
 
 template <typename Curve> class FileProverCrs : public ProverCrs<Curve> {
@@ -34,10 +34,10 @@ template <typename Curve> class FileProverCrs : public ProverCrs<Curve> {
     FileProverCrs(const size_t num_points, std::string const& path)
         : num_points(num_points)
     {
-        monomials_ = scalar_multiplication::point_table_alloc<typename Curve::AffineElement>(num_points);
+        monomials_ = point_table_alloc<typename Curve::AffineElement>(num_points);
 
         srs::IO<Curve>::read_transcript_g1(monomials_.get(), num_points, path);
-        scalar_multiplication::generate_pippenger_point_table<Curve>(monomials_.get(), monomials_.get(), num_points);
+        generate_pippenger_point_table<Curve>(monomials_.get(), monomials_.get(), num_points);
     };
 
     typename Curve::AffineElement* get_monomial_points() { return monomials_.get(); }

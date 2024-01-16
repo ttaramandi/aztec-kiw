@@ -1,7 +1,6 @@
 #include "barretenberg/proof_system/op_queue/ecc_op_queue.hpp"
 #include <gtest/gtest.h>
 
-namespace bb::test_flavor {
 TEST(ECCOpQueueTest, Basic)
 {
     ECCOpQueue op_queue;
@@ -36,5 +35,3 @@ TEST(ECCOpQueueTest, InternalAccumulatorCorrectness)
     // Adding an equality op should reset the accumulator to zero (the point at infinity)
     EXPECT_TRUE(op_queue.get_accumulator().is_point_at_infinity());
 }
-
-} // namespace bb::test_flavor

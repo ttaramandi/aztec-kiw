@@ -2,7 +2,6 @@
 #include "../circuit_builders/circuit_builders_fwd.hpp"
 #include "ram_table.hpp"
 namespace bb::stdlib {
-namespace stdlib {
 
 /**
  * @brief A dynamic array of field elements
@@ -47,5 +46,4 @@ template <typename Builder> class DynamicArray {
     field_pt _length = 0;
     mutable ram_table<Builder> _inner_table;
 };
-} // namespace stdlib
 } // namespace bb::stdlib

@@ -13,7 +13,7 @@
 
 namespace verifier_helpers {
 
-using namespace barretenberg;
+using namespace bb;
 using namespace bb::plonk;
 
 plonk::Verifier generate_verifier(std::shared_ptr<proving_key> circuit_proving_key)
@@ -29,18 +29,18 @@ plonk::Verifier generate_verifier(std::shared_ptr<proving_key> circuit_proving_k
     poly_coefficients[7] = circuit_proving_key->polynomial_store.get("sigma_3").data();
 
     std::vector<bb::g1::affine_element> commitments;
-    scalar_multiplication::pippenger_runtime_state<curve::BN254> state(circuit_proving_key->circuit_size);
+    pippenger_runtime_state<curve::BN254> state(circuit_proving_key->circuit_size);
     commitments.resize(8);
 
     for (size_t i = 0; i < 8; ++i) {
-        commitments[i] = g1::affine_element(
-            scalar_multiplication::pippenger<curve::BN254>(poly_coefficients[i].get(),
-                                                           circuit_proving_key->reference_string->get_monomial_points(),
-                                                           circuit_proving_key->circuit_size,
-                                                           state));
+        commitments[i] =
+            g1::affine_element(pippenger<curve::BN254>(poly_coefficients[i].get(),
+                                                       circuit_proving_key->reference_string->get_monomial_points(),
+                                                       circuit_proving_key->circuit_size,
+                                                       state));
     }
 
-    auto crs = std::make_shared<bb::srs::factories::FileVerifierCrs<curve::BN254>>("../srs_db/ignition");
+    auto crs = std::make_shared<bb::srs::FileVerifierCrs<curve::BN254>>("../srs_db/ignition");
     std::shared_ptr<verification_key> circuit_verification_key =
         std::make_shared<verification_key>(circuit_proving_key->circuit_size,
                                            circuit_proving_key->num_public_inputs,
@@ -76,7 +76,7 @@ plonk::Prover generate_test_data(const size_t n)
 
     // even indices = mul gates, odd incides = add gates
 
-    auto crs = std::make_shared<bb::srs::factories::FileProverCrs<curve::BN254>>(n + 1, "../srs_db/ignition");
+    auto crs = std::make_shared<bb::srs::FileProverCrs<curve::BN254>>(n + 1, "../srs_db/ignition");
     std::shared_ptr<proving_key> key = std::make_shared<proving_key>(n, 0, crs, CircuitType::STANDARD);
 
     polynomial w_l(n);

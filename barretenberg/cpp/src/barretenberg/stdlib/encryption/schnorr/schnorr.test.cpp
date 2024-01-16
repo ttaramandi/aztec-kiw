@@ -5,9 +5,7 @@
 #include "barretenberg/proof_system/circuit_builder/ultra_circuit_builder.hpp"
 #include "schnorr.hpp"
 
-namespace bb::test_stdlib_schnorr {
-
-using namespace barretenberg;
+using namespace bb;
 using namespace bb::stdlib;
 using namespace bb::stdlib;
 

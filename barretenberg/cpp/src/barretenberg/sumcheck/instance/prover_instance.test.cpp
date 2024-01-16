@@ -6,7 +6,7 @@
 #include "barretenberg/srs/factories/file_crs_factory.hpp"
 #include <gtest/gtest.h>
 
-using namespace bb::honk;
+using namespace bb;
 namespace instance_tests {
 
 template <class Flavor> class InstanceTests : public testing::Test {

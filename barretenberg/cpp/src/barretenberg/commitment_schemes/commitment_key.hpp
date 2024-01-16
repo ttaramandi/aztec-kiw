@@ -45,13 +45,13 @@ template <class Curve> class CommitmentKey {
      *
      */
     CommitmentKey(const size_t num_points,
-                  std::shared_ptr<bb::srs::factories::CrsFactory<Curve>> crs_factory = bb::srs::get_crs_factory())
+                  std::shared_ptr<bb::srs::CrsFactory<Curve>> crs_factory = bb::srs::get_crs_factory())
         : pippenger_runtime_state(num_points)
         , srs(crs_factory->get_prover_crs(num_points))
     {}
 
     // Note: This constructor is used only by Plonk; For Honk the srs is extracted by the CommitmentKey
-    CommitmentKey(const size_t num_points, std::shared_ptr<bb::srs::factories::ProverCrs<Curve>> prover_crs)
+    CommitmentKey(const size_t num_points, std::shared_ptr<bb::srs::ProverCrs<Curve>> prover_crs)
         : pippenger_runtime_state(num_points)
         , srs(prover_crs)
     {}
@@ -66,12 +66,12 @@ template <class Curve> class CommitmentKey {
     {
         const size_t degree = polynomial.size();
         ASSERT(degree <= srs->get_monomial_size());
-        return bb::scalar_multiplication::pippenger_unsafe<Curve>(
+        return bb::pippenger_unsafe<Curve>(
             const_cast<Fr*>(polynomial.data()), srs->get_monomial_points(), degree, pippenger_runtime_state);
     };
 
-    bb::scalar_multiplication::pippenger_runtime_state<Curve> pippenger_runtime_state;
-    std::shared_ptr<bb::srs::factories::ProverCrs<Curve>> srs;
+    bb::pippenger_runtime_state<Curve> pippenger_runtime_state;
+    std::shared_ptr<bb::srs::ProverCrs<Curve>> srs;
 };
 
 } // namespace bb

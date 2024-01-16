@@ -12,8 +12,8 @@
 
 #include <gtest/gtest.h>
 
-using namespace bb::honk;
-using namespace bb::honk::sumcheck;
+using namespace bb;
+using namespace bb;
 using Flavor = bb::honk::flavor::Ultra;
 using FF = typename Flavor::FF;
 using ProverPolynomials = typename Flavor::ProverPolynomials;

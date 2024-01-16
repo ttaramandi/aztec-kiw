@@ -74,8 +74,8 @@ template <typename Curve> class CrsFactory {
     CrsFactory() = default;
     CrsFactory(CrsFactory&& other) = default;
     virtual ~CrsFactory() = default;
-    virtual std::shared_ptr<bb::srs::factories::ProverCrs<Curve>> get_prover_crs(size_t) { return nullptr; }
-    virtual std::shared_ptr<bb::srs::factories::VerifierCrs<Curve>> get_verifier_crs([[maybe_unused]] size_t degree = 0)
+    virtual std::shared_ptr<bb::srs::ProverCrs<Curve>> get_prover_crs(size_t) { return nullptr; }
+    virtual std::shared_ptr<bb::srs::VerifierCrs<Curve>> get_verifier_crs([[maybe_unused]] size_t degree = 0)
     {
         return nullptr;
     }

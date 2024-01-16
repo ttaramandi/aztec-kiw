@@ -3,7 +3,7 @@
 #include "barretenberg/ultra_honk/ultra_composer.hpp"
 #include <gtest/gtest.h>
 
-using namespace bb::honk;
+using namespace bb;
 
 using Flavor = flavor::Ultra;
 using VerificationKey = Flavor::VerificationKey;

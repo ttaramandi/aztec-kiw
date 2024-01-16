@@ -9,7 +9,7 @@
     using bool_ct = stdlib::bool_t<Builder>;
 
 namespace test_stdlib_bool {
-using namespace barretenberg;
+using namespace bb;
 using namespace bb::plonk;
 
 namespace {

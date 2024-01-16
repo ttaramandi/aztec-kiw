@@ -1,6 +1,6 @@
 #include "non_native_group_generator.hpp"
 
-namespace plookup {
+namespace bb::plookup {
 namespace ecc_generator_tables {
 
 /**
@@ -489,4 +489,4 @@ template class ecc_generator_table<bb::g1>;
 template class ecc_generator_table<secp256k1::g1>;
 
 } // namespace ecc_generator_tables
-} // namespace plookup
+} // namespace bb::plookup

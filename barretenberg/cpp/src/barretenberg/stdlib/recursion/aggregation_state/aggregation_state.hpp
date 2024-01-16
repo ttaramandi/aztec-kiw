@@ -2,7 +2,6 @@
 #include "../../primitives/field/field.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 namespace recursion {
 
 /**
@@ -108,5 +107,4 @@ template <typename NCT> std::ostream& operator<<(std::ostream& os, aggregation_s
 }
 
 } // namespace recursion
-} // namespace stdlib
 } // namespace bb::stdlib

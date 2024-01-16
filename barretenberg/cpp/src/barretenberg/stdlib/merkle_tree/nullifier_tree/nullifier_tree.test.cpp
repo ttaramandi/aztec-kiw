@@ -5,7 +5,7 @@
 #include "barretenberg/numeric/random/engine.hpp"
 #include "nullifier_memory_tree.hpp"
 
-using namespace barretenberg;
+using namespace bb;
 using namespace bb::stdlib;
 
 namespace {

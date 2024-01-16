@@ -2,7 +2,7 @@
 #include "../../constants.hpp"
 #include "barretenberg/crypto/pedersen_hash/pedersen.hpp"
 
-namespace join_split_example::proofs::notes::native::account {
+namespace bb::join_split_example {
 
 grumpkin::fq generate_account_commitment(const bb::fr& alias_hash, const bb::fr& owner_x, const bb::fr& signing_x)
 {
@@ -14,4 +14,4 @@ grumpkin::fq account_note::commit() const
     return generate_account_commitment(alias_hash, owner_key.x, signing_key.x);
 }
 
-} // namespace join_split_example::proofs::notes::native::account
+} // namespace bb::join_split_example

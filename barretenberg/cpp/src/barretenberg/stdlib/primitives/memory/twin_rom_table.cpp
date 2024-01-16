@@ -5,7 +5,6 @@
 using namespace bb;
 
 namespace bb::stdlib {
-namespace stdlib {
 
 template <typename Builder>
 twin_rom_table<Builder>::twin_rom_table(const std::vector<std::array<field_pt, 2>>& table_entries)
@@ -141,5 +140,4 @@ std::array<field_t<Builder>, 2> twin_rom_table<Builder>::operator[](const field_
 
 template class twin_rom_table<bb::UltraCircuitBuilder>;
 template class twin_rom_table<bb::GoblinUltraCircuitBuilder>;
-} // namespace stdlib
 } // namespace bb::stdlib

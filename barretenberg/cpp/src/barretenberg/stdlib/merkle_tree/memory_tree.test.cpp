@@ -1,7 +1,7 @@
 #include "memory_tree.hpp"
 #include <gtest/gtest.h>
 
-using namespace barretenberg;
+using namespace bb;
 using namespace bb::stdlib;
 
 static std::vector<fr> VALUES = []() {

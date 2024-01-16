@@ -7,7 +7,6 @@
 using namespace bb;
 
 namespace bb::stdlib {
-namespace stdlib {
 
 // ULTRA: Further merging with
 
@@ -384,5 +383,4 @@ template class byte_array<bb::StandardCircuitBuilder>;
 template class byte_array<bb::UltraCircuitBuilder>;
 template class byte_array<bb::GoblinUltraCircuitBuilder>;
 
-} // namespace stdlib
 } // namespace bb::stdlib

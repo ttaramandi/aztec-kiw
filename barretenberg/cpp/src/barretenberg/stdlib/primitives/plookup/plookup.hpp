@@ -7,7 +7,6 @@
 #include <vector>
 
 namespace bb::stdlib {
-namespace stdlib {
 
 template <typename Builder> class plookup_read {
     typedef field_t<Builder> field_pt;
@@ -25,5 +24,4 @@ template <typename Builder> class plookup_read {
                                                                const field_pt& key_b = 0,
                                                                const bool is_2_to_1_lookup = false);
 };
-} // namespace stdlib
 } // namespace bb::stdlib

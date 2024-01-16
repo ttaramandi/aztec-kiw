@@ -3,7 +3,7 @@
 #include "barretenberg/crypto/pedersen_commitment/pedersen.hpp"
 #include "barretenberg/ecc/curves/grumpkin/grumpkin.hpp"
 
-namespace join_split_example {
+namespace bb::join_split_example {
 namespace proofs {
 namespace notes {
 namespace native {
@@ -23,4 +23,4 @@ struct account_note {
 } // namespace native
 } // namespace notes
 } // namespace proofs
-} // namespace join_split_example
+} // namespace bb::join_split_example

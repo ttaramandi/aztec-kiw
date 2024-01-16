@@ -5,8 +5,8 @@
 #include "value_note.hpp"
 #include <gtest/gtest.h>
 
-namespace join_split_example {
-using namespace barretenberg;
+namespace bb::join_split_example {
+using namespace bb;
 using namespace bb::plonk::stdlib;
 using namespace join_split_example::proofs::notes;
 using namespace join_split_example::proofs::notes::circuit::value;
@@ -120,4 +120,4 @@ TEST_F(ValueNote, CommitWithOversizedAssetIdFails)
     bool proof_result = verifier.verify_proof(proof);
     EXPECT_EQ(proof_result, false);
 }
-} // namespace join_split_example
+} // namespace bb::join_split_example

@@ -65,15 +65,14 @@ const auto init = []() {
 };
 // constexpr double add_to_mixed_add_complexity = 1.36;
 
-auto reference_string =
-    std::make_shared<bb::srs::factories::FileProverCrs<curve::BN254>>(NUM_POINTS, "../srs_db/ignition");
+auto reference_string = std::make_shared<bb::srs::FileProverCrs<curve::BN254>>(NUM_POINTS, "../srs_db/ignition");
 
 int pippenger()
 {
-    scalar_multiplication::pippenger_runtime_state<curve::BN254> state(NUM_POINTS);
+    pippenger_runtime_state<curve::BN254> state(NUM_POINTS);
     std::chrono::steady_clock::time_point time_start = std::chrono::steady_clock::now();
-    g1::element result = scalar_multiplication::pippenger_unsafe<curve::BN254>(
-        &scalars[0], reference_string->get_monomial_points(), NUM_POINTS, state);
+    g1::element result =
+        pippenger_unsafe<curve::BN254>(&scalars[0], reference_string->get_monomial_points(), NUM_POINTS, state);
     std::chrono::steady_clock::time_point time_end = std::chrono::steady_clock::now();
     std::chrono::microseconds diff = std::chrono::duration_cast<std::chrono::microseconds>(time_end - time_start);
     std::cout << "run time: " << diff.count() << "us" << std::endl;

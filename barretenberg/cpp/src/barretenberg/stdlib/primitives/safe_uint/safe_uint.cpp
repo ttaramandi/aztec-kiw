@@ -4,7 +4,6 @@
 #include "barretenberg/ecc/curves/grumpkin/grumpkin.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 
 template <typename Builder>
 
@@ -243,5 +242,4 @@ template class safe_uint_t<bb::StandardCircuitBuilder>;
 template class safe_uint_t<bb::UltraCircuitBuilder>;
 template class safe_uint_t<bb::GoblinUltraCircuitBuilder>;
 
-} // namespace stdlib
 } // namespace bb::stdlib

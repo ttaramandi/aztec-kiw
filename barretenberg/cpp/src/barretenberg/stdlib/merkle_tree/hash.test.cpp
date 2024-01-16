@@ -5,7 +5,7 @@
 #include "barretenberg/proof_system/circuit_builder/ultra_circuit_builder.hpp"
 #include "barretenberg/stdlib/merkle_tree/membership.hpp"
 
-using namespace barretenberg;
+using namespace bb;
 using namespace bb::stdlib;
 
 using Builder = bb::UltraCircuitBuilder;

@@ -3,7 +3,6 @@
 #include "../field/field.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 
 // A runtime-defined read-only memory table. Table entries must be initialized in the constructor.
 // N.B. Only works with the UltraPlonkBuilder at the moment!
@@ -40,5 +39,4 @@ template <typename Builder> class rom_table {
     mutable bool initialized = false;
     mutable Builder* context = nullptr;
 };
-} // namespace stdlib
 } // namespace bb::stdlib

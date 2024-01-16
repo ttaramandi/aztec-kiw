@@ -5,7 +5,7 @@
 #include "sparse.hpp"
 #include "types.hpp"
 
-namespace plookup {
+namespace bb::plookup {
 namespace blake2s_tables {
 
 static constexpr size_t BITS_IN_LAST_SLICE = 5UL;
@@ -213,4 +213,4 @@ inline MultiTable get_blake2s_xor_rotate_7_table(const MultiTableId id = BLAKE_X
 }
 
 } // namespace blake2s_tables
-} // namespace plookup
+} // namespace bb::plookup

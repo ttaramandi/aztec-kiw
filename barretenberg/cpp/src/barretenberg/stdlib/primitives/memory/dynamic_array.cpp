@@ -4,7 +4,6 @@
 #include "../circuit_builders/circuit_builders.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 
 /**
  * @brief Construct a new Dynamic Array< Builder>:: Dynamic Array object
@@ -275,5 +274,4 @@ template <typename Builder> void DynamicArray<Builder>::conditional_pop(const bo
 
 template class DynamicArray<bb::UltraCircuitBuilder>;
 template class DynamicArray<bb::GoblinUltraCircuitBuilder>;
-} // namespace stdlib
 } // namespace bb::stdlib

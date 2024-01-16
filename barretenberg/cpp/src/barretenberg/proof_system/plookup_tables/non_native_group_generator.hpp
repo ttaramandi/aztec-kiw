@@ -6,7 +6,7 @@
 #include "barretenberg/ecc/curves/secp256k1/secp256k1.hpp"
 #include <array>
 
-namespace plookup {
+namespace bb::plookup {
 namespace ecc_generator_tables {
 
 template <typename G1> class ecc_generator_table {
@@ -57,4 +57,4 @@ template <typename G1> class ecc_generator_table {
 };
 
 } // namespace ecc_generator_tables
-} // namespace plookup
+} // namespace bb::plookup

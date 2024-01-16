@@ -7,7 +7,6 @@
 using namespace bb;
 
 namespace bb::stdlib {
-namespace stdlib {
 
 template <typename Builder>
 field_t<Builder>::field_t(Builder* parent_context)
@@ -1144,5 +1143,4 @@ template class field_t<bb::StandardCircuitBuilder>;
 template class field_t<bb::UltraCircuitBuilder>;
 template class field_t<bb::GoblinUltraCircuitBuilder>;
 
-} // namespace stdlib
 } // namespace bb::stdlib

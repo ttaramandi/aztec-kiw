@@ -2,8 +2,6 @@
 #include "barretenberg/ecc/curves/bn254/fr.hpp"
 #include <gtest/gtest.h>
 
-namespace bb::test_pow {
-
 using FF = bb::fr;
 
 TEST(PowPolynomial, FullPowConsistency)
@@ -39,4 +37,3 @@ TEST(PowPolynomial, PowPolynomialsOnPowers)
     auto expected_values = std::vector<FF>{ 1, 2, 4, 8, 16, 32, 64, 128 };
     EXPECT_EQ(expected_values, pow.pow_betas);
 }
-} // namespace bb::test_pow

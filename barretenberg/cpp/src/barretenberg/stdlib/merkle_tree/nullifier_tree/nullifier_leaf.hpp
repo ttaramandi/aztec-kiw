@@ -3,7 +3,6 @@
 #include "barretenberg/serialize/msgpack.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 namespace merkle_tree {
 
 using namespace bb;
@@ -114,5 +113,4 @@ inline std::pair<size_t, bool> find_closest_leaf(std::vector<WrappedNullifierLea
 }
 
 } // namespace merkle_tree
-} // namespace stdlib
 } // namespace bb::stdlib

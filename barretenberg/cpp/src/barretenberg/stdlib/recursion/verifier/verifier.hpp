@@ -15,7 +15,6 @@
 #include "barretenberg/stdlib/recursion/verifier/program_settings.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 namespace recursion {
 
 template <typename Builder> struct lagrange_evaluations {
@@ -430,5 +429,4 @@ aggregation_state<bn254<typename Flavor::CircuitBuilder>> verify_proof(
 }
 
 } // namespace recursion
-} // namespace stdlib
 } // namespace bb::stdlib

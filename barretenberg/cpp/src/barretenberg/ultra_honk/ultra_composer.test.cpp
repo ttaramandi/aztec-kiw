@@ -16,7 +16,7 @@
 #include <string>
 #include <vector>
 
-using namespace bb::honk;
+using namespace bb;
 
 namespace test_ultra_honk_composer {
 

@@ -120,11 +120,10 @@ void pippenger_bench(State& state) noexcept
     for (auto _ : state) {
         const size_t num_points = static_cast<size_t>(state.range(0));
         state.PauseTiming();
-        scalar_multiplication::pippenger_runtime_state<curve::BN254> run_state(num_points);
+        pippenger_runtime_state<curve::BN254> run_state(num_points);
         state.ResumeTiming();
         // uint64_t before = rdtsc();
-        scalar_multiplication::pippenger<curve::BN254>(
-            &globals.scalars[0], &globals.monomials[0], num_points, run_state);
+        pippenger<curve::BN254>(&globals.scalars[0], &globals.monomials[0], num_points, run_state);
         // uint64_t after = rdtsc();
         // count += (after - before);
         // ++i;
@@ -143,11 +142,11 @@ BENCHMARK(pippenger_bench)->RangeMultiplier(2)->Range(START, MAX_GATES)->Unit(be
 //     // uint64_t i = 0;
 //     for (auto _ : state) {
 //         state.PauseTiming();
-//         scalar_multiplication::pippenger_runtime_state<curve::BN254> run_state(num_points);
+//         pippenger_runtime_state<curve::BN254> run_state(num_points);
 //         state.ResumeTiming();
 
 //         // uint64_t before = rdtsc();
-//         scalar_multiplication::pippenger_unsafe(&globals.scalars[0], &globals.monomials[0], num_points, run_state);
+//         pippenger_unsafe(&globals.scalars[0], &globals.monomials[0], num_points, run_state);
 //         // uint64_t after = rdtsc();
 //         // count += (after - before);
 //         // ++i;
@@ -164,28 +163,19 @@ void new_plonk_scalar_multiplications_bench(State& state) noexcept
     uint64_t k = 0;
     for (auto _ : state) {
         state.PauseTiming();
-        scalar_multiplication::pippenger_runtime_state<curve::BN254> run_state(MAX_GATES);
+        pippenger_runtime_state<curve::BN254> run_state(MAX_GATES);
         state.ResumeTiming();
 
         uint64_t before = rdtsc();
-        g1::element a = scalar_multiplication::pippenger<curve::BN254>(
-            &globals.scalars[0], &globals.monomials[0], MAX_GATES, run_state);
-        g1::element b = scalar_multiplication::pippenger<curve::BN254>(
-            &globals.scalars[1], &globals.monomials[0], MAX_GATES, run_state);
-        g1::element c = scalar_multiplication::pippenger<curve::BN254>(
-            &globals.scalars[2], &globals.monomials[0], MAX_GATES, run_state);
-        g1::element d = scalar_multiplication::pippenger<curve::BN254>(
-            &globals.scalars[3], &globals.monomials[0], MAX_GATES, run_state);
-        g1::element e = scalar_multiplication::pippenger<curve::BN254>(
-            &globals.scalars[4], &globals.monomials[0], MAX_GATES, run_state);
-        g1::element f = scalar_multiplication::pippenger<curve::BN254>(
-            &globals.scalars[5], &globals.monomials[0], MAX_GATES, run_state);
-        g1::element g = scalar_multiplication::pippenger<curve::BN254>(
-            &globals.scalars[6], &globals.monomials[0], MAX_GATES, run_state);
-        g1::element h = scalar_multiplication::pippenger<curve::BN254>(
-            &globals.scalars[7], &globals.monomials[0], MAX_GATES, run_state);
-        g1::element i = scalar_multiplication::pippenger<curve::BN254>(
-            &globals.scalars[8], &globals.monomials[0], MAX_GATES, run_state);
+        g1::element a = pippenger<curve::BN254>(&globals.scalars[0], &globals.monomials[0], MAX_GATES, run_state);
+        g1::element b = pippenger<curve::BN254>(&globals.scalars[1], &globals.monomials[0], MAX_GATES, run_state);
+        g1::element c = pippenger<curve::BN254>(&globals.scalars[2], &globals.monomials[0], MAX_GATES, run_state);
+        g1::element d = pippenger<curve::BN254>(&globals.scalars[3], &globals.monomials[0], MAX_GATES, run_state);
+        g1::element e = pippenger<curve::BN254>(&globals.scalars[4], &globals.monomials[0], MAX_GATES, run_state);
+        g1::element f = pippenger<curve::BN254>(&globals.scalars[5], &globals.monomials[0], MAX_GATES, run_state);
+        g1::element g = pippenger<curve::BN254>(&globals.scalars[6], &globals.monomials[0], MAX_GATES, run_state);
+        g1::element h = pippenger<curve::BN254>(&globals.scalars[7], &globals.monomials[0], MAX_GATES, run_state);
+        g1::element i = pippenger<curve::BN254>(&globals.scalars[8], &globals.monomials[0], MAX_GATES, run_state);
         uint64_t after = rdtsc();
         count += (after - before);
         ++k;

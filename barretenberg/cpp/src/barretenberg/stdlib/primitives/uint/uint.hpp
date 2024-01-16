@@ -8,7 +8,6 @@
 #include "./plookup/uint.hpp"
 
 namespace bb::stdlib {
-namespace stdlib {
 
 /**
  * @brief A standard library fixed-width unsigned integer type. Useful, e.g., for hashing.
@@ -201,5 +200,4 @@ template <typename Builder>
 using uint64 =
     typename std::conditional<HasPlookup<Builder>, uint_plookup<Builder, uint64_t>, uint<Builder, uint64_t>>::type;
 
-} // namespace stdlib
 } // namespace bb::stdlib

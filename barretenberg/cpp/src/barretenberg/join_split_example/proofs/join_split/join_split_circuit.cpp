@@ -8,7 +8,7 @@
 #include "barretenberg/stdlib/merkle_tree/membership.hpp"
 #include "verify_signature.hpp"
 
-namespace join_split_example {
+namespace bb::join_split_example {
 namespace proofs {
 namespace join_split {
 
@@ -329,4 +329,4 @@ void join_split_circuit(Builder& builder, join_split_tx const& tx)
 
 } // namespace join_split
 } // namespace proofs
-} // namespace join_split_example
+} // namespace bb::join_split_example
