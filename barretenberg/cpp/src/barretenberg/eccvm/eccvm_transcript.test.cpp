@@ -12,7 +12,7 @@ template <typename Flavor> class ECCVMTranscriptTests : public ::testing::Test {
   public:
     void SetUp() override
     {
-        if constexpr (std::is_same<Flavor, flavor::ECCVM>::value) {
+        if constexpr (std::is_same<Flavor, ECCVMFlavor>::value) {
             bb::srs::init_grumpkin_crs_factory("../srs_db/grumpkin");
         } else {
             bb::srs::init_crs_factory("../srs_db/ignition");
@@ -221,7 +221,7 @@ template <typename Flavor> class ECCVMTranscriptTests : public ::testing::Test {
 
 numeric::random::Engine& engine = numeric::random::get_debug_engine();
 
-using FlavorTypes = testing::Types<flavor::ECCVM>;
+using FlavorTypes = testing::Types<ECCVMFlavor>;
 
 TYPED_TEST_SUITE(ECCVMTranscriptTests, FlavorTypes);
 /**

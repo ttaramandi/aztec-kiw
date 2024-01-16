@@ -35,7 +35,7 @@ template <ECCVMFlavor Flavor> class ECCVMComposer_ {
     bool contains_recursive_proof = false;
     bool computed_witness = false;
     ECCVMComposer_()
-        requires(std::same_as<Flavor, ECCVM>)
+        requires(std::same_as<Flavor, ECCVMFlavor>)
     {
         crs_factory_ = bb::srs::get_grumpkin_crs_factory();
     };
@@ -75,6 +75,6 @@ template <ECCVMFlavor Flavor> class ECCVMComposer_ {
 };
 
 // TODO(#532): this pattern is weird; is this not instantiating the templates?
-using ECCVMComposer = ECCVMComposer_<ECCVM>;
+using ECCVMComposer = ECCVMComposer_<ECCVMFlavor>;
 
 } // namespace bb

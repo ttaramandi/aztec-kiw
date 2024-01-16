@@ -261,7 +261,7 @@ template <typename Tuple, std::size_t Index = 0> static constexpr auto create_tu
 // Forward declare honk flavors
 namespace bb {
 class Ultra;
-class ECCVM;
+class ECCVMFlavor;
 class GoblinUltra;
 template <typename BuilderType> class UltraRecursive_;
 class GoblinUltraRecursive;
@@ -301,7 +301,7 @@ concept IsRecursiveFlavor = IsAnyOf<T, UltraRecursive_<UltraCircuitBuilder>,
                                        UltraRecursive_<GoblinUltraCircuitBuilder>, 
                                        GoblinUltraRecursive>;
 
-template <typename T> concept IsGrumpkinFlavor = IsAnyOf<T, ECCVM>;
+template <typename T> concept IsGrumpkinFlavor = IsAnyOf<T, ECCVMFlavor>;
 
 template <typename T> concept IsFoldingFlavor = IsAnyOf<T, Ultra, GoblinUltra,UltraRecursive_<UltraCircuitBuilder>, 
                                        UltraRecursive_<GoblinUltraCircuitBuilder>, 
@@ -309,7 +309,7 @@ template <typename T> concept IsFoldingFlavor = IsAnyOf<T, Ultra, GoblinUltra,Ul
 
 template <typename T> concept UltraFlavor = IsAnyOf<T, Ultra, GoblinUltra>;
 
-template <typename T> concept ECCVMFlavor = IsAnyOf<T, ECCVM>;
+template <typename T> concept ECCVMFlavor = IsAnyOf<T, ECCVMFlavor>;
 
 template <typename Container, typename Element>
 inline std::string flavor_get_label(Container&& container, const Element& element) {

@@ -796,7 +796,7 @@ template <typename CycleGroup_T, typename Curve_T, typename PCS_T> class ECCVMBa
             if (std::is_same<PCS, KZG<curve::BN254>>::value) {
                 kzg_w_comm = BaseTranscript::template deserialize_from_buffer<Commitment>(BaseTranscript::proof_data,
                                                                                           num_bytes_read);
-            } else if (std::is_same<PCS, bb::ipa::IPA<curve::Grumpkin>>::value) {
+            } else if (std::is_same<PCS, bb::IPA<curve::Grumpkin>>::value) {
                 ipa_poly_degree = BaseTranscript::template deserialize_from_buffer<uint64_t>(BaseTranscript::proof_data,
                                                                                              num_bytes_read);
                 auto log_poly_degree = static_cast<size_t>(numeric::get_msb(ipa_poly_degree));
@@ -909,7 +909,7 @@ template <typename CycleGroup_T, typename Curve_T, typename PCS_T> class ECCVMBa
             BaseTranscript::template serialize_to_buffer(shplonk_q_comm, BaseTranscript::proof_data);
             if (std::is_same<PCS, KZG<curve::BN254>>::value) {
                 BaseTranscript::template serialize_to_buffer(kzg_w_comm, BaseTranscript::proof_data);
-            } else if (std::is_same<PCS, bb::ipa::IPA<curve::Grumpkin>>::value) {
+            } else if (std::is_same<PCS, bb::IPA<curve::Grumpkin>>::value) {
                 BaseTranscript::template serialize_to_buffer(ipa_poly_degree, BaseTranscript::proof_data);
                 auto log_poly_degree = static_cast<size_t>(numeric::get_msb(ipa_poly_degree));
                 for (size_t i = 0; i < log_poly_degree; ++i) {
@@ -924,7 +924,7 @@ template <typename CycleGroup_T, typename Curve_T, typename PCS_T> class ECCVMBa
     };
 };
 
-class ECCVM : public ECCVMBase<bb::g1, curve::Grumpkin, bb::ipa::IPA<curve::Grumpkin>> {};
+class ECCVMFlavor : public ECCVMBase<bb::g1, curve::Grumpkin, bb::IPA<curve::Grumpkin>> {};
 
 // NOLINTEND(cppcoreguidelines-avoid-const-or-ref-data-members)
 

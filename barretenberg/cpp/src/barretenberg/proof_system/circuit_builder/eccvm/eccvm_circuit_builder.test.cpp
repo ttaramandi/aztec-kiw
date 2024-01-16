@@ -13,7 +13,7 @@ namespace eccvm_circuit_builder_tests {
 
 template <typename Flavor> class ECCVMCircuitBuilderTests : public ::testing::Test {};
 
-using FlavorTypes = ::testing::Types<bb::honk::flavor::ECCVM>;
+using FlavorTypes = ::testing::Types<bb::honk::ECCVMFlavor>;
 TYPED_TEST_SUITE(ECCVMCircuitBuilderTests, FlavorTypes);
 
 TYPED_TEST(ECCVMCircuitBuilderTests, BaseCase)
