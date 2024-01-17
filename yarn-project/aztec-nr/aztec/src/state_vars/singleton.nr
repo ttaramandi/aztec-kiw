@@ -101,6 +101,22 @@ impl<Note, N> Singleton<Note, N> {
     }
     // docs:end:replace
 
+    pub fn update<Env>(
+        self, 
+        new_note_builder: fn[Env](Note) -> Note,
+        broadcast: bool
+    ) {
+        let context = self.context.unwrap();
+        let prev_note = get_note(context, self.storage_slot, self.note_interface);
+
+        // Nullify previous note.
+        destroy_note(context, prev_note, self.note_interface);
+
+        let mut new_note = new_note_builder(prev_note);
+
+        create_note(context, self.storage_slot, &mut new_note, self.note_interface, broadcast);
+    }
+
     // docs:start:get_note
     pub fn get_note(self, broadcast: bool) -> Note {
         let context = self.context.unwrap();
