@@ -14,9 +14,7 @@
 #include "barretenberg/stdlib/recursion/transcript/transcript.hpp"
 #include "barretenberg/stdlib/recursion/verifier/program_settings.hpp"
 
-namespace proof_system::plonk {
-namespace stdlib {
-namespace recursion {
+namespace proof_system::plonk::stdlib::recursion {
 
 template <typename Builder> struct lagrange_evaluations {
     field_t<Builder> l_start;
@@ -429,6 +427,4 @@ aggregation_state<bn254<typename Flavor::CircuitBuilder>> verify_proof(
         context, key, manifest, proof, previous_output);
 }
 
-} // namespace recursion
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib::recursion

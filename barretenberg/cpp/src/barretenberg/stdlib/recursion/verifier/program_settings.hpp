@@ -3,9 +3,7 @@
 #include "barretenberg/plonk/proof_system/types/program_settings.hpp"
 #include "barretenberg/stdlib/recursion/transcript/transcript.hpp"
 
-namespace proof_system::plonk {
-namespace stdlib {
-namespace recursion {
+namespace proof_system::plonk::stdlib::recursion {
 
 template <typename Curve> class recursive_ultra_verifier_settings : public plonk::ultra_verifier_settings {
   public:
@@ -105,6 +103,4 @@ class recursive_ultra_to_standard_verifier_settings : public recursive_ultra_ver
     static constexpr transcript::HashType hash_type = transcript::HashType::PedersenBlake3s;
 };
 
-} // namespace recursion
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib::recursion

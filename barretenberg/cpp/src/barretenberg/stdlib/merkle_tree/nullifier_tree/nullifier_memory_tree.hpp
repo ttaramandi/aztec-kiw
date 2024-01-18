@@ -3,9 +3,7 @@
 #include "../memory_tree.hpp"
 #include "nullifier_leaf.hpp"
 
-namespace proof_system::plonk {
-namespace stdlib {
-namespace merkle_tree {
+namespace proof_system::plonk::stdlib::merkle_tree {
 
 using namespace bb;
 
@@ -93,6 +91,4 @@ class NullifierMemoryTree : public MemoryTree {
     std::vector<WrappedNullifierLeaf> leaves_;
 };
 
-} // namespace merkle_tree
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib::merkle_tree

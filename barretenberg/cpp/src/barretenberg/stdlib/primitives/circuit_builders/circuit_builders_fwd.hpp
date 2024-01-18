@@ -9,12 +9,10 @@ construction in stdlib and contains macros for explicit instantiation.
 #pragma once
 #include <concepts>
 
-namespace proof_system::honk {
-namespace flavor {
+namespace proof_system::honk::flavor {
 class Standard;
 class Ultra;
-} // namespace flavor
-} // namespace proof_system::honk
+} // namespace proof_system::honk::flavor
 
 namespace bb {
 class Bn254FrParams;
