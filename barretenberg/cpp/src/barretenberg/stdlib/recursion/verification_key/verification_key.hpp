@@ -15,7 +15,7 @@
 #include "barretenberg/stdlib/hash/pedersen/pedersen.hpp"
 #include <map>
 
-namespace proof_system::plonk::stdlib::recursion {
+namespace bb::stdlib {
 
 /**
  * @brief Constructs a packed buffer of field elements to be fed into a Pedersen hash function
@@ -439,7 +439,7 @@ template <typename Curve> struct verification_key {
 
     // Native data:
 
-    std::shared_ptr<bb::srs::factories::VerifierCrs<curve::BN254>> reference_string;
+    std::shared_ptr<bb::srs::VerifierCrs<curve::BN254>> reference_string;
 
     PolynomialManifest polynomial_manifest;
     // Used to check in the circuit if a proof contains any aggregated state.
@@ -449,4 +449,4 @@ template <typename Curve> struct verification_key {
     Builder* context;
 };
 
-} // namespace proof_system::plonk::stdlib::recursion
+} // namespace bb::stdlib

@@ -11,10 +11,9 @@
 #include "barretenberg/plonk/work_queue/work_queue.hpp"
 #include "barretenberg/polynomials/iterate_over_domain.hpp"
 
-using namespace proof_system;
-namespace proof_system::plonk {
-
-namespace widget {
+using namespace bb;
+;
+namespace bb::plonk::widget {
 enum ChallengeIndex {
     ALPHA,
     BETA,
@@ -377,5 +376,4 @@ class GenericVerifierWidget {
         return EvaluationGetter::update_alpha(challenges, num_independent_relations);
     }
 };
-} // namespace widget
-} // namespace proof_system::plonk
+} // namespace bb::plonk::widget

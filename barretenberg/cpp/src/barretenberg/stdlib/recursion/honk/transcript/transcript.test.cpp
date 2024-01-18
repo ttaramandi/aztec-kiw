@@ -8,13 +8,13 @@
 #include "barretenberg/stdlib/recursion/honk/transcript/transcript.hpp"
 #include "barretenberg/transcript/transcript.hpp"
 
-namespace proof_system::plonk::stdlib::recursion::honk {
+namespace bb::stdlib {
 
 using Builder = UltraCircuitBuilder;
-using UltraFlavor = ::proof_system::honk::flavor::Ultra;
-using UltraRecursiveFlavor = ::proof_system::honk::flavor::UltraRecursive_<Builder>;
+using IsUltraFlavor = Ultra;
+using UltraRecursiveFlavor = UltraRecursive_<Builder>;
 using FF = bb::fr;
-using BaseTranscript = ::proof_system::honk::BaseTranscript;
+using BaseTranscript = ::BaseTranscript;
 
 /**
  * @brief Create some mock data; add it to the provided prover transcript in various mock rounds
@@ -97,11 +97,11 @@ TEST(RecursiveHonkTranscript, InterfacesMatch)
 
     // Instantiate a Prover Transcript and use it to generate some mock proof data
     BaseTranscript prover_transcript;
-    auto proof_data = generate_mock_proof_data<UltraFlavor, LENGTH>(prover_transcript);
+    auto proof_data = generate_mock_proof_data<IsUltraFlavor, LENGTH>(prover_transcript);
 
     // Instantiate a (native) Verifier Transcript with the proof data and perform some mock transcript operations
     BaseTranscript native_transcript(proof_data);
-    perform_mock_verifier_transcript_operations<UltraFlavor, LENGTH>(native_transcript);
+    perform_mock_verifier_transcript_operations<IsUltraFlavor, LENGTH>(native_transcript);
 
     // Confirm that Prover and Verifier transcripts have generated the same manifest via the operations performed
     EXPECT_EQ(prover_transcript.get_manifest(), native_transcript.get_manifest());
@@ -176,4 +176,4 @@ TEST(RecursiveHonkTranscript, ReturnValuesMatch)
     EXPECT_EQ(static_cast<FF>(native_alpha), stdlib_alpha.get_value());
     EXPECT_EQ(static_cast<FF>(native_beta), stdlib_beta.get_value());
 }
-} // namespace proof_system::plonk::stdlib::recursion::honk
+} // namespace bb::stdlib

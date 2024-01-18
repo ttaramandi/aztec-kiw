@@ -2,7 +2,7 @@
 
 #include "./eccvm_builder_types.hpp"
 
-namespace proof_system {
+namespace bb {
 
 template <typename Flavor> class ECCVMTranscriptBuilder {
   public:
@@ -184,4 +184,4 @@ template <typename Flavor> class ECCVMTranscriptBuilder {
         return transcript_state;
     }
 };
-} // namespace proof_system
+} // namespace bb

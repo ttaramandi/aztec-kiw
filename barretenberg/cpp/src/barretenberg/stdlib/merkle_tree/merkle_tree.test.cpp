@@ -5,12 +5,10 @@
 #include "memory_store.hpp"
 #include "memory_tree.hpp"
 
-namespace proof_system::test_stdlib_merkle_tree {
+using namespace bb::stdlib;
+using namespace bb::stdlib;
 
-using namespace proof_system::plonk::stdlib;
-using namespace proof_system::plonk::stdlib::merkle_tree;
-
-using Builder = proof_system::UltraCircuitBuilder;
+using Builder = bb::UltraCircuitBuilder;
 
 using field_ct = field_t<Builder>;
 using witness_ct = witness_t<Builder>;
@@ -184,4 +182,3 @@ TEST(stdlib_merkle_tree, test_get_sibling_path_layers)
         EXPECT_NE(before[2], after[2]);
     }
 }
-} // namespace proof_system::test_stdlib_merkle_tree

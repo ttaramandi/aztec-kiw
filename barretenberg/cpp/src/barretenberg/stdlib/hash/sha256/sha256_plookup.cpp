@@ -2,6 +2,7 @@
 
 #include "barretenberg/proof_system/plookup_tables/plookup_tables.hpp"
 #include "barretenberg/proof_system/plookup_tables/sha256.hpp"
+#include "barretenberg/proof_system/ultra_circuit_builder.hpp"
 #include "barretenberg/stdlib/primitives/bit_array/bit_array.hpp"
 #include "barretenberg/stdlib/primitives/field/field.hpp"
 #include "barretenberg/stdlib/primitives/plookup/plookup.hpp"
@@ -9,8 +10,7 @@
 
 using namespace bb;
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace bb::stdlib {
 namespace sha256_plookup {
 
 using namespace plookup;
@@ -363,10 +363,8 @@ template <typename Builder> packed_byte_array<Builder> sha256(const packed_byte_
     return packed_byte_array<Builder>(output, 4);
 }
 
-template packed_byte_array<proof_system::UltraCircuitBuilder> sha256(
-    const packed_byte_array<proof_system::UltraCircuitBuilder>& input);
-template packed_byte_array<proof_system::GoblinUltraCircuitBuilder> sha256(
-    const packed_byte_array<proof_system::GoblinUltraCircuitBuilder>& input);
+template packed_byte_array<bb::UltraCircuitBuilder> sha256(const packed_byte_array<bb::UltraCircuitBuilder>& input);
+template packed_byte_array<bb::GoblinUltraCircuitBuilder> sha256(
+    const packed_byte_array<bb::GoblinUltraCircuitBuilder>& input);
 } // namespace sha256_plookup
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::stdlib

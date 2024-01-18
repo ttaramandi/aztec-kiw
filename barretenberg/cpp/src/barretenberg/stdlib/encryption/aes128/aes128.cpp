@@ -7,14 +7,12 @@
 #include "barretenberg/stdlib/primitives/circuit_builders/circuit_builders.hpp"
 #include "barretenberg/stdlib/primitives/plookup/plookup.hpp"
 
-using namespace crypto::aes128;
 using namespace bb;
 
-namespace proof_system::plonk {
-namespace stdlib {
-namespace aes128 {
+namespace {
 template <typename Builder> using byte_pair = std::pair<field_t<Builder>, field_t<Builder>>;
 using namespace plookup;
+using namespace bb::stdlib;
 
 constexpr uint32_t AES128_BASE = 9;
 
@@ -255,11 +253,14 @@ void aes128_cipher(Builder* ctx, byte_pair<Builder>* state, field_t<Builder>* sp
     shift_rows(state);
     add_round_key(state, sparse_round_key, 10);
 }
+} // namespace
+
+namespace bb::stdlib {
 
 template <typename Builder>
-std::vector<field_t<Builder>> encrypt_buffer_cbc(const std::vector<field_t<Builder>>& input,
-                                                 const field_t<Builder>& iv,
-                                                 const field_t<Builder>& key)
+std::vector<field_t<Builder>> aes128_encrypt_buffer_cbc(const std::vector<field_t<Builder>>& input,
+                                                        const field_t<Builder>& iv,
+                                                        const field_t<Builder>& key)
 {
     Builder* ctx = key.get_context();
 
@@ -299,11 +300,9 @@ std::vector<field_t<Builder>> encrypt_buffer_cbc(const std::vector<field_t<Build
     return output;
 }
 #define INSTANTIATE_ENCRYPT_BUFFER_CBC(Builder)                                                                        \
-    template std::vector<field_t<Builder>> encrypt_buffer_cbc<Builder>(                                                \
+    template std::vector<field_t<Builder>> stdlib_aes128_encrypt_buffer_cbc<Builder>(                                  \
         const std::vector<field_t<Builder>>&, const field_t<Builder>&, const field_t<Builder>&)
 
-INSTANTIATE_ENCRYPT_BUFFER_CBC(proof_system::UltraCircuitBuilder);
-INSTANTIATE_ENCRYPT_BUFFER_CBC(proof_system::GoblinUltraCircuitBuilder);
-} // namespace aes128
-} // namespace stdlib
-} // namespace proof_system::plonk
+INSTANTIATE_ENCRYPT_BUFFER_CBC(bb::UltraCircuitBuilder);
+INSTANTIATE_ENCRYPT_BUFFER_CBC(bb::GoblinUltraCircuitBuilder);
+} // namespace bb::stdlib

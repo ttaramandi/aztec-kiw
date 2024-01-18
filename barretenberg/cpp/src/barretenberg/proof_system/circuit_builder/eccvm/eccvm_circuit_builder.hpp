@@ -12,7 +12,7 @@
 #include "barretenberg/proof_system/op_queue/ecc_op_queue.hpp"
 #include "barretenberg/relations/relation_parameters.hpp"
 
-namespace proof_system {
+namespace bb {
 
 template <typename Flavor> class ECCVMCircuitBuilder {
   public:
@@ -492,7 +492,7 @@ template <typename Flavor> class ECCVMCircuitBuilder {
         auto eccvm_set_permutation_delta =
             gamma * (gamma + beta_sqr) * (gamma + beta_sqr + beta_sqr) * (gamma + beta_sqr + beta_sqr + beta_sqr);
         eccvm_set_permutation_delta = eccvm_set_permutation_delta.invert();
-        proof_system::RelationParameters<typename Flavor::FF> params{
+        bb::RelationParameters<typename Flavor::FF> params{
             .eta = 0,
             .beta = beta,
             .gamma = gamma,
@@ -505,9 +505,8 @@ template <typename Flavor> class ECCVMCircuitBuilder {
 
         auto polynomials = compute_polynomials();
         const size_t num_rows = polynomials.get_polynomial_size();
-        proof_system::honk::logderivative_library::
-            compute_logderivative_inverse<Flavor, honk::sumcheck::ECCVMLookupRelation<FF>>(
-                polynomials, params, num_rows);
+        bb::honk::logderivative_library::compute_logderivative_inverse<Flavor, honk::sumcheck::ECCVMLookupRelation<FF>>(
+            polynomials, params, num_rows);
 
         honk::permutation_library::compute_permutation_grand_product<Flavor, honk::sumcheck::ECCVMSetRelation<FF>>(
             num_rows, polynomials, params);
@@ -599,4 +598,4 @@ template <typename Flavor> class ECCVMCircuitBuilder {
         return num_rows_pow2;
     }
 };
-} // namespace proof_system
+} // namespace bb

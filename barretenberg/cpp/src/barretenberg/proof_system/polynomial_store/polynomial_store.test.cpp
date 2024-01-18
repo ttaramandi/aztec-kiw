@@ -4,7 +4,7 @@
 #include "barretenberg/polynomials/polynomial.hpp"
 #include "polynomial_store.hpp"
 
-namespace proof_system {
+namespace {
 
 using namespace bb;
 using Fr = bb::fr;
@@ -90,4 +90,4 @@ TEST(PolynomialStore, Remove)
     EXPECT_EQ(polynomial_store.get_size_in_bytes(), bytes_expected);
 }
 
-} // namespace proof_system
+} // namespace

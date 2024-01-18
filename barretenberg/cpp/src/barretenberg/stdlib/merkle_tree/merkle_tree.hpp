@@ -2,8 +2,7 @@
 #include "barretenberg/stdlib/primitives/field/field.hpp"
 #include "hash_path.hpp"
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace bb::stdlib {
 namespace merkle_tree {
 
 using namespace bb;
@@ -98,5 +97,4 @@ template <typename Store> class MerkleTree {
 };
 
 } // namespace merkle_tree
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::stdlib

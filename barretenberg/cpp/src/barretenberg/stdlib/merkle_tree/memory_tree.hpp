@@ -1,8 +1,7 @@
 #pragma once
 #include "hash_path.hpp"
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace bb::stdlib {
 namespace merkle_tree {
 
 using namespace bb;
@@ -44,5 +43,4 @@ class MemoryTree {
 };
 
 } // namespace merkle_tree
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::stdlib

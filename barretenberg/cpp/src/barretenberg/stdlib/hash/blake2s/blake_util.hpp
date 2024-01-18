@@ -4,8 +4,7 @@
 #include "barretenberg/stdlib/primitives/plookup/plookup.hpp"
 #include "barretenberg/stdlib/primitives/uint/uint.hpp"
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace bb::stdlib {
 
 namespace blake_util {
 
@@ -254,5 +253,4 @@ void round_fn_lookup(field_t<Builder> state[BLAKE3_STATE_SIZE],
 
 } // namespace blake_util
 
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::stdlib

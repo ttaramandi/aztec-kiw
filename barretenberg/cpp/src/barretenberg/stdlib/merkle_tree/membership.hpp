@@ -4,11 +4,10 @@
 #include "barretenberg/stdlib/primitives/field/field.hpp"
 #include "hash_path.hpp"
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace bb::stdlib {
 namespace merkle_tree {
 
-template <typename Builder> using bit_vector = std::vector<bool_t<Builder>>;
+template <typename Builder> using bit_vector = ::std::vector<bool_t<Builder>>;
 /**
  * Computes the new merkle root if the subtree is correctly inserted at a specified index in a Merkle tree.
  *
@@ -317,5 +316,4 @@ void batch_update_membership(field_t<Builder> const& new_root,
 }
 
 } // namespace merkle_tree
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::stdlib

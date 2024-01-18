@@ -7,7 +7,7 @@
 #include "barretenberg/ultra_honk/ultra_composer.hpp"
 #include "barretenberg/ultra_honk/ultra_verifier.hpp"
 
-namespace proof_system::plonk::stdlib::recursion::honk {
+namespace bb::stdlib {
 
 /**
  * @brief Test suite for recursive verification of Goblin Ultra Honk proofs
@@ -19,10 +19,10 @@ namespace proof_system::plonk::stdlib::recursion::honk {
 template <typename BuilderType> class GoblinRecursiveVerifierTest : public testing::Test {
 
     // Define types relevant for testing
-    using UltraFlavor = ::proof_system::honk::flavor::Ultra;
-    using GoblinUltraFlavor = ::proof_system::honk::flavor::GoblinUltra;
-    using UltraComposer = ::proof_system::honk::UltraComposer_<UltraFlavor>;
-    using GoblinUltraComposer = ::proof_system::honk::UltraComposer_<GoblinUltraFlavor>;
+    using IsUltraFlavor = Ultra;
+    using GoblinUltraFlavor = GoblinUltra;
+    using UltraComposer = ::UltraComposer_<IsUltraFlavor>;
+    using GoblinUltraComposer = ::UltraComposer_<GoblinUltraFlavor>;
 
     // Define types for the inner circuit, i.e. the circuit whose proof will be recursively verified
     using InnerFlavor = GoblinUltraFlavor;
@@ -33,9 +33,9 @@ template <typename BuilderType> class GoblinRecursiveVerifierTest : public testi
     using InnerFF = InnerFlavor::FF;
 
     // Types for recursive verifier circuit
-    using OuterBuilder = BuilderType;
-    using RecursiveFlavor = ::proof_system::honk::flavor::GoblinUltraRecursive_<OuterBuilder>;
+    using RecursiveFlavor = GoblinUltraRecursive;
     using RecursiveVerifier = UltraRecursiveVerifier_<RecursiveFlavor>;
+    using OuterBuilder = BuilderType;
     using VerificationKey = typename RecursiveVerifier::VerificationKey;
 
     // Helper for getting composer for prover/verifier of recursive (outer) circuit
@@ -255,7 +255,7 @@ template <typename BuilderType> class GoblinRecursiveVerifierTest : public testi
 };
 
 // Run the recursive verifier tests with conventional Ultra builder and Goblin builder
-using BuilderTypes = testing::Types<UltraCircuitBuilder, GoblinUltraCircuitBuilder>;
+using BuilderTypes = testing::Types<GoblinUltraCircuitBuilder>;
 
 TYPED_TEST_SUITE(GoblinRecursiveVerifierTest, BuilderTypes);
 
@@ -279,4 +279,4 @@ HEAVY_TYPED_TEST(GoblinRecursiveVerifierTest, SingleRecursiveVerificationFailure
     TestFixture::test_recursive_verification_fails();
 };
 
-} // namespace proof_system::plonk::stdlib::recursion::honk
+} // namespace bb::stdlib

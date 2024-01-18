@@ -3,8 +3,7 @@
 #include "../memory_tree.hpp"
 #include "nullifier_leaf.hpp"
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace bb::stdlib {
 namespace merkle_tree {
 
 using namespace bb;
@@ -94,5 +93,4 @@ class NullifierMemoryTree : public MemoryTree {
 };
 
 } // namespace merkle_tree
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::stdlib

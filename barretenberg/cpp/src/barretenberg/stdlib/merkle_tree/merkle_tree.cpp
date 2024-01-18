@@ -8,8 +8,7 @@
 #include <iostream>
 #include <sstream>
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace bb::stdlib {
 namespace merkle_tree {
 
 using namespace bb;
@@ -354,5 +353,4 @@ template <typename Store> void MerkleTree<Store>::remove(fr const& key)
 template class MerkleTree<MemoryStore>;
 
 } // namespace merkle_tree
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace bb::stdlib
