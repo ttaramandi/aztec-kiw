@@ -7,8 +7,7 @@ namespace proof_system::plonk {
 class UltraPlonkBuilder;
 } // namespace proof_system::plonk
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace proof_system::plonk::stdlib {
 
 using plookup::ColumnIdx;
 using plookup::MultiTableId;
@@ -93,5 +92,4 @@ field_t<Builder> plookup_read<Builder>::read_from_1_to_2_table(const MultiTableI
 
 template class plookup_read<proof_system::UltraCircuitBuilder>;
 template class plookup_read<proof_system::GoblinUltraCircuitBuilder>;
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib

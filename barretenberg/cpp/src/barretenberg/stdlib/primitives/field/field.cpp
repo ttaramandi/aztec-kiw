@@ -6,8 +6,7 @@
 
 using namespace proof_system;
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace proof_system::plonk::stdlib {
 
 template <typename Builder>
 field_t<Builder>::field_t(Builder* parent_context)
@@ -1144,5 +1143,4 @@ template class field_t<proof_system::StandardCircuitBuilder>;
 template class field_t<proof_system::UltraCircuitBuilder>;
 template class field_t<proof_system::GoblinUltraCircuitBuilder>;
 
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib

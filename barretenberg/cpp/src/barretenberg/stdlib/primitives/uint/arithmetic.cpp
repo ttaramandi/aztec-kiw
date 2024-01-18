@@ -4,8 +4,7 @@
 using namespace bb;
 using namespace proof_system;
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace proof_system::plonk::stdlib {
 
 /**
  * @brief Return a uint which, if range constrained, would be proven to be the sum of `self` and `other`.
@@ -396,5 +395,4 @@ template class uint<proof_system::StandardCircuitBuilder, uint16_t>;
 template class uint<proof_system::StandardCircuitBuilder, uint32_t>;
 template class uint<proof_system::StandardCircuitBuilder, uint64_t>;
 
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib

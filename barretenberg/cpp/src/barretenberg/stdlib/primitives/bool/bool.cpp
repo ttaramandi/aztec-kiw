@@ -4,8 +4,7 @@
 using namespace bb;
 using namespace proof_system;
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace proof_system::plonk::stdlib {
 
 template <typename Builder>
 bool_t<Builder>::bool_t(const bool value)
@@ -552,5 +551,4 @@ template class bool_t<proof_system::StandardCircuitBuilder>;
 template class bool_t<proof_system::UltraCircuitBuilder>;
 template class bool_t<proof_system::GoblinUltraCircuitBuilder>;
 
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib

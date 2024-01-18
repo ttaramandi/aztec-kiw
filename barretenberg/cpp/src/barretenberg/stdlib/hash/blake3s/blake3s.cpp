@@ -3,10 +3,7 @@
 #include "barretenberg/stdlib/primitives/uint/uint.hpp"
 #include "blake3s_plookup.hpp"
 
-namespace proof_system::plonk {
-namespace stdlib {
-
-namespace blake3_internal {
+namespace proof_system::plonk::stdlib::blake3_internal {
 
 /*
  * Constants and more.
@@ -235,8 +232,6 @@ template <typename Builder> void blake3_hasher_finalize(const blake3_hasher<Buil
     return;
 }
 
-} // namespace blake3_internal
-
 using namespace blake3_internal;
 
 template <typename Builder> byte_array<Builder> blake3s(const byte_array<Builder>& input)
@@ -260,5 +255,4 @@ template byte_array<proof_system::UltraCircuitBuilder> blake3s(
     const byte_array<proof_system::UltraCircuitBuilder>& input);
 template byte_array<proof_system::GoblinUltraCircuitBuilder> blake3s(
     const byte_array<proof_system::GoblinUltraCircuitBuilder>& input);
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib::blake3_internal

@@ -9,13 +9,9 @@
 
 using namespace bb;
 
-namespace proof_system::plonk {
-namespace stdlib {
-namespace sha256_plookup {
+namespace proof_system::plonk::stdlib::sha256_plookup::internal {
 
 using namespace plookup;
-
-namespace internal {
 
 constexpr size_t get_num_blocks(const size_t num_bits)
 {
@@ -23,7 +19,6 @@ constexpr size_t get_num_blocks(const size_t num_bits)
 
     return ((num_bits + extra_bits) / 512UL) + ((num_bits + extra_bits) % 512UL > 0);
 }
-} // namespace internal
 
 template <typename Builder> void prepare_constants(std::array<field_t<Builder>, 8>& input)
 {
@@ -367,6 +362,4 @@ template packed_byte_array<proof_system::UltraCircuitBuilder> sha256(
     const packed_byte_array<proof_system::UltraCircuitBuilder>& input);
 template packed_byte_array<proof_system::GoblinUltraCircuitBuilder> sha256(
     const packed_byte_array<proof_system::GoblinUltraCircuitBuilder>& input);
-} // namespace sha256_plookup
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib::sha256_plookup::internal

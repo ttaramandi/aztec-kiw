@@ -3,9 +3,7 @@
 #include "barretenberg/stdlib/primitives/circuit_builders/circuit_builders.hpp"
 #include "sha256_plookup.hpp"
 
-namespace proof_system::plonk {
-namespace stdlib {
-namespace internal {
+namespace proof_system::plonk::stdlib::internal {
 constexpr uint32_t init_constants[8]{ 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
                                       0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19 };
 
@@ -26,7 +24,6 @@ constexpr size_t get_num_blocks(const size_t num_bits)
 
     return ((num_bits + extra_bits) / 512UL) + ((num_bits + extra_bits) % 512UL > 0);
 }
-} // namespace internal
 
 template <typename Builder> void prepare_constants(std::array<uint32<Builder>, 8>& input)
 {
@@ -191,5 +188,4 @@ template packed_byte_array<proof_system::UltraCircuitBuilder> sha256(
     const packed_byte_array<proof_system::UltraCircuitBuilder>& input);
 template packed_byte_array<proof_system::GoblinUltraCircuitBuilder> sha256(
     const packed_byte_array<proof_system::GoblinUltraCircuitBuilder>& input);
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib::internal

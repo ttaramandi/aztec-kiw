@@ -3,8 +3,7 @@
 
 using namespace bb;
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace proof_system::plonk::stdlib {
 
 template <typename Builder, typename Native>
 std::vector<uint32_t> uint_plookup<Builder, Native>::constrain_accumulators(Builder* context,
@@ -249,5 +248,4 @@ template class uint_plookup<proof_system::GoblinUltraCircuitBuilder, uint32_t>;
 template class uint_plookup<proof_system::UltraCircuitBuilder, uint64_t>;
 template class uint_plookup<proof_system::GoblinUltraCircuitBuilder, uint64_t>;
 
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib

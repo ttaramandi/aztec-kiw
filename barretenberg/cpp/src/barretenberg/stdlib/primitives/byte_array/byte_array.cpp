@@ -6,8 +6,7 @@
 
 using namespace bb;
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace proof_system::plonk::stdlib {
 
 // ULTRA: Further merging with
 
@@ -384,5 +383,4 @@ template class byte_array<proof_system::StandardCircuitBuilder>;
 template class byte_array<proof_system::UltraCircuitBuilder>;
 template class byte_array<proof_system::GoblinUltraCircuitBuilder>;
 
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib

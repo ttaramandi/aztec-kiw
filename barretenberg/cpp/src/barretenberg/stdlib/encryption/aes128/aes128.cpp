@@ -10,9 +10,7 @@
 using namespace crypto::aes128;
 using namespace bb;
 
-namespace proof_system::plonk {
-namespace stdlib {
-namespace aes128 {
+namespace proof_system::plonk::stdlib::aes128 {
 template <typename Builder> using byte_pair = std::pair<field_t<Builder>, field_t<Builder>>;
 using namespace plookup;
 
@@ -304,6 +302,4 @@ std::vector<field_t<Builder>> encrypt_buffer_cbc(const std::vector<field_t<Build
 
 INSTANTIATE_ENCRYPT_BUFFER_CBC(proof_system::UltraCircuitBuilder);
 INSTANTIATE_ENCRYPT_BUFFER_CBC(proof_system::GoblinUltraCircuitBuilder);
-} // namespace aes128
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib::aes128

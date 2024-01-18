@@ -4,8 +4,7 @@
 using namespace bb;
 using namespace proof_system;
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace proof_system::plonk::stdlib {
 
 template <typename Builder, typename Native>
 uint_plookup<Builder, Native> uint_plookup<Builder, Native>::operator+(const uint_plookup& other) const
@@ -265,5 +264,4 @@ template class uint_plookup<proof_system::GoblinUltraCircuitBuilder, uint32_t>;
 template class uint_plookup<proof_system::UltraCircuitBuilder, uint64_t>;
 template class uint_plookup<proof_system::GoblinUltraCircuitBuilder, uint64_t>;
 ;
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib

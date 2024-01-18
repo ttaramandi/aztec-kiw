@@ -3,8 +3,7 @@
 
 #include <bitset>
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace proof_system::plonk::stdlib {
 
 template <typename Builder>
 bit_array<Builder>::bit_array(Builder* parent_context, const size_t n)
@@ -161,5 +160,4 @@ template class bit_array<proof_system::StandardCircuitBuilder>;
 template class bit_array<proof_system::UltraCircuitBuilder>;
 template class bit_array<proof_system::GoblinUltraCircuitBuilder>;
 
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib

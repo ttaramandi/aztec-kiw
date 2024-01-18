@@ -7,10 +7,7 @@
 #include "barretenberg/stdlib/primitives/plookup/plookup.hpp"
 #include "barretenberg/stdlib/primitives/uint/uint.hpp"
 
-namespace proof_system::plonk {
-namespace stdlib {
-
-namespace blake3s_plookup {
+namespace proof_system::plonk::stdlib::blake3s_plookup {
 
 using namespace blake_util;
 
@@ -264,7 +261,5 @@ template byte_array<proof_system::UltraCircuitBuilder> blake3s(
     const byte_array<proof_system::UltraCircuitBuilder>& input);
 template byte_array<proof_system::GoblinUltraCircuitBuilder> blake3s(
     const byte_array<proof_system::GoblinUltraCircuitBuilder>& input);
-} // namespace blake3s_plookup
 
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib::blake3s_plookup

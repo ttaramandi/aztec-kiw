@@ -15,10 +15,7 @@
  * 2. replace use of uint32 with basic field_t type
  *
  **/
-namespace proof_system::plonk {
-namespace stdlib {
-
-namespace blake2s_plookup {
+namespace proof_system::plonk::stdlib::blake2s_plookup {
 
 using plookup::ColumnIdx;
 using namespace blake_util;
@@ -171,7 +168,4 @@ template byte_array<proof_system::UltraCircuitBuilder> blake2s(
 template byte_array<proof_system::GoblinUltraCircuitBuilder> blake2s(
     const byte_array<proof_system::GoblinUltraCircuitBuilder>& input);
 
-} // namespace blake2s_plookup
-
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib::blake2s_plookup

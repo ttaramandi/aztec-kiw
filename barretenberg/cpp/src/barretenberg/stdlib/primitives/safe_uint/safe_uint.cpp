@@ -3,8 +3,7 @@
 #include "../circuit_builders/circuit_builders.hpp"
 #include "barretenberg/ecc/curves/grumpkin/grumpkin.hpp"
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace proof_system::plonk::stdlib {
 
 template <typename Builder>
 
@@ -243,5 +242,4 @@ template class safe_uint_t<proof_system::StandardCircuitBuilder>;
 template class safe_uint_t<proof_system::UltraCircuitBuilder>;
 template class safe_uint_t<proof_system::GoblinUltraCircuitBuilder>;
 
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib

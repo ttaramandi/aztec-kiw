@@ -4,8 +4,7 @@
 
 using namespace bb;
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace proof_system::plonk::stdlib {
 
 namespace {
 template <typename Builder> Builder* get_context_from_fields(const std::vector<field_t<Builder>>& input)
@@ -17,7 +16,6 @@ template <typename Builder> Builder* get_context_from_fields(const std::vector<f
     }
     return nullptr;
 }
-} // namespace
 
 template <typename Builder>
 packed_byte_array<Builder>::packed_byte_array(Builder* parent_context, const size_t n)
@@ -270,5 +268,4 @@ template class packed_byte_array<proof_system::StandardCircuitBuilder>;
 template class packed_byte_array<proof_system::UltraCircuitBuilder>;
 template class packed_byte_array<proof_system::GoblinUltraCircuitBuilder>;
 
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib

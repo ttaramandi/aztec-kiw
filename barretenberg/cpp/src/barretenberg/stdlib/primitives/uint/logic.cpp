@@ -4,8 +4,7 @@
 using namespace bb;
 using namespace proof_system;
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace proof_system::plonk::stdlib {
 
 template <typename Builder, typename Native>
 uint<Builder, Native> uint<Builder, Native>::operator&(const uint& other) const
@@ -528,5 +527,4 @@ template class uint<proof_system::StandardCircuitBuilder, uint16_t>;
 template class uint<proof_system::StandardCircuitBuilder, uint32_t>;
 template class uint<proof_system::StandardCircuitBuilder, uint64_t>;
 
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib

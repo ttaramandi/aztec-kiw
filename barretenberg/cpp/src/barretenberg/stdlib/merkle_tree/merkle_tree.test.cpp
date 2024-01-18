@@ -17,7 +17,6 @@ using witness_ct = witness_t<Builder>;
 namespace {
 auto& engine = numeric::random::get_debug_engine();
 auto& random_engine = numeric::random::get_engine();
-} // namespace
 
 static std::vector<fr> VALUES = []() {
     std::vector<fr> values(1024);

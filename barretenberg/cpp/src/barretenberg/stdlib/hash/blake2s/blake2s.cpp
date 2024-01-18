@@ -3,8 +3,7 @@
 #include "blake2s_plookup.hpp"
 #include "blake_util.hpp"
 
-namespace proof_system::plonk {
-namespace stdlib {
+namespace proof_system::plonk::stdlib {
 
 namespace {
 constexpr uint32_t blake2s_IV[8] = { 0x6A09E667UL, 0xBB67AE85UL, 0x3C6EF372UL, 0xA54FF53AUL,
@@ -112,8 +111,6 @@ template <typename Builder> void blake2s(blake2s_state<Builder>& S, byte_array<B
     blake2s_compress(S, final);
 }
 
-} // namespace
-
 template <typename Builder> byte_array<Builder> blake2s(const byte_array<Builder>& input)
 {
     if constexpr (HasPlookup<Builder>) {
@@ -143,5 +140,4 @@ template byte_array<proof_system::UltraCircuitBuilder> blake2s(
 template byte_array<proof_system::GoblinUltraCircuitBuilder> blake2s(
     const byte_array<proof_system::GoblinUltraCircuitBuilder>& input);
 
-} // namespace stdlib
-} // namespace proof_system::plonk
+} // namespace proof_system::plonk::stdlib

@@ -53,7 +53,6 @@ transcript::Manifest create_manifest(const size_t num_public_inputs)
               { { "PI_Z", g1_size, false }, { "PI_Z_OMEGA", g1_size, false } }, "separator", 1) });
     return output;
 }
-} // namespace
 
 struct TestData {
     std::vector<bb::g1::affine_element> g1_elements;
