@@ -11,7 +11,7 @@
 
 using namespace bb;
 using namespace bb;
-;
+
 using namespace bb::plonk;
 
 namespace bb::plonk::test_ultra_plonk_composer {

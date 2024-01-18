@@ -12,7 +12,7 @@
 #include "barretenberg/polynomials/iterate_over_domain.hpp"
 
 using namespace bb;
-;
+
 namespace bb::plonk::widget {
 enum ChallengeIndex {
     ALPHA,

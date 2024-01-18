@@ -4,7 +4,6 @@
 
 using namespace benchmark;
 using namespace bb;
-;
 
 /**
  * @brief Benchmark: Construction of a Ultra Plonk proof for a circuit determined by the provided circuit function

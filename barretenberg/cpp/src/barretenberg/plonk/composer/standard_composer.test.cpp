@@ -7,7 +7,7 @@
 
 using namespace bb;
 using namespace bb;
-;
+
 using namespace bb::plonk;
 
 namespace {

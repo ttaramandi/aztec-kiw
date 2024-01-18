@@ -15,7 +15,6 @@
 #include <gtest/gtest.h>
 
 using namespace bb;
-;
 
 namespace bb::ultra_relation_consistency_tests {
 

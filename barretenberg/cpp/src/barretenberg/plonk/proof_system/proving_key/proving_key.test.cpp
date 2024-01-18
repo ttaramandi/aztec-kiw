@@ -13,7 +13,7 @@
 
 using namespace bb;
 using namespace bb;
-;
+
 using namespace bb::plonk;
 
 // Test proving key serialization/deserialization to/from buffer

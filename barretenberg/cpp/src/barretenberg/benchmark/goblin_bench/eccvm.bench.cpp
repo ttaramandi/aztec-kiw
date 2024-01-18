@@ -6,7 +6,6 @@
 
 using namespace benchmark;
 using namespace bb;
-;
 
 using Flavor = honk::flavor::ECCVM;
 using Builder = ECCVMCircuitBuilder<Flavor>;

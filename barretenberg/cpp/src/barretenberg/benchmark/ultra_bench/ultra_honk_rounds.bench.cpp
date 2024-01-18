@@ -7,7 +7,6 @@
 
 using namespace benchmark;
 using namespace bb;
-;
 
 // The rounds to measure
 enum {

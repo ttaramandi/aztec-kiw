@@ -10,7 +10,6 @@
 using namespace benchmark;
 using namespace bb;
 using namespace bb;
-;
 
 namespace {
 void goblin_full(State& state) noexcept

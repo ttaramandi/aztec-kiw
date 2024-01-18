@@ -15,7 +15,7 @@
 
 using namespace bb;
 using namespace bb;
-;
+
 using namespace smt_circuit;
 
 using field_ct = bb::plonk::stdlib::field_t<StandardCircuitBuilder>;
