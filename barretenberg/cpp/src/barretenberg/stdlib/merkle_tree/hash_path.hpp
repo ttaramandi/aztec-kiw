@@ -66,7 +66,7 @@ inline fr zero_hash_at_height(size_t height)
 // We add to std namespace as fr_hash_path is actually a std::vector, and this is the only way
 // to achieve effective ADL.
 namespace std {
-template <typename Ctx> inline ostream& operator<<(ostream& os, bb::stdlib::merkle_tree::hash_path<Ctx> const& path)
+template <typename Ctx> inline ostream& operator<<(ostream& os, bb::stdlib::hash_path<Ctx> const& path)
 {
     os << "[\n";
     for (size_t i = 0; i < path.size(); ++i) {

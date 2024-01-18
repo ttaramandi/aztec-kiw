@@ -293,8 +293,8 @@ concept IsUltraFlavor = IsAnyOf<T, honk::flavor::Ultra, honk::flavor::GoblinUltr
 
 template <typename T> 
 concept IsGoblinFlavor = IsAnyOf<T, honk::flavor::GoblinUltra,
-                                    honk::flavor::GoblinUltraRecursive_<UltraCircuitBuilder>,
-                                    honk::flavor::GoblinUltraRecursive_<GoblinUltraCircuitBuilder>>;
+                                    honk::flavor::GoblinUltraRecursive_<stdlib::UltraCircuitBuilder>,
+                                    honk::flavor::GoblinUltraRecursive_<stdlib::GoblinUltraCircuitBuilder>>;
 
 template <typename T> 
 concept IsRecursiveFlavor = IsAnyOf<T, honk::flavor::UltraRecursive_<UltraCircuitBuilder>, 

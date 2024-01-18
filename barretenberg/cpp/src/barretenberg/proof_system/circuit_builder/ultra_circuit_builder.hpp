@@ -25,8 +25,6 @@ template <typename FF> struct non_native_field_witnesses {
     FF modulus;
 };
 
-using namespace bb;
-
 template <typename Arithmetization>
 class UltraCircuitBuilder_ : public CircuitBuilderBase<typename Arithmetization::FF> {
   public:

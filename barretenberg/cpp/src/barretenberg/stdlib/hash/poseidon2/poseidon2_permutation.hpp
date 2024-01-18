@@ -6,7 +6,7 @@
 #include "barretenberg/crypto/poseidon2/poseidon2_permutation.hpp"
 #include "barretenberg/stdlib/primitives/field/field.hpp"
 
-namespace bb {
+namespace bb::stdlib {
 
 template <typename Params, typename Builder> class Poseidon2Permutation {
   public:
@@ -63,4 +63,4 @@ template <typename Params, typename Builder> class Poseidon2Permutation {
 
 extern template class Poseidon2Permutation<crypto::Poseidon2Bn254ScalarFieldParams, GoblinUltraCircuitBuilder>;
 
-} // namespace bb
+} // namespace bb::stdlib

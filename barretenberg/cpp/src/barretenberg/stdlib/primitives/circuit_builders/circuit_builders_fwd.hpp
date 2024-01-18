@@ -9,27 +9,27 @@ construction in stdlib and contains macros for explicit instantiation.
 #pragma once
 #include <concepts>
 
-namespace bb {
+namespace bb::stdlib {
 namespace flavor {
 class Standard;
 class Ultra;
 } // namespace flavor
-} // namespace bb
+} // namespace bb::stdlib
 
-namespace bb {
+namespace bb::stdlib {
 class Bn254FrParams;
 class Bn254FqParams;
 template <class Params> struct alignas(32) field;
-} // namespace bb
+} // namespace bb::stdlib
 namespace arithmetization {
 template <typename FF_> class Ultra;
 } // namespace arithmetization
 namespace bb {
 template <class FF> class StandardCircuitBuilder_;
-using StandardCircuitBuilder = StandardCircuitBuilder_<bb::field<bb::Bn254FrParams>>;
-using StandardGrumpkinCircuitBuilder = StandardCircuitBuilder_<bb::field<bb::Bn254FqParams>>;
+using StandardCircuitBuilder = StandardCircuitBuilder_<field<Bn254FrParams>>;
+using StandardGrumpkinCircuitBuilder = StandardCircuitBuilder_<field<Bn254FqParams>>;
 template <class Arithmetization> class UltraCircuitBuilder_;
-using UltraCircuitBuilder = UltraCircuitBuilder_<arithmetization::Ultra<bb::field<bb::Bn254FrParams>>>;
+using UltraCircuitBuilder = UltraCircuitBuilder_<arithmetization::Ultra<field<Bn254FrParams>>>;
 template <class FF> class GoblinUltraCircuitBuilder_;
-using GoblinUltraCircuitBuilder = GoblinUltraCircuitBuilder_<bb::field<bb::Bn254FrParams>>;
+using GoblinUltraCircuitBuilder = GoblinUltraCircuitBuilder_<field<Bn254FrParams>>;
 } // namespace bb
