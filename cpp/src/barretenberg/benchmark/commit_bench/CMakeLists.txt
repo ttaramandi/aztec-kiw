@@ -5,7 +5,7 @@ set(BENCHMARK_SOURCES
 
 # Required libraries for benchmark suites
 set(LINKED_LIBRARIES
-  commitment_schemes
+  honk
   benchmark::benchmark
 )
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <cstdint>
 #include <vector>
 #include <string>
 #include "barretenberg/proof_system/types/composer_type.hpp"

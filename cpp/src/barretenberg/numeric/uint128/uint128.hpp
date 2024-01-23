@@ -1,9 +1,9 @@
 #pragma once
 #include <iomanip>
 #include <ostream>
+#include <cstdint>
 
 #ifdef __i386__
-#include <cstdint>
 #include "barretenberg/common/serialize.hpp"
 
 namespace numeric {

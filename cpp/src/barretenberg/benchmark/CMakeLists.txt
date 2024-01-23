@@ -1,3 +1,4 @@
+add_subdirectory(commit_bench)
 add_subdirectory(decrypt_bench)
 add_subdirectory(pippenger_bench)
 add_subdirectory(plonk_bench)
