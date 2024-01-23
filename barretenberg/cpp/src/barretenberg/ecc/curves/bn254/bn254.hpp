@@ -11,11 +11,11 @@ class BN254 {
   public:
     using ScalarField = fr;
     using BaseField = fq;
-    using Group = typename g1;
+    using Group = g1;
     using Element = typename Group::element;
     using AffineElement = typename Group::affine_element;
-    using G2AffineElement = typename g2::affine_element;
-    using G2BaseField = typename fq2;
+    using G2AffineElement = g2::affine_element;
+    using G2BaseField = fq2;
     using TargetField = fq12;
 
     // TODO(#673): This flag is temporary. It is needed in the verifier classes (GeminiVerifier, etc.) while these
