@@ -14,13 +14,13 @@
 // NOLINTBEGIN(cert-dcl58-cpp)
 // clang-format on
 
-namespace serialize {
+namespace bb::serialize {
 /**
  * @brief Helper method for streaming msgpack values, specialized for shared_ptr
  */
 template <typename T> void _msgpack_stream_write(std::ostream& os, const std::shared_ptr<T>& field)
 {
-    using namespace serialize;
+    using namespace bb::serialize;
     os << *field;
 }
 /**
@@ -28,7 +28,7 @@ template <typename T> void _msgpack_stream_write(std::ostream& os, const std::sh
  */
 inline void _msgpack_stream_write(std::ostream& os, const auto& field)
 {
-    using namespace serialize;
+    using namespace bb::serialize;
     os << field;
 }
 /**
@@ -59,7 +59,7 @@ inline void _msgpack_stream_write_key_value_pairs(std::ostream& os,
  */
 inline void _msgpack_stream_write_key_value_pairs(std::ostream& os,
                                                   const std::string& key,
-                                                  const msgpack_concepts::HasMsgPack auto& value,
+                                                  const HasMsgPack auto& value,
                                                   const auto&... rest)
 {
     os << key << ":\n";
@@ -67,7 +67,7 @@ inline void _msgpack_stream_write_key_value_pairs(std::ostream& os,
     os << '\n';
     _msgpack_stream_write_key_value_pairs(os, rest...); // NOLINT
 }
-} // namespace serialize
+} // namespace bb::serialize
 
 namespace std {
 /**
@@ -76,7 +76,7 @@ namespace std {
  * @param os The stream to write to.
  * @param obj The object to write.
  */
-template <msgpack_concepts::HasMsgPack T> std::ostream& operator<<(std::ostream& os, const T& obj)
+template <bb::HasMsgPack T> std::ostream& operator<<(std::ostream& os, const T& obj)
 {
     // We must use const_cast as our method is meant to be polymorphic over const, but there's no such concept in C++
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)

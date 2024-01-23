@@ -29,7 +29,7 @@ template <typename Builder> void create_pedersen_hash_constraint(Builder& builde
 
 template <typename B> inline void read(B& buf, PedersenConstraint& constraint)
 {
-    using serialize::read;
+    using bb::serialize::read;
     read(buf, constraint.scalars);
     read(buf, constraint.hash_index);
     read(buf, constraint.result_x);
@@ -38,7 +38,7 @@ template <typename B> inline void read(B& buf, PedersenConstraint& constraint)
 
 template <typename B> inline void write(B& buf, PedersenConstraint const& constraint)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(buf, constraint.scalars);
     write(buf, constraint.hash_index);
     write(buf, constraint.result_x);

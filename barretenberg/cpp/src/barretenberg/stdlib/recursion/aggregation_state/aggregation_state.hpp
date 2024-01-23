@@ -76,7 +76,7 @@ template <typename Curve> struct aggregation_state {
 
 template <typename Curve> void read(uint8_t const*& it, aggregation_state<Curve>& as)
 {
-    using serialize::read;
+    using bb::serialize::read;
 
     read(it, as.P0);
     read(it, as.P1);
@@ -87,7 +87,7 @@ template <typename Curve> void read(uint8_t const*& it, aggregation_state<Curve>
 
 template <typename Curve> void write(std::vector<uint8_t>& buf, aggregation_state<Curve> const& as)
 {
-    using serialize::write;
+    using bb::serialize::write;
 
     write(buf, as.P0);
     write(buf, as.P1);

@@ -29,7 +29,7 @@ template <typename Builder> void create_schnorr_verify_constraints(Builder& buil
 
 template <typename B> inline void read(B& buf, SchnorrConstraint& constraint)
 {
-    using serialize::read;
+    using bb::serialize::read;
     read(buf, constraint.message);
     read(buf, constraint.signature);
     read(buf, constraint.public_key_x);
@@ -39,7 +39,7 @@ template <typename B> inline void read(B& buf, SchnorrConstraint& constraint)
 
 template <typename B> inline void write(B& buf, SchnorrConstraint const& constraint)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(buf, constraint.message);
     write(buf, constraint.signature);
     write(buf, constraint.public_key_x);

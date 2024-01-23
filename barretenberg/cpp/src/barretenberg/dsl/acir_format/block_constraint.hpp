@@ -30,7 +30,7 @@ void create_block_constraints(Builder& builder,
 
 template <typename B> inline void read(B& buf, MemOp& mem_op)
 {
-    using serialize::read;
+    using bb::serialize::read;
     read(buf, mem_op.access_type);
     read(buf, mem_op.index);
     read(buf, mem_op.value);
@@ -38,7 +38,7 @@ template <typename B> inline void read(B& buf, MemOp& mem_op)
 
 template <typename B> inline void write(B& buf, MemOp const& mem_op)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(buf, mem_op.access_type);
     write(buf, mem_op.index);
     write(buf, mem_op.value);
@@ -46,7 +46,7 @@ template <typename B> inline void write(B& buf, MemOp const& mem_op)
 
 template <typename B> inline void read(B& buf, BlockConstraint& constraint)
 {
-    using serialize::read;
+    using bb::serialize::read;
     read(buf, constraint.init);
     read(buf, constraint.trace);
     uint8_t type;
@@ -56,7 +56,7 @@ template <typename B> inline void read(B& buf, BlockConstraint& constraint)
 
 template <typename B> inline void write(B& buf, BlockConstraint const& constraint)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(buf, constraint.init);
     write(buf, constraint.trace);
     write(buf, static_cast<uint8_t>(constraint.type));

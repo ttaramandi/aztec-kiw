@@ -15,7 +15,7 @@ WASM_EXPORT void ecdsa__construct_signature(uint8_t const* message,
                                             uint8_t* output_sig_s,
                                             uint8_t* output_sig_v)
 {
-    using serialize::write;
+    using bb::serialize::write;
     auto priv_key = from_buffer<secp256k1::fr>(private_key);
     secp256k1::g1::affine_element pub_key = secp256k1::g1::one * priv_key;
     crypto::ecdsa_key_pair<secp256k1::fr, secp256k1::g1> key_pair = { priv_key, pub_key };

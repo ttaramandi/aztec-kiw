@@ -3,10 +3,10 @@
 #include "nested_containers.hpp"
 #include <algorithm>
 
+namespace bb {
+
 template <typename T>
 concept IsField = std::same_as<T, fr> /* || std::same_as<T, grumpkin::fr> */;
-
-namespace bb {
 
 /**
  * @brief A type to optionally extract a view of a relation parameter in a relation.

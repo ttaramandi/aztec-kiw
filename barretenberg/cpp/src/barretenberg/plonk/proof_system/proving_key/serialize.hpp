@@ -13,7 +13,7 @@ namespace bb::plonk {
 // Read the pre-computed polynomials
 template <typename B> inline void read(B& any, proving_key_data& key)
 {
-    using serialize::read;
+    using bb::serialize::read;
     using std::read;
 
     read(any, static_cast<uint32_t&>(key.circuit_type));
@@ -42,7 +42,7 @@ template <typename B> inline void read(B& any, proving_key_data& key)
 // Write the pre-computed polynomials
 template <typename B> inline void write(B& buf, proving_key const& key)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(buf, static_cast<uint32_t>(key.circuit_type));
     write(buf, static_cast<uint32_t>(key.circuit_size));
     write(buf, static_cast<uint32_t>(key.num_public_inputs));
@@ -67,7 +67,7 @@ template <typename B> inline void write(B& buf, proving_key const& key)
 
 template <typename B> inline void read_from_file(B& is, std::string const& path, proving_key_data& key)
 {
-    using serialize::read;
+    using bb::serialize::read;
 
     size_t file_num = 0;
     read(is, key.circuit_type);
@@ -108,7 +108,7 @@ template <typename B> inline void read_from_file(B& is, std::string const& path,
 
 template <typename B> inline void write_to_file(B& os, std::string const& path, proving_key& key)
 {
-    using serialize::write;
+    using bb::serialize::write;
 
     size_t file_num = 0;
     write(os, static_cast<uint32_t>(key.circuit_type));

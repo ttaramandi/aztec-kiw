@@ -5,7 +5,7 @@
 #include <cstddef>
 #include <vector>
 
-namespace arithmetization {
+namespace bb::arithmetization {
 
 /**
  * @brief Specify the structure of a CircuitBuilder
@@ -205,4 +205,4 @@ class GoblinTranslator {
     static constexpr size_t NUM_WIRES = 81;
     static constexpr size_t NUM_SELECTORS = 0;
 };
-} // namespace arithmetization
+} // namespace bb::arithmetization

@@ -163,7 +163,7 @@ template <class base_uint> class uintx {
 
 template <typename B, typename Params> inline void read(B& it, uintx<Params>& value)
 {
-    using serialize::read;
+    using bb::serialize::read;
     Params a;
     Params b;
     read(it, b);
@@ -173,7 +173,7 @@ template <typename B, typename Params> inline void read(B& it, uintx<Params>& va
 
 template <typename B, typename Params> inline void write(B& it, uintx<Params> const& value)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(it, value.hi);
     write(it, value.lo);
 }

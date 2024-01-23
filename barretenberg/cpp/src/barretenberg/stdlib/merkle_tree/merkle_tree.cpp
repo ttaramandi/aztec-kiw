@@ -197,7 +197,7 @@ template <typename Store> fr_sibling_path MerkleTree<Store>::get_sibling_path(in
 template <typename Store> fr MerkleTree<Store>::update_element(index_t index, fr const& value)
 {
     auto leaf = value;
-    using serialize::write;
+    using bb::serialize::write;
     std::vector<uint8_t> leaf_key;
     write(leaf_key, tree_id_);
     write(leaf_key, index);

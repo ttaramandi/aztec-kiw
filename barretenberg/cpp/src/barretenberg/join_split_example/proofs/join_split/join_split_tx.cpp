@@ -7,7 +7,7 @@ using namespace bb;
 
 void write(std::vector<uint8_t>& buf, join_split_tx const& tx)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(buf, tx.proof_id);
     write(buf, tx.public_value);
     write(buf, tx.public_owner);
@@ -35,7 +35,7 @@ void write(std::vector<uint8_t>& buf, join_split_tx const& tx)
 
 void read(uint8_t const*& it, join_split_tx& tx)
 {
-    using serialize::read;
+    using bb::serialize::read;
     read(it, tx.proof_id);
     read(it, tx.public_value);
     read(it, tx.public_owner);

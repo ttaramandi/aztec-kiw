@@ -73,7 +73,7 @@ struct ecc_op_tuple {
 
 template <typename B, typename FF> inline void read(B& buf, poly_triple_<FF>& constraint)
 {
-    using serialize::read;
+    using bb::serialize::read;
     read(buf, constraint.a);
     read(buf, constraint.b);
     read(buf, constraint.c);
@@ -85,7 +85,7 @@ template <typename B, typename FF> inline void read(B& buf, poly_triple_<FF>& co
 }
 template <typename B, typename FF> inline void write(B& buf, poly_triple_<FF> const& constraint)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(buf, constraint.a);
     write(buf, constraint.b);
     write(buf, constraint.c);

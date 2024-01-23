@@ -118,7 +118,7 @@ struct verification_key {
 
 template <typename B> inline void read(B& buf, verification_key& key)
 {
-    using serialize::read;
+    using bb::serialize::read;
     verification_key_data vk_data;
     read(buf, vk_data);
     key = verification_key{ std::move(vk_data), srs::get_crs_factory()->get_verifier_crs() };
@@ -126,7 +126,7 @@ template <typename B> inline void read(B& buf, verification_key& key)
 
 template <typename B> inline void read(B& buf, std::shared_ptr<verification_key>& key)
 {
-    using serialize::read;
+    using bb::serialize::read;
     verification_key_data vk_data;
     read(buf, vk_data);
     key = std::make_shared<verification_key>(std::move(vk_data), srs::get_crs_factory()->get_verifier_crs());
@@ -134,7 +134,7 @@ template <typename B> inline void read(B& buf, std::shared_ptr<verification_key>
 
 template <typename B> inline void write(B& buf, verification_key const& key)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(buf, key.as_data());
 }
 

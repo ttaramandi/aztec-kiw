@@ -19,13 +19,13 @@ struct proof {
 
 inline void read(uint8_t const*& it, proof& data)
 {
-    using serialize::read;
+    using bb::serialize::read;
     read(it, data.proof_data);
 };
 
 template <typename B> inline void write(B& buf, proof const& data)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(buf, data.proof_data);
 }
 

@@ -54,7 +54,7 @@ ecdsa_signature ecdsa_construct_signature(const std::string& message, const ecds
 template <typename Hash, typename Fq, typename Fr, typename G1>
 typename G1::affine_element ecdsa_recover_public_key(const std::string& message, const ecdsa_signature& sig)
 {
-    using serialize::read;
+    using bb::serialize::read;
     uint256_t r_uint;
     uint256_t s_uint;
     uint8_t v_uint;
@@ -128,7 +128,7 @@ bool ecdsa_verify_signature(const std::string& message,
                             const typename G1::affine_element& public_key,
                             const ecdsa_signature& sig)
 {
-    using serialize::read;
+    using bb::serialize::read;
     uint256_t r_uint;
     uint256_t s_uint;
     uint256_t mod = uint256_t(Fr::modulus);

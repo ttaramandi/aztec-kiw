@@ -568,7 +568,7 @@ template <class Params_> struct alignas(32) field {
 
 template <typename B, typename Params> void read(B& it, field<Params>& value)
 {
-    using serialize::read;
+    using bb::serialize::read;
     field<Params> result{ 0, 0, 0, 0 };
     read(it, result.data[3]);
     read(it, result.data[2]);
@@ -578,7 +578,7 @@ template <typename B, typename Params> void read(B& it, field<Params>& value)
 }
 template <typename B, typename Params> void write(B& buf, field<Params> const& value)
 {
-    using serialize::write;
+    using bb::serialize::write;
     const field input = value.from_montgomery_form();
     write(buf, input.data[3]);
     write(buf, input.data[2]);

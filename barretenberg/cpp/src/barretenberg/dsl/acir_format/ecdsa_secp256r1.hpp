@@ -35,7 +35,7 @@ template <typename Builder> void dummy_ecdsa_constraint(Builder& builder, EcdsaS
 
 template <typename B> inline void read(B& buf, EcdsaSecp256r1Constraint& constraint)
 {
-    using serialize::read;
+    using bb::serialize::read;
     read(buf, constraint.hashed_message);
     read(buf, constraint.signature);
     read(buf, constraint.pub_x_indices);
@@ -45,7 +45,7 @@ template <typename B> inline void read(B& buf, EcdsaSecp256r1Constraint& constra
 
 template <typename B> inline void write(B& buf, EcdsaSecp256r1Constraint const& constraint)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(buf, constraint.hashed_message);
     write(buf, constraint.signature);
     write(buf, constraint.pub_x_indices);

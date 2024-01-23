@@ -37,7 +37,7 @@ inline std::ostream& operator<<(std::ostream& os, value_note const& note)
 
 inline void read(uint8_t const*& it, value_note& note)
 {
-    using serialize::read;
+    using bb::serialize::read;
     read(it, note.value);
     read(it, note.asset_id);
     read(it, note.account_required);
@@ -49,7 +49,7 @@ inline void read(uint8_t const*& it, value_note& note)
 
 inline void write(std::vector<uint8_t>& buf, value_note const& note)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(buf, note.value);
     write(buf, note.asset_id);
     write(buf, note.account_required);

@@ -166,7 +166,7 @@ inline std::ostream& operator<<(std::ostream& os, uint128_t const& a)
 
 template <typename B> inline void read(B& it, uint128_t& value)
 {
-    using serialize::read;
+    using bb::serialize::read;
     uint32_t a = 0;
     uint32_t b = 0;
     uint32_t c = 0;
@@ -180,7 +180,7 @@ template <typename B> inline void read(B& it, uint128_t& value)
 
 template <typename B> inline void write(B& it, uint128_t const& value)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(it, value.data[3]);
     write(it, value.data[2]);
     write(it, value.data[1]);

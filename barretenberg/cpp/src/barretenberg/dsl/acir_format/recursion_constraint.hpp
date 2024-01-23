@@ -86,7 +86,7 @@ G1AsFields export_g1_affine_element_as_fields(const g1::affine_element& group_el
 
 template <typename B> inline void read(B& buf, RecursionConstraint& constraint)
 {
-    using serialize::read;
+    using bb::serialize::read;
     read(buf, constraint.key);
     read(buf, constraint.proof);
     read(buf, constraint.public_inputs);
@@ -95,7 +95,7 @@ template <typename B> inline void read(B& buf, RecursionConstraint& constraint)
 
 template <typename B> inline void write(B& buf, RecursionConstraint const& constraint)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(buf, constraint.key);
     write(buf, constraint.proof);
     write(buf, constraint.public_inputs);

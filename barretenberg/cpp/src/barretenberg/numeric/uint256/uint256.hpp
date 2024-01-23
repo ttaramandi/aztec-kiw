@@ -221,7 +221,7 @@ inline std::ostream& operator<<(std::ostream& os, uint256_t const& a)
 
 template <typename B> inline void read(B& it, uint256_t& value)
 {
-    using serialize::read;
+    using bb::serialize::read;
     uint64_t a = 0;
     uint64_t b = 0;
     uint64_t c = 0;
@@ -235,7 +235,7 @@ template <typename B> inline void read(B& it, uint256_t& value)
 
 template <typename B> inline void write(B& it, uint256_t const& value)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(it, value.data[3]);
     write(it, value.data[2]);
     write(it, value.data[1]);

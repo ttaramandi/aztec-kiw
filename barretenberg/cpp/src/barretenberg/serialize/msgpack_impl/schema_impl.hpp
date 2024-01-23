@@ -76,13 +76,13 @@ struct MsgpackSchemaPacker : msgpack::packer<msgpack::sbuffer> {
      * @param packer Our special packer.
      * @param object The object in question.
      */
-    template <msgpack_concepts::HasMsgPack T> void pack_with_name(const std::string& type, T const& object)
+    template <HasMsgPack T> void pack_with_name(const std::string& type, T const& object)
     {
         if (set_emitted(type)) {
             pack(type);
             return; // already emitted
         }
-        msgpack::check_msgpack_usage(object);
+        msgpack_check_usage(object);
         // Encode as map
         const_cast<T&>(object).msgpack([&](auto&... args) {
             size_t kv_size = sizeof...(args);
@@ -102,10 +102,10 @@ inline void _schema_pack_map_content(MsgpackSchemaPacker&)
     // base case
 }
 
-namespace msgpack_concepts {
+namespace bb {
 template <typename T>
 concept SchemaPackable = requires(T value, MsgpackSchemaPacker packer) { msgpack_schema_pack(packer, value); };
-} // namespace msgpack_concepts
+} // namespace bb
 
 // Helper for packing (key, value, key, value, ...) arguments
 template <typename Value, typename... Rest>
@@ -115,7 +115,7 @@ inline void _schema_pack_map_content(MsgpackSchemaPacker& packer,
                                      const Rest&... rest)
 {
     static_assert(
-        msgpack_concepts::SchemaPackable<Value>,
+        SchemaPackable<Value>,
         "see the first type argument in the error trace, it might require a specialization of msgpack_schema_pack");
     packer.pack(key);
     msgpack_schema_pack(packer, value);
@@ -123,7 +123,7 @@ inline void _schema_pack_map_content(MsgpackSchemaPacker& packer,
 }
 
 template <typename T>
-    requires(!msgpack_concepts::HasMsgPackSchema<T> && !msgpack_concepts::HasMsgPack<T>)
+    requires(!HasMsgPackSchema<T> && !HasMsgPack<T>)
 inline void msgpack_schema_pack(MsgpackSchemaPacker& packer, T const& obj)
 {
     packer.pack(msgpack_schema_name(obj));
@@ -134,8 +134,7 @@ inline void msgpack_schema_pack(MsgpackSchemaPacker& packer, T const& obj)
  * @tparam T the type.
  * @param packer the schema packer.
  */
-template <msgpack_concepts::HasMsgPackSchema T>
-inline void msgpack_schema_pack(MsgpackSchemaPacker& packer, T const& obj)
+template <HasMsgPackSchema T> inline void msgpack_schema_pack(MsgpackSchemaPacker& packer, T const& obj)
 {
     obj.msgpack_schema(packer);
 }
@@ -147,8 +146,8 @@ inline void msgpack_schema_pack(MsgpackSchemaPacker& packer, T const& obj)
  * @param packer Our special packer.
  * @param object The object in question.
  */
-template <msgpack_concepts::HasMsgPack T>
-    requires(!msgpack_concepts::HasMsgPackSchema<T>)
+template <HasMsgPack T>
+    requires(!HasMsgPackSchema<T>)
 inline void msgpack_schema_pack(MsgpackSchemaPacker& packer, T const& object)
 {
     std::string type = msgpack_schema_name(object);
@@ -160,7 +159,7 @@ inline void msgpack_schema_pack(MsgpackSchemaPacker& packer, T const& object)
  */
 template <typename T> inline void _msgpack_schema_pack(MsgpackSchemaPacker& packer, const T& obj)
 {
-    static_assert(msgpack_concepts::SchemaPackable<T>,
+    static_assert(SchemaPackable<T>,
                   "see the first type argument in the error trace, it might need a msgpack_schema method!");
     msgpack_schema_pack(packer, obj);
 }

@@ -3,7 +3,7 @@
 struct DoNothing {
     void operator()(auto...) {}
 };
-namespace msgpack_concepts {
+namespace bb {
 template <typename T>
 concept HasMsgPack = requires(T t, DoNothing nop) { t.msgpack(nop); };
 
@@ -15,4 +15,4 @@ concept HasMsgPackPack = requires(T t, DoNothing nop) { t.msgpack_pack(nop); };
 template <typename T, typename... Args>
 concept MsgpackConstructible = requires(T object, Args... args) { T{ args... }; };
 
-} // namespace msgpack_concepts
+} // namespace bb

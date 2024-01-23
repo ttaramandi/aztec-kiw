@@ -342,14 +342,14 @@ template <class Fr, size_t domain_end, size_t domain_start = 0> class Univariate
 template <typename B, class Fr, size_t domain_end, size_t domain_start = 0>
 inline void read(B& it, Univariate<Fr, domain_end, domain_start>& univariate)
 {
-    using serialize::read;
+    using bb::serialize::read;
     read(it, univariate.evaluations);
 }
 
 template <typename B, class Fr, size_t domain_end, size_t domain_start = 0>
 inline void write(B& it, Univariate<Fr, domain_end, domain_start> const& univariate)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(it, univariate.evaluations);
 }
 

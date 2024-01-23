@@ -4,7 +4,7 @@
 #include <array>
 #include <memory.h>
 
-namespace sha256 {
+namespace bb::sha256 {
 
 namespace {
 constexpr uint32_t init_constants[8]{ 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
@@ -182,4 +182,4 @@ template hash sha256<std::array<uint8_t, 32>>(const std::array<uint8_t, 32>& inp
 template hash sha256<std::string>(const std::string& input);
 template hash sha256<std::span<uint8_t>>(const std::span<uint8_t>& input);
 
-} // namespace sha256
+} // namespace bb::sha256

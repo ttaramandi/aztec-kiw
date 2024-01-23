@@ -122,7 +122,7 @@ TEST(ecdsa, check_overflowing_r_and_s_are_rejected)
     bool result = crypto::ecdsa_verify_signature<Sha256Hasher, grumpkin::fq, grumpkin::fr, grumpkin::g1>(
         message, public_key, signature);
     EXPECT_TRUE(result);
-    using serialize::read;
+    using bb::serialize::read;
 
     const auto* p_r = &signature.r[0];
     uint256_t old_r, new_r, old_s, new_s;
@@ -130,7 +130,7 @@ TEST(ecdsa, check_overflowing_r_and_s_are_rejected)
     new_r = old_r;
     // We update r so it is larger than the modulus, but has the same value modulo fr::modulus
     new_r = new_r + grumpkin::fr::modulus;
-    using serialize::write;
+    using bb::serialize::write;
     auto* p_r_m = &signature.r[0];
     write(p_r_m, new_r);
     result = crypto::ecdsa_verify_signature<Sha256Hasher, grumpkin::fq, grumpkin::fr, grumpkin::g1>(
@@ -142,7 +142,7 @@ TEST(ecdsa, check_overflowing_r_and_s_are_rejected)
     read(p_s, old_s);
     new_s = old_s;
     new_s = new_s + grumpkin::fr::modulus;
-    using serialize::write;
+    using bb::serialize::write;
     auto* p_r_s = &signature.s[0];
     write(p_r_m, old_r);
     write(p_r_s, new_s);

@@ -23,7 +23,7 @@ inline std::ostream& operator<<(std::ostream& os, partial_claim_note_data const&
 
 inline void read(uint8_t const*& it, partial_claim_note_data& note)
 {
-    using serialize::read;
+    using bb::serialize::read;
     read(it, note.deposit_value);
     read(it, note.bridge_call_data);
     read(it, note.note_secret);
@@ -32,7 +32,7 @@ inline void read(uint8_t const*& it, partial_claim_note_data& note)
 
 inline void write(std::vector<uint8_t>& buf, partial_claim_note_data const& note)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(buf, note.deposit_value);
     write(buf, note.bridge_call_data);
     write(buf, note.note_secret);

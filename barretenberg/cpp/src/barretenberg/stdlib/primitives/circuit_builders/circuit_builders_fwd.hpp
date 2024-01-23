@@ -19,9 +19,9 @@ class Bn254FrParams;
 class Bn254FqParams;
 template <class Params> struct alignas(32) field;
 } // namespace bb
-namespace arithmetization {
+namespace bb::arithmetization {
 template <typename FF_> class Ultra;
-} // namespace arithmetization
+} // namespace bb::arithmetization
 namespace bb {
 template <class FF> class StandardCircuitBuilder_;
 using StandardCircuitBuilder = StandardCircuitBuilder_<bb::field<bb::Bn254FrParams>>;

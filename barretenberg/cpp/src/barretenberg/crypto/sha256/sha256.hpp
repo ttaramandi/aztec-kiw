@@ -7,7 +7,9 @@
 #include <ostream>
 #include <vector>
 
-namespace sha256 {
+using namespace bb;
+
+namespace bb::sha256 {
 
 using hash = std::array<uint8_t, 32>;
 
@@ -26,7 +28,7 @@ inline bool operator==(hash const& lhs, std::vector<uint8_t> const& rhs)
     return std::equal(lhs.begin(), lhs.end(), rhs.begin());
 }
 
-} // namespace sha256
+} // namespace bb::sha256
 
 namespace std {
 inline bool operator==(std::vector<uint8_t> const& lhs, sha256::hash const& rhs)

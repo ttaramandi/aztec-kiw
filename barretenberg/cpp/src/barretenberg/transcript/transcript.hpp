@@ -268,7 +268,7 @@ class BaseTranscript {
      */
     template <class T> void send_to_verifier(const std::string& label, const T& element)
     {
-        using serialize::write;
+        using bb::serialize::write;
         // TODO(Adrian): Ensure that serialization of affine elements (including point at infinity) is consistent.
         // TODO(Adrian): Consider restricting serialization (via concepts) to types T for which sizeof(T) reliably
         // returns the size of T in bytes. (E.g. this is true for std::array but not for std::vector).

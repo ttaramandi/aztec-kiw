@@ -46,7 +46,7 @@ class address {
 
 template <typename B> void read(B& it, address& addr)
 {
-    using serialize::read;
+    using bb::serialize::read;
     fr address_field;
     read(it, address_field);
     addr = address(address_field);
@@ -54,7 +54,7 @@ template <typename B> void read(B& it, address& addr)
 
 template <typename B> void write(B& buf, address const& addr)
 {
-    using serialize::write;
+    using bb::serialize::write;
     write(buf, addr.address_);
 }
 

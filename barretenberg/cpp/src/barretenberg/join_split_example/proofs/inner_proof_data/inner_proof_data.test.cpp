@@ -27,7 +27,7 @@ TEST(client_proofs_inner_proof_data, test_proof_to_data)
     auto backward_link = fr::random_element(&rand_engine);
     uint256_t allow_chain = 0;
 
-    using serialize::write;
+    using bb::serialize::write;
     std::vector<uint8_t> proof_data;
     write(proof_data, proof_id);
     write(proof_data, note1);

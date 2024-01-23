@@ -29,7 +29,7 @@ struct claim_note {
 
 template <typename B> inline void read(B& buf, claim_note& note)
 {
-    using serialize::read;
+    using bb::serialize::read;
     read(buf, note.deposit_value);
     read(buf, note.bridge_call_data);
     read(buf, note.defi_interaction_nonce);
