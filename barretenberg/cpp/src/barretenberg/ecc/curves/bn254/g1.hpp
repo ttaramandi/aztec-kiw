@@ -18,11 +18,11 @@ struct Bn254G1Params {
 
 using g1 = group<fq, fr, Bn254G1Params>;
 
-} // namespace bb
-
 // specialize the name in msgpack schema generation
 // consumed by the typescript schema compiler, helps disambiguate templates
 inline std::string msgpack_schema_name(g1::affine_element const& /*unused*/)
 {
     return "G1AffineElement";
 }
+
+} // namespace bb

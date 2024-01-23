@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 
+namespace bb {
 struct MsgpackSchemaPacker;
 
 // Forward declare for MsgpackSchemaPacker
@@ -225,3 +226,4 @@ inline std::string msgpack_schema_to_string(const auto& obj)
     pretty_output << oh.get() << std::endl;
     return pretty_output.str();
 }
+} // namespace bb

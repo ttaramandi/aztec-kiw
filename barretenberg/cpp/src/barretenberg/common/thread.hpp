@@ -7,6 +7,8 @@
 #include <thread>
 #include <vector>
 
+namespace bb {
+
 inline size_t get_num_cpus()
 {
 #ifdef NO_MULTITHREADING
@@ -90,3 +92,4 @@ inline void run_loop_in_parallel_if_effective_with_index(size_t num_points,
                                                scalar_multiplications_per_iteration,
                                                sequential_copy_ops_per_iteration);
 }
+} // namespace bb

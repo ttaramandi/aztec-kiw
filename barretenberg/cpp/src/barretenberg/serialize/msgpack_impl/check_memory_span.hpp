@@ -10,7 +10,7 @@
 #include <iostream>
 #include <vector>
 
-namespace msgpack {
+namespace bb {
 template <typename T> uintptr_t __aligned_for(uintptr_t ptr)
 {
     // Round to next alignment, (ptr % alignof(T)) == 0 after
@@ -74,4 +74,4 @@ void check_msgpack_usage(const auto& object)
         throw_or_abort(result);
     }
 }
-} // namespace msgpack
+} // namespace bb

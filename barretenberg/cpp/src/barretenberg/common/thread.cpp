@@ -36,6 +36,7 @@
  * Haven't done deeper analysis. Defaulting to mutex_pool.
  */
 
+namespace bb {
 // 64 core aws r5.
 // pippenger run: pippenger_bench/1048576
 // coset_fft run: coset_fft_bench_parallel/4194304
@@ -224,3 +225,4 @@ template void run_loop_in_parallel_if_effective_internal(
     size_t, const std::function<void(size_t, size_t)>&, size_t, size_t, size_t, size_t, size_t, size_t, size_t);
 template void run_loop_in_parallel_if_effective_internal(
     size_t, const std::function<void(size_t, size_t, size_t)>&, size_t, size_t, size_t, size_t, size_t, size_t, size_t);
+} // namespace bb
