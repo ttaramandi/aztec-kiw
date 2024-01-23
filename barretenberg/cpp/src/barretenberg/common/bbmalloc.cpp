@@ -3,10 +3,10 @@
 
 WASM_EXPORT void* bbmalloc(size_t size)
 {
-    return bb::get_mem_slab_raw(size);
+    return get_mem_slab_raw(size);
 }
 
 WASM_EXPORT void bbfree(void* ptr)
 {
-    bb::free_mem_slab_raw(ptr);
+    free_mem_slab_raw(ptr);
 }

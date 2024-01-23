@@ -125,8 +125,8 @@ template <class Field, class Getters, typename PolyContainer> class PlookupArith
         arithmetic_gate_identity *= (q_arith - 3);
 
         // TODO: if we multiply all q_m values by `-1/2` we can remove the need for this extra multiplication
-        if constexpr (std::is_same<bb::fr, Field>::value) {
-            static constexpr bb::fr neg_half = bb::fr(-2).invert();
+        if constexpr (std::is_same<fr, Field>::value) {
+            static constexpr bb::fr neg_half = fr(-2).invert();
             arithmetic_gate_identity *= neg_half;
         } else {
             static const Field neg_half = Field(-2).invert();

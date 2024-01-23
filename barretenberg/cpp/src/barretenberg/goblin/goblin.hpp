@@ -12,10 +12,10 @@
 namespace bb {
 
 class Goblin {
-    using HonkProof = bb::plonk::proof;
+    using HonkProof = plonk::proof;
 
-    using GUHFlavor = bb::honk::flavor::GoblinUltra;
-    using GoblinUltraCircuitBuilder = bb::GoblinUltraCircuitBuilder;
+    using GUHFlavor = honk::flavor::GoblinUltra;
+    using GoblinUltraCircuitBuilder = GoblinUltraCircuitBuilder;
 
     using GUHVerificationKey = GUHFlavor::VerificationKey;
     using Commitment = GUHFlavor::Commitment;
@@ -55,18 +55,18 @@ class Goblin {
         }
     };
 
-    using GoblinUltraComposer = bb::honk::UltraComposer_<GUHFlavor>;
-    using GoblinUltraVerifier = bb::honk::UltraVerifier_<GUHFlavor>;
+    using GoblinUltraComposer = honk::UltraComposer_<GUHFlavor>;
+    using GoblinUltraVerifier = honk::UltraVerifier_<GUHFlavor>;
     using Builder = GoblinUltraCircuitBuilder;
-    using OpQueue = bb::ECCOpQueue;
-    using ECCVMFlavor = bb::honk::flavor::ECCVM;
-    using ECCVMBuilder = bb::ECCVMCircuitBuilder<ECCVMFlavor>;
-    using ECCVMComposer = bb::honk::ECCVMComposer;
-    using ECCVMProver = bb::honk::ECCVMProver_<ECCVMFlavor>;
-    using TranslatorBuilder = bb::GoblinTranslatorCircuitBuilder;
-    using TranslatorComposer = bb::honk::GoblinTranslatorComposer;
-    using RecursiveMergeVerifier = bb::stdlib::recursion::goblin::MergeRecursiveVerifier_<GoblinUltraCircuitBuilder>;
-    using MergeVerifier = bb::honk::MergeVerifier_<GUHFlavor>;
+    using OpQueue = ECCOpQueue;
+    using ECCVMFlavor = honk::flavor::ECCVM;
+    using ECCVMBuilder = ECCVMCircuitBuilder<ECCVMFlavor>;
+    using ECCVMComposer = honk::ECCVMComposer;
+    using ECCVMProver = honk::ECCVMProver_<ECCVMFlavor>;
+    using TranslatorBuilder = GoblinTranslatorCircuitBuilder;
+    using TranslatorComposer = honk::GoblinTranslatorComposer;
+    using RecursiveMergeVerifier = stdlib::recursion::goblin::MergeRecursiveVerifier_<GoblinUltraCircuitBuilder>;
+    using MergeVerifier = honk::MergeVerifier_<GUHFlavor>;
 
     std::shared_ptr<OpQueue> op_queue = std::make_shared<OpQueue>();
 

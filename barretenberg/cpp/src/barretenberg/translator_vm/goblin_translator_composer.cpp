@@ -184,11 +184,11 @@ void GoblinTranslatorComposer::compute_witness(CircuitBuilder& circuit_builder)
 
     // We construct concatenated versions of range constraint polynomials, where several polynomials are concatenated
     // into one. These polynomials are not commited to.
-    bb::honk::permutation_library::compute_concatenated_polynomials<Flavor>(proving_key.get());
+    honk::permutation_library::compute_concatenated_polynomials<Flavor>(proving_key.get());
 
     // We also contruct ordered polynomials, which have the same values as concatenated ones + enough values to bridge
     // the range from 0 to maximum range defined by the range constraint.
-    bb::honk::permutation_library::compute_goblin_translator_range_constraint_ordered_polynomials<Flavor>(
+    honk::permutation_library::compute_goblin_translator_range_constraint_ordered_polynomials<Flavor>(
         proving_key.get());
 
     computed_witness = true;
@@ -273,11 +273,11 @@ std::shared_ptr<typename Flavor::ProvingKey> GoblinTranslatorComposer::compute_p
 
     // Compute polynomials with odd and even indices set to 1 up to the minicircuit margin + lagrange polynomials at
     // second and second to last indices in the minicircuit
-    bb::honk::permutation_library::compute_lagrange_polynomials_for_goblin_translator<Flavor>(proving_key.get());
+    honk::permutation_library::compute_lagrange_polynomials_for_goblin_translator<Flavor>(proving_key.get());
 
     // Compute the numerator for the permutation argument with several repetitions of steps bridging 0 and maximum range
     // constraint
-    bb::honk::permutation_library::compute_extra_range_constraint_numerator<Flavor>(proving_key.get());
+    honk::permutation_library::compute_extra_range_constraint_numerator<Flavor>(proving_key.get());
 
     return proving_key;
 }

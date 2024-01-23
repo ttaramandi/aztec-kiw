@@ -6,7 +6,7 @@ namespace bb::join_split_example::proofs::join_split {
 
 using namespace notes::native;
 
-bb::fr compute_signing_data(join_split_tx const& tx)
+fr compute_signing_data(join_split_tx const& tx)
 {
     auto proof_id = tx.proof_id;
     auto is_deposit = proof_id == proof_ids::DEPOSIT;

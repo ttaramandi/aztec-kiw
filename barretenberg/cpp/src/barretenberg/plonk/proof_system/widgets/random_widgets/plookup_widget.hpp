@@ -38,7 +38,7 @@ class ProverPlookupWidget : public ProverRandomWidget {
                                           const size_t round_number,
                                           work_queue& queue) override;
 
-    inline bb::fr compute_quotient_contribution(const bb::fr& alpha_base,
+    inline bb::fr compute_quotient_contribution(const fr& alpha_base,
                                                 const transcript::StandardTranscript& transcript) override;
 };
 

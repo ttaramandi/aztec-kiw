@@ -16,7 +16,7 @@ BuilderComposerPtrs create_builder_and_composer();
 
 proof create_proof(BuilderComposerPtrs pair);
 
-bool verify_proof(BuilderComposerPtrs pair, bb::plonk::proof const& proof);
+bool verify_proof(BuilderComposerPtrs pair, plonk::proof const& proof);
 
 void delete_builder_and_composer(BuilderComposerPtrs pair);
 

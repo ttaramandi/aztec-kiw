@@ -155,10 +155,10 @@ template <typename Builder> class StdlibPedersen : public testing::Test {
 
         for (size_t i = 0; i < 7; ++i) {
             std::vector<fr> inputs;
-            inputs.push_back(bb::fr::random_element());
-            inputs.push_back(bb::fr::random_element());
-            inputs.push_back(bb::fr::random_element());
-            inputs.push_back(bb::fr::random_element());
+            inputs.push_back(fr::random_element());
+            inputs.push_back(fr::random_element());
+            inputs.push_back(fr::random_element());
+            inputs.push_back(fr::random_element());
 
             if (i == 1) {
                 inputs[0] = fr(0);
@@ -209,7 +209,7 @@ template <typename Builder> class StdlibPedersen : public testing::Test {
         std::vector<stdlib::field_t<Builder>> witness_inputs;
 
         for (size_t i = 0; i < 8; ++i) {
-            inputs.emplace_back(bb::fr::random_element());
+            inputs.emplace_back(fr::random_element());
             witness_inputs.emplace_back(witness_ct(&builder, inputs[i]));
         }
 
@@ -228,7 +228,7 @@ template <typename Builder> class StdlibPedersen : public testing::Test {
         std::vector<stdlib::field_t<Builder>> witness_inputs;
 
         for (size_t i = 0; i < 8; ++i) {
-            inputs.push_back(bb::fr::random_element());
+            inputs.push_back(fr::random_element());
             if (i % 2 == 1) {
                 witness_inputs.push_back(witness_ct(&builder, inputs[i]));
             } else {

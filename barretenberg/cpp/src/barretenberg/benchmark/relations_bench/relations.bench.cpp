@@ -5,7 +5,7 @@
 #include <benchmark/benchmark.h>
 
 namespace {
-auto& engine = bb::numeric::get_debug_randomness();
+auto& engine = numeric::get_debug_randomness();
 }
 
 using namespace bb::honk::sumcheck;
@@ -21,7 +21,7 @@ template <typename Flavor, typename Relation> void execute_relation(::benchmark:
     using AllValues = typename Flavor::AllValues;
     using SumcheckArrayOfValuesOverSubrelations = typename Relation::SumcheckArrayOfValuesOverSubrelations;
 
-    auto params = bb::RelationParameters<FF>::get_random();
+    auto params = RelationParameters<FF>::get_random();
 
     // Extract an array containing all the polynomial evaluations at a given row i
     AllValues new_value{};

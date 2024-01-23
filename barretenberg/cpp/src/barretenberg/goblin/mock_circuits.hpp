@@ -14,12 +14,12 @@ class GoblinMockCircuits {
     using FF = Curve::ScalarField;
     using Fbase = Curve::BaseField;
     using Point = Curve::AffineElement;
-    using CommitmentKey = bb::honk::pcs::CommitmentKey<Curve>;
-    using OpQueue = bb::ECCOpQueue;
-    using GoblinUltraBuilder = bb::GoblinUltraCircuitBuilder;
-    using Flavor = bb::honk::flavor::GoblinUltra;
-    using RecursiveFlavor = bb::honk::flavor::GoblinUltraRecursive_<GoblinUltraBuilder>;
-    using RecursiveVerifier = bb::stdlib::recursion::honk::UltraRecursiveVerifier_<RecursiveFlavor>;
+    using CommitmentKey = honk::pcs::CommitmentKey<Curve>;
+    using OpQueue = ECCOpQueue;
+    using GoblinUltraBuilder = GoblinUltraCircuitBuilder;
+    using Flavor = honk::flavor::GoblinUltra;
+    using RecursiveFlavor = honk::flavor::GoblinUltraRecursive_<GoblinUltraBuilder>;
+    using RecursiveVerifier = stdlib::recursion::honk::UltraRecursiveVerifier_<RecursiveFlavor>;
     using KernelInput = Goblin::AccumulationOutput;
     static constexpr size_t NUM_OP_QUEUE_COLUMNS = Flavor::NUM_WIRES;
 
@@ -61,9 +61,9 @@ class GoblinMockCircuits {
      *
      * @param op_queue
      */
-    static void perform_op_queue_interactions_for_mock_first_circuit(std::shared_ptr<bb::ECCOpQueue>& op_queue)
+    static void perform_op_queue_interactions_for_mock_first_circuit(std::shared_ptr<ECCOpQueue>& op_queue)
     {
-        bb::GoblinUltraCircuitBuilder builder{ op_queue };
+        GoblinUltraCircuitBuilder builder{ op_queue };
 
         // Add some goblinized ecc ops
         construct_goblin_ecc_op_circuit(builder);
@@ -71,7 +71,7 @@ class GoblinMockCircuits {
         op_queue->set_size_data();
 
         // Manually compute the op queue transcript commitments (which would normally be done by the merge prover)
-        auto crs_factory_ = bb::srs::get_crs_factory();
+        auto crs_factory_ = srs::get_crs_factory();
         auto commitment_key = CommitmentKey(op_queue->get_current_size(), crs_factory_);
         std::array<Point, Flavor::NUM_WIRES> op_queue_commitments;
         size_t idx = 0;

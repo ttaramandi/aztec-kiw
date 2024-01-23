@@ -185,7 +185,7 @@ template <typename Builder> bool_t<Builder> safe_uint_t<Builder>::is_zero() cons
     return value.is_zero();
 }
 
-template <typename Builder> bb::fr safe_uint_t<Builder>::get_value() const
+template <typename Builder> fr safe_uint_t<Builder>::get_value() const
 {
     return value.get_value();
 }
@@ -238,8 +238,8 @@ std::array<safe_uint_t<Builder>, 3> safe_uint_t<Builder>::slice(const uint8_t ms
     return result;
 }
 
-template class safe_uint_t<bb::StandardCircuitBuilder>;
-template class safe_uint_t<bb::UltraCircuitBuilder>;
-template class safe_uint_t<bb::GoblinUltraCircuitBuilder>;
+template class safe_uint_t<StandardCircuitBuilder>;
+template class safe_uint_t<UltraCircuitBuilder>;
+template class safe_uint_t<GoblinUltraCircuitBuilder>;
 
 } // namespace bb::stdlib

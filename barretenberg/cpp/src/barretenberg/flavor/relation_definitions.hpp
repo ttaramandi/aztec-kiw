@@ -11,16 +11,16 @@
 #define ACCUMULATE(...) _ACCUMULATE(__VA_ARGS__)
 #define _ACCUMULATE(RelationImpl, Flavor, AccumulatorType, EdgeType)                                                   \
     template void                                                                                                      \
-    RelationImpl<Flavor::FF>::accumulate<bb::Relation<RelationImpl<Flavor::FF>>::AccumulatorType, EdgeType(Flavor)>(   \
-        bb::Relation<RelationImpl<Flavor::FF>>::AccumulatorType&,                                                      \
+    RelationImpl<Flavor::FF>::accumulate<Relation<RelationImpl<Flavor::FF>>::AccumulatorType, EdgeType(Flavor)>(       \
+        Relation<RelationImpl<Flavor::FF>>::AccumulatorType&,                                                          \
         EdgeType(Flavor) const&,                                                                                       \
         RelationParameters<Flavor::FF> const&,                                                                         \
         Flavor::FF const&);
 
 #define PERMUTATION_METHOD(...) _PERMUTATION_METHOD(__VA_ARGS__)
 #define _PERMUTATION_METHOD(MethodName, RelationImpl, Flavor, AccumulatorType, EdgeType)                               \
-    template typename bb::Relation<RelationImpl<Flavor::FF>>::AccumulatorType                                          \
-    RelationImpl<Flavor::FF>::MethodName<bb::Relation<RelationImpl<Flavor::FF>>::AccumulatorType, EdgeType(Flavor)>(   \
+    template typename Relation<RelationImpl<Flavor::FF>>::AccumulatorType                                              \
+    RelationImpl<Flavor::FF>::MethodName<Relation<RelationImpl<Flavor::FF>>::AccumulatorType, EdgeType(Flavor)>(       \
         EdgeType(Flavor) const&, RelationParameters<Flavor::FF> const&);
 
 #define SUMCHECK_RELATION_CLASS(...) _SUMCHECK_RELATION_CLASS(__VA_ARGS__)

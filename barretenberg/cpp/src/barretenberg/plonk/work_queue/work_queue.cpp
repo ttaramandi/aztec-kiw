@@ -82,8 +82,8 @@ void work_queue::put_ifft_data(std::shared_ptr<fr[]> result, const size_t work_i
     for (const auto& item : work_item_queue) {
         if (item.work_type == WorkType::IFFT) {
             if (count == work_item_number) {
-                bb::polynomial wire(key->circuit_size);
-                memcpy(wire.data().get(), result.get(), key->circuit_size * sizeof(bb::fr));
+                polynomial wire(key->circuit_size);
+                memcpy(wire.data().get(), result.get(), key->circuit_size * sizeof(fr));
                 key->polynomial_store.put(item.tag, std::move(wire));
                 return;
             }
@@ -106,7 +106,7 @@ work_queue::queued_fft_inputs work_queue::get_fft_data(const size_t work_item_nu
             ++count;
         }
     }
-    return { nullptr, bb::fr(0) };
+    return { nullptr, fr(0) };
 }
 
 void work_queue::put_fft_data(std::shared_ptr<fr[]> result, const size_t work_item_number)
@@ -116,7 +116,7 @@ void work_queue::put_fft_data(std::shared_ptr<fr[]> result, const size_t work_it
         if (item.work_type == WorkType::SMALL_FFT) {
             if (count == work_item_number) {
                 const size_t n = key->circuit_size;
-                bb::polynomial wire_fft(4 * n + 4);
+                polynomial wire_fft(4 * n + 4);
 
                 for (size_t i = 0; i < n; ++i) {
                     wire_fft[4 * i + item.index] = result.get()[i];
@@ -132,7 +132,7 @@ void work_queue::put_fft_data(std::shared_ptr<fr[]> result, const size_t work_it
     }
 }
 
-void work_queue::put_scalar_multiplication_data(const bb::g1::affine_element result, const size_t work_item_number)
+void work_queue::put_scalar_multiplication_data(const g1::affine_element result, const size_t work_item_number)
 {
     size_t count = 0;
     for (const auto& item : work_item_queue) {
@@ -159,8 +159,8 @@ void work_queue::add_to_queue(const work_item& item)
     // #if 1
     //     if (item.work_type == WorkType::FFT) {
     //         const auto large_root = key->large_domain.root;
-    //         bb::fr coset_shifts[4]{
-    //             bb::fr(1), large_root, large_root.sqr(), large_root.sqr() * large_root
+    //         fr coset_shifts[4]{
+    //             fr(1), large_root, large_root.sqr(), large_root.sqr() * large_root
     //         };
     //         work_item_queue.push_back({
     //             WorkType::SMALL_FFT,
@@ -209,11 +209,11 @@ void work_queue::process_queue()
 
             ASSERT(msm_size <= key->reference_string->get_monomial_size());
 
-            bb::g1::affine_element* srs_points = key->reference_string->get_monomial_points();
+            g1::affine_element* srs_points = key->reference_string->get_monomial_points();
 
             // Run pippenger multi-scalar multiplication.
-            auto runtime_state = bb::scalar_multiplication::pippenger_runtime_state<curve::BN254>(msm_size);
-            bb::g1::affine_element result(bb::scalar_multiplication::pippenger_unsafe<curve::BN254>(
+            auto runtime_state = scalar_multiplication::pippenger_runtime_state<curve::BN254>(msm_size);
+            g1::affine_element result(scalar_multiplication::pippenger_unsafe<curve::BN254>(
                 item.mul_scalars.get(), srs_points, msm_size, runtime_state));
 
             transcript->add_element(item.tag, result.to_buffer());

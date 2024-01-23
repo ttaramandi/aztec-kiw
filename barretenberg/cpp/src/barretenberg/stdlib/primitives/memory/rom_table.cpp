@@ -121,6 +121,6 @@ template <typename Builder> field_t<Builder> rom_table<Builder>::operator[](cons
     return field_pt::from_witness_index(context, output_idx);
 }
 
-template class rom_table<bb::UltraCircuitBuilder>;
-template class rom_table<bb::GoblinUltraCircuitBuilder>;
+template class rom_table<UltraCircuitBuilder>;
+template class rom_table<GoblinUltraCircuitBuilder>;
 } // namespace bb::stdlib

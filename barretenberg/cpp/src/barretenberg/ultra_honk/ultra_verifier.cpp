@@ -23,7 +23,7 @@ UltraVerifier_<Flavor>::UltraVerifier_(const std::shared_ptr<Transcript>& transc
 template <typename Flavor>
 UltraVerifier_<Flavor>::UltraVerifier_(const std::shared_ptr<VerificationKey>& verifier_key)
     : key(verifier_key)
-    , pcs_verification_key(std::make_unique<VerifierCommitmentKey>(0, bb::srs::get_crs_factory()))
+    , pcs_verification_key(std::make_unique<VerifierCommitmentKey>(0, srs::get_crs_factory()))
     , transcript(std::make_shared<Transcript>())
 {}
 
@@ -54,7 +54,7 @@ template <typename Flavor> bool UltraVerifier_<Flavor>::verify_proof(const plonk
     using VerifierCommitments = typename Flavor::VerifierCommitments;
     using CommitmentLabels = typename Flavor::CommitmentLabels;
 
-    bb::RelationParameters<FF> relation_parameters;
+    RelationParameters<FF> relation_parameters;
 
     transcript = std::make_shared<Transcript>(proof.proof_data);
 

@@ -19,10 +19,10 @@ namespace bb::stdlib::recursion::honk {
 template <typename BuilderType> class GoblinRecursiveVerifierTest : public testing::Test {
 
     // Define types relevant for testing
-    using UltraFlavor = ::bb::honk::flavor::Ultra;
-    using GoblinUltraFlavor = ::bb::honk::flavor::GoblinUltra;
-    using UltraComposer = ::bb::honk::UltraComposer_<UltraFlavor>;
-    using GoblinUltraComposer = ::bb::honk::UltraComposer_<GoblinUltraFlavor>;
+    using UltraFlavor = ::honk::flavor::Ultra;
+    using GoblinUltraFlavor = ::honk::flavor::GoblinUltra;
+    using UltraComposer = ::honk::UltraComposer_<UltraFlavor>;
+    using GoblinUltraComposer = ::honk::UltraComposer_<GoblinUltraFlavor>;
 
     // Define types for the inner circuit, i.e. the circuit whose proof will be recursively verified
     using InnerFlavor = GoblinUltraFlavor;
@@ -34,7 +34,7 @@ template <typename BuilderType> class GoblinRecursiveVerifierTest : public testi
 
     // Types for recursive verifier circuit
     using OuterBuilder = BuilderType;
-    using RecursiveFlavor = ::bb::honk::flavor::GoblinUltraRecursive_<OuterBuilder>;
+    using RecursiveFlavor = ::honk::flavor::GoblinUltraRecursive_<OuterBuilder>;
     using RecursiveVerifier = UltraRecursiveVerifier_<RecursiveFlavor>;
     using VerificationKey = typename RecursiveVerifier::VerificationKey;
 
@@ -124,7 +124,7 @@ template <typename BuilderType> class GoblinRecursiveVerifierTest : public testi
     };
 
   public:
-    static void SetUpTestSuite() { bb::srs::init_crs_factory("../srs_db/ignition"); }
+    static void SetUpTestSuite() { srs::init_crs_factory("../srs_db/ignition"); }
 
     /**
      * @brief Create inner circuit and call check_circuit on it

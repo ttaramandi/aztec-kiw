@@ -73,10 +73,10 @@ namespace bb {
  * microlimb.
  *
  */
-class GoblinTranslatorCircuitBuilder : public CircuitBuilderBase<bb::fr> {
+class GoblinTranslatorCircuitBuilder : public CircuitBuilderBase<fr> {
     // We don't need templating for Goblin
-    using Fr = bb::fr;
-    using Fq = bb::fq;
+    using Fr = fr;
+    using Fq = fq;
     using Arithmetization = arithmetization::GoblinTranslator;
 
   public:
@@ -326,7 +326,7 @@ class GoblinTranslatorCircuitBuilder : public CircuitBuilderBase<bb::fr> {
     // The input we evaluate polynomials on
     Fq evaluation_input_x;
 
-    std::array<std::vector<uint32_t, bb::ContainerSlabAllocator<uint32_t>>, NUM_WIRES> wires;
+    std::array<std::vector<uint32_t, ContainerSlabAllocator<uint32_t>>, NUM_WIRES> wires;
 
     /**
      * @brief Construct a new Goblin Translator Circuit Builder object
@@ -432,9 +432,9 @@ class GoblinTranslatorCircuitBuilder : public CircuitBuilderBase<bb::fr> {
     /**
      * @brief Get the result of accumulation
      *
-     * @return bb::fq
+     * @return fq
      */
-    bb::fq get_computation_result()
+    fq get_computation_result()
     {
         const size_t RESULT_ROW = 1;
         ASSERT(num_gates > RESULT_ROW);

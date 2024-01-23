@@ -30,7 +30,7 @@ std::vector<uint32_t> add_variables(UltraCircuitBuilder& builder, std::vector<fr
 
 template <typename T> class ultra_plonk_composer : public ::testing::Test {
   public:
-    static void SetUpTestSuite() { bb::srs::init_crs_factory("../srs_db/ignition"); }
+    static void SetUpTestSuite() { srs::init_crs_factory("../srs_db/ignition"); }
 
     void prove_and_verify(UltraCircuitBuilder& builder, UltraComposer& composer, bool expected_result)
     {
@@ -151,9 +151,9 @@ TYPED_TEST(ultra_plonk_composer, test_elliptic_gate)
     auto builder = UltraCircuitBuilder();
     auto composer = UltraComposer();
 
-    affine_element p1 = crypto::pedersen_commitment::commit_native({ bb::fr(1) }, 0);
+    affine_element p1 = crypto::pedersen_commitment::commit_native({ fr(1) }, 0);
 
-    affine_element p2 = crypto::pedersen_commitment::commit_native({ bb::fr(1) }, 1);
+    affine_element p2 = crypto::pedersen_commitment::commit_native({ fr(1) }, 1);
     ;
     affine_element p3(element(p1) + element(p2));
 

@@ -299,6 +299,6 @@ std::vector<field_t<Builder>> encrypt_buffer_cbc(const std::vector<field_t<Build
     template std::vector<field_t<Builder>> encrypt_buffer_cbc<Builder>(                                                \
         const std::vector<field_t<Builder>>&, const field_t<Builder>&, const field_t<Builder>&)
 
-INSTANTIATE_ENCRYPT_BUFFER_CBC(bb::UltraCircuitBuilder);
-INSTANTIATE_ENCRYPT_BUFFER_CBC(bb::GoblinUltraCircuitBuilder);
+INSTANTIATE_ENCRYPT_BUFFER_CBC(UltraCircuitBuilder);
+INSTANTIATE_ENCRYPT_BUFFER_CBC(GoblinUltraCircuitBuilder);
 } // namespace bb::stdlib::aes128

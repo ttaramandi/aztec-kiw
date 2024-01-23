@@ -12,14 +12,14 @@ template <typename Builder> class field_t {
     using View = field_t;
 
     field_t(Builder* parent_context = nullptr);
-    field_t(Builder* parent_context, const bb::fr& value);
+    field_t(Builder* parent_context, const fr& value);
 
     field_t(const int value)
         : context(nullptr)
         , witness_index(IS_CONSTANT)
     {
-        additive_constant = bb::fr(value);
-        multiplicative_constant = bb::fr(0);
+        additive_constant = fr(value);
+        multiplicative_constant = fr(0);
     }
 
     // NOLINTNEXTLINE(google-runtime-int) intended behavior
@@ -27,16 +27,16 @@ template <typename Builder> class field_t {
         : context(nullptr)
         , witness_index(IS_CONSTANT)
     {
-        additive_constant = bb::fr(value);
-        multiplicative_constant = bb::fr(0);
+        additive_constant = fr(value);
+        multiplicative_constant = fr(0);
     }
 
     field_t(const unsigned int value)
         : context(nullptr)
         , witness_index(IS_CONSTANT)
     {
-        additive_constant = bb::fr(value);
-        multiplicative_constant = bb::fr(0);
+        additive_constant = fr(value);
+        multiplicative_constant = fr(0);
     }
 
     // NOLINTNEXTLINE(google-runtime-int) intended behavior
@@ -44,21 +44,21 @@ template <typename Builder> class field_t {
         : context(nullptr)
         , witness_index(IS_CONSTANT)
     {
-        additive_constant = bb::fr(value);
-        multiplicative_constant = bb::fr(0);
+        additive_constant = fr(value);
+        multiplicative_constant = fr(0);
     }
 
-    field_t(const bb::fr& value)
+    field_t(const fr& value)
         : context(nullptr)
         , additive_constant(value)
-        , multiplicative_constant(bb::fr(1))
+        , multiplicative_constant(fr(1))
         , witness_index(IS_CONSTANT)
     {}
 
     field_t(const uint256_t& value)
         : context(nullptr)
         , additive_constant(value)
-        , multiplicative_constant(bb::fr(1))
+        , multiplicative_constant(fr(1))
         , witness_index(IS_CONSTANT)
     {}
 
@@ -83,7 +83,7 @@ template <typename Builder> class field_t {
     ~field_t() = default;
 
     static constexpr bool is_composite = false;
-    static constexpr uint256_t modulus = bb::fr::modulus;
+    static constexpr uint256_t modulus = fr::modulus;
 
     static field_t from_witness_index(Builder* parent_context, uint32_t witness_index);
 
@@ -167,12 +167,9 @@ template <typename Builder> class field_t {
 
     field_t invert() const { return (field_t(1) / field_t(*this)).normalize(); }
 
-    static field_t coset_generator(const size_t generator_idx)
-    {
-        return field_t(bb::fr::coset_generator(generator_idx));
-    }
+    static field_t coset_generator(const size_t generator_idx) { return field_t(fr::coset_generator(generator_idx)); }
 
-    static field_t external_coset_generator() { return field_t(bb::fr::external_coset_generator()); }
+    static field_t external_coset_generator() { return field_t(fr::external_coset_generator()); }
 
     field_t operator-() const
     {
@@ -245,7 +242,7 @@ template <typename Builder> class field_t {
      **/
     field_t normalize() const;
 
-    bb::fr get_value() const;
+    fr get_value() const;
 
     Builder* get_context() const { return context; }
 
@@ -279,7 +276,7 @@ template <typename Builder> class field_t {
         context->fix_witness(witness_index, get_value());
     }
 
-    static field_t from_witness(Builder* ctx, const bb::fr& input) { return field_t(witness_t<Builder>(ctx, input)); }
+    static field_t from_witness(Builder* ctx, const fr& input) { return field_t(witness_t<Builder>(ctx, input)); }
 
     /**
      * Fix a witness. The value of the witness is constrained with a selector
@@ -373,8 +370,8 @@ template <typename Builder> class field_t {
      *
      * This will add a constraint, as both zip and zap map to circuit witnesses.
      **/
-    mutable bb::fr additive_constant;
-    mutable bb::fr multiplicative_constant;
+    mutable fr additive_constant;
+    mutable fr multiplicative_constant;
 
     /**
      * Every builder object contains a vector `variables` (a.k.a. 'witnesses'); circuit variables that can be

@@ -10,16 +10,16 @@ template <typename Curve> class recursive_ultra_verifier_settings : public plonk
     using fr_ct = typename Curve::ScalarField;
     using g1 = typename Curve::GroupNative::affine_element;
     using Builder = typename Curve::Builder;
-    using Transcript_pt = bb::stdlib::recursion::Transcript<Builder>;
-    using PermutationWidget = bb::plonk::VerifierPermutationWidget<fr_ct, g1, Transcript_pt>;
-    using PlookupWidget = bb::plonk::VerifierPlookupWidget<fr_ct, g1, Transcript_pt>;
+    using Transcript_pt = stdlib::recursion::Transcript<Builder>;
+    using PermutationWidget = plonk::VerifierPermutationWidget<fr_ct, g1, Transcript_pt>;
+    using PlookupWidget = plonk::VerifierPlookupWidget<fr_ct, g1, Transcript_pt>;
 
-    using base_settings = bb::plonk::ultra_settings;
+    using base_settings = plonk::ultra_settings;
 
-    using PlookupArithmeticWidget = bb::plonk::VerifierPlookupArithmeticWidget<fr_ct, g1, Transcript_pt, base_settings>;
-    using GenPermSortWidget = bb::plonk::VerifierGenPermSortWidget<fr_ct, g1, Transcript_pt, base_settings>;
-    using EllipticWidget = bb::plonk::VerifierEllipticWidget<fr_ct, g1, Transcript_pt, base_settings>;
-    using PlookupAuxiliaryWidget = bb::plonk::VerifierPlookupAuxiliaryWidget<fr_ct, g1, Transcript_pt, base_settings>;
+    using PlookupArithmeticWidget = plonk::VerifierPlookupArithmeticWidget<fr_ct, g1, Transcript_pt, base_settings>;
+    using GenPermSortWidget = plonk::VerifierGenPermSortWidget<fr_ct, g1, Transcript_pt, base_settings>;
+    using EllipticWidget = plonk::VerifierEllipticWidget<fr_ct, g1, Transcript_pt, base_settings>;
+    using PlookupAuxiliaryWidget = plonk::VerifierPlookupAuxiliaryWidget<fr_ct, g1, Transcript_pt, base_settings>;
 
     static constexpr size_t num_challenge_bytes = 16;
     static constexpr transcript::HashType hash_type = transcript::HashType::PedersenBlake3s;
@@ -85,16 +85,16 @@ class recursive_ultra_to_standard_verifier_settings : public recursive_ultra_ver
     using fr_ct = typename Curve::ScalarField;
     using g1 = typename Curve::GroupNative::affine_element;
     using Builder = typename Curve::Builder;
-    using Transcript_pt = bb::stdlib::recursion::Transcript<Builder>;
-    using PermutationWidget = bb::plonk::VerifierPermutationWidget<fr_ct, g1, Transcript_pt>;
-    using PlookupWidget = bb::plonk::VerifierPlookupWidget<fr_ct, g1, Transcript_pt>;
+    using Transcript_pt = stdlib::recursion::Transcript<Builder>;
+    using PermutationWidget = plonk::VerifierPermutationWidget<fr_ct, g1, Transcript_pt>;
+    using PlookupWidget = plonk::VerifierPlookupWidget<fr_ct, g1, Transcript_pt>;
 
-    using base_settings = bb::plonk::ultra_to_standard_settings;
+    using base_settings = plonk::ultra_to_standard_settings;
 
-    using PlookupArithmeticWidget = bb::plonk::VerifierPlookupArithmeticWidget<fr_ct, g1, Transcript_pt, base_settings>;
-    using GenPermSortWidget = bb::plonk::VerifierGenPermSortWidget<fr_ct, g1, Transcript_pt, base_settings>;
-    using EllipticWidget = bb::plonk::VerifierEllipticWidget<fr_ct, g1, Transcript_pt, base_settings>;
-    using PlookupAuxiliaryWidget = bb::plonk::VerifierPlookupAuxiliaryWidget<fr_ct, g1, Transcript_pt, base_settings>;
+    using PlookupArithmeticWidget = plonk::VerifierPlookupArithmeticWidget<fr_ct, g1, Transcript_pt, base_settings>;
+    using GenPermSortWidget = plonk::VerifierGenPermSortWidget<fr_ct, g1, Transcript_pt, base_settings>;
+    using EllipticWidget = plonk::VerifierEllipticWidget<fr_ct, g1, Transcript_pt, base_settings>;
+    using PlookupAuxiliaryWidget = plonk::VerifierPlookupAuxiliaryWidget<fr_ct, g1, Transcript_pt, base_settings>;
 
     static constexpr transcript::HashType hash_type = transcript::HashType::PedersenBlake3s;
 };

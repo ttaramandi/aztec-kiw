@@ -37,8 +37,8 @@ class MemoryTree {
   public:
     size_t depth_;
     size_t total_size_;
-    bb::fr root_;
-    std::vector<bb::fr> hashes_;
+    fr root_;
+    std::vector<fr> hashes_;
 };
 
 } // namespace bb::stdlib::merkle_tree

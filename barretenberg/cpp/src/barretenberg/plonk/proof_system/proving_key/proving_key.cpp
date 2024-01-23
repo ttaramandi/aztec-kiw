@@ -24,7 +24,7 @@ namespace bb::plonk {
  * */
 proving_key::proving_key(const size_t num_gates,
                          const size_t num_inputs,
-                         std::shared_ptr<bb::srs::factories::ProverCrs<curve::BN254>> const& crs,
+                         std::shared_ptr<srs::factories::ProverCrs<curve::BN254>> const& crs,
                          CircuitType type)
     : circuit_type(type)
     , circuit_size(num_gates)
@@ -44,8 +44,7 @@ proving_key::proving_key(const size_t num_gates,
  * @param data
  * @param crs
  */
-proving_key::proving_key(proving_key_data&& data,
-                         std::shared_ptr<bb::srs::factories::ProverCrs<curve::BN254>> const& crs)
+proving_key::proving_key(proving_key_data&& data, std::shared_ptr<srs::factories::ProverCrs<curve::BN254>> const& crs)
     : circuit_type(static_cast<CircuitType>(data.circuit_type))
     , circuit_size(data.circuit_size)
     , num_public_inputs(data.num_public_inputs)
@@ -77,15 +76,15 @@ void proving_key::init()
     }
 
     // t_i for i = 1,2,3 have n+1 coefficients after blinding. t_4 has only n coefficients.
-    quotient_polynomial_parts[0] = bb::polynomial(circuit_size + 1);
-    quotient_polynomial_parts[1] = bb::polynomial(circuit_size + 1);
-    quotient_polynomial_parts[2] = bb::polynomial(circuit_size + 1);
-    quotient_polynomial_parts[3] = bb::polynomial(circuit_size);
+    quotient_polynomial_parts[0] = polynomial(circuit_size + 1);
+    quotient_polynomial_parts[1] = polynomial(circuit_size + 1);
+    quotient_polynomial_parts[2] = polynomial(circuit_size + 1);
+    quotient_polynomial_parts[3] = polynomial(circuit_size);
 
-    memset((void*)&quotient_polynomial_parts[0][0], 0x00, sizeof(bb::fr) * (circuit_size + 1));
-    memset((void*)&quotient_polynomial_parts[1][0], 0x00, sizeof(bb::fr) * (circuit_size + 1));
-    memset((void*)&quotient_polynomial_parts[2][0], 0x00, sizeof(bb::fr) * (circuit_size + 1));
-    memset((void*)&quotient_polynomial_parts[3][0], 0x00, sizeof(bb::fr) * circuit_size);
+    memset((void*)&quotient_polynomial_parts[0][0], 0x00, sizeof(fr) * (circuit_size + 1));
+    memset((void*)&quotient_polynomial_parts[1][0], 0x00, sizeof(fr) * (circuit_size + 1));
+    memset((void*)&quotient_polynomial_parts[2][0], 0x00, sizeof(fr) * (circuit_size + 1));
+    memset((void*)&quotient_polynomial_parts[3][0], 0x00, sizeof(fr) * circuit_size);
 }
 
 } // namespace bb::plonk

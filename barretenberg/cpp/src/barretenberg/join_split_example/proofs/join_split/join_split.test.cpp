@@ -45,7 +45,7 @@ class join_split_tests : public ::testing::Test {
     {
         srs::init_crs_factory("../srs_db/ignition");
         init_proving_key(false);
-        auto crs_factory = std::make_unique<bb::srs::factories::FileCrsFactory<curve::BN254>>("../srs_db/ignition");
+        auto crs_factory = std::make_unique<srs::factories::FileCrsFactory<curve::BN254>>("../srs_db/ignition");
         init_verification_key();
         info("vk hash: ", get_verification_key()->sha256_hash());
     }
@@ -195,7 +195,7 @@ class join_split_tests : public ::testing::Test {
         tx.account_private_key = user.owner.private_key;
         tx.partial_claim_note.input_nullifier = 0;
         tx.alias_hash =
-            !account_required ? bb::join_split_example::fixtures::generate_alias_hash("penguin") : user.alias_hash;
+            !account_required ? join_split_example::fixtures::generate_alias_hash("penguin") : user.alias_hash;
         tx.account_required = account_required;
         // default to no chaining:
         tx.backward_link = 0;
@@ -999,7 +999,7 @@ TEST_F(join_split_tests, test_non_zero_tx_fee_zero_public_values)
 TEST_F(join_split_tests, test_max_tx_fee)
 {
     join_split_tx tx = zero_input_setup();
-    auto tx_fee = (uint256_t(1) << bb::join_split_example::TX_FEE_BIT_LENGTH) - 1;
+    auto tx_fee = (uint256_t(1) << join_split_example::TX_FEE_BIT_LENGTH) - 1;
     tx.proof_id = proof_ids::DEPOSIT;
     tx.public_value += tx_fee;
     tx.public_owner = fr::random_element();
@@ -1012,7 +1012,7 @@ TEST_F(join_split_tests, test_max_tx_fee)
 TEST_F(join_split_tests, test_overflow_tx_fee_fails)
 {
     join_split_tx tx = simple_setup();
-    auto tx_fee = uint256_t(1) << bb::join_split_example::TX_FEE_BIT_LENGTH;
+    auto tx_fee = uint256_t(1) << join_split_example::TX_FEE_BIT_LENGTH;
     tx.proof_id = proof_ids::DEPOSIT;
     tx.public_value += tx_fee;
     tx.public_owner = fr::random_element();

@@ -8,11 +8,11 @@
 namespace bb::plonk::flavor {
 class Standard {
   public:
-    using CircuitBuilder = bb::StandardCircuitBuilder;
+    using CircuitBuilder = StandardCircuitBuilder;
     using ProvingKey = plonk::proving_key;
     using Curve = curve::BN254;
     using FF = Curve::ScalarField;
-    using Polynomial = bb::Polynomial<FF>;
+    using Polynomial = Polynomial<FF>;
     static constexpr size_t NUM_WIRES = CircuitBuilder::NUM_WIRES;
     // Whether or not the first row of the execution trace is reserved for 0s to enable shifts
     static constexpr bool has_zero_row = false;
@@ -20,11 +20,11 @@ class Standard {
 
 class Ultra {
   public:
-    using CircuitBuilder = bb::UltraCircuitBuilder;
+    using CircuitBuilder = UltraCircuitBuilder;
     using ProvingKey = plonk::proving_key;
     using Curve = curve::BN254;
     using FF = Curve::ScalarField;
-    using Polynomial = bb::Polynomial<FF>;
+    using Polynomial = Polynomial<FF>;
     static constexpr size_t NUM_WIRES = CircuitBuilder::NUM_WIRES;
     // Whether or not the first row of the execution trace is reserved for 0s to enable shifts
     static constexpr bool has_zero_row = false;

@@ -32,7 +32,7 @@ void sub_bytes(uint8_t* input)
     uint8_t i, j;
     for (i = 0; i < 4; ++i) {
         for (j = 0; j < 4; ++j) {
-            input[j * 4 + i] = bb::crypto::aes128_sbox[input[j * 4 + i]];
+            input[j * 4 + i] = crypto::aes128_sbox[input[j * 4 + i]];
         }
     }
 }
@@ -41,7 +41,7 @@ void inverse_sub_bytes(uint8_t* input)
 {
     for (size_t i = 0; i < 4; ++i) {
         for (size_t j = 0; j < 4; ++j) {
-            input[j * 4 + i] = bb::crypto::aes128_sbox_inverse[input[j * 4 + i]];
+            input[j * 4 + i] = crypto::aes128_sbox_inverse[input[j * 4 + i]];
         }
     }
 }

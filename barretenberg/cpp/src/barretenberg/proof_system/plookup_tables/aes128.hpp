@@ -14,10 +14,10 @@ static constexpr uint64_t aes_normalization_table[AES_BASE]{
     1, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-inline std::array<bb::fr, 2> get_aes_sparse_values_from_key(const std::array<uint64_t, 2> key)
+inline std::array<fr, 2> get_aes_sparse_values_from_key(const std::array<uint64_t, 2> key)
 {
     const auto sparse = numeric::map_into_sparse_form<AES_BASE>(uint64_t(key[0]));
-    return { bb::fr(sparse), bb::fr(0) };
+    return { bb::fr(sparse), fr(0) };
 }
 
 inline BasicTable generate_aes_sparse_table(BasicTableId id, const size_t table_index)
@@ -30,22 +30,22 @@ inline BasicTable generate_aes_sparse_table(BasicTableId id, const size_t table_
     for (uint64_t i = 0; i < table.size; ++i) {
         uint64_t left = i;
         const auto right = numeric::map_into_sparse_form<AES_BASE>((uint8_t)i);
-        table.column_1.emplace_back(bb::fr(left));
-        table.column_2.emplace_back(bb::fr(0));
-        table.column_3.emplace_back(bb::fr(right));
+        table.column_1.emplace_back(fr(left));
+        table.column_2.emplace_back(fr(0));
+        table.column_3.emplace_back(fr(right));
     }
     table.get_values_from_key = &get_aes_sparse_values_from_key;
 
-    table.column_1_step_size = bb::fr(256);
-    table.column_2_step_size = bb::fr(0);
-    table.column_3_step_size = bb::fr(0);
+    table.column_1_step_size = fr(256);
+    table.column_2_step_size = fr(0);
+    table.column_3_step_size = fr(0);
     return table;
 }
 
-inline std::array<bb::fr, 2> get_aes_sparse_normalization_values_from_key(const std::array<uint64_t, 2> key)
+inline std::array<fr, 2> get_aes_sparse_normalization_values_from_key(const std::array<uint64_t, 2> key)
 {
     const auto byte = numeric::map_from_sparse_form<AES_BASE>(key[0]);
-    return { bb::fr(numeric::map_into_sparse_form<AES_BASE>(byte)), bb::fr(0) };
+    return { bb::fr(numeric::map_into_sparse_form<AES_BASE>(byte)), fr(0) };
 }
 
 inline BasicTable generate_aes_sparse_normalization_table(BasicTableId id, const size_t table_index)
@@ -69,7 +69,7 @@ inline BasicTable generate_aes_sparse_normalization_table(BasicTableId id, const
                     uint64_t right = i_normalized + j_normalized + k_normalized + m_normalized;
                     table.column_1.emplace_back(left);
                     table.column_2.emplace_back(right);
-                    table.column_3.emplace_back(bb::fr(0));
+                    table.column_3.emplace_back(fr(0));
                 }
             }
         }
@@ -78,22 +78,22 @@ inline BasicTable generate_aes_sparse_normalization_table(BasicTableId id, const
     table.use_twin_keys = false;
     table.get_values_from_key = &get_aes_sparse_normalization_values_from_key;
 
-    table.column_1_step_size = bb::fr(6561);
-    table.column_2_step_size = bb::fr(6561);
-    table.column_3_step_size = bb::fr(0);
+    table.column_1_step_size = fr(6561);
+    table.column_2_step_size = fr(6561);
+    table.column_3_step_size = fr(0);
     return table;
 }
 
 inline MultiTable get_aes_normalization_table(const MultiTableId id = AES_NORMALIZE)
 {
     const size_t num_entries = 2;
-    std::vector<bb::fr> column_1_coefficients;
-    std::vector<bb::fr> column_2_coefficients;
-    std::vector<bb::fr> column_3_coefficients;
+    std::vector<fr> column_1_coefficients;
+    std::vector<fr> column_2_coefficients;
+    std::vector<fr> column_3_coefficients;
 
     for (size_t i = 0; i < num_entries; ++i) {
-        column_1_coefficients.emplace_back(bb::fr(AES_BASE).pow(4 * i));
-        column_2_coefficients.emplace_back(bb::fr(AES_BASE).pow(4 * i));
+        column_1_coefficients.emplace_back(fr(AES_BASE).pow(4 * i));
+        column_2_coefficients.emplace_back(fr(AES_BASE).pow(4 * i));
         column_3_coefficients.emplace_back(0);
     }
 
@@ -123,13 +123,13 @@ inline MultiTable get_aes_input_table(const MultiTableId id = AES_INPUT)
     return table;
 }
 
-inline std::array<bb::fr, 2> get_aes_sbox_values_from_key(const std::array<uint64_t, 2> key)
+inline std::array<fr, 2> get_aes_sbox_values_from_key(const std::array<uint64_t, 2> key)
 {
     const auto byte = numeric::map_from_sparse_form<AES_BASE>(key[0]);
     uint8_t sbox_value = crypto::aes128_sbox[(uint8_t)byte];
     uint8_t swizzled = ((uint8_t)(sbox_value << 1) ^ (uint8_t)(((sbox_value >> 7) & 1) * 0x1b));
-    return { bb::fr(numeric::map_into_sparse_form<AES_BASE>(sbox_value)),
-             bb::fr(numeric::map_into_sparse_form<AES_BASE>((uint8_t)(sbox_value ^ swizzled))) };
+    return { fr(numeric::map_into_sparse_form<AES_BASE>(sbox_value)),
+             fr(numeric::map_into_sparse_form<AES_BASE>((uint8_t)(sbox_value ^ swizzled))) };
 }
 
 inline BasicTable generate_aes_sbox_table(BasicTableId id, const size_t table_index)
@@ -146,15 +146,15 @@ inline BasicTable generate_aes_sbox_table(BasicTableId id, const size_t table_in
         const auto second = numeric::map_into_sparse_form<AES_BASE>(sbox_value);
         const auto third = numeric::map_into_sparse_form<AES_BASE>((uint8_t)(sbox_value ^ swizzled));
 
-        table.column_1.emplace_back(bb::fr(first));
-        table.column_2.emplace_back(bb::fr(second));
-        table.column_3.emplace_back(bb::fr(third));
+        table.column_1.emplace_back(fr(first));
+        table.column_2.emplace_back(fr(second));
+        table.column_3.emplace_back(fr(third));
     }
     table.get_values_from_key = get_aes_sbox_values_from_key;
 
-    table.column_1_step_size = bb::fr(0);
-    table.column_2_step_size = bb::fr(0);
-    table.column_3_step_size = bb::fr(0);
+    table.column_1_step_size = fr(0);
+    table.column_2_step_size = fr(0);
+    table.column_3_step_size = fr(0);
     return table;
 }
 

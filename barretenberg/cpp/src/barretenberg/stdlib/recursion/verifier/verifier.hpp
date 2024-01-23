@@ -96,8 +96,7 @@ void populate_kate_element_map(typename Curve::Builder* ctx,
 
     fr_ct u = transcript.get_challenge_field_element("separator", 0);
 
-    fr_ct batch_evaluation =
-        bb::plonk::compute_kate_batch_evaluation<fr_ct, Transcript, program_settings>(key, transcript);
+    fr_ct batch_evaluation = plonk::compute_kate_batch_evaluation<fr_ct, Transcript, program_settings>(key, transcript);
     batch_opening_scalar = -batch_evaluation;
 
     kate_g1_elements.insert({ "PI_Z_OMEGA", PI_Z_OMEGA });

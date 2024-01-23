@@ -17,14 +17,12 @@ struct GrumpkinG1Params {
     static constexpr bool small_elements = true;
     static constexpr bool has_a = false;
     // have checked in grumpkin.test_b that b is Montgomery form of -17
-    static constexpr bb::fr b{ 0xdd7056026000005a, 0x223fa97acb319311, 0xcc388229877910c0, 0x34394632b724eaa };
-    static constexpr bb::fr a{ 0UL, 0UL, 0UL, 0UL };
+    static constexpr fr b{ 0xdd7056026000005a, 0x223fa97acb319311, 0xcc388229877910c0, 0x34394632b724eaa };
+    static constexpr fr a{ 0UL, 0UL, 0UL, 0UL };
 
     // generator point = (x, y) = (1, sqrt(-16)), sqrt(-16) = 4i
-    static constexpr bb::fr one_x = bb::fr::one();
-    static constexpr bb::fr one_y{
-        0x11b2dff1448c41d8UL, 0x23d3446f21c77dc3UL, 0xaa7b8cf435dfafbbUL, 0x14b34cf69dc25d68UL
-    };
+    static constexpr bb::fr one_x = fr::one();
+    static constexpr fr one_y{ 0x11b2dff1448c41d8UL, 0x23d3446f21c77dc3UL, 0xaa7b8cf435dfafbbUL, 0x14b34cf69dc25d68UL };
 };
 using g1 = bb::group<bb::fr, bb::fq, GrumpkinG1Params>;
 
@@ -33,8 +31,8 @@ using g1 = bb::group<bb::fr, bb::fq, GrumpkinG1Params>;
 namespace bb::curve {
 class Grumpkin {
   public:
-    using ScalarField = bb::fq;
-    using BaseField = bb::fr;
+    using ScalarField = fq;
+    using BaseField = fr;
     using Group = typename grumpkin::g1;
     using Element = typename Group::element;
     using AffineElement = typename Group::affine_element;

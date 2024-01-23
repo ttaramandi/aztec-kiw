@@ -70,7 +70,7 @@ struct ComplicatedSchema {
     std::vector<std::array<fr, 20>> array;
     std::optional<GoodExample> good_or_not;
     fr bare;
-    std::variant<bb::fr, GoodExample> huh;
+    std::variant<fr, GoodExample> huh;
     MSGPACK_FIELDS(array, good_or_not, bare, huh);
 } complicated_schema;
 

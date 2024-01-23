@@ -140,9 +140,9 @@ TEST(ultra_circuit_constructor, test_elliptic_gate)
     typedef grumpkin::g1::element element;
     UltraCircuitBuilder circuit_constructor = UltraCircuitBuilder();
 
-    affine_element p1 = crypto::pedersen_commitment::commit_native({ bb::fr(1) }, 0);
+    affine_element p1 = crypto::pedersen_commitment::commit_native({ fr(1) }, 0);
 
-    affine_element p2 = crypto::pedersen_commitment::commit_native({ bb::fr(1) }, 1);
+    affine_element p2 = crypto::pedersen_commitment::commit_native({ fr(1) }, 1);
     affine_element p3(element(p1) + element(p2));
 
     uint32_t x1 = circuit_constructor.add_variable(p1.x);
@@ -171,7 +171,7 @@ TEST(ultra_circuit_constructor, test_elliptic_double_gate)
     typedef grumpkin::g1::element element;
     UltraCircuitBuilder circuit_constructor = UltraCircuitBuilder();
 
-    affine_element p1 = crypto::pedersen_commitment::commit_native({ bb::fr(1) }, 0);
+    affine_element p1 = crypto::pedersen_commitment::commit_native({ fr(1) }, 0);
     affine_element p3(element(p1).dbl());
 
     uint32_t x1 = circuit_constructor.add_variable(p1.x);

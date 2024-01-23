@@ -16,7 +16,7 @@ constexpr size_t MAX_BYTES = START_BYTES + (BYTES_PER_CHUNK * (NUM_HASHES - 1));
 
 char get_random_char()
 {
-    return static_cast<char>(bb::fr::random_element().data[0] % 8);
+    return static_cast<char>(fr::random_element().data[0] % 8);
 }
 
 void generate_test_plonk_circuit(Builder& builder, size_t num_bytes)
@@ -26,8 +26,8 @@ void generate_test_plonk_circuit(Builder& builder, size_t num_bytes)
     for (size_t i = 0; i < num_bytes; ++i) {
         in[i] = get_random_char();
     }
-    bb::stdlib::packed_byte_array<Builder> input(&builder, in);
-    bb::stdlib::sha256<Builder>(input);
+    stdlib::packed_byte_array<Builder> input(&builder, in);
+    stdlib::sha256<Builder>(input);
 }
 
 void* builders[NUM_HASHES];

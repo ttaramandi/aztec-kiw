@@ -9,7 +9,7 @@ namespace rollup::proofs::mock {
 
 class MockCircuitTests : public ::testing::Test {
   protected:
-    static void SetUpTestSuite() { bb::srs::init_crs_factory("../srs_db/ignition"); }
+    static void SetUpTestSuite() { srs::init_crs_factory("../srs_db/ignition"); }
 };
 
 TEST_F(MockCircuitTests, test_simple_circuit)

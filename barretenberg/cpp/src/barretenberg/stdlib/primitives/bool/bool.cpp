@@ -26,10 +26,10 @@ template <typename Builder>
 bool_t<Builder>::bool_t(const witness_t<Builder>& value)
     : context(value.context)
 {
-    ASSERT((value.witness == bb::fr::zero()) || (value.witness == bb::fr::one()));
+    ASSERT((value.witness == bb::fr::zero()) || (value.witness == fr::one()));
     witness_index = value.witness_index;
     context->create_bool_gate(witness_index);
-    witness_bool = (value.witness == bb::fr::one());
+    witness_bool = (value.witness == fr::one());
     witness_inverted = false;
 }
 
@@ -90,9 +90,9 @@ template <typename Builder> bool_t<Builder>& bool_t<Builder>::operator=(bool_t&&
 
 template <typename Builder> bool_t<Builder>& bool_t<Builder>::operator=(const witness_t<Builder>& other)
 {
-    ASSERT((other.witness == bb::fr::one()) || (other.witness == bb::fr::zero()));
+    ASSERT((other.witness == bb::fr::one()) || (other.witness == fr::zero()));
     context = other.context;
-    witness_bool = (other.witness == bb::fr::zero()) ? false : true;
+    witness_bool = (other.witness == fr::zero()) ? false : true;
     witness_index = other.witness_index;
     witness_inverted = false;
     context->create_bool_gate(witness_index);
@@ -108,7 +108,7 @@ template <typename Builder> bool_t<Builder> bool_t<Builder>::operator&(const boo
     ASSERT(result.context || (witness_index == IS_CONSTANT && other.witness_index == IS_CONSTANT));
     if (witness_index != IS_CONSTANT && other.witness_index != IS_CONSTANT) {
         result.witness_bool = left & right;
-        bb::fr value = result.witness_bool ? bb::fr::one() : bb::fr::zero();
+        fr value = result.witness_bool ? bb::fr::one() : fr::zero();
         result.witness_index = context->add_variable(value);
         result.witness_inverted = false;
 
@@ -187,47 +187,47 @@ template <typename Builder> bool_t<Builder> bool_t<Builder>::operator|(const boo
     ASSERT(result.context || (witness_index == IS_CONSTANT && other.witness_index == IS_CONSTANT));
 
     result.witness_bool = (witness_bool ^ witness_inverted) | (other.witness_bool ^ other.witness_inverted);
-    bb::fr value = result.witness_bool ? bb::fr::one() : bb::fr::zero();
+    fr value = result.witness_bool ? bb::fr::one() : fr::zero();
     result.witness_inverted = false;
     if ((other.witness_index != IS_CONSTANT) && (witness_index != IS_CONSTANT)) {
         result.witness_index = context->add_variable(value);
         // result = A + B - AB, where A,B are the "real" values of the variables. But according to whether
         // witness_inverted flag is true, we need to invert the input. Hence, we look at four cases, and compute the
         // relevent coefficients of the selector q_1,q_2,q_m,q_c in each case
-        bb::fr multiplicative_coefficient;
-        bb::fr left_coefficient;
-        bb::fr right_coefficient;
-        bb::fr constant_coefficient;
+        fr multiplicative_coefficient;
+        fr left_coefficient;
+        fr right_coefficient;
+        fr constant_coefficient;
         // a inverted: (1-a) + b - (1-a)b = 1-a+ab
         // ==> q_1=-1,q_2=0,q_m=1,q_c=1
         if (witness_inverted && !other.witness_inverted) {
-            multiplicative_coefficient = bb::fr::one();
-            left_coefficient = bb::fr::neg_one();
-            right_coefficient = bb::fr::zero();
-            constant_coefficient = bb::fr::one();
+            multiplicative_coefficient = fr::one();
+            left_coefficient = fr::neg_one();
+            right_coefficient = fr::zero();
+            constant_coefficient = fr::one();
         }
         // b inverted: a + (1-b) - a(1-b) = 1-b+ab
         // ==> q_1=0,q_2=-1,q_m=1,q_c=1
         else if (!witness_inverted && other.witness_inverted) {
-            multiplicative_coefficient = bb::fr::one();
-            left_coefficient = bb::fr::zero();
-            right_coefficient = bb::fr::neg_one();
-            constant_coefficient = bb::fr::one();
+            multiplicative_coefficient = fr::one();
+            left_coefficient = fr::zero();
+            right_coefficient = fr::neg_one();
+            constant_coefficient = fr::one();
         }
         // Both inverted: (1 - a) + (1 - b) - (1 - a)(1 - b) = 2 - a - b - (1 -a -b +ab) = 1 - ab
         // ==> q_m=-1,q_1=0,q_2=0,q_c=1
         else if (witness_inverted && other.witness_inverted) {
-            multiplicative_coefficient = bb::fr::neg_one();
-            left_coefficient = bb::fr::zero();
-            right_coefficient = bb::fr::zero();
-            constant_coefficient = bb::fr::one();
+            multiplicative_coefficient = fr::neg_one();
+            left_coefficient = fr::zero();
+            right_coefficient = fr::zero();
+            constant_coefficient = fr::one();
         }
         // No inversions: a + b - ab ==> q_m=-1,q_1=1,q_2=1,q_c=0
         else {
-            multiplicative_coefficient = bb::fr::neg_one();
-            left_coefficient = bb::fr::one();
-            right_coefficient = bb::fr::one();
-            constant_coefficient = bb::fr::zero();
+            multiplicative_coefficient = fr::neg_one();
+            left_coefficient = fr::one();
+            right_coefficient = fr::one();
+            constant_coefficient = fr::zero();
         }
         context->create_poly_gate({ witness_index,
                                     other.witness_index,
@@ -235,7 +235,7 @@ template <typename Builder> bool_t<Builder> bool_t<Builder>::operator|(const boo
                                     multiplicative_coefficient,
                                     left_coefficient,
                                     right_coefficient,
-                                    bb::fr::neg_one(),
+                                    fr::neg_one(),
                                     constant_coefficient });
     } else if (witness_index != IS_CONSTANT && other.witness_index == IS_CONSTANT) {
         if (other.witness_bool ^ other.witness_inverted) {
@@ -267,7 +267,7 @@ template <typename Builder> bool_t<Builder> bool_t<Builder>::operator^(const boo
     ASSERT(result.context || (witness_index == IS_CONSTANT && other.witness_index == IS_CONSTANT));
 
     result.witness_bool = (witness_bool ^ witness_inverted) ^ (other.witness_bool ^ other.witness_inverted);
-    bb::fr value = result.witness_bool ? bb::fr::one() : bb::fr::zero();
+    fr value = result.witness_bool ? bb::fr::one() : fr::zero();
     result.witness_inverted = false;
 
     if ((other.witness_index != IS_CONSTANT) && (witness_index != IS_CONSTANT)) {
@@ -276,20 +276,20 @@ template <typename Builder> bool_t<Builder> bool_t<Builder>::operator^(const boo
         // inv  a, norm b: (1 - a) + b - 2(1 - a)b = 1 - a - b + 2ab
         // norm a, inv  b: a + (1 - b) - 2(a)(1 - b) = 1 - a - b + 2ab
         // inv  a, inv  b: (1 - a) + (1 - b) - 2(1 - a)(1 - b) = a + b - 2ab
-        bb::fr multiplicative_coefficient;
-        bb::fr left_coefficient;
-        bb::fr right_coefficient;
-        bb::fr constant_coefficient;
+        fr multiplicative_coefficient;
+        fr left_coefficient;
+        fr right_coefficient;
+        fr constant_coefficient;
         if ((witness_inverted && other.witness_inverted) || (!witness_inverted && !other.witness_inverted)) {
-            multiplicative_coefficient = (bb::fr::neg_one() + bb::fr::neg_one());
-            left_coefficient = bb::fr::one();
-            right_coefficient = bb::fr::one();
-            constant_coefficient = bb::fr::zero();
+            multiplicative_coefficient = (bb::fr::neg_one() + fr::neg_one());
+            left_coefficient = fr::one();
+            right_coefficient = fr::one();
+            constant_coefficient = fr::zero();
         } else {
-            multiplicative_coefficient = bb::fr::one() + bb::fr::one();
-            left_coefficient = bb::fr::neg_one();
-            right_coefficient = bb::fr::neg_one();
-            constant_coefficient = bb::fr::one();
+            multiplicative_coefficient = bb::fr::one() + fr::one();
+            left_coefficient = fr::neg_one();
+            right_coefficient = fr::neg_one();
+            constant_coefficient = fr::one();
         }
         context->create_poly_gate({ witness_index,
                                     other.witness_index,
@@ -297,7 +297,7 @@ template <typename Builder> bool_t<Builder> bool_t<Builder>::operator^(const boo
                                     multiplicative_coefficient,
                                     left_coefficient,
                                     right_coefficient,
-                                    bb::fr::neg_one(),
+                                    fr::neg_one(),
                                     constant_coefficient });
     } else if (witness_index != IS_CONSTANT && other.witness_index == IS_CONSTANT) {
         // witness ^ 1 = !witness
@@ -349,24 +349,24 @@ template <typename Builder> bool_t<Builder> bool_t<Builder>::operator==(const bo
     } else {
         bool_t<Builder> result(context == nullptr ? other.context : context);
         result.witness_bool = (witness_bool ^ witness_inverted) == (other.witness_bool ^ other.witness_inverted);
-        bb::fr value = result.witness_bool ? bb::fr::one() : bb::fr::zero();
+        fr value = result.witness_bool ? bb::fr::one() : fr::zero();
         result.witness_index = context->add_variable(value);
         // norm a, norm b or both inv: 1 - a - b + 2ab
         // inv a or inv b = a + b - 2ab
-        bb::fr multiplicative_coefficient;
-        bb::fr left_coefficient;
-        bb::fr right_coefficient;
-        bb::fr constant_coefficient;
+        fr multiplicative_coefficient;
+        fr left_coefficient;
+        fr right_coefficient;
+        fr constant_coefficient;
         if ((witness_inverted && other.witness_inverted) || (!witness_inverted && !other.witness_inverted)) {
-            multiplicative_coefficient = bb::fr::one() + bb::fr::one();
-            left_coefficient = bb::fr::neg_one();
-            right_coefficient = bb::fr::neg_one();
-            constant_coefficient = bb::fr::one();
+            multiplicative_coefficient = bb::fr::one() + fr::one();
+            left_coefficient = fr::neg_one();
+            right_coefficient = fr::neg_one();
+            constant_coefficient = fr::one();
         } else {
-            multiplicative_coefficient = (bb::fr::neg_one() + bb::fr::neg_one());
-            left_coefficient = bb::fr::one();
-            right_coefficient = bb::fr::one();
-            constant_coefficient = bb::fr::zero();
+            multiplicative_coefficient = (bb::fr::neg_one() + fr::neg_one());
+            left_coefficient = fr::one();
+            right_coefficient = fr::one();
+            constant_coefficient = fr::zero();
         }
         context->create_poly_gate({ witness_index,
                                     other.witness_index,
@@ -374,7 +374,7 @@ template <typename Builder> bool_t<Builder> bool_t<Builder>::operator==(const bo
                                     multiplicative_coefficient,
                                     left_coefficient,
                                     right_coefficient,
-                                    bb::fr::neg_one(),
+                                    fr::neg_one(),
                                     constant_coefficient });
         return result;
     }
@@ -524,20 +524,20 @@ template <typename Builder> bool_t<Builder> bool_t<Builder>::normalize() const
         return *this;
     }
 
-    bb::fr value = witness_bool ^ witness_inverted ? bb::fr::one() : bb::fr::zero();
+    fr value = witness_bool ^ witness_inverted ? bb::fr::one() : fr::zero();
 
     uint32_t new_witness = context->add_variable(value);
     uint32_t new_value = witness_bool ^ witness_inverted;
 
-    bb::fr q_l;
-    bb::fr q_c;
+    fr q_l;
+    fr q_c;
 
-    q_l = witness_inverted ? bb::fr::neg_one() : bb::fr::one();
-    q_c = witness_inverted ? bb::fr::one() : bb::fr::zero();
+    q_l = witness_inverted ? bb::fr::neg_one() : fr::one();
+    q_c = witness_inverted ? bb::fr::one() : fr::zero();
 
-    bb::fr q_o = bb::fr::neg_one();
-    bb::fr q_m = bb::fr::zero();
-    bb::fr q_r = bb::fr::zero();
+    fr q_o = fr::neg_one();
+    fr q_m = fr::zero();
+    fr q_r = fr::zero();
     context->create_poly_gate({ witness_index, witness_index, new_witness, q_m, q_l, q_r, q_o, q_c });
 
     witness_index = new_witness;
@@ -546,8 +546,8 @@ template <typename Builder> bool_t<Builder> bool_t<Builder>::normalize() const
     return *this;
 }
 
-template class bool_t<bb::StandardCircuitBuilder>;
-template class bool_t<bb::UltraCircuitBuilder>;
-template class bool_t<bb::GoblinUltraCircuitBuilder>;
+template class bool_t<StandardCircuitBuilder>;
+template class bool_t<UltraCircuitBuilder>;
+template class bool_t<GoblinUltraCircuitBuilder>;
 
 } // namespace bb::stdlib

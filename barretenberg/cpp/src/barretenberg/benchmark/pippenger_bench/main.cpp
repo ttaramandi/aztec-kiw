@@ -44,12 +44,12 @@ using namespace bb;
 // }
 constexpr size_t NUM_POINTS = 1 << 16;
 std::vector<fr> scalars;
-static bb::evaluation_domain small_domain;
-static bb::evaluation_domain large_domain;
+static evaluation_domain small_domain;
+static evaluation_domain large_domain;
 
 const auto init = []() {
-    small_domain = bb::evaluation_domain(NUM_POINTS);
-    large_domain = bb::evaluation_domain(NUM_POINTS * 4);
+    small_domain = evaluation_domain(NUM_POINTS);
+    large_domain = evaluation_domain(NUM_POINTS * 4);
 
     fr element = fr::random_element();
     fr accumulator = element;
@@ -65,8 +65,7 @@ const auto init = []() {
 };
 // constexpr double add_to_mixed_add_complexity = 1.36;
 
-auto reference_string =
-    std::make_shared<bb::srs::factories::FileProverCrs<curve::BN254>>(NUM_POINTS, "../srs_db/ignition");
+auto reference_string = std::make_shared<srs::factories::FileProverCrs<curve::BN254>>(NUM_POINTS, "../srs_db/ignition");
 
 int pippenger()
 {
@@ -84,7 +83,7 @@ int pippenger()
 int coset_fft_split()
 {
     std::chrono::steady_clock::time_point time_start = std::chrono::steady_clock::now();
-    bb::polynomial_arithmetic::coset_fft(&scalars[0], small_domain, small_domain, 4);
+    polynomial_arithmetic::coset_fft(&scalars[0], small_domain, small_domain, 4);
     std::chrono::steady_clock::time_point time_end = std::chrono::steady_clock::now();
     std::chrono::microseconds diff = std::chrono::duration_cast<std::chrono::microseconds>(time_end - time_start);
     std::cout << "run time: " << diff.count() << "us" << std::endl;
@@ -94,7 +93,7 @@ int coset_fft_split()
 int coset_fft_regular()
 {
     std::chrono::steady_clock::time_point time_start = std::chrono::steady_clock::now();
-    bb::polynomial_arithmetic::coset_fft(&scalars[0], large_domain);
+    polynomial_arithmetic::coset_fft(&scalars[0], large_domain);
     std::chrono::steady_clock::time_point time_end = std::chrono::steady_clock::now();
     std::chrono::microseconds diff = std::chrono::duration_cast<std::chrono::microseconds>(time_end - time_start);
     std::cout << "run time: " << diff.count() << "us" << std::endl;
@@ -103,7 +102,7 @@ int coset_fft_regular()
 
 int main()
 {
-    bb::srs::init_crs_factory("../srs_db/ignition");
+    srs::init_crs_factory("../srs_db/ignition");
     std::cout << "initializing" << std::endl;
     init();
     std::cout << "executing normal fft" << std::endl;

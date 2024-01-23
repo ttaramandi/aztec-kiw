@@ -18,7 +18,7 @@ auto& engine = numeric::get_debug_randomness();
 
 class DataBusComposerTests : public ::testing::Test {
   protected:
-    static void SetUpTestSuite() { bb::srs::init_crs_factory("../srs_db/ignition"); }
+    static void SetUpTestSuite() { srs::init_crs_factory("../srs_db/ignition"); }
 
     using Curve = curve::BN254;
     using FF = Curve::ScalarField;
@@ -47,7 +47,7 @@ class DataBusComposerTests : public ::testing::Test {
  */
 TEST_F(DataBusComposerTests, CallDataRead)
 {
-    auto op_queue = std::make_shared<bb::ECCOpQueue>();
+    auto op_queue = std::make_shared<ECCOpQueue>();
 
     // Add mock data to op queue to simulate interaction with a previous circuit
     op_queue->populate_with_mock_initital_data();

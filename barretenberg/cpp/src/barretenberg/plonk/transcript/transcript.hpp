@@ -38,7 +38,7 @@ class Transcript {
     };
 
   public:
-    typedef bb::plonk::verification_key Key;
+    typedef plonk::verification_key Key;
 
     /**
      * Create a new transcript for Prover based on the manifest.

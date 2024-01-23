@@ -178,12 +178,10 @@ template <typename Builder> packed_byte_array<Builder> sha256(const packed_byte_
     return packed_byte_array<Builder>(output, 4);
 }
 
-template byte_array<bb::StandardCircuitBuilder> sha256_block(const byte_array<bb::StandardCircuitBuilder>& input);
-template byte_array<bb::UltraCircuitBuilder> sha256_block(const byte_array<bb::UltraCircuitBuilder>& input);
-template byte_array<bb::GoblinUltraCircuitBuilder> sha256_block(const byte_array<bb::GoblinUltraCircuitBuilder>& input);
-template packed_byte_array<bb::StandardCircuitBuilder> sha256(
-    const packed_byte_array<bb::StandardCircuitBuilder>& input);
-template packed_byte_array<bb::UltraCircuitBuilder> sha256(const packed_byte_array<bb::UltraCircuitBuilder>& input);
-template packed_byte_array<bb::GoblinUltraCircuitBuilder> sha256(
-    const packed_byte_array<bb::GoblinUltraCircuitBuilder>& input);
+template byte_array<StandardCircuitBuilder> sha256_block(const byte_array<StandardCircuitBuilder>& input);
+template byte_array<UltraCircuitBuilder> sha256_block(const byte_array<UltraCircuitBuilder>& input);
+template byte_array<GoblinUltraCircuitBuilder> sha256_block(const byte_array<GoblinUltraCircuitBuilder>& input);
+template packed_byte_array<StandardCircuitBuilder> sha256(const packed_byte_array<StandardCircuitBuilder>& input);
+template packed_byte_array<UltraCircuitBuilder> sha256(const packed_byte_array<UltraCircuitBuilder>& input);
+template packed_byte_array<GoblinUltraCircuitBuilder> sha256(const packed_byte_array<GoblinUltraCircuitBuilder>& input);
 } // namespace bb::stdlib

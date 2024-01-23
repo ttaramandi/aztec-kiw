@@ -10,16 +10,16 @@ namespace bb::plonk {
  * @brief Hashes the evaluation domain to match the 'circuit' approach taken in
  * stdlib/recursion/verification_key/verification_key.hpp.
  * @note: in that reference file, the circuit-equivalent of this function is a _method_ of the `evaluation_domain'
- * struct. But we cannot do that with the native `bb::evaluation_domain` type unfortunately, because it's
+ * struct. But we cannot do that with the native `evaluation_domain` type unfortunately, because it's
  * defined in polynomials/evaluation_domain.hpp, and `polynomial` is a bberg library which does not depend on `crypto`
  * in its CMakeLists.txt file. (We'd need `crypto` to be able to call native pedersen functions).
  *
  * @param domain to hash
- * @return bb::fr hash of the evaluation domain as a field
+ * @return fr hash of the evaluation domain as a field
  */
-bb::fr hash_native_evaluation_domain(bb::evaluation_domain const& domain)
+fr hash_native_evaluation_domain(evaluation_domain const& domain)
 {
-    bb::fr out = crypto::pedersen_hash::hash({
+    fr out = crypto::pedersen_hash::hash({
         domain.root,
         domain.domain,
         domain.generator,
@@ -38,13 +38,13 @@ bb::fr hash_native_evaluation_domain(bb::evaluation_domain const& domain)
  * @param hash_index generator index to use during pedersen hashing
  * @returns a field containing the hash
  */
-bb::fr verification_key_data::hash_native(const size_t hash_index) const
+fr verification_key_data::hash_native(const size_t hash_index) const
 {
-    bb::evaluation_domain eval_domain = bb::evaluation_domain(circuit_size);
+    evaluation_domain eval_domain = evaluation_domain(circuit_size);
 
     std::vector<uint8_t> preimage_data;
 
-    preimage_data.push_back(static_cast<uint8_t>(bb::CircuitType(circuit_type)));
+    preimage_data.push_back(static_cast<uint8_t>(CircuitType(circuit_type)));
 
     const uint256_t domain = eval_domain.domain;
     const uint256_t generator = eval_domain.generator;
@@ -69,7 +69,7 @@ bb::fr verification_key_data::hash_native(const size_t hash_index) const
 
 verification_key::verification_key(const size_t num_gates,
                                    const size_t num_inputs,
-                                   std::shared_ptr<bb::srs::factories::VerifierCrs<curve::BN254>> const& crs,
+                                   std::shared_ptr<srs::factories::VerifierCrs<curve::BN254>> const& crs,
                                    CircuitType circuit_type_)
     : circuit_type(circuit_type_)
     , circuit_size(num_gates)
@@ -81,7 +81,7 @@ verification_key::verification_key(const size_t num_gates,
 {}
 
 verification_key::verification_key(verification_key_data&& data,
-                                   std::shared_ptr<bb::srs::factories::VerifierCrs<curve::BN254>> const& crs)
+                                   std::shared_ptr<srs::factories::VerifierCrs<curve::BN254>> const& crs)
     : circuit_type(static_cast<CircuitType>(data.circuit_type))
     , circuit_size(data.circuit_size)
     , log_circuit_size(numeric::get_msb(data.circuit_size))

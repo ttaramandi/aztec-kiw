@@ -50,7 +50,7 @@ proof create_proof(BuilderComposerPtrs pair)
     return proof;
 }
 
-bool verify_proof(BuilderComposerPtrs pair, bb::plonk::proof const& proof)
+bool verify_proof(BuilderComposerPtrs pair, plonk::proof const& proof)
 {
     info("computing verification key...");
     pair.composer->compute_verification_key(*pair.builder);

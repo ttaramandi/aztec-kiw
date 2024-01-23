@@ -5,10 +5,10 @@
 
 namespace bb::join_split_example::proofs::notes::native::account {
 
-grumpkin::fq generate_account_commitment(const bb::fr& alias_hash, const bb::fr& owner_x, const bb::fr& signing_x);
+grumpkin::fq generate_account_commitment(const bb::fr& alias_hash, const bb::fr& owner_x, const fr& signing_x);
 
 struct account_note {
-    bb::fr alias_hash;
+    fr alias_hash;
     grumpkin::g1::affine_element owner_key;
     grumpkin::g1::affine_element signing_key;
 

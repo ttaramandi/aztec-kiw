@@ -9,7 +9,7 @@ namespace bb::plonk {
 
 class CommitmentScheme {
   public:
-    using fr = bb::fr;
+    using fr = fr;
 
     // Constructors for CommitmentScheme
     CommitmentScheme() {}

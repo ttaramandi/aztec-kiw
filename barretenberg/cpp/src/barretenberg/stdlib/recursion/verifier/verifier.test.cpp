@@ -46,7 +46,7 @@ template <typename OuterComposer> class stdlib_verifier : public testing::Test {
     // select the relevant prover and verifier types (whose settings use the same hash for fiat-shamir),
     // depending on the Inner-Outer combo. It's a bit clunky, but the alternative is to have a template argument
     // for the hashtype, and that would pervade the entire UltraPlonkComposer, which would be horrendous.
-    static constexpr bool is_ultra_to_ultra = std::is_same_v<OuterComposer, bb::plonk::UltraComposer>;
+    static constexpr bool is_ultra_to_ultra = std::is_same_v<OuterComposer, plonk::UltraComposer>;
     using ProverOfInnerCircuit =
         std::conditional_t<is_ultra_to_ultra, plonk::UltraProver, plonk::UltraToStandardProver>;
     using VerifierOfInnerProof =
@@ -282,7 +282,7 @@ template <typename OuterComposer> class stdlib_verifier : public testing::Test {
      * @return boolean result
      */
 
-    static bool check_recursive_proof_public_inputs(OuterBuilder& builder, const bb::pairing::miller_lines* lines)
+    static bool check_recursive_proof_public_inputs(OuterBuilder& builder, const pairing::miller_lines* lines)
     {
         if (builder.contains_recursive_proof && builder.recursive_proof_public_input_indices.size() == 16) {
             const auto& inputs = builder.public_inputs;
@@ -352,7 +352,7 @@ template <typename OuterComposer> class stdlib_verifier : public testing::Test {
     }
 
   public:
-    static void SetUpTestSuite() { bb::srs::init_crs_factory("../srs_db/ignition"); }
+    static void SetUpTestSuite() { srs::init_crs_factory("../srs_db/ignition"); }
 
     static void test_inner_circuit()
     {

@@ -165,8 +165,8 @@ using function_ptr_table =
 constexpr function_ptr_table make_function_pointer_table()
 {
     function_ptr_table table;
-    bb::constexpr_for<0, table::NUM_FIXED_BASE_MULTI_TABLES, 1>([&]<size_t i>() {
-        bb::constexpr_for<0, table::MAX_NUM_TABLES_IN_MULTITABLE, 1>(
+    constexpr_for<0, table::NUM_FIXED_BASE_MULTI_TABLES, 1>([&]<size_t i>() {
+        constexpr_for<0, table::MAX_NUM_TABLES_IN_MULTITABLE, 1>(
             [&]<size_t j>() { table[i][j] = &table::get_basic_fixed_base_table_values<i, j>; });
     });
     return table;

@@ -6,13 +6,13 @@
 
 namespace bb::join_split_example::proofs::notes::native::value {
 
-inline auto create_partial_commitment(bb::fr const& secret,
+inline auto create_partial_commitment(fr const& secret,
                                       grumpkin::g1::affine_element const& owner,
                                       bool account_required,
-                                      bb::fr const& creator_pubkey)
+                                      fr const& creator_pubkey)
 {
-    return bb::crypto::pedersen_hash::hash({ secret, owner.x, owner.y, account_required, creator_pubkey },
-                                           GeneratorIndex::VALUE_NOTE_PARTIAL_COMMITMENT);
+    return crypto::pedersen_hash::hash({ secret, owner.x, owner.y, account_required, creator_pubkey },
+                                       GeneratorIndex::VALUE_NOTE_PARTIAL_COMMITMENT);
 }
 
 } // namespace bb::join_split_example::proofs::notes::native::value

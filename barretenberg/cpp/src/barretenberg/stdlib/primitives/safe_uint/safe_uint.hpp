@@ -32,8 +32,8 @@ template <typename Builder> class safe_uint_t {
 
   public:
     // The following constant should be small enough that any thing with this bitnum is smaller than the modulus
-    static constexpr size_t MAX_BIT_NUM = bb::fr::modulus.get_msb();
-    static constexpr uint256_t MAX_VALUE = bb::fr::modulus - 1;
+    static constexpr size_t MAX_BIT_NUM = fr::modulus.get_msb();
+    static constexpr uint256_t MAX_VALUE = fr::modulus - 1;
     static constexpr size_t IS_UNSAFE = 143; // weird constant to make it hard to use accidentally
     // Make sure our uint256 values don't wrap  - add_two function sums three of these
     static_assert((uint512_t)MAX_VALUE * 3 < (uint512_t)1 << 256);
@@ -55,7 +55,7 @@ template <typename Builder> class safe_uint_t {
 
     // When initialzing a constant, we can set the max value to the constant itself (rather than the usually larger
     // 2^n-1)
-    safe_uint_t(const bb::fr& const_value)
+    safe_uint_t(const fr& const_value)
         : value(const_value)
         , current_max(const_value)
     {}
@@ -63,12 +63,12 @@ template <typename Builder> class safe_uint_t {
     // When initialzing a constant, we can set the max value to the constant itself (rather than the usually larger
     // 2^n-1)
     safe_uint_t(const uint256_t& const_value)
-        : value(bb::fr(const_value))
-        , current_max(bb::fr(const_value))
+        : value(fr(const_value))
+        , current_max(fr(const_value))
     {}
     safe_uint_t(const unsigned int& const_value)
-        : value(bb::fr(const_value))
-        , current_max(bb::fr(const_value))
+        : value(fr(const_value))
+        , current_max(fr(const_value))
     {}
 
     safe_uint_t(const safe_uint_t& other)
@@ -76,7 +76,7 @@ template <typename Builder> class safe_uint_t {
         , current_max(other.current_max)
     {}
 
-    static safe_uint_t<Builder> create_constant_witness(Builder* parent_context, bb::fr const& value)
+    static safe_uint_t<Builder> create_constant_witness(Builder* parent_context, fr const& value)
 
     {
         witness_t<Builder> out(parent_context, value);
@@ -176,7 +176,7 @@ template <typename Builder> class safe_uint_t {
      **/
     safe_uint_t normalize() const;
 
-    bb::fr get_value() const;
+    fr get_value() const;
 
     Builder* get_context() const { return value.context; }
 

@@ -17,7 +17,7 @@ namespace {
 auto& engine = numeric::get_debug_randomness();
 }
 
-std::vector<uint32_t> add_variables(auto& circuit_constructor, std::vector<bb::fr> variables)
+std::vector<uint32_t> add_variables(auto& circuit_constructor, std::vector<fr> variables)
 {
     std::vector<uint32_t> res;
     for (size_t i = 0; i < variables.size(); i++) {
@@ -37,7 +37,7 @@ void ensure_non_zero(auto& polynomial)
 
 class GoblinTranslatorComposerTests : public ::testing::Test {
   protected:
-    static void SetUpTestSuite() { bb::srs::init_crs_factory("../srs_db/ignition"); }
+    static void SetUpTestSuite() { srs::init_crs_factory("../srs_db/ignition"); }
 };
 
 /**
@@ -55,7 +55,7 @@ TEST_F(GoblinTranslatorComposerTests, Basic)
     auto z = Fr::random_element();
 
     // Add the same operations to the ECC op queue; the native computation is performed under the hood.
-    auto op_queue = std::make_shared<bb::ECCOpQueue>();
+    auto op_queue = std::make_shared<ECCOpQueue>();
     for (size_t i = 0; i < 500; i++) {
         op_queue->add_accumulate(P1);
         op_queue->mul_accumulate(P2, z);

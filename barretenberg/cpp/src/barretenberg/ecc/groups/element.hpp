@@ -152,15 +152,15 @@ template <class Fq, class Fr, class Params> std::ostream& operator<<(std::ostrea
 #include "./element_impl.hpp"
 
 template <class Fq, class Fr, class Params>
-bb::group_elements::affine_element<Fq, Fr, Params> operator*(
-    const bb::group_elements::affine_element<Fq, Fr, Params>& base, const Fr& exponent) noexcept
+group_elements::affine_element<Fq, Fr, Params> operator*(const group_elements::affine_element<Fq, Fr, Params>& base,
+                                                         const Fr& exponent) noexcept
 {
-    return bb::group_elements::affine_element<Fq, Fr, Params>(bb::group_elements::element(base) * exponent);
+    return bb::group_elements::affine_element<Fq, Fr, Params>(group_elements::element(base) * exponent);
 }
 
 template <class Fq, class Fr, class Params>
-bb::group_elements::affine_element<Fq, Fr, Params> operator*(const bb::group_elements::element<Fq, Fr, Params>& base,
-                                                             const Fr& exponent) noexcept
+group_elements::affine_element<Fq, Fr, Params> operator*(const group_elements::element<Fq, Fr, Params>& base,
+                                                         const Fr& exponent) noexcept
 {
-    return (bb::group_elements::element(base) * exponent);
+    return (group_elements::element(base) * exponent);
 }

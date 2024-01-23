@@ -291,11 +291,11 @@ using polynomial = Polynomial<bb::fr>;
  * This also means we can now iterate over the elements in the vector using a `for(auto ...)` loop, and use various std
  * algorithms.
  *
- * static_assert(std::ranges::contiguous_range<bb::polynomial>);
- * static_assert(std::ranges::sized_range<bb::polynomial>);
- * static_assert(std::convertible_to<bb::polynomial, std::span<const bb::fr>>);
- * static_assert(std::convertible_to<bb::polynomial&, std::span<bb::fr>>);
+ * static_assert(std::ranges::contiguous_range<polynomial>);
+ * static_assert(std::ranges::sized_range<polynomial>);
+ * static_assert(std::convertible_to<bb::polynomial, std::span<const fr>>);
+ * static_assert(std::convertible_to<bb::polynomial&, std::span<fr>>);
  * // cannot convert a const polynomial to a non-const span
- * static_assert(!std::convertible_to<const bb::polynomial&, std::span<bb::fr>>);
- * static_assert(std::convertible_to<const bb::polynomial&, std::span<const bb::fr>>);
+ * static_assert(!std::convertible_to<const bb::polynomial&, std::span<fr>>);
+ * static_assert(std::convertible_to<const bb::polynomial&, std::span<const fr>>);
  */

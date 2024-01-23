@@ -39,7 +39,7 @@ template <UltraFlavor Flavor> class DeciderProver_ {
 
     std::shared_ptr<Transcript> transcript;
 
-    bb::RelationParameters<FF> relation_parameters;
+    RelationParameters<FF> relation_parameters;
 
     CommitmentLabels commitment_labels;
 

@@ -7,7 +7,7 @@
 namespace bb::plookup::uint_tables {
 
 template <uint64_t bits_per_slice, uint64_t num_rotated_output_bits>
-inline std::array<bb::fr, 2> get_xor_rotate_values_from_key(const std::array<uint64_t, 2> key)
+inline std::array<fr, 2> get_xor_rotate_values_from_key(const std::array<uint64_t, 2> key)
 {
     return { numeric::rotate64(key[0] ^ key[1], num_rotated_output_bits), 0ULL };
 }
@@ -40,7 +40,7 @@ inline BasicTable generate_xor_rotate_table(BasicTableId id, const size_t table_
 }
 
 template <uint64_t bits_per_slice, uint64_t num_rotated_output_bits>
-inline std::array<bb::fr, 2> get_and_rotate_values_from_key(const std::array<uint64_t, 2> key)
+inline std::array<fr, 2> get_and_rotate_values_from_key(const std::array<uint64_t, 2> key)
 {
     return { numeric::rotate64(key[0] & key[1], num_rotated_output_bits), 0ULL };
 }

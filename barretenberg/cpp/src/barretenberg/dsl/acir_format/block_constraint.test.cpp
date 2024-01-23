@@ -10,7 +10,7 @@ using namespace acir_format;
 
 class UltraPlonkRAM : public ::testing::Test {
   protected:
-    static void SetUpTestSuite() { bb::srs::init_crs_factory("../srs_db/ignition"); }
+    static void SetUpTestSuite() { srs::init_crs_factory("../srs_db/ignition"); }
 };
 size_t generate_block_constraint(BlockConstraint& constraint, WitnessVector& witness_values)
 {

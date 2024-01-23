@@ -16,14 +16,14 @@ using Builder = Flavor::CircuitBuilder;
 // Fold one instance into an accumulator.
 void fold_one(State& state) noexcept
 {
-    bb::srs::init_crs_factory("../srs_db/ignition");
+    srs::init_crs_factory("../srs_db/ignition");
 
     auto log2_num_gates = static_cast<size_t>(state.range(0));
     auto composer = UltraComposer();
 
     const auto construct_instance = [&]() {
         Builder builder;
-        bb::mock_proofs::generate_basic_arithmetic_circuit(builder, log2_num_gates);
+        mock_proofs::generate_basic_arithmetic_circuit(builder, log2_num_gates);
         return composer.create_instance(builder);
     };
 

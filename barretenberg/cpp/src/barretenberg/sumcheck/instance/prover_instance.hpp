@@ -46,7 +46,7 @@ template <class Flavor> class ProverInstance_ {
     // instances
     size_t pub_inputs_offset = 0;
     RelationSeparator alphas;
-    bb::RelationParameters<FF> relation_parameters;
+    RelationParameters<FF> relation_parameters;
     std::vector<uint32_t> recursive_proof_public_input_indices;
 
     bool is_accumulator = false;
@@ -102,7 +102,7 @@ template <class Flavor> class ProverInstance_ {
     void construct_databus_polynomials(Circuit&)
         requires IsGoblinFlavor<Flavor>;
 
-    void add_table_column_selector_poly_to_proving_key(bb::polynomial& small, const std::string& tag);
+    void add_table_column_selector_poly_to_proving_key(polynomial& small, const std::string& tag);
 
     void add_plookup_memory_records_to_wire_4(FF);
 };

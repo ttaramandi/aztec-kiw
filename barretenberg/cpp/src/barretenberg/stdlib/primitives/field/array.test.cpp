@@ -592,7 +592,7 @@ template <typename Builder> class stdlib_array : public testing::Test {
     }
 };
 
-typedef testing::Types<bb::StandardCircuitBuilder, bb::UltraCircuitBuilder> CircuitTypes;
+typedef testing::Types<bb::StandardCircuitBuilder, UltraCircuitBuilder> CircuitTypes;
 
 TYPED_TEST_SUITE(stdlib_array, CircuitTypes);
 

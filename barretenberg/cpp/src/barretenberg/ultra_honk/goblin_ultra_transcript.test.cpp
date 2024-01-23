@@ -11,7 +11,7 @@ using namespace bb::honk;
 
 class GoblinUltraTranscriptTests : public ::testing::Test {
   public:
-    static void SetUpTestSuite() { bb::srs::init_crs_factory("../srs_db/ignition"); }
+    static void SetUpTestSuite() { srs::init_crs_factory("../srs_db/ignition"); }
 
     using Flavor = honk::flavor::GoblinUltra;
     using FF = Flavor::FF;

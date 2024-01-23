@@ -131,7 +131,7 @@ template <typename Builder> class StdlibPoseidon2 : public testing::Test {
         std::vector<stdlib::field_t<Builder>> witness_inputs;
 
         for (size_t i = 0; i < 8; ++i) {
-            inputs.push_back(bb::fr::random_element());
+            inputs.push_back(fr::random_element());
             if (i % 2 == 1) {
                 witness_inputs.push_back(witness_ct(&builder, inputs[i]));
             } else {

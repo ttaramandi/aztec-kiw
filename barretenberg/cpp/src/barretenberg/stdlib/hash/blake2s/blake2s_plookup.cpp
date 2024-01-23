@@ -163,7 +163,7 @@ template <typename Builder> byte_array<Builder> blake2s(const byte_array<Builder
     return result;
 }
 
-template byte_array<bb::UltraCircuitBuilder> blake2s(const byte_array<bb::UltraCircuitBuilder>& input);
-template byte_array<bb::GoblinUltraCircuitBuilder> blake2s(const byte_array<bb::GoblinUltraCircuitBuilder>& input);
+template byte_array<UltraCircuitBuilder> blake2s(const byte_array<UltraCircuitBuilder>& input);
+template byte_array<GoblinUltraCircuitBuilder> blake2s(const byte_array<GoblinUltraCircuitBuilder>& input);
 
 } // namespace bb::stdlib::blake2s_plookup

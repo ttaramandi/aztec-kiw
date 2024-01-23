@@ -71,8 +71,8 @@ template <typename Builder> class stdlib_field : public testing::Test {
 
     static void generate_test_plonk_circuit(Builder& builder, size_t num_gates)
     {
-        field_ct a(public_witness_ct(&builder, bb::fr::random_element()));
-        field_ct b(public_witness_ct(&builder, bb::fr::random_element()));
+        field_ct a(public_witness_ct(&builder, fr::random_element()));
+        field_ct b(public_witness_ct(&builder, fr::random_element()));
 
         field_ct c(&builder);
         for (size_t i = 0; i < (num_gates / 4) - 4; ++i) {
@@ -190,11 +190,11 @@ template <typename Builder> class stdlib_field : public testing::Test {
     {
         Builder builder = Builder();
 
-        field_ct a = witness_ct(&builder, bb::fr::random_element());
+        field_ct a = witness_ct(&builder, fr::random_element());
         a *= fr::random_element();
         a += fr::random_element();
 
-        field_ct b = witness_ct(&builder, bb::fr::random_element());
+        field_ct b = witness_ct(&builder, fr::random_element());
         b *= fr::random_element();
         b += fr::random_element();
 
@@ -391,7 +391,7 @@ template <typename Builder> class stdlib_field : public testing::Test {
                      uint256_t(0x1122334455667788, 0x8877665544332211, 0xaabbccddeeff9933, 0x1122112211221122));
         field_ct c_2(&builder,
                      uint256_t(0xaabbccddeeff9933, 0x8877665544332211, 0x1122334455667788, 0x1122112211221122));
-        field_ct c_3(&builder, bb::fr::one());
+        field_ct c_3(&builder, fr::one());
 
         field_ct c_4 = c_1 + c_2;
         a = a * c_4 + c_4; // add some constant terms in to validate our normalization check works
@@ -616,7 +616,7 @@ template <typename Builder> class stdlib_field : public testing::Test {
             constexpr uint256_t modulus_minus_one = fr::modulus - 1;
             const fr p_lo = modulus_minus_one.slice(0, 130);
 
-            std::vector<fr> test_elements = { bb::fr::random_element(),
+            std::vector<fr> test_elements = { fr::random_element(),
                                               0,
                                               -1,
                                               fr(static_cast<uint256_t>(engine.get_random_uint8())),
@@ -737,7 +737,7 @@ template <typename Builder> class stdlib_field : public testing::Test {
         field_ct exponent = witness_ct(&builder, exponent_val);
         field_ct result = base.pow(exponent);
 
-        EXPECT_EQ(result.get_value(), bb::fr(1));
+        EXPECT_EQ(result.get_value(), fr(1));
 
         info("num gates = ", builder.get_num_gates());
         bool check_result = builder.check_circuit();
@@ -905,7 +905,7 @@ template <typename Builder> class stdlib_field : public testing::Test {
     }
 };
 
-typedef testing::Types<bb::StandardCircuitBuilder, bb::UltraCircuitBuilder> CircuitTypes;
+typedef testing::Types<bb::StandardCircuitBuilder, UltraCircuitBuilder> CircuitTypes;
 
 TYPED_TEST_SUITE(stdlib_field, CircuitTypes);
 

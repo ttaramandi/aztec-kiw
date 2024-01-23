@@ -59,27 +59,27 @@ template <typename T, typename... BaseClass> auto _concatenate_base_class_get_la
     DEFINE_REF_VIEW(__VA_ARGS__)                                                                                       \
     std::vector<std::string> get_labels() const                                                                        \
     {                                                                                                                  \
-        return bb::detail::split_and_trim(#__VA_ARGS__, ',');                                                          \
+        return detail::split_and_trim(#__VA_ARGS__, ',');                                                              \
     }                                                                                                                  \
     constexpr std::size_t size() const                                                                                 \
     {                                                                                                                  \
-        return bb::detail::_va_count(__VA_ARGS__);                                                                     \
+        return detail::_va_count(__VA_ARGS__);                                                                         \
     }
 
 #define DEFINE_COMPOUND_GET_ALL(...)                                                                                   \
     [[nodiscard]] auto get_all()                                                                                       \
     {                                                                                                                  \
-        return bb::detail::_concatenate_base_class_get_all<decltype(*this), __VA_ARGS__>(*this);                       \
+        return detail::_concatenate_base_class_get_all<decltype(*this), __VA_ARGS__>(*this);                           \
     }                                                                                                                  \
     [[nodiscard]] auto get_all() const                                                                                 \
     {                                                                                                                  \
-        return bb::detail::_concatenate_base_class_get_all_const<decltype(*this), __VA_ARGS__>(*this);                 \
+        return detail::_concatenate_base_class_get_all_const<decltype(*this), __VA_ARGS__>(*this);                     \
     }                                                                                                                  \
     constexpr std::size_t size() const                                                                                 \
     {                                                                                                                  \
-        return bb::detail::_sum_base_class_size<decltype(*this), __VA_ARGS__>(*this);                                  \
+        return detail::_sum_base_class_size<decltype(*this), __VA_ARGS__>(*this);                                      \
     }                                                                                                                  \
     std::vector<std::string> get_labels() const                                                                        \
     {                                                                                                                  \
-        return bb::detail::_concatenate_base_class_get_labels<decltype(*this), __VA_ARGS__>(*this);                    \
+        return detail::_concatenate_base_class_get_labels<decltype(*this), __VA_ARGS__>(*this);                        \
     }

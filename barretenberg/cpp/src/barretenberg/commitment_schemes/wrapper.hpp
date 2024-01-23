@@ -6,9 +6,9 @@
 namespace bb::honk {
 
 struct OpeningProof {
-    std::vector<bb::g1::affine_element> gemini;
-    bb::g1::affine_element shplonk;
-    bb::g1::affine_element kzg;
+    std::vector<g1::affine_element> gemini;
+    g1::affine_element shplonk;
+    g1::affine_element kzg;
 };
 
 } // namespace bb::honk

@@ -27,7 +27,7 @@ auto& engine = numeric::get_debug_randomness();
 // amongst test files in the proof system
 Polynomial<FF> get_random_polynomial(size_t size)
 {
-    auto poly = bb::Polynomial<FF>(size);
+    auto poly = Polynomial<FF>(size);
     for (auto& coeff : poly) {
         coeff = FF::random_element();
     }
@@ -85,7 +85,7 @@ void decide_and_verify(std::shared_ptr<Instance>& accumulator, UltraComposer& co
 
 class ProtoGalaxyTests : public ::testing::Test {
   public:
-    static void SetUpTestSuite() { bb::srs::init_crs_factory("../srs_db/ignition"); }
+    static void SetUpTestSuite() { srs::init_crs_factory("../srs_db/ignition"); }
 };
 
 TEST_F(ProtoGalaxyTests, FullHonkEvaluationsValidCircuit)
@@ -159,7 +159,7 @@ TEST_F(ProtoGalaxyTests, PerturbatorPolynomial)
     }
 
     // Construct pow(\vec{betas}) as in the paper
-    auto pow_beta = bb::PowPolynomial(betas);
+    auto pow_beta = PowPolynomial(betas);
     pow_beta.compute_values();
 
     // Compute the corresponding target sum and create a dummy accumulator

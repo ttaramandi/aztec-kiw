@@ -90,13 +90,13 @@ field_t<Builder> keccak<Builder>::normalize_and_rotate(const field_ct& limb, fie
      * stdlib::plookup cannot derive witnesses in the above pattern without a substantial rewrite,
      * so we do it manually in this method!
      **/
-    plookup::ReadData<bb::fr> lookup;
+    plookup::ReadData<fr> lookup;
 
     // compute plookup witness values for a given slice
     // (same lambda can be used to compute witnesses for left and right slices)
     auto compute_lookup_witnesses_for_limb = [&]<size_t limb_bits, size_t num_lookups>(uint256_t& normalized) {
         // (use a constexpr loop to make some pow and div operations compile-time)
-        bb::constexpr_for<0, num_lookups, 1>([&]<size_t i> {
+        constexpr_for<0, num_lookups, 1>([&]<size_t i> {
             constexpr size_t num_bits_processed = i * max_bits_per_table;
 
             // How many bits can this slice contain?
@@ -888,7 +888,7 @@ stdlib::byte_array<Builder> keccak<Builder>::sponge_squeeze_for_permutation_opco
     }
     return result;
 }
-template class keccak<bb::UltraCircuitBuilder>;
-template class keccak<bb::GoblinUltraCircuitBuilder>;
+template class keccak<UltraCircuitBuilder>;
+template class keccak<GoblinUltraCircuitBuilder>;
 
 } // namespace bb::stdlib

@@ -272,6 +272,6 @@ template <typename Builder> void DynamicArray<Builder>::conditional_pop(const bo
     _length -= predicate;
 }
 
-template class DynamicArray<bb::UltraCircuitBuilder>;
-template class DynamicArray<bb::GoblinUltraCircuitBuilder>;
+template class DynamicArray<UltraCircuitBuilder>;
+template class DynamicArray<GoblinUltraCircuitBuilder>;
 } // namespace bb::stdlib

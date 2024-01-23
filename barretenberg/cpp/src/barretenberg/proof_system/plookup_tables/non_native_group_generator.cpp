@@ -59,16 +59,16 @@ template <typename G1> void ecc_generator_table<G1>::init_generator_tables()
         uint256_t y2 = y & MASK;
         y = y >> 68;
         uint256_t y3 = y & MASK;
-        ecc_generator_table<G1>::generator_xlo_table[i] = std::make_pair<bb::fr, bb::fr>(x0, x1);
-        ecc_generator_table<G1>::generator_xhi_table[i] = std::make_pair<bb::fr, bb::fr>(x2, x3);
-        ecc_generator_table<G1>::generator_endo_xlo_table[i] = std::make_pair<bb::fr, bb::fr>(endox0, endox1);
-        ecc_generator_table<G1>::generator_endo_xhi_table[i] = std::make_pair<bb::fr, bb::fr>(endox2, endox3);
-        ecc_generator_table<G1>::generator_ylo_table[i] = std::make_pair<bb::fr, bb::fr>(y0, y1);
-        ecc_generator_table<G1>::generator_yhi_table[i] = std::make_pair<bb::fr, bb::fr>(y2, y3);
+        ecc_generator_table<G1>::generator_xlo_table[i] = std::make_pair<bb::fr, fr>(x0, x1);
+        ecc_generator_table<G1>::generator_xhi_table[i] = std::make_pair<bb::fr, fr>(x2, x3);
+        ecc_generator_table<G1>::generator_endo_xlo_table[i] = std::make_pair<bb::fr, fr>(endox0, endox1);
+        ecc_generator_table<G1>::generator_endo_xhi_table[i] = std::make_pair<bb::fr, fr>(endox2, endox3);
+        ecc_generator_table<G1>::generator_ylo_table[i] = std::make_pair<bb::fr, fr>(y0, y1);
+        ecc_generator_table<G1>::generator_yhi_table[i] = std::make_pair<bb::fr, fr>(y2, y3);
         ecc_generator_table<G1>::generator_xyprime_table[i] =
-            std::make_pair<bb::fr, bb::fr>(bb::fr(uint256_t(point_table[i].x)), bb::fr(uint256_t(point_table[i].y)));
-        ecc_generator_table<G1>::generator_endo_xyprime_table[i] = std::make_pair<bb::fr, bb::fr>(
-            bb::fr(uint256_t(point_table[i].x * beta)), bb::fr(uint256_t(point_table[i].y)));
+            std::make_pair<bb::fr, fr>(fr(uint256_t(point_table[i].x)), fr(uint256_t(point_table[i].y)));
+        ecc_generator_table<G1>::generator_endo_xyprime_table[i] =
+            std::make_pair<bb::fr, fr>(fr(uint256_t(point_table[i].x * beta)), fr(uint256_t(point_table[i].y)));
     }
     init = true;
 }
@@ -88,7 +88,7 @@ template <typename G1> size_t ecc_generator_table<G1>::convert_shifted_naf_to_po
 /**
  * Get 2 low 68-bit limbs of x-coordinate
  **/
-template <typename G1> std::array<bb::fr, 2> ecc_generator_table<G1>::get_xlo_values(const std::array<uint64_t, 2> key)
+template <typename G1> std::array<fr, 2> ecc_generator_table<G1>::get_xlo_values(const std::array<uint64_t, 2> key)
 {
     init_generator_tables();
     const size_t index = static_cast<size_t>(key[0]);
@@ -99,7 +99,7 @@ template <typename G1> std::array<bb::fr, 2> ecc_generator_table<G1>::get_xlo_va
 /**
  * Get 2 high 68-bit limbs of x-coordinate
  **/
-template <typename G1> std::array<bb::fr, 2> ecc_generator_table<G1>::get_xhi_values(const std::array<uint64_t, 2> key)
+template <typename G1> std::array<fr, 2> ecc_generator_table<G1>::get_xhi_values(const std::array<uint64_t, 2> key)
 {
     init_generator_tables();
     const size_t index = static_cast<size_t>(key[0]);
@@ -110,8 +110,7 @@ template <typename G1> std::array<bb::fr, 2> ecc_generator_table<G1>::get_xhi_va
 /**
  * Get 2 low 68-bit limbs of x-coordinate (for endomorphism point \lambda.[P])
  **/
-template <typename G1>
-std::array<bb::fr, 2> ecc_generator_table<G1>::get_xlo_endo_values(const std::array<uint64_t, 2> key)
+template <typename G1> std::array<fr, 2> ecc_generator_table<G1>::get_xlo_endo_values(const std::array<uint64_t, 2> key)
 {
     init_generator_tables();
     const size_t index = static_cast<size_t>(key[0]);
@@ -122,8 +121,7 @@ std::array<bb::fr, 2> ecc_generator_table<G1>::get_xlo_endo_values(const std::ar
 /**
  * Get 2 high 68-bit limbs of x-coordinate (for endomorphism point \lambda.[1])
  **/
-template <typename G1>
-std::array<bb::fr, 2> ecc_generator_table<G1>::get_xhi_endo_values(const std::array<uint64_t, 2> key)
+template <typename G1> std::array<fr, 2> ecc_generator_table<G1>::get_xhi_endo_values(const std::array<uint64_t, 2> key)
 {
     init_generator_tables();
     const size_t index = static_cast<size_t>(key[0]);
@@ -134,7 +132,7 @@ std::array<bb::fr, 2> ecc_generator_table<G1>::get_xhi_endo_values(const std::ar
 /**
  * Get 2 low 68-bit limbs of y-coordinate
  **/
-template <typename G1> std::array<bb::fr, 2> ecc_generator_table<G1>::get_ylo_values(const std::array<uint64_t, 2> key)
+template <typename G1> std::array<fr, 2> ecc_generator_table<G1>::get_ylo_values(const std::array<uint64_t, 2> key)
 {
     init_generator_tables();
     const size_t index = static_cast<size_t>(key[0]);
@@ -145,7 +143,7 @@ template <typename G1> std::array<bb::fr, 2> ecc_generator_table<G1>::get_ylo_va
 /**
  * Get 2 high 68-bit limbs of y-coordinate
  **/
-template <typename G1> std::array<bb::fr, 2> ecc_generator_table<G1>::get_yhi_values(const std::array<uint64_t, 2> key)
+template <typename G1> std::array<fr, 2> ecc_generator_table<G1>::get_yhi_values(const std::array<uint64_t, 2> key)
 {
     init_generator_tables();
     const size_t index = static_cast<size_t>(key[0]);
@@ -156,8 +154,7 @@ template <typename G1> std::array<bb::fr, 2> ecc_generator_table<G1>::get_yhi_va
 /**
  * Get the prime basis limbs for the x and y coordinates
  **/
-template <typename G1>
-std::array<bb::fr, 2> ecc_generator_table<G1>::get_xyprime_values(const std::array<uint64_t, 2> key)
+template <typename G1> std::array<fr, 2> ecc_generator_table<G1>::get_xyprime_values(const std::array<uint64_t, 2> key)
 {
     init_generator_tables();
     const size_t index = static_cast<size_t>(key[0]);
@@ -169,7 +166,7 @@ std::array<bb::fr, 2> ecc_generator_table<G1>::get_xyprime_values(const std::arr
  * Get the prime basis limbs for the x and y coordinates (endomorphism version for \lambda.[1])
  **/
 template <typename G1>
-std::array<bb::fr, 2> ecc_generator_table<G1>::get_xyprime_endo_values(const std::array<uint64_t, 2> key)
+std::array<fr, 2> ecc_generator_table<G1>::get_xyprime_endo_values(const std::array<uint64_t, 2> key)
 {
     init_generator_tables();
     const size_t index = static_cast<size_t>(key[0]);
@@ -484,7 +481,7 @@ MultiTable ecc_generator_table<G1>::get_xyprime_endo_table(const MultiTableId id
     }
     return table;
 }
-template class ecc_generator_table<bb::g1>;
+template class ecc_generator_table<g1>;
 template class ecc_generator_table<secp256k1::g1>;
 
 } // namespace bb::plookup::ecc_generator_tables

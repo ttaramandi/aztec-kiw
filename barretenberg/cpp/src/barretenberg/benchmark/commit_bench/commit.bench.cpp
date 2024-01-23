@@ -14,8 +14,8 @@ std::shared_ptr<honk::pcs::CommitmentKey<Curve>> create_commitment_key(const siz
         static_assert(std::same_as<Curve, curve::Grumpkin>);
         srs_path = "../srs_db/grumpkin";
     }
-    std::shared_ptr<bb::srs::factories::CrsFactory<Curve>> crs_factory(
-        new bb::srs::factories::FileCrsFactory<Curve>(srs_path, num_points));
+    std::shared_ptr<srs::factories::CrsFactory<Curve>> crs_factory(
+        new srs::factories::FileCrsFactory<Curve>(srs_path, num_points));
     return std::make_shared<honk::pcs::CommitmentKey<Curve>>(num_points, crs_factory);
 }
 

@@ -31,8 +31,8 @@ template <class Field, class Getters, typename PolyContainer> class GenPermSortK
                                                Field& quotient,
                                                const size_t i = 0)
     {
-        constexpr bb::fr minus_two(-2);
-        constexpr bb::fr minus_three(-3);
+        constexpr fr minus_two(-2);
+        constexpr fr minus_three(-3);
 
         const Field& alpha_base = challenges.alpha_powers[0];
         const Field& alpha = challenges.elements[ChallengeIndex::ALPHA];

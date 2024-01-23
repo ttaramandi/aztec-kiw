@@ -552,7 +552,7 @@ void GoblinTranslatorCircuitBuilder::create_accumulation_gate(const Accumulation
     num_gates += 2;
 
     // Check that all the wires are filled equally
-    bb::constexpr_for<0, TOTAL_COUNT, 1>([&]<size_t i>() { ASSERT(std::get<i>(wires).size() == num_gates); });
+    constexpr_for<0, TOTAL_COUNT, 1>([&]<size_t i>() { ASSERT(std::get<i>(wires).size() == num_gates); });
 }
 
 /**
@@ -568,7 +568,7 @@ GoblinTranslatorCircuitBuilder::AccumulationInput compute_witness_values_for_one
                                                                                         Fq batching_challenge_v,
                                                                                         Fq evaluation_input_x)
 {
-    using Fr = bb::fr;
+    using Fr = fr;
 
     // Get the Opcode value
     Fr op(ecc_op.get_opcode_value());
@@ -601,7 +601,7 @@ GoblinTranslatorCircuitBuilder::AccumulationInput compute_witness_values_for_one
 }
 void GoblinTranslatorCircuitBuilder::feed_ecc_op_queue_into_circuit(std::shared_ptr<ECCOpQueue> ecc_op_queue)
 {
-    using Fq = bb::fq;
+    using Fq = fq;
     std::vector<Fq> accumulator_trace;
     Fq current_accumulator(0);
     if (ecc_op_queue->raw_ops.empty()) {
@@ -1066,5 +1066,5 @@ bool GoblinTranslatorCircuitBuilder::check_circuit()
     return true;
 };
 template GoblinTranslatorCircuitBuilder::AccumulationInput generate_witness_values(
-    bb::fr, bb::fr, bb::fr, bb::fr, bb::fr, bb::fr, bb::fr, bb::fq, bb::fq, bb::fq);
+    fr, fr, fr, fr, fr, fr, fr, fq, fq, fq);
 } // namespace bb

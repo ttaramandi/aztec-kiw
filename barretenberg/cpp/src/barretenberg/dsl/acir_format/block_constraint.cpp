@@ -6,9 +6,9 @@ using namespace bb::plonk;
 
 namespace acir_format {
 
-template <typename Builder> bb::stdlib::field_t<Builder> poly_to_field_ct(const poly_triple poly, Builder& builder)
+template <typename Builder> stdlib::field_t<Builder> poly_to_field_ct(const poly_triple poly, Builder& builder)
 {
-    using field_ct = bb::stdlib::field_t<Builder>;
+    using field_ct = stdlib::field_t<Builder>;
 
     ASSERT(poly.q_m == 0);
     ASSERT(poly.q_r == 0);
@@ -25,9 +25,9 @@ template <typename Builder> bb::stdlib::field_t<Builder> poly_to_field_ct(const 
 template <typename Builder>
 void create_block_constraints(Builder& builder, const BlockConstraint constraint, bool has_valid_witness_assignments)
 {
-    using field_ct = bb::stdlib::field_t<Builder>;
-    using rom_table_ct = bb::stdlib::rom_table<Builder>;
-    using ram_table_ct = bb::stdlib::ram_table<Builder>;
+    using field_ct = stdlib::field_t<Builder>;
+    using rom_table_ct = stdlib::rom_table<Builder>;
+    using ram_table_ct = stdlib::ram_table<Builder>;
 
     std::vector<field_ct> init;
     for (auto i : constraint.init) {

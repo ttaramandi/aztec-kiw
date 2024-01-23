@@ -16,7 +16,7 @@ auto& engine = numeric::get_debug_randomness();
 
 class GoblinUltraHonkComposerTests : public ::testing::Test {
   protected:
-    static void SetUpTestSuite() { bb::srs::init_crs_factory("../srs_db/ignition"); }
+    static void SetUpTestSuite() { srs::init_crs_factory("../srs_db/ignition"); }
 
     using Curve = curve::BN254;
     using FF = Curve::ScalarField;
@@ -92,7 +92,7 @@ class GoblinUltraHonkComposerTests : public ::testing::Test {
  */
 TEST_F(GoblinUltraHonkComposerTests, SingleCircuit)
 {
-    auto op_queue = std::make_shared<bb::ECCOpQueue>();
+    auto op_queue = std::make_shared<ECCOpQueue>();
 
     // Add mock data to op queue to simulate interaction with a previous circuit
     op_queue->populate_with_mock_initital_data();
@@ -120,7 +120,7 @@ TEST_F(GoblinUltraHonkComposerTests, SingleCircuit)
 TEST_F(GoblinUltraHonkComposerTests, MultipleCircuitsMergeOnly)
 {
     // Instantiate EccOpQueue. This will be shared across all circuits in the series
-    auto op_queue = std::make_shared<bb::ECCOpQueue>();
+    auto op_queue = std::make_shared<ECCOpQueue>();
 
     // Add mock data to op queue to simulate interaction with a previous circuit
     op_queue->populate_with_mock_initital_data();
@@ -148,7 +148,7 @@ TEST_F(GoblinUltraHonkComposerTests, MultipleCircuitsMergeOnly)
 TEST_F(GoblinUltraHonkComposerTests, MultipleCircuitsHonkOnly)
 {
     // Instantiate EccOpQueue. This will be shared across all circuits in the series
-    auto op_queue = std::make_shared<bb::ECCOpQueue>();
+    auto op_queue = std::make_shared<ECCOpQueue>();
 
     // Add mock data to op queue to simulate interaction with a previous circuit
     op_queue->populate_with_mock_initital_data();
@@ -176,7 +176,7 @@ TEST_F(GoblinUltraHonkComposerTests, MultipleCircuitsHonkOnly)
 TEST_F(GoblinUltraHonkComposerTests, MultipleCircuitsHonkAndMerge)
 {
     // Instantiate EccOpQueue. This will be shared across all circuits in the series
-    auto op_queue = std::make_shared<bb::ECCOpQueue>();
+    auto op_queue = std::make_shared<ECCOpQueue>();
 
     // Add mock data to op queue to simulate interaction with a previous circuit
     op_queue->populate_with_mock_initital_data();
@@ -202,7 +202,7 @@ TEST_F(GoblinUltraHonkComposerTests, MultipleCircuitsHonkAndMerge)
     // Compute the commitments to the aggregate op queue directly and check that they match those that were computed
     // iteratively during transcript aggregation by the provers and stored in the op queue.
     size_t aggregate_op_queue_size = op_queue->current_ultra_ops_size;
-    auto crs_factory = std::make_shared<bb::srs::factories::FileCrsFactory<Curve>>("../srs_db/ignition");
+    auto crs_factory = std::make_shared<srs::factories::FileCrsFactory<Curve>>("../srs_db/ignition");
     auto commitment_key = std::make_shared<CommitmentKey>(aggregate_op_queue_size, crs_factory);
     size_t idx = 0;
     for (auto& result : op_queue->ultra_ops_commitments) {

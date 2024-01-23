@@ -951,7 +951,7 @@ typename Curve::Element pippenger_without_endomorphism_basis_points(typename Cur
                                                                     pippenger_runtime_state<Curve>& state)
 {
     std::vector<typename Curve::AffineElement> G_mod(num_initial_points * 2);
-    bb::scalar_multiplication::generate_pippenger_point_table<Curve>(points, &G_mod[0], num_initial_points);
+    scalar_multiplication::generate_pippenger_point_table<Curve>(points, &G_mod[0], num_initial_points);
     return pippenger(scalars, &G_mod[0], num_initial_points, state, false);
 }
 

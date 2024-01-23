@@ -7,11 +7,11 @@ namespace bb {
 template <typename Fr> void PolynomialStoreWasm<Fr>::put(std::string const& key, Polynomial&& value)
 {
     // info("put ", key, ": ", value.hash());
-    set_data(key.c_str(), (uint8_t*)value.data().get(), value.size() * sizeof(bb::fr));
+    set_data(key.c_str(), (uint8_t*)value.data().get(), value.size() * sizeof(fr));
     size_map[key] = value.size();
 };
 
-template <typename Fr> bb::Polynomial<Fr> PolynomialStoreWasm<Fr>::get(std::string const& key)
+template <typename Fr> Polynomial<Fr> PolynomialStoreWasm<Fr>::get(std::string const& key)
 {
     auto p = Polynomial(size_map[key]);
     get_data(key.c_str(), (uint8_t*)p.data().get());
@@ -19,6 +19,6 @@ template <typename Fr> bb::Polynomial<Fr> PolynomialStoreWasm<Fr>::get(std::stri
     return p;
 };
 
-template class PolynomialStoreWasm<bb::fr>;
+template class PolynomialStoreWasm<fr>;
 
 } // namespace bb

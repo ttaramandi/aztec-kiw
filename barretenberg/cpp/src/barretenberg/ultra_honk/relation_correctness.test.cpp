@@ -129,14 +129,12 @@ template <typename Flavor> void create_some_lookup_gates(auto& circuit_builder)
         uint256_t(pedersen_input_value)
             .slice(plookup::fixed_base::table::BITS_PER_LO_SCALAR,
                    plookup::fixed_base::table::BITS_PER_LO_SCALAR + plookup::fixed_base::table::BITS_PER_HI_SCALAR);
-    const auto input_lo = uint256_t(pedersen_input_value).slice(0, bb::plookup::fixed_base::table::BITS_PER_LO_SCALAR);
+    const auto input_lo = uint256_t(pedersen_input_value).slice(0, plookup::fixed_base::table::BITS_PER_LO_SCALAR);
     const auto input_hi_index = circuit_builder.add_variable(input_hi);
     const auto input_lo_index = circuit_builder.add_variable(input_lo);
 
-    const auto sequence_data_hi =
-        plookup::get_lookup_accumulators(bb::plookup::MultiTableId::FIXED_BASE_LEFT_HI, input_hi);
-    const auto sequence_data_lo =
-        plookup::get_lookup_accumulators(bb::plookup::MultiTableId::FIXED_BASE_LEFT_LO, input_lo);
+    const auto sequence_data_hi = plookup::get_lookup_accumulators(plookup::MultiTableId::FIXED_BASE_LEFT_HI, input_hi);
+    const auto sequence_data_lo = plookup::get_lookup_accumulators(plookup::MultiTableId::FIXED_BASE_LEFT_LO, input_lo);
 
     circuit_builder.create_gates_from_plookup_accumulators(
         plookup::MultiTableId::FIXED_BASE_LEFT_HI, sequence_data_hi, input_hi_index);
@@ -237,7 +235,7 @@ template <typename Flavor> void create_some_ecc_op_queue_gates(auto& circuit_bui
 
 class RelationCorrectnessTests : public ::testing::Test {
   protected:
-    static void SetUpTestSuite() { bb::srs::init_crs_factory("../srs_db/ignition"); }
+    static void SetUpTestSuite() { srs::init_crs_factory("../srs_db/ignition"); }
 };
 
 /**
@@ -376,8 +374,8 @@ TEST_F(RelationCorrectnessTests, GoblinTranslatorPermutationRelationCorrectness)
     using Flavor = flavor::GoblinTranslator;
     using FF = typename Flavor::FF;
     using ProverPolynomials = typename Flavor::ProverPolynomials;
-    using Polynomial = bb::Polynomial<FF>;
-    using namespace bb::honk::permutation_library;
+    using Polynomial = Polynomial<FF>;
+    using namespace honk::permutation_library;
     auto& engine = numeric::get_debug_randomness();
     auto circuit_size = Flavor::MINI_CIRCUIT_SIZE * Flavor::CONCATENATION_INDEX;
 
@@ -479,7 +477,7 @@ TEST_F(RelationCorrectnessTests, GoblinTranslatorPermutationRelationCorrectness)
     compute_concatenated_polynomials<Flavor>(&prover_polynomials);
 
     // Compute the grand product polynomial
-    grand_product_library::compute_grand_product<Flavor, bb::GoblinTranslatorPermutationRelation<FF>>(
+    grand_product_library::compute_grand_product<Flavor, GoblinTranslatorPermutationRelation<FF>>(
         circuit_size, prover_polynomials, params);
     prover_polynomials.z_perm_shift = prover_polynomials.z_perm.shifted();
 
@@ -494,7 +492,7 @@ TEST_F(RelationCorrectnessTests, GoblinTranslatorGenPermSortRelationCorrectness)
     using Flavor = flavor::GoblinTranslator;
     using FF = typename Flavor::FF;
     using ProverPolynomials = typename Flavor::ProverPolynomials;
-    using Polynomial = bb::Polynomial<FF>;
+    using Polynomial = Polynomial<FF>;
     auto& engine = numeric::get_debug_randomness();
 
     const auto circuit_size = Flavor::FULL_CIRCUIT_SIZE;
@@ -575,7 +573,7 @@ TEST_F(RelationCorrectnessTests, GoblinTranslatorExtraRelationsCorrectness)
     using FF = typename Flavor::FF;
     using ProverPolynomials = typename Flavor::ProverPolynomials;
     using ProverPolynomialIds = typename Flavor::ProverPolynomialIds;
-    using Polynomial = bb::Polynomial<FF>;
+    using Polynomial = Polynomial<FF>;
 
     auto& engine = numeric::get_debug_randomness();
 
@@ -678,7 +676,7 @@ TEST_F(RelationCorrectnessTests, GoblinTranslatorDecompositionRelationCorrectnes
     using BF = typename Flavor::BF;
     using ProverPolynomials = typename Flavor::ProverPolynomials;
     using ProverPolynomialIds = typename Flavor::ProverPolynomialIds;
-    using Polynomial = bb::Polynomial<FF>;
+    using Polynomial = Polynomial<FF>;
     auto& engine = numeric::get_debug_randomness();
 
     auto circuit_size = Flavor::FULL_CIRCUIT_SIZE;
@@ -1052,7 +1050,7 @@ TEST_F(RelationCorrectnessTests, GoblinTranslatorNonNativeRelationCorrectness)
     using ProverPolynomials = typename Flavor::ProverPolynomials;
     using ProverPolynomialIds = typename Flavor::ProverPolynomialIds;
     using GroupElement = typename Flavor::GroupElement;
-    using Polynomial = bb::Polynomial<FF>;
+    using Polynomial = Polynomial<FF>;
 
     constexpr size_t NUM_LIMB_BITS = Flavor::NUM_LIMB_BITS;
     constexpr auto circuit_size = Flavor::FULL_CIRCUIT_SIZE;
@@ -1060,7 +1058,7 @@ TEST_F(RelationCorrectnessTests, GoblinTranslatorNonNativeRelationCorrectness)
 
     auto& engine = numeric::get_debug_randomness();
 
-    auto op_queue = std::make_shared<bb::ECCOpQueue>();
+    auto op_queue = std::make_shared<ECCOpQueue>();
 
     // Generate random EccOpQueue actions
     for (size_t i = 0; i < ((Flavor::MINI_CIRCUIT_SIZE >> 1) - 1); i++) {

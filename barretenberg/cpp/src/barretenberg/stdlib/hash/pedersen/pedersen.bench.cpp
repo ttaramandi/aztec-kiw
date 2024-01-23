@@ -41,11 +41,11 @@ constexpr size_t get_index(const size_t target_count_base)
 }
 void generate_test_pedersen_hash_circuit(Builder& builder, size_t num_repetitions)
 {
-    stdlib::field_t<Builder> left(stdlib::witness_t(&builder, bb::fr::random_element()));
-    stdlib::field_t<Builder> out(stdlib::witness_t(&builder, bb::fr::random_element()));
+    stdlib::field_t<Builder> left(stdlib::witness_t(&builder, fr::random_element()));
+    stdlib::field_t<Builder> out(stdlib::witness_t(&builder, fr::random_element()));
 
     for (size_t i = 0; i < num_repetitions; ++i) {
-        out = bb::stdlib::pedersen_hash<Builder>::hash({ left, out });
+        out = stdlib::pedersen_hash<Builder>::hash({ left, out });
     }
 }
 
@@ -53,10 +53,10 @@ void generate_test_pedersen_hash_buffer_circuit(Builder& builder, size_t num_rep
 {
     stdlib::byte_array<Builder> input;
     for (size_t i = 0; i < num_repetitions; ++i) {
-        stdlib::byte_array<Builder> tmp(stdlib::witness_t(&builder, bb::fr::random_element()));
+        stdlib::byte_array<Builder> tmp(stdlib::witness_t(&builder, fr::random_element()));
         input.write(tmp);
     }
-    auto out = bb::stdlib::pedersen_hash<Builder>::hash_buffer(input);
+    auto out = stdlib::pedersen_hash<Builder>::hash_buffer(input);
     (void)out;
 }
 
@@ -106,7 +106,7 @@ BENCHMARK(native_pedersen_eight_hash_bench)->MinTime(3);
 
 void construct_pedersen_witnesses_bench(State& state) noexcept
 {
-    bb::srs::init_crs_factory(BARRETENBERG_SRS_PATH);
+    srs::init_crs_factory(BARRETENBERG_SRS_PATH);
 
     for (auto _ : state) {
         state.PauseTiming();

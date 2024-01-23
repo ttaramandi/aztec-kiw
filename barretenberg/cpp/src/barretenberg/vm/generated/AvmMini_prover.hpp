@@ -38,7 +38,7 @@ class AvmMiniProver {
 
     std::vector<FF> public_inputs;
 
-    bb::RelationParameters<FF> relation_parameters;
+    RelationParameters<FF> relation_parameters;
 
     std::shared_ptr<ProvingKey> key;
 

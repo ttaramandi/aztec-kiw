@@ -138,6 +138,6 @@ std::array<field_t<Builder>, 2> twin_rom_table<Builder>::operator[](const field_
     };
 }
 
-template class twin_rom_table<bb::UltraCircuitBuilder>;
-template class twin_rom_table<bb::GoblinUltraCircuitBuilder>;
+template class twin_rom_table<UltraCircuitBuilder>;
+template class twin_rom_table<GoblinUltraCircuitBuilder>;
 } // namespace bb::stdlib

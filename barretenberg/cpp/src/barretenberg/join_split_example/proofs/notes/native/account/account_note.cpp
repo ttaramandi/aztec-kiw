@@ -4,9 +4,9 @@
 
 namespace bb::join_split_example::proofs::notes::native::account {
 
-grumpkin::fq generate_account_commitment(const bb::fr& alias_hash, const bb::fr& owner_x, const bb::fr& signing_x)
+grumpkin::fq generate_account_commitment(const bb::fr& alias_hash, const bb::fr& owner_x, const fr& signing_x)
 {
-    return bb::crypto::pedersen_hash::hash({ alias_hash, owner_x, signing_x }, GeneratorIndex::ACCOUNT_NOTE_COMMITMENT);
+    return crypto::pedersen_hash::hash({ alias_hash, owner_x, signing_x }, GeneratorIndex::ACCOUNT_NOTE_COMMITMENT);
 }
 
 grumpkin::fq account_note::commit() const

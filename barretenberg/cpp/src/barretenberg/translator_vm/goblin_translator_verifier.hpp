@@ -12,7 +12,7 @@ class GoblinTranslatorVerifier {
     using Commitment = typename Flavor::Commitment;
     using VerificationKey = typename Flavor::VerificationKey;
     using VerifierCommitmentKey = typename Flavor::VerifierCommitmentKey;
-    using TranslationEvaluations = bb::TranslationEvaluations;
+    using TranslationEvaluations = TranslationEvaluations;
     using Transcript = typename Flavor::Transcript;
 
     BF evaluation_input_x = 0;

@@ -121,13 +121,13 @@ std::array<uint64_t, 8> inner_block(std::array<uint64_t, 64>& w)
 
 //     for (size_t i = 0; i < 64; ++i) {
 //         w_inputs[i] = engine.get_random_uint32();
-//         w_elements[i] = stdlib::witness_t<bb::UltraCircuitBuilder>(&builder,
+//         w_elements[i] = stdlib::witness_t<UltraCircuitBuilder>(&builder,
 //         fr(w_inputs[i]));
 //     }
 
 //     const auto expected = inner_block(w_inputs);
 
-//     const std::array<bb::stdlib::field_t<bb::UltraCircuitBuilder>, 8> result =
+//     const std::array<bb::stdlib::field_t<UltraCircuitBuilder>, 8> result =
 //         stdlib::sha256_inner_block(w_elements);
 //     for (size_t i = 0; i < 8; ++i) {
 //         EXPECT_EQ(uint256_t(result[i].get_value()).data[0] & 0xffffffffUL,
@@ -342,7 +342,7 @@ HEAVY_TEST(stdlib_sha256, test_NIST_vector_five)
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         "AAAAAAAAAA");
 
-    packed_byte_array_pt output_bits = stdlib::sha256<bb::UltraCircuitBuilder>(input);
+    packed_byte_array_pt output_bits = stdlib::sha256<UltraCircuitBuilder>(input);
 
     std::vector<field_pt> output = output_bits.to_unverified_byte_slices(4);
 

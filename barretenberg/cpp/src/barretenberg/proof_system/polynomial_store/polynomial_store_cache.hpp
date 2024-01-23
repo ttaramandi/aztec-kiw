@@ -17,10 +17,10 @@ namespace bb {
  */
 class PolynomialStoreCache {
   private:
-    using Polynomial = bb::Polynomial<bb::fr>;
+    using Polynomial = bb::Polynomial<fr>;
     std::map<std::string, Polynomial> cache_;
     std::multimap<size_t, std::map<std::string, Polynomial>::iterator> size_map_;
-    PolynomialStoreWasm<bb::fr> external_store;
+    PolynomialStoreWasm<fr> external_store;
     size_t max_cache_size_;
 
   public:

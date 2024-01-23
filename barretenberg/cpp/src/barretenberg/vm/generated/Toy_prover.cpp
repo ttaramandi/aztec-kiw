@@ -28,12 +28,11 @@ ToyProver::ToyProver(std::shared_ptr<Flavor::ProvingKey> input_key, std::shared_
     , commitment_key(commitment_key)
 {
     for (auto [prover_poly, key_poly] : zip_view(prover_polynomials.get_unshifted(), key->get_all())) {
-        ASSERT(bb::flavor_get_label(prover_polynomials, prover_poly) == bb::flavor_get_label(*key, key_poly));
+        ASSERT(flavor_get_label(prover_polynomials, prover_poly) == flavor_get_label(*key, key_poly));
         prover_poly = key_poly.share();
     }
     for (auto [prover_poly, key_poly] : zip_view(prover_polynomials.get_shifted(), key->get_to_be_shifted())) {
-        ASSERT(bb::flavor_get_label(prover_polynomials, prover_poly) ==
-               bb::flavor_get_label(*key, key_poly) + "_shift");
+        ASSERT(flavor_get_label(prover_polynomials, prover_poly) == flavor_get_label(*key, key_poly) + "_shift");
         prover_poly = key_poly.shifted();
     }
 }

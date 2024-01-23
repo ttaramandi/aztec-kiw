@@ -33,11 +33,11 @@ struct global_vars {
 
 global_vars globals;
 
-bb::evaluation_domain evaluation_domains[10]{ bb::evaluation_domain(START),       bb::evaluation_domain(START * 2),
-                                              bb::evaluation_domain(START * 4),   bb::evaluation_domain(START * 8),
-                                              bb::evaluation_domain(START * 16),  bb::evaluation_domain(START * 32),
-                                              bb::evaluation_domain(START * 64),  bb::evaluation_domain(START * 128),
-                                              bb::evaluation_domain(START * 256), bb::evaluation_domain(START * 512) };
+evaluation_domain evaluation_domains[10]{ bb::evaluation_domain(START),   evaluation_domain(START * 2),
+                                          evaluation_domain(START * 4),   evaluation_domain(START * 8),
+                                          evaluation_domain(START * 16),  evaluation_domain(START * 32),
+                                          evaluation_domain(START * 64),  evaluation_domain(START * 128),
+                                          evaluation_domain(START * 256), evaluation_domain(START * 512) };
 
 void generate_scalars(fr* scalars)
 {
@@ -212,7 +212,7 @@ void coset_fft_bench_parallel(State& state) noexcept
 {
     for (auto _ : state) {
         size_t idx = (size_t)numeric::get_msb((uint64_t)state.range(0)) - (size_t)numeric::get_msb(START);
-        bb::polynomial_arithmetic::coset_fft(globals.data, evaluation_domains[idx]);
+        polynomial_arithmetic::coset_fft(globals.data, evaluation_domains[idx]);
     }
 }
 BENCHMARK(coset_fft_bench_parallel)->RangeMultiplier(2)->Range(START * 4, MAX_GATES * 4)->Unit(benchmark::kMicrosecond);
@@ -221,7 +221,7 @@ void alternate_coset_fft_bench_parallel(State& state) noexcept
 {
     for (auto _ : state) {
         size_t idx = (size_t)numeric::get_msb((uint64_t)state.range(0)) - (size_t)numeric::get_msb(START);
-        bb::polynomial_arithmetic::coset_fft(globals.data, evaluation_domains[idx - 2], evaluation_domains[idx - 2], 4);
+        polynomial_arithmetic::coset_fft(globals.data, evaluation_domains[idx - 2], evaluation_domains[idx - 2], 4);
     }
 }
 BENCHMARK(alternate_coset_fft_bench_parallel)
@@ -233,7 +233,7 @@ void fft_bench_parallel(State& state) noexcept
 {
     for (auto _ : state) {
         size_t idx = (size_t)numeric::get_msb((uint64_t)state.range(0)) - (size_t)numeric::get_msb(START);
-        bb::polynomial_arithmetic::fft(globals.data, evaluation_domains[idx]);
+        polynomial_arithmetic::fft(globals.data, evaluation_domains[idx]);
     }
 }
 BENCHMARK(fft_bench_parallel)->RangeMultiplier(2)->Range(START * 4, MAX_GATES * 4)->Unit(benchmark::kMicrosecond);
@@ -242,7 +242,7 @@ void fft_bench_serial(State& state) noexcept
 {
     for (auto _ : state) {
         size_t idx = (size_t)numeric::get_msb((uint64_t)state.range(0)) - (size_t)numeric::get_msb(START);
-        bb::polynomial_arithmetic::fft_inner_serial(
+        polynomial_arithmetic::fft_inner_serial(
             { globals.data }, evaluation_domains[idx].thread_size, evaluation_domains[idx].get_round_roots());
     }
 }

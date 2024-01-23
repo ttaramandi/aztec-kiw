@@ -66,8 +66,8 @@ template <class Field, class Getters, typename PolyContainer> class PlookupAuxil
                                                Field& quotient,
                                                const size_t i = 0)
     {
-        constexpr bb::fr LIMB_SIZE(uint256_t(1) << 68);
-        constexpr bb::fr SUBLIMB_SHIFT(uint256_t(1) << 14);
+        constexpr fr LIMB_SIZE(uint256_t(1) << 68);
+        constexpr fr SUBLIMB_SHIFT(uint256_t(1) << 14);
 
         const Field& w_1 =
             Getters::template get_value<EvaluationType::NON_SHIFTED, PolynomialIndex::W_1>(polynomials, i);

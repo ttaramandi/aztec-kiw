@@ -10,7 +10,7 @@ using namespace bb::honk;
 
 template <class Flavor> class InstanceTests : public testing::Test {
     using FF = typename Flavor::FF;
-    using Polynomial = bb::Polynomial<FF>;
+    using Polynomial = Polynomial<FF>;
     using Builder = typename Flavor::CircuitBuilder;
 
   public:

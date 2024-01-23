@@ -25,7 +25,7 @@ namespace bb::honk::pcs::shplonk {
  *
  * @tparam Curve EC parameters
  */
-template <typename Curve> using OutputWitness = bb::Polynomial<typename Curve::ScalarField>;
+template <typename Curve> using OutputWitness = Polynomial<typename Curve::ScalarField>;
 
 /**
  * @brief Prover output (claim=([G], r, 0), witness = G(X), proof = [Q])
@@ -45,7 +45,7 @@ template <typename Curve> struct ProverOutput {
  */
 template <typename Curve> class ShplonkProver_ {
     using Fr = typename Curve::ScalarField;
-    using Polynomial = bb::Polynomial<Fr>;
+    using Polynomial = Polynomial<Fr>;
 
   public:
     /**

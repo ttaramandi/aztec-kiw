@@ -11,7 +11,7 @@ using namespace bb::honk;
 
 template <class FF> class GrandProductTests : public testing::Test {
 
-    using Polynomial = bb::Polynomial<FF>;
+    using Polynomial = Polynomial<FF>;
 
   public:
     /**
@@ -99,7 +99,7 @@ template <class FF> class GrandProductTests : public testing::Test {
         using LHS =
             typename std::tuple_element<PERMUTATION_RELATION_INDEX, typename Flavor::GrandProductRelations>::type;
         ASSERT(Flavor::NUM_WIRES == 4);
-        using RHS = typename bb::UltraPermutationRelation<FF>;
+        using RHS = typename UltraPermutationRelation<FF>;
         static_assert(std::same_as<LHS, RHS>);
         grand_product_library::compute_grand_product<Flavor, RHS>(
             proving_key->circuit_size, prover_polynomials, params);

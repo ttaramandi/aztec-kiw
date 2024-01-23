@@ -22,7 +22,7 @@ struct nullifier_leaf {
         return os;
     }
 
-    bb::fr hash() const { return stdlib::merkle_tree::hash_native({ value, nextIndex, nextValue }); }
+    fr hash() const { return stdlib::merkle_tree::hash_native({ value, nextIndex, nextValue }); }
 };
 
 /**
@@ -68,9 +68,9 @@ class WrappedNullifierLeaf {
     /**
      * @brief Return the hash of the wrapped object, other return the zero hash of 0
      *
-     * @return bb::fr
+     * @return fr
      */
-    bb::fr hash() const { return data.has_value() ? data.value().hash() : bb::fr::zero(); }
+    fr hash() const { return data.has_value() ? data.value().hash() : fr::zero(); }
 
     /**
      * @brief Generate a zero leaf (call the constructor with no arguments)

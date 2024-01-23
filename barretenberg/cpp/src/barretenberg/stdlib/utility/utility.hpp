@@ -27,12 +27,12 @@ using namespace bb::stdlib;
  */
 template <typename Builder> class StdlibTypesUtility {
     using field_ct = field_t<Builder>;
-    using fq_ct = bigfield<Builder, bb::Bn254FqParams>;
-    using element_ct = element<Builder, fq_ct, field_ct, bb::g1>;
-    using FF = bb::fr;
-    using Commitment = bb::g1::affine_element;
-    template <size_t LENGTH> using Univariate = bb::Univariate<FF, LENGTH>;
-    template <size_t LENGTH> using Univariate_ct = bb::Univariate<field_ct, LENGTH>;
+    using fq_ct = bigfield<Builder, Bn254FqParams>;
+    using element_ct = element<Builder, fq_ct, field_ct, g1>;
+    using FF = fr;
+    using Commitment = g1::affine_element;
+    template <size_t LENGTH> using Univariate = Univariate<FF, LENGTH>;
+    template <size_t LENGTH> using Univariate_ct = Univariate<field_ct, LENGTH>;
 
   public:
     /**

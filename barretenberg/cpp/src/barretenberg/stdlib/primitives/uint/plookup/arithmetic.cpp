@@ -254,13 +254,13 @@ std::pair<uint_plookup<Builder, Native>, uint_plookup<Builder, Native>> uint_plo
 
     return std::make_pair(quotient, remainder);
 }
-template class uint_plookup<bb::UltraCircuitBuilder, uint8_t>;
-template class uint_plookup<bb::GoblinUltraCircuitBuilder, uint8_t>;
-template class uint_plookup<bb::UltraCircuitBuilder, uint16_t>;
-template class uint_plookup<bb::GoblinUltraCircuitBuilder, uint16_t>;
-template class uint_plookup<bb::UltraCircuitBuilder, uint32_t>;
-template class uint_plookup<bb::GoblinUltraCircuitBuilder, uint32_t>;
-template class uint_plookup<bb::UltraCircuitBuilder, uint64_t>;
-template class uint_plookup<bb::GoblinUltraCircuitBuilder, uint64_t>;
+template class uint_plookup<UltraCircuitBuilder, uint8_t>;
+template class uint_plookup<GoblinUltraCircuitBuilder, uint8_t>;
+template class uint_plookup<UltraCircuitBuilder, uint16_t>;
+template class uint_plookup<GoblinUltraCircuitBuilder, uint16_t>;
+template class uint_plookup<UltraCircuitBuilder, uint32_t>;
+template class uint_plookup<GoblinUltraCircuitBuilder, uint32_t>;
+template class uint_plookup<UltraCircuitBuilder, uint64_t>;
+template class uint_plookup<GoblinUltraCircuitBuilder, uint64_t>;
 ;
 } // namespace bb::stdlib

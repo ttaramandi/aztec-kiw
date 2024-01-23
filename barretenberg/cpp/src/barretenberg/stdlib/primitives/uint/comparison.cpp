@@ -96,8 +96,8 @@ template <typename Builder, typename Native> bool_t<Builder> uint<Builder, Nativ
     return (field_t<Builder>(*this).is_zero()).normalize();
 }
 
-template class uint<bb::StandardCircuitBuilder, uint8_t>;
-template class uint<bb::StandardCircuitBuilder, uint16_t>;
-template class uint<bb::StandardCircuitBuilder, uint32_t>;
-template class uint<bb::StandardCircuitBuilder, uint64_t>;
+template class uint<StandardCircuitBuilder, uint8_t>;
+template class uint<StandardCircuitBuilder, uint16_t>;
+template class uint<StandardCircuitBuilder, uint32_t>;
+template class uint<StandardCircuitBuilder, uint64_t>;
 } // namespace bb::stdlib

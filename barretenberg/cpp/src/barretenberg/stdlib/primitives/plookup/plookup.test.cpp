@@ -185,8 +185,8 @@ TEST(stdlib_plookup, uint32_xor)
     uint256_t left_value = (engine.get_random_uint256() & 0xffffffffULL);
     uint256_t right_value = (engine.get_random_uint256() & 0xffffffffULL);
 
-    field_ct left = witness_ct(&builder, bb::fr(left_value));
-    field_ct right = witness_ct(&builder, bb::fr(right_value));
+    field_ct left = witness_ct(&builder, fr(left_value));
+    field_ct right = witness_ct(&builder, fr(right_value));
 
     const auto lookup = plookup_read::get_lookup_accumulators(MultiTableId::UINT32_XOR, left, right, true);
 
@@ -210,9 +210,9 @@ TEST(stdlib_plookup, uint32_xor)
     }
 
     for (size_t i = 0; i < num_lookups; ++i) {
-        EXPECT_EQ(lookup[ColumnIdx::C1][i].get_value(), bb::fr(left_expected[i]));
-        EXPECT_EQ(lookup[ColumnIdx::C2][i].get_value(), bb::fr(right_expected[i]));
-        EXPECT_EQ(lookup[ColumnIdx::C3][i].get_value(), bb::fr(out_expected[i]));
+        EXPECT_EQ(lookup[ColumnIdx::C1][i].get_value(), fr(left_expected[i]));
+        EXPECT_EQ(lookup[ColumnIdx::C2][i].get_value(), fr(right_expected[i]));
+        EXPECT_EQ(lookup[ColumnIdx::C3][i].get_value(), fr(out_expected[i]));
     }
 
     bool result = builder.check_circuit();
@@ -229,8 +229,8 @@ TEST(stdlib_plookup, blake2s_xor_rotate_16)
     uint256_t left_value = (engine.get_random_uint256() & 0xffffffffULL);
     uint256_t right_value = (engine.get_random_uint256() & 0xffffffffULL);
 
-    field_ct left = witness_ct(&builder, bb::fr(left_value));
-    field_ct right = witness_ct(&builder, bb::fr(right_value));
+    field_ct left = witness_ct(&builder, fr(left_value));
+    field_ct right = witness_ct(&builder, fr(right_value));
 
     const auto lookup = plookup_read::get_lookup_accumulators(MultiTableId::BLAKE_XOR_ROTATE_16, left, right, true);
 
@@ -260,7 +260,7 @@ TEST(stdlib_plookup, blake2s_xor_rotate_16)
      * out_coefficients must be (a5/a4, a4/a3, a3/a2, a2/a1, a1/a0). Note that these are stored in reverse orde
      * for simplicity.
      */
-    std::vector<fr> out_coefficients{ (1 << 6), (bb::fr(1) / bb::fr(1 << 22)), (1 << 2), (1 << 6), (1 << 6) };
+    std::vector<fr> out_coefficients{ (1 << 6), (bb::fr(1) / fr(1 << 22)), (1 << 2), (1 << 6), (1 << 6) };
 
     for (size_t i = num_lookups - 2; i < num_lookups; --i) {
         out_expected[i] += out_expected[i + 1] * out_coefficients[i];
@@ -298,8 +298,8 @@ TEST(stdlib_plookup, blake2s_xor_rotate_8)
     uint256_t left_value = (engine.get_random_uint256() & 0xffffffffULL);
     uint256_t right_value = (engine.get_random_uint256() & 0xffffffffULL);
 
-    field_ct left = witness_ct(&builder, bb::fr(left_value));
-    field_ct right = witness_ct(&builder, bb::fr(right_value));
+    field_ct left = witness_ct(&builder, fr(left_value));
+    field_ct right = witness_ct(&builder, fr(right_value));
 
     const auto lookup = plookup_read::get_lookup_accumulators(MultiTableId::BLAKE_XOR_ROTATE_8, left, right, true);
 
@@ -324,7 +324,7 @@ TEST(stdlib_plookup, blake2s_xor_rotate_8)
     }
 
     auto mul_constant = fr(1 << 24);
-    std::vector<fr> out_coefficients{ (bb::fr(1) / mul_constant), (1 << 4), (1 << 6), (1 << 6), (1 << 6) };
+    std::vector<fr> out_coefficients{ (fr(1) / mul_constant), (1 << 4), (1 << 6), (1 << 6), (1 << 6) };
 
     for (size_t i = num_lookups - 2; i < num_lookups; --i) {
         out_expected[i] += out_expected[i + 1] * out_coefficients[i];
@@ -356,8 +356,8 @@ TEST(stdlib_plookup, blake2s_xor_rotate_7)
     uint256_t left_value = (engine.get_random_uint256() & 0xffffffffULL);
     uint256_t right_value = (engine.get_random_uint256() & 0xffffffffULL);
 
-    field_ct left = witness_ct(&builder, bb::fr(left_value));
-    field_ct right = witness_ct(&builder, bb::fr(right_value));
+    field_ct left = witness_ct(&builder, fr(left_value));
+    field_ct right = witness_ct(&builder, fr(right_value));
 
     const auto lookup = plookup_read::get_lookup_accumulators(MultiTableId::BLAKE_XOR_ROTATE_7, left, right, true);
 
@@ -382,7 +382,7 @@ TEST(stdlib_plookup, blake2s_xor_rotate_7)
     }
 
     auto mul_constant = fr(1 << 25);
-    std::vector<fr> out_coefficients{ (bb::fr(1) / mul_constant), (1 << 5), (1 << 6), (1 << 6), (1 << 6) };
+    std::vector<fr> out_coefficients{ (fr(1) / mul_constant), (1 << 5), (1 << 6), (1 << 6), (1 << 6) };
 
     for (size_t i = num_lookups - 2; i < num_lookups; --i) {
         out_expected[i] += out_expected[i + 1] * out_coefficients[i];
@@ -414,8 +414,8 @@ TEST(stdlib_plookup, blake2s_xor)
     uint256_t left_value = (engine.get_random_uint256() & 0xffffffffULL);
     uint256_t right_value = (engine.get_random_uint256() & 0xffffffffULL);
 
-    field_ct left = witness_ct(&builder, bb::fr(left_value));
-    field_ct right = witness_ct(&builder, bb::fr(right_value));
+    field_ct left = witness_ct(&builder, fr(left_value));
+    field_ct right = witness_ct(&builder, fr(right_value));
 
     const auto lookup = plookup_read::get_lookup_accumulators(MultiTableId::BLAKE_XOR, left, right, true);
 
@@ -458,9 +458,9 @@ TEST(stdlib_plookup, blake2s_xor)
     EXPECT_EQ(fr(uint256_t(xor_rotate_output)), lookup_output);
 
     for (size_t i = 0; i < num_lookups; ++i) {
-        EXPECT_EQ(lookup[ColumnIdx::C1][i].get_value(), bb::fr(left_expected[i]));
-        EXPECT_EQ(lookup[ColumnIdx::C2][i].get_value(), bb::fr(right_expected[i]));
-        EXPECT_EQ(lookup[ColumnIdx::C3][i].get_value(), bb::fr(out_expected[i]));
+        EXPECT_EQ(lookup[ColumnIdx::C1][i].get_value(), fr(left_expected[i]));
+        EXPECT_EQ(lookup[ColumnIdx::C2][i].get_value(), fr(right_expected[i]));
+        EXPECT_EQ(lookup[ColumnIdx::C3][i].get_value(), fr(out_expected[i]));
     }
 
     bool result = builder.check_circuit();
@@ -477,8 +477,8 @@ TEST(stdlib_plookup, uint32_and)
     uint256_t left_value = (engine.get_random_uint256() & 0xffffffffULL);
     uint256_t right_value = (engine.get_random_uint256() & 0xffffffffULL);
 
-    field_ct left = witness_ct(&builder, bb::fr(left_value));
-    field_ct right = witness_ct(&builder, bb::fr(right_value));
+    field_ct left = witness_ct(&builder, fr(left_value));
+    field_ct right = witness_ct(&builder, fr(right_value));
 
     const auto lookup = plookup_read::get_lookup_accumulators(MultiTableId::UINT32_AND, left, right, true);
     const auto left_slices = numeric::slice_input(left_value, 1 << 6, num_lookups);
@@ -500,9 +500,9 @@ TEST(stdlib_plookup, uint32_and)
     }
 
     for (size_t i = 0; i < num_lookups; ++i) {
-        EXPECT_EQ(lookup[ColumnIdx::C1][i].get_value(), bb::fr(left_expected[i]));
-        EXPECT_EQ(lookup[ColumnIdx::C2][i].get_value(), bb::fr(right_expected[i]));
-        EXPECT_EQ(lookup[ColumnIdx::C3][i].get_value(), bb::fr(out_expected[i]));
+        EXPECT_EQ(lookup[ColumnIdx::C1][i].get_value(), fr(left_expected[i]));
+        EXPECT_EQ(lookup[ColumnIdx::C2][i].get_value(), fr(right_expected[i]));
+        EXPECT_EQ(lookup[ColumnIdx::C3][i].get_value(), fr(out_expected[i]));
     }
 
     bool result = builder.check_circuit();
@@ -545,10 +545,10 @@ TEST(stdlib_plookup, secp256k1_generator)
         accumulators.emplace_back(t1 - t2);
     }
     field_ct accumulator_field = field_ct::accumulate(accumulators);
-    EXPECT_EQ(accumulator_field.get_value(), bb::fr(input_value) + bb::fr(skew));
+    EXPECT_EQ(accumulator_field.get_value(), bb::fr(input_value) + fr(skew));
 
     for (size_t i = 0; i < 256; ++i) {
-        field_ct index(witness_ct(&builder, bb::fr(i)));
+        field_ct index(witness_ct(&builder, fr(i)));
         const auto xlo = plookup_read::read_pair_from_table(MultiTableId::SECP256K1_XLO, index);
         const auto xhi = plookup_read::read_pair_from_table(MultiTableId::SECP256K1_XHI, index);
         const auto ylo = plookup_read::read_pair_from_table(MultiTableId::SECP256K1_YLO, index);

@@ -11,7 +11,7 @@ namespace bb {
 
 template <typename Fr> class PolynomialStore {
   private:
-    using Polynomial = bb::Polynomial<Fr>;
+    using Polynomial = Polynomial<Fr>;
     std::unordered_map<std::string, Polynomial> polynomial_map;
 
   public:

@@ -10,7 +10,7 @@ struct partial_claim_note_data {
     uint256_t deposit_value;
     uint256_t bridge_call_data;
     uint256_t note_secret;
-    bb::fr input_nullifier;
+    fr input_nullifier;
 
     bool operator==(partial_claim_note_data const&) const = default;
 };

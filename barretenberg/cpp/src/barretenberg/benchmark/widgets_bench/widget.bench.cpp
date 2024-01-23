@@ -19,7 +19,7 @@
 // #define GET_PER_ROW_TIME
 
 namespace {
-auto& engine = bb::numeric::get_debug_randomness();
+auto& engine = numeric::get_debug_randomness();
 }
 
 namespace bb::plonk {
@@ -36,10 +36,10 @@ struct BasicPlonkKeyAndTranscript {
 
 BasicPlonkKeyAndTranscript get_plonk_key_and_transcript()
 {
-    bb::srs::init_crs_factory("../srs_db/ignition");
+    srs::init_crs_factory("../srs_db/ignition");
     auto inner_composer = plonk::UltraComposer();
     auto builder = typename plonk::UltraComposer::CircuitBuilder();
-    bb::mock_proofs::generate_basic_arithmetic_circuit(builder, 16);
+    mock_proofs::generate_basic_arithmetic_circuit(builder, 16);
     UltraProver inner_prover = inner_composer.create_prover(builder);
 #ifdef GET_PER_ROW_TIME
     if (!(inner_prover.key->circuit_size == WIDGET_BENCH_TEST_CIRCUIT_SIZE)) {
@@ -55,7 +55,7 @@ template <typename Flavor, typename Widget> void execute_widget(::benchmark::Sta
     BasicPlonkKeyAndTranscript data = get_plonk_key_and_transcript();
     Widget widget(data.key);
     for (auto _ : state) {
-        widget.compute_quotient_contribution(bb::fr::random_element(), data.transcript);
+        widget.compute_quotient_contribution(fr::random_element(), data.transcript);
     }
 }
 
@@ -67,7 +67,7 @@ template <typename Widget> void quotient_contribution(::benchmark::State& state)
 #ifdef GET_PER_ROW_TIME
         auto start = std::chrono::high_resolution_clock::now();
 #endif
-        widget.compute_quotient_contribution(bb::fr::random_element(), data.transcript);
+        widget.compute_quotient_contribution(fr::random_element(), data.transcript);
 #ifdef GET_PER_ROW_TIME
         auto end = std::chrono::high_resolution_clock::now();
         auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
@@ -101,10 +101,10 @@ template <typename Widget> void accumulate_contribution(::benchmark::State& stat
 
     auto polynomials = FFTGetter::get_polynomials(data.key.get(), FFTKernel::get_required_polynomial_ids());
     auto challenges =
-        FFTGetter::get_challenges(data.transcript, bb::fr::random_element(), FFTKernel::quotient_required_challenges);
+        FFTGetter::get_challenges(data.transcript, fr::random_element(), FFTKernel::quotient_required_challenges);
 
     for (auto _ : state) {
-        bb::fr result{ 0 };
+        fr result{ 0 };
         FFTKernel::accumulate_contribution(polynomials, challenges, result, 0);
     }
 }

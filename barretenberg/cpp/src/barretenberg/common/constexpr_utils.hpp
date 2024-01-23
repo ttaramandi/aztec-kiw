@@ -132,7 +132,7 @@ template <const auto& container, auto key> constexpr bool constexpr_find()
  * 1. HAS NO CONSTEXPR DEFAULT CONSTRUCTOR
  * 2. HAS A CONSTEXPR COPY CONSTRUCTOR
  *
- * An example of this is bb::field_t
+ * An example of this is field_t
  * (the default constructor does not default assign values to the field_t member variables for efficiency reasons, to
  * reduce the time require to construct large arrays of field elements. This means the default constructor for field_t
  * cannot be constexpr)

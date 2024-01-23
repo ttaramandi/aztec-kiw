@@ -5,9 +5,9 @@
 
 namespace bb::plonk {
 template <typename program_settings>
-inline void compute_gen_permutation_lagrange_base_single(bb::polynomial& output,
+inline void compute_gen_permutation_lagrange_base_single(polynomial& output,
                                                          const std::vector<uint32_t>& permutation,
-                                                         const bb::evaluation_domain& small_domain)
+                                                         const evaluation_domain& small_domain)
 {
     if (output.size() < permutation.size()) {
         throw_or_abort("Permutation polynomial size is insufficient to store permutations.");
@@ -18,7 +18,7 @@ inline void compute_gen_permutation_lagrange_base_single(bb::polynomial& output,
     // 0 = left
     // 1 = right
     // 2 = output
-    const bb::fr* roots = small_domain.get_round_roots()[small_domain.log2_size - 2];
+    const fr* roots = small_domain.get_round_roots()[small_domain.log2_size - 2];
     const size_t root_size = small_domain.size >> 1UL;
     const size_t log2_root_size = static_cast<size_t>(numeric::get_msb(root_size));
 
@@ -59,7 +59,7 @@ inline void compute_gen_permutation_lagrange_base_single(bb::polynomial& output,
     const uint32_t column_index =
         ((permutation[i] & program_settings::permutation_mask) >> program_settings::permutation_shift);
     if (column_index > 0) {
-        output[i] *= bb::fr::coset_generator(column_index - 1);
+        output[i] *= fr::coset_generator(column_index - 1);
     }
     ITERATE_OVER_DOMAIN_END;
 }

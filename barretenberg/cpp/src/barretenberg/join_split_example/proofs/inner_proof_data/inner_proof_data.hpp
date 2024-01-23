@@ -52,22 +52,22 @@ enum {
 
 struct inner_proof_data {
     uint256_t proof_id;
-    bb::fr note_commitment1;
-    bb::fr note_commitment2;
+    fr note_commitment1;
+    fr note_commitment2;
     uint256_t nullifier1;
     uint256_t nullifier2;
     uint256_t public_value;
-    bb::fr public_owner;
+    fr public_owner;
     uint256_t asset_id;
 
-    bb::fr merkle_root;
+    fr merkle_root;
     uint256_t tx_fee;
     uint256_t tx_fee_asset_id;
     uint256_t bridge_call_data;
     uint256_t defi_deposit_value;
-    bb::fr defi_root;
+    fr defi_root;
 
-    bb::fr backward_link;
+    fr backward_link;
     uint256_t allow_chain;
 
     inner_proof_data(std::vector<uint8_t> const& proof_data);

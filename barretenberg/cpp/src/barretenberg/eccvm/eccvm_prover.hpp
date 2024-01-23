@@ -23,7 +23,7 @@ template <ECCVMFlavor Flavor> class ECCVMProver_ {
     using CommitmentLabels = typename Flavor::CommitmentLabels;
     using Curve = typename Flavor::Curve;
     using Transcript = typename Flavor::Transcript;
-    using TranslationEvaluations = bb::TranslationEvaluations;
+    using TranslationEvaluations = TranslationEvaluations;
 
   public:
     explicit ECCVMProver_(const std::shared_ptr<ProvingKey>& input_key,
@@ -51,7 +51,7 @@ template <ECCVMFlavor Flavor> class ECCVMProver_ {
 
     std::vector<FF> public_inputs;
 
-    bb::RelationParameters<FF> relation_parameters;
+    RelationParameters<FF> relation_parameters;
 
     std::shared_ptr<ProvingKey> key;
 

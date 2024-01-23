@@ -41,21 +41,21 @@ class StandardTranscript : public Transcript {
                        const size_t challenge_bytes = 32)
         : Transcript(input_transcript, input_manifest, hash_type, challenge_bytes){};
 
-    void add_field_element(const std::string& element_name, const bb::fr& element);
+    void add_field_element(const std::string& element_name, const fr& element);
 
-    bb::fr get_field_element(const std::string& element_name) const;
-    bb::g1::affine_element get_group_element(const std::string& element_name) const;
+    fr get_field_element(const std::string& element_name) const;
+    g1::affine_element get_group_element(const std::string& element_name) const;
 
-    std::vector<bb::fr> get_field_element_vector(const std::string& element_name) const;
+    std::vector<fr> get_field_element_vector(const std::string& element_name) const;
 
-    bb::fr get_challenge_field_element(const std::string& challenge_name, const size_t idx = 0) const;
-    bb::fr get_challenge_field_element_from_map(const std::string& challenge_name,
-                                                const std::string& challenge_map_name) const;
+    fr get_challenge_field_element(const std::string& challenge_name, const size_t idx = 0) const;
+    fr get_challenge_field_element_from_map(const std::string& challenge_name,
+                                            const std::string& challenge_map_name) const;
 
     std::vector<uint8_t> export_transcript() const { return Transcript::export_transcript(); }
 
     // TODO(luke): temporary function for debugging
-    bb::fr get_mock_challenge() { return bb::fr::random_element(); };
+    fr get_mock_challenge() { return fr::random_element(); };
 };
 
 } // namespace transcript

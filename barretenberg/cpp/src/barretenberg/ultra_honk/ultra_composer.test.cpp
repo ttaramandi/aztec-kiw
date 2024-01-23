@@ -23,7 +23,7 @@ namespace {
 auto& engine = numeric::get_debug_randomness();
 }
 
-std::vector<uint32_t> add_variables(auto& circuit_builder, std::vector<bb::fr> variables)
+std::vector<uint32_t> add_variables(auto& circuit_builder, std::vector<fr> variables)
 {
     std::vector<uint32_t> res;
     for (size_t i = 0; i < variables.size(); i++) {
@@ -53,7 +53,7 @@ void ensure_non_zero(auto& polynomial)
 
 class UltraHonkComposerTests : public ::testing::Test {
   protected:
-    static void SetUpTestSuite() { bb::srs::init_crs_factory("../srs_db/ignition"); }
+    static void SetUpTestSuite() { srs::init_crs_factory("../srs_db/ignition"); }
 };
 
 /**
@@ -138,7 +138,7 @@ TEST_F(UltraHonkComposerTests, XorConstraint)
     circuit_builder.create_gates_from_plookup_accumulators(
         plookup::MultiTableId::UINT32_XOR, lookup_accumulators, left_witness_index, right_witness_index);
 
-    auto composer = UltraComposer(bb::srs::get_crs_factory());
+    auto composer = UltraComposer(srs::get_crs_factory());
     prove_and_verify(circuit_builder, composer, /*expected_result=*/true);
 }
 

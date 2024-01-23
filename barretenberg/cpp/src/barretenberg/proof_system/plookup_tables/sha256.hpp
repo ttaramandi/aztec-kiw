@@ -155,71 +155,71 @@ inline MultiTable get_majority_output_table(const MultiTableId id = SHA256_MAJ_O
     return table;
 }
 
-inline std::array<bb::fr, 3> get_majority_rotation_multipliers()
+inline std::array<fr, 3> get_majority_rotation_multipliers()
 {
     constexpr uint64_t base_temp = 16;
-    auto base = bb::fr(base_temp);
+    auto base = fr(base_temp);
     // scaling factors applied to a's sparse limbs, excluding the rotated limb
-    const std::array<bb::fr, 3> rot2_coefficients{ 0, base.pow(11 - 2), base.pow(22 - 2) };
-    const std::array<bb::fr, 3> rot13_coefficients{ base.pow(32 - 13), 0, base.pow(22 - 13) };
-    const std::array<bb::fr, 3> rot22_coefficients{ base.pow(32 - 22), base.pow(32 - 22 + 11), 0 };
+    const std::array<fr, 3> rot2_coefficients{ 0, base.pow(11 - 2), base.pow(22 - 2) };
+    const std::array<fr, 3> rot13_coefficients{ base.pow(32 - 13), 0, base.pow(22 - 13) };
+    const std::array<fr, 3> rot22_coefficients{ base.pow(32 - 22), base.pow(32 - 22 + 11), 0 };
 
     // these are the coefficients that we want
-    const std::array<bb::fr, 3> target_rotation_coefficients{
+    const std::array<fr, 3> target_rotation_coefficients{
         rot2_coefficients[0] + rot13_coefficients[0] + rot22_coefficients[0],
         rot2_coefficients[1] + rot13_coefficients[1] + rot22_coefficients[1],
         rot2_coefficients[2] + rot13_coefficients[2] + rot22_coefficients[2],
     };
 
-    bb::fr column_2_row_1_multiplier = target_rotation_coefficients[0];
-    bb::fr column_2_row_2_multiplier =
-        target_rotation_coefficients[0] * (-bb::fr(base).pow(11)) + target_rotation_coefficients[1];
+    fr column_2_row_1_multiplier = target_rotation_coefficients[0];
+    fr column_2_row_2_multiplier =
+        target_rotation_coefficients[0] * (-fr(base).pow(11)) + target_rotation_coefficients[1];
 
-    std::array<bb::fr, 3> rotation_multipliers = { column_2_row_1_multiplier, column_2_row_2_multiplier, bb::fr(0) };
+    std::array<fr, 3> rotation_multipliers = { column_2_row_1_multiplier, column_2_row_2_multiplier, fr(0) };
     return rotation_multipliers;
 }
 
 // template <uint64_t rot_a, uint64_t rot_b, uint64_t rot_c>
-inline std::array<bb::fr, 3> get_choose_rotation_multipliers()
+inline std::array<fr, 3> get_choose_rotation_multipliers()
 {
-    const std::array<bb::fr, 3> column_2_row_3_coefficients{
-        bb::fr(1),
-        bb::fr(28).pow(11),
-        bb::fr(28).pow(22),
+    const std::array<fr, 3> column_2_row_3_coefficients{
+        fr(1),
+        fr(28).pow(11),
+        fr(28).pow(22),
     };
 
     // scaling factors applied to a's sparse limbs, excluding the rotated limb
-    const std::array<bb::fr, 3> rot6_coefficients{ bb::fr(0), bb::fr(28).pow(11 - 6), bb::fr(28).pow(22 - 6) };
-    const std::array<bb::fr, 3> rot11_coefficients{ bb::fr(28).pow(32 - 11), bb::fr(0), bb::fr(28).pow(22 - 11) };
-    const std::array<bb::fr, 3> rot25_coefficients{ bb::fr(28).pow(32 - 25), bb::fr(28).pow(32 - 25 + 11), bb::fr(0) };
+    const std::array<bb::fr, 3> rot6_coefficients{ bb::fr(0), bb::fr(28).pow(11 - 6), fr(28).pow(22 - 6) };
+    const std::array<bb::fr, 3> rot11_coefficients{ bb::fr(28).pow(32 - 11), bb::fr(0), fr(28).pow(22 - 11) };
+    const std::array<bb::fr, 3> rot25_coefficients{ bb::fr(28).pow(32 - 25), bb::fr(28).pow(32 - 25 + 11), fr(0) };
 
     // these are the coefficients that we want
-    const std::array<bb::fr, 3> target_rotation_coefficients{
+    const std::array<fr, 3> target_rotation_coefficients{
         rot6_coefficients[0] + rot11_coefficients[0] + rot25_coefficients[0],
         rot6_coefficients[1] + rot11_coefficients[1] + rot25_coefficients[1],
         rot6_coefficients[2] + rot11_coefficients[2] + rot25_coefficients[2],
     };
 
-    bb::fr column_2_row_1_multiplier = bb::fr(1) * target_rotation_coefficients[0]; // why multiply by one?
+    fr column_2_row_1_multiplier = fr(1) * target_rotation_coefficients[0]; // why multiply by one?
 
     // this gives us the correct scaling factor for a0's 1st limb
-    std::array<bb::fr, 3> current_coefficients{
+    std::array<fr, 3> current_coefficients{
         column_2_row_3_coefficients[0] * column_2_row_1_multiplier,
         column_2_row_3_coefficients[1] * column_2_row_1_multiplier,
         column_2_row_3_coefficients[2] * column_2_row_1_multiplier,
     };
 
-    bb::fr column_2_row_3_multiplier = -(current_coefficients[2]) + target_rotation_coefficients[2];
+    fr column_2_row_3_multiplier = -(current_coefficients[2]) + target_rotation_coefficients[2];
 
-    std::array<bb::fr, 3> rotation_multipliers = { column_2_row_1_multiplier, bb::fr(0), column_2_row_3_multiplier };
+    std::array<fr, 3> rotation_multipliers = { column_2_row_1_multiplier, fr(0), column_2_row_3_multiplier };
     return rotation_multipliers;
 }
 
 inline MultiTable get_witness_extension_input_table(const MultiTableId id = SHA256_WITNESS_INPUT)
 {
-    std::vector<bb::fr> column_1_coefficients{ 1, 1 << 3, 1 << 10, 1 << 18 };
-    std::vector<bb::fr> column_2_coefficients{ 0, 0, 0, 0 };
-    std::vector<bb::fr> column_3_coefficients{ 0, 0, 0, 0 };
+    std::vector<fr> column_1_coefficients{ 1, 1 << 3, 1 << 10, 1 << 18 };
+    std::vector<fr> column_2_coefficients{ 0, 0, 0, 0 };
+    std::vector<fr> column_3_coefficients{ 0, 0, 0, 0 };
     MultiTable table(column_1_coefficients, column_2_coefficients, column_3_coefficients);
     table.id = id;
     table.slice_sizes = { (1 << 3), (1 << 7), (1 << 8), (1 << 18) };
@@ -292,32 +292,32 @@ inline MultiTable get_choose_input_table(const MultiTableId id = SHA256_CH_INPUT
      **/
 
     // scaling factors applied to a's sparse limbs, excluding the rotated limb
-    const std::array<bb::fr, 3> rot6_coefficients{ bb::fr(0), bb::fr(28).pow(11 - 6), bb::fr(28).pow(22 - 6) };
-    const std::array<bb::fr, 3> rot11_coefficients{ bb::fr(28).pow(32 - 11), bb::fr(0), bb::fr(28).pow(22 - 11) };
-    const std::array<bb::fr, 3> rot25_coefficients{ bb::fr(28).pow(32 - 25), bb::fr(28).pow(32 - 25 + 11), bb::fr(0) };
+    const std::array<bb::fr, 3> rot6_coefficients{ bb::fr(0), bb::fr(28).pow(11 - 6), fr(28).pow(22 - 6) };
+    const std::array<bb::fr, 3> rot11_coefficients{ bb::fr(28).pow(32 - 11), bb::fr(0), fr(28).pow(22 - 11) };
+    const std::array<bb::fr, 3> rot25_coefficients{ bb::fr(28).pow(32 - 25), bb::fr(28).pow(32 - 25 + 11), fr(0) };
 
     // these are the coefficients that we want
-    const std::array<bb::fr, 3> target_rotation_coefficients{
+    const std::array<fr, 3> target_rotation_coefficients{
         rot6_coefficients[0] + rot11_coefficients[0] + rot25_coefficients[0],
         rot6_coefficients[1] + rot11_coefficients[1] + rot25_coefficients[1],
         rot6_coefficients[2] + rot11_coefficients[2] + rot25_coefficients[2],
     };
 
-    bb::fr column_2_row_1_multiplier = target_rotation_coefficients[0];
+    fr column_2_row_1_multiplier = target_rotation_coefficients[0];
 
     // this gives us the correct scaling factor for a0's 1st limb
-    std::array<bb::fr, 3> current_coefficients{
+    std::array<fr, 3> current_coefficients{
         column_2_row_1_multiplier,
-        bb::fr(28).pow(11) * column_2_row_1_multiplier,
-        bb::fr(28).pow(22) * column_2_row_1_multiplier,
+        fr(28).pow(11) * column_2_row_1_multiplier,
+        fr(28).pow(22) * column_2_row_1_multiplier,
     };
 
-    // bb::fr column_2_row_3_multiplier = -(current_coefficients[2]) + target_rotation_coefficients[2];
-    bb::fr column_3_row_2_multiplier = -(current_coefficients[1]) + target_rotation_coefficients[1];
+    // fr column_2_row_3_multiplier = -(current_coefficients[2]) + target_rotation_coefficients[2];
+    fr column_3_row_2_multiplier = -(current_coefficients[1]) + target_rotation_coefficients[1];
 
-    std::vector<bb::fr> column_1_coefficients{ bb::fr(1), bb::fr(1 << 11), bb::fr(1 << 22) };
-    std::vector<bb::fr> column_2_coefficients{ bb::fr(1), bb::fr(28).pow(11), bb::fr(28).pow(22) };
-    std::vector<bb::fr> column_3_coefficients{ bb::fr(1), column_3_row_2_multiplier + bb::fr(1), bb::fr(1) };
+    std::vector<fr> column_1_coefficients{ bb::fr(1), bb::fr(1 << 11), fr(1 << 22) };
+    std::vector<fr> column_2_coefficients{ bb::fr(1), bb::fr(28).pow(11), fr(28).pow(22) };
+    std::vector<fr> column_3_coefficients{ bb::fr(1), column_3_row_2_multiplier + bb::fr(1), fr(1) };
     MultiTable table(column_1_coefficients, column_2_coefficients, column_3_coefficients);
     table.id = id;
     table.slice_sizes = { (1 << 11), (1 << 11), (1 << 10) };
@@ -357,25 +357,23 @@ inline MultiTable get_majority_input_table(const MultiTableId id = SHA256_MAJ_IN
     constexpr uint64_t base = 16;
 
     // scaling factors applied to a's sparse limbs, excluding the rotated limb
-    const std::array<bb::fr, 3> rot2_coefficients{ bb::fr(0), bb::fr(base).pow(11 - 2), bb::fr(base).pow(22 - 2) };
-    const std::array<bb::fr, 3> rot13_coefficients{ bb::fr(base).pow(32 - 13), bb::fr(0), bb::fr(base).pow(22 - 13) };
-    const std::array<bb::fr, 3> rot22_coefficients{ bb::fr(base).pow(32 - 22),
-                                                    bb::fr(base).pow(32 - 22 + 11),
-                                                    bb::fr(0) };
+    const std::array<bb::fr, 3> rot2_coefficients{ bb::fr(0), bb::fr(base).pow(11 - 2), fr(base).pow(22 - 2) };
+    const std::array<bb::fr, 3> rot13_coefficients{ bb::fr(base).pow(32 - 13), bb::fr(0), fr(base).pow(22 - 13) };
+    const std::array<bb::fr, 3> rot22_coefficients{ fr(base).pow(32 - 22), fr(base).pow(32 - 22 + 11), fr(0) };
 
     // these are the coefficients that we want
-    const std::array<bb::fr, 3> target_rotation_coefficients{
+    const std::array<fr, 3> target_rotation_coefficients{
         rot2_coefficients[0] + rot13_coefficients[0] + rot22_coefficients[0],
         rot2_coefficients[1] + rot13_coefficients[1] + rot22_coefficients[1],
         rot2_coefficients[2] + rot13_coefficients[2] + rot22_coefficients[2],
     };
 
-    bb::fr column_2_row_3_multiplier =
-        target_rotation_coefficients[1] * (-bb::fr(base).pow(11)) + target_rotation_coefficients[2];
+    fr column_2_row_3_multiplier =
+        target_rotation_coefficients[1] * (-fr(base).pow(11)) + target_rotation_coefficients[2];
 
-    std::vector<bb::fr> column_1_coefficients{ bb::fr(1), bb::fr(1 << 11), bb::fr(1 << 22) };
-    std::vector<bb::fr> column_2_coefficients{ bb::fr(1), bb::fr(base).pow(11), bb::fr(base).pow(22) };
-    std::vector<bb::fr> column_3_coefficients{ bb::fr(1), bb::fr(1), bb::fr(1) + column_2_row_3_multiplier };
+    std::vector<fr> column_1_coefficients{ bb::fr(1), bb::fr(1 << 11), fr(1 << 22) };
+    std::vector<fr> column_2_coefficients{ bb::fr(1), bb::fr(base).pow(11), fr(base).pow(22) };
+    std::vector<fr> column_3_coefficients{ bb::fr(1), bb::fr(1), fr(1) + column_2_row_3_multiplier };
 
     MultiTable table(column_1_coefficients, column_2_coefficients, column_3_coefficients);
     table.id = id;

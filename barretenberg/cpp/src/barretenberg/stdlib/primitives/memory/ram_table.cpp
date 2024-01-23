@@ -251,6 +251,6 @@ template <typename Builder> void ram_table<Builder>::write(const field_pt& index
     }
 }
 
-template class ram_table<bb::UltraCircuitBuilder>;
-template class ram_table<bb::GoblinUltraCircuitBuilder>;
+template class ram_table<UltraCircuitBuilder>;
+template class ram_table<GoblinUltraCircuitBuilder>;
 } // namespace bb::stdlib

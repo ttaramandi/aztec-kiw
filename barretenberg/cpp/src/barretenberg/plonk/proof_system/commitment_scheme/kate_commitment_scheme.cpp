@@ -322,7 +322,7 @@ void KateCommitmentScheme<settings>::batch_verify(const transcript::StandardTran
     }
 
     const auto zeta = transcript.get_challenge_field_element("z");
-    bb::fr quotient_challenge = transcript.get_challenge_field_element_from_map("nu", "t");
+    fr quotient_challenge = transcript.get_challenge_field_element_from_map("nu", "t");
 
     // append the commitments to the parts of quotient polynomial and their scalar multiplicands
     fr z_pow_n = zeta.pow(input_key->circuit_size);

@@ -1737,7 +1737,7 @@ template <typename Builder> class stdlib_uint : public testing::Test {
     }
 };
 
-typedef testing::Types<bb::StandardCircuitBuilder, bb::UltraCircuitBuilder> CircuitTypes;
+typedef testing::Types<bb::StandardCircuitBuilder, UltraCircuitBuilder> CircuitTypes;
 
 TYPED_TEST_SUITE(stdlib_uint, CircuitTypes);
 
@@ -1914,8 +1914,8 @@ TYPED_TEST(stdlib_uint, test_at)
 // There was one plookup-specific test in the ./plookup/uint_plookup.test.cpp
 TEST(stdlib_uint32, test_accumulators_plookup_uint32)
 {
-    using uint32_ct = stdlib::uint32<bb::UltraCircuitBuilder>;
-    using witness_ct = stdlib::witness_t<bb::UltraCircuitBuilder>;
+    using uint32_ct = stdlib::uint32<UltraCircuitBuilder>;
+    using witness_ct = stdlib::witness_t<UltraCircuitBuilder>;
 
     UltraCircuitBuilder builder;
 

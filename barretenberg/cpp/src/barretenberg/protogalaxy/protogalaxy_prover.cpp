@@ -233,7 +233,7 @@ std::shared_ptr<typename ProverInstances::Instance> ProtoGalaxyProver_<ProverIns
     // Evaluate each relation parameter univariate at challenge to obtain the folded relation parameters and send to
     // the verifier
     auto& combined_relation_parameters = instances.relation_parameters;
-    auto folded_relation_parameters = bb::RelationParameters<FF>{
+    auto folded_relation_parameters = RelationParameters<FF>{
         combined_relation_parameters.eta.evaluate(challenge),
         combined_relation_parameters.beta.evaluate(challenge),
         combined_relation_parameters.gamma.evaluate(challenge),

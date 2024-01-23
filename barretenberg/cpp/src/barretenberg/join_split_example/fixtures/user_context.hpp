@@ -8,17 +8,17 @@ namespace bb::join_split_example::fixtures {
 using grumpkin_key_pair = bb::crypto::schnorr_key_pair<grumpkin::fr, grumpkin::g1>;
 
 struct user_context {
-    bb::fr note_secret;
+    fr note_secret;
     grumpkin_key_pair owner;
     grumpkin_key_pair signing_keys[2];
-    bb::fr alias_hash;
+    fr alias_hash;
 };
 
-inline bb::fr generate_alias_hash(std::string const& alias)
+inline fr generate_alias_hash(std::string const& alias)
 {
     std::vector<uint8_t> inputv(alias.begin(), alias.end());
-    auto output = bb::crypto::blake2s(inputv);
-    return bb::fr(uint256_t(from_buffer<bb::fr>(output.data())) >> 32);
+    auto output = crypto::blake2s(inputv);
+    return bb::fr(uint256_t(from_buffer<fr>(output.data())) >> 32);
 }
 
 inline grumpkin_key_pair create_key_pair(numeric::RNG* engine)
@@ -32,7 +32,7 @@ inline user_context create_user_context(numeric::RNG* engine = nullptr)
 {
     uint8_t vk[] = { 0x00, 0x00, 0x00, 0x00, 0x11, 0x11, 0x11, 0x11, 0x00, 0x00, 0x00, 0x00, 0x11, 0x11, 0x11, 0x11,
                      0x00, 0x00, 0x00, 0x00, 0x11, 0x11, 0x11, 0x11, 0x00, 0x00, 0x00, 0x00, 0x11, 0x11, 0x11, 0x11 };
-    bb::fr note_secret = bb::fr::serialize_from_buffer(vk);
+    fr note_secret = fr::serialize_from_buffer(vk);
     auto alias_hash = generate_alias_hash("pebble");
     return { note_secret, create_key_pair(engine), { create_key_pair(engine), create_key_pair(engine) }, alias_hash };
 }

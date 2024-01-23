@@ -22,7 +22,7 @@ TEST(ram_table, ram_table_init_read_consistency)
     std::vector<field_ct> table_values;
     const size_t table_size = 10;
     for (size_t i = 0; i < table_size; ++i) {
-        table_values.emplace_back(witness_ct(&builder, bb::fr::random_element()));
+        table_values.emplace_back(witness_ct(&builder, fr::random_element()));
     }
 
     ram_table_ct table(table_values);

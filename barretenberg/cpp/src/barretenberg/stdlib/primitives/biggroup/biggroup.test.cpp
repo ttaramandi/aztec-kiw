@@ -819,8 +819,8 @@ template <typename TestType> class stdlib_biggroup : public testing::Test {
 
 enum UseBigfield { No, Yes };
 using TestTypes = testing::Types<TestType<stdlib::bn254<bb::StandardCircuitBuilder>, UseBigfield::No>,
-                                 TestType<stdlib::bn254<bb::UltraCircuitBuilder>, UseBigfield::Yes>,
-                                 TestType<stdlib::bn254<bb::GoblinUltraCircuitBuilder>, UseBigfield::No>>;
+                                 TestType<stdlib::bn254<UltraCircuitBuilder>, UseBigfield::Yes>,
+                                 TestType<stdlib::bn254<GoblinUltraCircuitBuilder>, UseBigfield::No>>;
 
 TYPED_TEST_SUITE(stdlib_biggroup, TestTypes);
 

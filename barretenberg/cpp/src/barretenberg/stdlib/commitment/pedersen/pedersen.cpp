@@ -40,8 +40,8 @@ cycle_group<C> pedersen_commitment<C>::commit(const std::vector<std::pair<field_
     return cycle_group::batch_mul(scalars, points);
 }
 
-template class pedersen_commitment<bb::StandardCircuitBuilder>;
-template class pedersen_commitment<bb::UltraCircuitBuilder>;
-template class pedersen_commitment<bb::GoblinUltraCircuitBuilder>;
+template class pedersen_commitment<StandardCircuitBuilder>;
+template class pedersen_commitment<UltraCircuitBuilder>;
+template class pedersen_commitment<GoblinUltraCircuitBuilder>;
 
 } // namespace bb::stdlib

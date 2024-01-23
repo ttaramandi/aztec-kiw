@@ -22,12 +22,11 @@ void compute_monomial_and_coset_selector_forms(plonk::proving_key* circuit_provi
         // Compute monomial form of selector polynomial
         auto selector_poly_lagrange =
             circuit_proving_key->polynomial_store.get(selector_properties[i].name + "_lagrange");
-        bb::polynomial selector_poly(circuit_proving_key->circuit_size);
-        bb::polynomial_arithmetic::ifft(
-            &selector_poly_lagrange[0], &selector_poly[0], circuit_proving_key->small_domain);
+        polynomial selector_poly(circuit_proving_key->circuit_size);
+        polynomial_arithmetic::ifft(&selector_poly_lagrange[0], &selector_poly[0], circuit_proving_key->small_domain);
 
         // Compute coset FFT of selector polynomial
-        bb::polynomial selector_poly_fft(selector_poly, circuit_proving_key->circuit_size * 4 + 4);
+        polynomial selector_poly_fft(selector_poly, circuit_proving_key->circuit_size * 4 + 4);
         selector_poly_fft.coset_fft(circuit_proving_key->large_domain);
 
         // Note: For Standard, the lagrange polynomials could be removed from the store at this point but this
@@ -45,7 +44,7 @@ void compute_monomial_and_coset_selector_forms(plonk::proving_key* circuit_provi
 std::shared_ptr<plonk::verification_key> compute_verification_key_common(
     std::shared_ptr<plonk::proving_key> const& proving_key,
     // Here too
-    std::shared_ptr<bb::srs::factories::VerifierCrs<curve::BN254>> const& vrs)
+    std::shared_ptr<srs::factories::VerifierCrs<curve::BN254>> const& vrs)
 {
     auto circuit_verification_key = std::make_shared<plonk::verification_key>(
         proving_key->circuit_size, proving_key->num_public_inputs, vrs, proving_key->circuit_type);
@@ -71,7 +70,7 @@ std::shared_ptr<plonk::verification_key> compute_verification_key_common(
     }
 
     // Set the polynomial manifest in verification key.
-    circuit_verification_key->polynomial_manifest = bb::plonk::PolynomialManifest(proving_key->circuit_type);
+    circuit_verification_key->polynomial_manifest = plonk::PolynomialManifest(proving_key->circuit_type);
 
     return circuit_verification_key;
 }

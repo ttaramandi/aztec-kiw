@@ -23,13 +23,13 @@ class work_queue {
         WorkType work_type;
         mutable std::shared_ptr<fr[]> mul_scalars;
         std::string tag;
-        bb::fr constant;
+        fr constant;
         const size_t index;
     };
 
     struct queued_fft_inputs {
         std::shared_ptr<fr[]> data;
-        bb::fr shift_factor;
+        fr shift_factor;
     };
 
     work_queue(proving_key* prover_key = nullptr, transcript::StandardTranscript* prover_transcript = nullptr);
@@ -53,7 +53,7 @@ class work_queue {
 
     void put_fft_data(std::shared_ptr<fr[]> result, const size_t work_item_number);
 
-    void put_scalar_multiplication_data(const bb::g1::affine_element result, const size_t work_item_number);
+    void put_scalar_multiplication_data(const g1::affine_element result, const size_t work_item_number);
 
     void flush_queue();
 

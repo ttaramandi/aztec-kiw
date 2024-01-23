@@ -22,7 +22,7 @@ const size_t NUM_POLYNOMIALS = Flavor::NUM_ALL_ENTITIES;
 
 Polynomial<FF> random_poly(size_t size)
 {
-    auto poly = bb::Polynomial<FF>(size);
+    auto poly = Polynomial<FF>(size);
     for (auto& coeff : poly) {
         coeff = FF::random_element();
     }
@@ -40,7 +40,7 @@ ProverPolynomials construct_ultra_full_polynomials(auto& input_polynomials)
 
 class SumcheckTests : public ::testing::Test {
   protected:
-    static void SetUpTestSuite() { bb::srs::init_crs_factory("../srs_db/ignition"); }
+    static void SetUpTestSuite() { srs::init_crs_factory("../srs_db/ignition"); }
 };
 
 TEST_F(SumcheckTests, PolynomialNormalization)

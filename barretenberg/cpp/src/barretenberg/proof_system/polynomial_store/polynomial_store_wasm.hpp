@@ -7,7 +7,7 @@ namespace bb {
 
 template <typename Fr> class PolynomialStoreWasm {
   private:
-    using Polynomial = bb::Polynomial<Fr>;
+    using Polynomial = Polynomial<Fr>;
     std::unordered_map<std::string, size_t> size_map;
 
   public:

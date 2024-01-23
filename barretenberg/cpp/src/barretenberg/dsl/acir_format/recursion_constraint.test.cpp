@@ -11,7 +11,7 @@ using namespace bb::plonk;
 
 class AcirRecursionConstraint : public ::testing::Test {
   protected:
-    static void SetUpTestSuite() { bb::srs::init_crs_factory("../srs_db/ignition"); }
+    static void SetUpTestSuite() { srs::init_crs_factory("../srs_db/ignition"); }
 };
 Builder create_inner_circuit()
 {
@@ -157,7 +157,7 @@ Builder create_outer_circuit(std::vector<Builder>& inner_circuits)
                                   proof_witnesses.begin() + static_cast<std::ptrdiff_t>(num_inner_public_inputs));
         }
 
-        const std::vector<bb::fr> key_witnesses = export_key_in_recursion_format(inner_verifier.key);
+        const std::vector<fr> key_witnesses = export_key_in_recursion_format(inner_verifier.key);
 
         const uint32_t key_hash_start_idx = static_cast<uint32_t>(witness_offset);
         const uint32_t public_input_start_idx = key_hash_start_idx + 1;

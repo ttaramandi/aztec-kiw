@@ -37,7 +37,7 @@ template <typename CycleGroup_T, typename Curve_T, typename PCS_T> class ECCVMBa
     using PCS = PCS_T;
 
     using FF = typename G1::subgroup_field;
-    using Polynomial = bb::Polynomial<FF>;
+    using Polynomial = Polynomial<FF>;
     using PolynomialHandle = std::span<FF>;
     using GroupElement = typename G1::element;
     using Commitment = typename G1::affine_element;
@@ -375,7 +375,7 @@ template <typename CycleGroup_T, typename Curve_T, typename PCS_T> class ECCVMBa
     /**
      * @brief A container for univariates used during sumcheck.
      */
-    template <size_t LENGTH> using ProverUnivariates = AllEntities<bb::Univariate<FF, LENGTH>>;
+    template <size_t LENGTH> using ProverUnivariates = AllEntities<Univariate<FF, LENGTH>>;
 
     /**
      * @brief A container for univariates produced during the hot loop in sumcheck.
@@ -599,7 +599,7 @@ template <typename CycleGroup_T, typename Curve_T, typename PCS_T> class ECCVMBa
         Commitment lookup_read_counts_1_comm;
         Commitment z_perm_comm;
         Commitment lookup_inverses_comm;
-        std::vector<bb::Univariate<FF, BATCHED_RELATION_PARTIAL_LENGTH>> sumcheck_univariates;
+        std::vector<Univariate<FF, BATCHED_RELATION_PARTIAL_LENGTH>> sumcheck_univariates;
         std::array<FF, NUM_ALL_ENTITIES> sumcheck_evaluations;
         std::vector<Commitment> gemini_univariate_comms;
         std::vector<FF> gemini_a_evals;
@@ -777,9 +777,9 @@ template <typename CycleGroup_T, typename Curve_T, typename PCS_T> class ECCVMBa
             z_perm_comm = BaseTranscript::template deserialize_from_buffer<Commitment>(BaseTranscript::proof_data,
                                                                                        num_bytes_read);
             for (size_t i = 0; i < log_n; ++i) {
-                sumcheck_univariates.emplace_back(BaseTranscript::template deserialize_from_buffer<
-                                                  bb::Univariate<FF, BATCHED_RELATION_PARTIAL_LENGTH>>(
-                    BaseTranscript::proof_data, num_bytes_read));
+                sumcheck_univariates.emplace_back(
+                    BaseTranscript::template deserialize_from_buffer<Univariate<FF, BATCHED_RELATION_PARTIAL_LENGTH>>(
+                        BaseTranscript::proof_data, num_bytes_read));
             }
             sumcheck_evaluations = BaseTranscript::template deserialize_from_buffer<std::array<FF, NUM_ALL_ENTITIES>>(
                 BaseTranscript::proof_data, num_bytes_read);
@@ -924,7 +924,7 @@ template <typename CycleGroup_T, typename Curve_T, typename PCS_T> class ECCVMBa
     };
 };
 
-class ECCVM : public ECCVMBase<bb::g1, curve::Grumpkin, pcs::ipa::IPA<curve::Grumpkin>> {};
+class ECCVM : public ECCVMBase<g1, curve::Grumpkin, pcs::ipa::IPA<curve::Grumpkin>> {};
 
 // NOLINTEND(cppcoreguidelines-avoid-const-or-ref-data-members)
 

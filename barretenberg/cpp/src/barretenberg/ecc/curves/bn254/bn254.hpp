@@ -9,14 +9,14 @@
 namespace bb::curve {
 class BN254 {
   public:
-    using ScalarField = bb::fr;
-    using BaseField = bb::fq;
-    using Group = typename bb::g1;
+    using ScalarField = fr;
+    using BaseField = fq;
+    using Group = typename g1;
     using Element = typename Group::element;
     using AffineElement = typename Group::affine_element;
-    using G2AffineElement = typename bb::g2::affine_element;
-    using G2BaseField = typename bb::fq2;
-    using TargetField = bb::fq12;
+    using G2AffineElement = typename g2::affine_element;
+    using G2BaseField = typename fq2;
+    using TargetField = fq12;
 
     // TODO(#673): This flag is temporary. It is needed in the verifier classes (GeminiVerifier, etc.) while these
     // classes are instantiated with "native" curve types. Eventually, the verifier classes will be instantiated only

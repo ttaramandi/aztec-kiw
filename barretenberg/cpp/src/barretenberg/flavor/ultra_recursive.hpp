@@ -71,12 +71,12 @@ template <typename BuilderType> class UltraRecursive_ {
     static constexpr size_t NUM_WITNESS_ENTITIES = 7;
 
     // define the tuple of Relations that comprise the Sumcheck relation
-    using Relations = std::tuple<bb::UltraArithmeticRelation<FF>,
-                                 bb::UltraPermutationRelation<FF>,
-                                 bb::LookupRelation<FF>,
-                                 bb::GenPermSortRelation<FF>,
-                                 bb::EllipticRelation<FF>,
-                                 bb::AuxiliaryRelation<FF>>;
+    using Relations = std::tuple<UltraArithmeticRelation<FF>,
+                                 UltraPermutationRelation<FF>,
+                                 LookupRelation<FF>,
+                                 GenPermSortRelation<FF>,
+                                 EllipticRelation<FF>,
+                                 AuxiliaryRelation<FF>>;
 
     static constexpr size_t MAX_PARTIAL_RELATION_LENGTH = compute_max_partial_relation_length<Relations>();
 
@@ -378,7 +378,7 @@ template <typename BuilderType> class UltraRecursive_ {
         }
     };
 
-    using Transcript = bb::stdlib::recursion::honk::Transcript<CircuitBuilder>;
+    using Transcript = stdlib::recursion::honk::Transcript<CircuitBuilder>;
 };
 
 } // namespace bb::honk::flavor

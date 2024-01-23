@@ -13,8 +13,8 @@ using namespace bb;
 namespace {
 void goblin_full(State& state) noexcept
 {
-    bb::srs::init_crs_factory("../srs_db/ignition");
-    bb::srs::init_grumpkin_crs_factory("../srs_db/grumpkin");
+    srs::init_crs_factory("../srs_db/ignition");
+    srs::init_grumpkin_crs_factory("../srs_db/grumpkin");
 
     Goblin goblin;
 
@@ -47,8 +47,8 @@ void goblin_full(State& state) noexcept
 
 void goblin_accumulate(State& state) noexcept
 {
-    bb::srs::init_crs_factory("../srs_db/ignition");
-    bb::srs::init_grumpkin_crs_factory("../srs_db/grumpkin");
+    srs::init_crs_factory("../srs_db/ignition");
+    srs::init_grumpkin_crs_factory("../srs_db/grumpkin");
 
     Goblin goblin;
 
@@ -73,8 +73,8 @@ void goblin_accumulate(State& state) noexcept
 
 void goblin_eccvm_prove(State& state) noexcept
 {
-    bb::srs::init_crs_factory("../srs_db/ignition");
-    bb::srs::init_grumpkin_crs_factory("../srs_db/grumpkin");
+    srs::init_crs_factory("../srs_db/ignition");
+    srs::init_grumpkin_crs_factory("../srs_db/grumpkin");
 
     Goblin goblin;
 
@@ -101,8 +101,8 @@ void goblin_eccvm_prove(State& state) noexcept
 
 void goblin_translator_prove(State& state) noexcept
 {
-    bb::srs::init_crs_factory("../srs_db/ignition");
-    bb::srs::init_grumpkin_crs_factory("../srs_db/grumpkin");
+    srs::init_crs_factory("../srs_db/ignition");
+    srs::init_grumpkin_crs_factory("../srs_db/grumpkin");
 
     Goblin goblin;
 

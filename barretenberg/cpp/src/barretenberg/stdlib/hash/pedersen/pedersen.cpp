@@ -85,8 +85,8 @@ field_t<C> pedersen_hash<C>::hash_buffer(const stdlib::byte_array<C>& input, Gen
     }
     return hashed;
 }
-template class pedersen_hash<bb::StandardCircuitBuilder>;
-template class pedersen_hash<bb::UltraCircuitBuilder>;
-template class pedersen_hash<bb::GoblinUltraCircuitBuilder>;
+template class pedersen_hash<StandardCircuitBuilder>;
+template class pedersen_hash<UltraCircuitBuilder>;
+template class pedersen_hash<GoblinUltraCircuitBuilder>;
 
 } // namespace bb::stdlib

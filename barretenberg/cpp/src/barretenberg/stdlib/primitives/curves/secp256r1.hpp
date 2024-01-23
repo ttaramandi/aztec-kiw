@@ -9,7 +9,7 @@
 namespace bb::stdlib {
 
 template <typename CircuitType> struct secp256r1 {
-    static constexpr bb::CurveType type = bb::CurveType::SECP256R1;
+    static constexpr bb::CurveType type = CurveType::SECP256R1;
 
     typedef ::secp256r1::fq fq;
     typedef ::secp256r1::fr fr;

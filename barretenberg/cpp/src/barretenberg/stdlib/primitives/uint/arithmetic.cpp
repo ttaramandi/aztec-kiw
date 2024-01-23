@@ -389,9 +389,9 @@ std::pair<uint<Builder, Native>, uint<Builder, Native>> uint<Builder, Native>::d
     return std::make_pair(quotient, remainder);
 }
 
-template class uint<bb::StandardCircuitBuilder, uint8_t>;
-template class uint<bb::StandardCircuitBuilder, uint16_t>;
-template class uint<bb::StandardCircuitBuilder, uint32_t>;
-template class uint<bb::StandardCircuitBuilder, uint64_t>;
+template class uint<StandardCircuitBuilder, uint8_t>;
+template class uint<StandardCircuitBuilder, uint16_t>;
+template class uint<StandardCircuitBuilder, uint32_t>;
+template class uint<StandardCircuitBuilder, uint64_t>;
 
 } // namespace bb::stdlib

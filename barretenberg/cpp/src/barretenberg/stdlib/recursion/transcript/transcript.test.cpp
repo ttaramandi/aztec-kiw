@@ -66,14 +66,14 @@ TestData get_test_data()
 {
     TestData data;
     for (size_t i = 0; i < 32; ++i) {
-        data.g1_elements.push_back(bb::g1::affine_element(bb::g1::element::random_element()));
-        data.fr_elements.push_back(bb::fr::random_element());
+        data.g1_elements.push_back(bb::g1::affine_element(g1::element::random_element()));
+        data.fr_elements.push_back(fr::random_element());
     }
     data.fr_elements[2] = fr(0);
     data.fr_elements[3] = fr(0);
     data.num_public_inputs = 13;
     for (size_t i = 0; i < data.num_public_inputs; ++i) {
-        data.public_input_elements.push_back(bb::fr::random_element());
+        data.public_input_elements.push_back(fr::random_element());
     }
     return data;
 }
@@ -132,8 +132,8 @@ transcript_ct get_circuit_transcript(Builder* context, const TestData& data)
 {
     transcript_ct transcript(context, create_manifest(data.num_public_inputs));
     uint256_t circuit_size_value = uint256_t(4) + (uint256_t(3) << 8) + (uint256_t(2) << 16) + (uint256_t(1) << 24);
-    field_t circuit_size(stdlib::witness_t(context, bb::fr(circuit_size_value)));
-    field_t public_input_size(stdlib::witness_t(context, bb::fr(data.num_public_inputs)));
+    field_t circuit_size(stdlib::witness_t(context, fr(circuit_size_value)));
+    field_t public_input_size(stdlib::witness_t(context, fr(data.num_public_inputs)));
 
     transcript.add_field_element("circuit_size", circuit_size);
     transcript.add_field_element("public_input_size", public_input_size);
@@ -203,7 +203,7 @@ TEST(stdlib_transcript, validate_transcript)
             expected_u256 *= uint256_t(256);
             expected_u256 += uint256_t(expected_raw[i]);
         }
-        EXPECT_EQ(result.get_value(), bb::fr(expected_u256));
+        EXPECT_EQ(result.get_value(), fr(expected_u256));
     };
 
     const auto check_field_element = [&normal_transcript, &recursive_transcript](const std::string& element_name) {

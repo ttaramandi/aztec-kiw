@@ -6,8 +6,8 @@ using namespace bb;
 TEST(ECCOpQueueTest, Basic)
 {
     ECCOpQueue op_queue;
-    op_queue.add_accumulate(bb::g1::affine_one);
-    EXPECT_EQ(op_queue.raw_ops[0].base_point, bb::g1::affine_one);
+    op_queue.add_accumulate(g1::affine_one);
+    EXPECT_EQ(op_queue.raw_ops[0].base_point, g1::affine_one);
     op_queue.empty_row();
     EXPECT_EQ(op_queue.raw_ops[1].add, false);
 }

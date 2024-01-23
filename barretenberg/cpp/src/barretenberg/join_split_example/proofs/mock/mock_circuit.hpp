@@ -6,7 +6,7 @@ namespace bb::join_split_example::proofs::mock {
 
 using namespace bb::plonk;
 
-template <typename Builder> void mock_circuit(Builder& builder, std::vector<bb::fr> const& public_inputs_)
+template <typename Builder> void mock_circuit(Builder& builder, std::vector<fr> const& public_inputs_)
 {
     const auto public_inputs =
         map(public_inputs_, [&](auto& i) { return stdlib::field_t(stdlib::witness_t(&builder, i)); });

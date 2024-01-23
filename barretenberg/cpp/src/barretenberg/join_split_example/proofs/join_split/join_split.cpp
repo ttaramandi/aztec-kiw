@@ -30,7 +30,7 @@ void init_proving_key(bool mock)
         Builder builder;
         join_split_circuit(builder, tx);
         Composer composer;
-        bb::join_split_example::proofs::mock::mock_circuit(builder, builder.get_public_inputs());
+        join_split_example::proofs::mock::mock_circuit(builder, builder.get_public_inputs());
         proving_key = composer.compute_proving_key(builder);
     }
 }
@@ -46,8 +46,7 @@ void init_verification_key()
         std::abort();
     }
 
-    verification_key =
-        bb::plonk::compute_verification_key_common(proving_key, srs::get_crs_factory()->get_verifier_crs());
+    verification_key = plonk::compute_verification_key_common(proving_key, srs::get_crs_factory()->get_verifier_crs());
 }
 
 Prover new_join_split_prover(join_split_tx const& tx, bool mock)
@@ -68,7 +67,7 @@ Prover new_join_split_prover(join_split_tx const& tx, bool mock)
         return composer.create_prover(builder);
     } else {
         Composer mock_proof_composer(proving_key, nullptr);
-        bb::join_split_example::proofs::mock::mock_circuit(builder, builder.get_public_inputs());
+        join_split_example::proofs::mock::mock_circuit(builder, builder.get_public_inputs());
         info("mock composer gates: ", builder.get_num_gates());
         return mock_proof_composer.create_prover(builder);
     }

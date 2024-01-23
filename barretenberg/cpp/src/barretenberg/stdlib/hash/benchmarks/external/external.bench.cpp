@@ -36,9 +36,9 @@ void generate_test_sha256_plonk_circuit(Builder& builder, size_t num_iterations)
         in[i] = 0;
     }
 
-    bb::stdlib::packed_byte_array<Builder> input(&builder, in);
+    stdlib::packed_byte_array<Builder> input(&builder, in);
     for (size_t i = 0; i < num_iterations; i++) {
-        input = bb::stdlib::sha256<Builder>(input);
+        input = stdlib::sha256<Builder>(input);
     }
 }
 
@@ -117,9 +117,9 @@ void generate_test_blake3s_plonk_circuit(Builder& builder, size_t num_iterations
     for (size_t i = 0; i < 32; ++i) {
         in[i] = 0;
     }
-    bb::stdlib::packed_byte_array<Builder> input(&builder, in);
+    stdlib::packed_byte_array<Builder> input(&builder, in);
     for (size_t i = 0; i < num_iterations; i++) {
-        input = bb::stdlib::blake3s<Builder>(input);
+        input = stdlib::blake3s<Builder>(input);
     }
 }
 
