@@ -4,7 +4,7 @@ contract UnitTest {
     use dep::std::test::OracleMock;
 
     use dep::aztec::{
-        abi::{CallContext, PrivateContextInputs},
+        abi::{CallContext, PrivateContextInputs, PublicContextInputs},
         context::{PrivateContext, PublicContext, Context},
         log::emit_unencrypted_log,
         state_vars::public_state::PublicState,
@@ -38,36 +38,64 @@ contract UnitTest {
     #[aztec(private)]
     fn constructor() {}
 
-    #[aztec(public)]
-    fn init(new_admin: AztecAddress) {
-        storage.admin.write(new_admin);
-    }
-
+    //////////////////////
+    // test a plain and simple function:
+    //////////////////////
     #[aztec(private)]
     fn add(a: Field, b: Field) -> Field {
-        rand() + b
+        a + b
     }
-
     #[test]
     unconstrained fn test_add() {
         let priv_circ_pub_inputs = add(PrivateContextInputs::empty(), 1, 2);
         assert_eq(priv_circ_pub_inputs.return_values[0], 3);
     }
-    // #[aztec(private)]
-    // fn add_rand(b: Field) -> Field {
-    //     rand() + b
-    // }
-    // #[test]
-    // unconstrained fn test_add_rand() {
-    //     OracleMock::mock("getRandomField").returns(1).times(1);
-    //     OracleMock::mock("getRandomField").returns(2).times(1);
-    //     OracleMock::mock("getRandomField").returns(3).times(1);
-    //     let priv_circ_pub_inputs = add_rand(PrivateContextInputs::empty(), 2);
-    //     assert(2.lt(priv_circ_pub_inputs.return_values[0]), "Is not less than!!");
-    // }
-    // Storage:
-    // only mock storageWrite when called with the right args!
-    // i.e. test args passed correctly
+
+    //////////////////////
+    // test the simplest oracle call
+    //////////////////////
+    #[aztec(private)]
+    fn add_rand(b: Field) -> Field {
+        rand() + b
+    }
+    #[test]
+    unconstrained fn test_add_rand() {
+        // bug where times has to be > 1.
+        OracleMock::mock("getRandomField").returns(3).times(2);
+        let priv_circ_pub_inputs = add_rand(PrivateContextInputs::empty(), 2);
+        assert(2.lt(priv_circ_pub_inputs.return_values[0]), "Is not less than!!");
+    }
+
+    //////////////////////
+    // Test public Storage
+    //////////////////////
+    #[aztec(public)]
+    fn init(new_admin: AztecAddress) {
+        storage.admin.write(new_admin);
+    }
+
+    #[aztec(public)]
+    fn get_admin() -> AztecAddress {
+        storage.admin.read()
+    }
+
+    #[test]
+    unconstrained fn test_public_storage() {
+        // currently can't check how many times a mock was called. Feature needed!
+        // For now, You know the `init()` fn called the right oracle with the right params, else it would have crashed.
+        let admin = AztecAddress { inner: 10 };
+        let serializedAdminValue = [10]; // set admin valy
+        let randomHashValue = [1];
+        let _mock1 = OracleMock::mock("storageWrite").with_params((1, serializedAdminValue)).returns(randomHashValue);
+        init(PublicContextInputs::empty(), admin);
+        _mock1.clear();
+
+        OracleMock::mock("storageRead").with_params((1, 1)).returns(serializedAdminValue);
+        let pub_circ_pub_inputs = get_admin(PublicContextInputs::empty());
+        assert_eq(AztecAddress::from_field(pub_circ_pub_inputs.return_values[0]), admin);
+    }
+
+    //////////////////////
 
     unconstrained fn compute_note_hash_and_nullifier(
         contract_address: AztecAddress,

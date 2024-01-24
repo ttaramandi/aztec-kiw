@@ -15,6 +15,7 @@ struct PrivateGlobalVariables {
     chain_id: Field,
     version: Field,
 }
+// docs:end:private-global-variables
 
 impl Empty for PrivateGlobalVariables {
     fn empty() -> Self {
@@ -24,7 +25,6 @@ impl Empty for PrivateGlobalVariables {
         }
     }
 }
-// docs:end:private-global-variables
 
 impl PrivateGlobalVariables {
     fn serialize(self) -> [Field; 2] {
@@ -40,6 +40,17 @@ struct PublicGlobalVariables {
     timestamp: Field,
 }
 // docs:end:public-global-variables
+
+impl Empty for PublicGlobalVariables {
+    fn empty() -> Self {
+        Self {
+            chain_id: 0,
+            version: 0,
+            block_number: 0,
+            timestamp: 0,
+        }
+    }
+}
 
 impl PublicGlobalVariables {
     fn serialize(self) -> [Field; 4] {
@@ -77,6 +88,16 @@ struct PublicContextInputs {
     public_global_variables: PublicGlobalVariables,
 }
 // docs:end:public-context-inputs
+
+impl Empty for PublicContextInputs {
+    fn empty() -> Self {
+        Self {
+            call_context: CallContext::empty(),
+            block_header: BlockHeader::empty(),
+            public_global_variables: PublicGlobalVariables::empty(),
+        }
+    }
+}
 
 struct Hasher {
     fields: [Field],
