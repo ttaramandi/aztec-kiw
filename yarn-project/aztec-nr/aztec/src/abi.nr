@@ -7,12 +7,22 @@ use dep::protocol_types::{
     },
     contrakt::deployment_data::ContractDeploymentData,
     hash::hash_args,
+    traits::Empty,
 };
 
 // docs:start:private-global-variables
 struct PrivateGlobalVariables {
     chain_id: Field,
     version: Field,
+}
+
+impl Empty for PrivateGlobalVariables {
+    fn empty() -> Self {
+        Self {
+            chain_id: 0,
+            version: 0,
+        }
+    }
 }
 // docs:end:private-global-variables
 
@@ -46,6 +56,17 @@ struct PrivateContextInputs {
     private_global_variables: PrivateGlobalVariables,
 }
 // docs:end:private-context-inputs
+
+impl Empty for PrivateContextInputs {
+    fn empty() -> Self {
+        Self {
+            call_context: CallContext::empty(),
+            block_header: BlockHeader::empty(),
+            contract_deployment_data: ContractDeploymentData::empty(),
+            private_global_variables: PrivateGlobalVariables::empty(),
+        }
+    }
+}
 
 // PublicContextInputs are expected to be provided to each public function
 // docs:start:public-context-inputs

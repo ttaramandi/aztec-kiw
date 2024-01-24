@@ -6,6 +6,7 @@ use crate::{
         GENERATOR_INDEX__CALL_CONTEXT,
     },
     hash::pedersen_hash,
+    traits::Empty,
 };
 use dep::std::cmp::Eq;
 use crate::traits::Hash;
@@ -25,6 +26,24 @@ struct CallContext {
     start_side_effect_counter : u32,
 }
 // docs:end:call-context
+
+impl Empty for CallContext {
+    fn empty() -> Self {
+        Self {
+            msg_sender : AztecAddress::empty(),
+            storage_contract_address : AztecAddress::empty(),
+            portal_contract_address : EthAddress::empty(),
+
+            function_selector : FunctionSelector::empty(),
+
+            is_delegate_call : false,
+            is_static_call : false,
+            is_contract_deployment : false,
+
+            start_side_effect_counter: 0,
+        }
+    }
+}
 
 impl Eq for CallContext {
     fn eq(self, call_context: CallContext) -> bool {

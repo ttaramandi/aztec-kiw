@@ -5,7 +5,7 @@ use crate::constants::{
 };
 use crate::hash::pedersen_hash;
 use crate::grumpkin_point::GrumpkinPoint;
-use crate::traits::Hash;
+use crate::traits::{Hash, Empty};
 
 // docs:start:contract-deployment-data
 struct ContractDeploymentData {
@@ -20,6 +20,18 @@ struct ContractDeploymentData {
 impl Hash for ContractDeploymentData {
     fn hash(self) -> Field {
         pedersen_hash(self.serialize(), GENERATOR_INDEX__CONTRACT_DEPLOYMENT_DATA)
+    }
+}
+
+impl Empty for ContractDeploymentData {
+    fn empty() -> Self {
+        Self {
+            deployer_public_key : GrumpkinPoint::empty(),
+            constructor_vk_hash : 0,
+            function_tree_root : 0,
+            contract_address_salt : 0,
+            portal_contract_address : EthAddress::empty()
+        }
     }
 }
 

@@ -1,4 +1,5 @@
 use crate::utils::field::field_from_bytes;
+use crate::traits::Empty;
 use dep::std::cmp::Eq;
 
 global SELECTOR_SIZE = 4;
@@ -11,6 +12,14 @@ struct FunctionSelector {
 impl Eq for FunctionSelector {
     fn eq(self, function_selector: FunctionSelector) -> bool {
         function_selector.inner == self.inner
+    }
+}
+
+impl Empty for FunctionSelector {
+    fn empty() -> Self {
+        Self {
+            inner: 0,
+        }
     }
 }
 

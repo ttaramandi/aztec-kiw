@@ -1,8 +1,18 @@
+use crate::traits::Empty;
 global GRUMPKIN_POINT_SERIALIZED_LEN: Field = 2;
 
 struct GrumpkinPoint {
     x: Field,
     y: Field,
+}
+
+impl Empty for GrumpkinPoint {
+    fn empty() -> Self {
+        Self {
+            x: 0,
+            y: 0,
+        }
+    }
 }
 
 impl GrumpkinPoint {
