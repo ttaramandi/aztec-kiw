@@ -150,8 +150,6 @@ impl ForeignCallExecutor for DefaultForeignCallExecutor {
         foreign_call: &ForeignCallWaitInfo,
     ) -> Result<ForeignCallResult, ForeignCallError> {
         let foreign_call_name = foreign_call.function.as_str();
-        println!("Excuting foreign call {}", foreign_call_name);
-        dbg!(&self.mocked_responses);
 
         match ForeignCall::lookup(foreign_call_name) {
             Some(ForeignCall::Print) => {

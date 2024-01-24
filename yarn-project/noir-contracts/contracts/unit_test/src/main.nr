@@ -7,7 +7,7 @@ contract UnitTest {
         abi::{CallContext, PrivateContextInputs, PublicContextInputs},
         context::{PrivateContext, PublicContext, Context},
         log::emit_unencrypted_log,
-        state_vars::public_state::PublicState,
+        state_vars::{public_state::PublicState, immutable_singleton::ImmutableSingleton},
         types::type_serialization::{
             field_serialization::{FieldSerializationMethods, FIELD_SERIALIZED_LEN},
             address_serialization::{AddressSerializationMethods, AZTEC_ADDRESS_SERIALIZED_LEN},
@@ -15,22 +15,27 @@ contract UnitTest {
         oracle::rand::rand,
     };
     use dep::aztec::protocol_types::{
-        abis::function_selector::FunctionSelector,
+        abis::{function_selector::FunctionSelector,side_effect::{SideEffect, SideEffectLinkedToNoteHash}},
         address::AztecAddress,
+        constants::VIEW_NOTE_ORACLE_RETURN_LENGTH,
     };
+    use dep::field_note::field_note::{FieldNote, FieldNoteMethods, FIELD_NOTE_LEN};
 
     struct Storage {
-        admin: PublicState<AztecAddress, AZTEC_ADDRESS_SERIALIZED_LEN>
+        admin: PublicState<AztecAddress, AZTEC_ADDRESS_SERIALIZED_LEN>,
+        admin_pvt: ImmutableSingleton<FieldNote, FIELD_NOTE_LEN>,
+
     }
     impl Storage {
         fn init(context: Context) -> Self {
             Storage {
-                // docs:start:storage_admin_init
                 admin: PublicState::new(
                     context,
                     1,
                     AddressSerializationMethods,
                 ),
+                admin_pvt: ImmutableSingleton::new(context, 2, FieldNoteMethods),
+
             }
         }
     }
@@ -73,7 +78,6 @@ contract UnitTest {
     fn init(new_admin: AztecAddress) {
         storage.admin.write(new_admin);
     }
-
     #[aztec(public)]
     fn get_admin() -> AztecAddress {
         storage.admin.read()
@@ -96,6 +100,56 @@ contract UnitTest {
     }
 
     //////////////////////
+    // test private storage
+    //////////////////////
+    #[aztec(private)]
+    fn init_private(admin_pvt: AztecAddress) {
+        let mut slow_note = FieldNote::new(admin_pvt.to_field());
+        storage.admin_pvt.initialize(&mut slow_note, Option::none(), false);
+    }
+    #[aztec(private)]
+    fn get_admin_pvt() -> FieldNote {
+        storage.admin_pvt.view_note()
+    }
+
+    #[test]
+    unconstrained fn test_private_storage() {
+        let admin_pvt_addr = AztecAddress { inner: 10 };
+        let admin_note = FieldNote::new(10);
+        let serializedNote = admin_note.serialize();
+        let randomHashValue = [1];
+
+        // let _mock1 = OracleMock::mock("notifyCreatedNote").with_params((2, serializedNote, inner_hash)).returns(randomHashValue);
+        // cba calculating note hash. But also feature needed - mock some params but not all. 
+        let _mock1 = OracleMock::mock("notifyCreatedNote").returns(0);
+        let pvt_circ_pub_inputs = init_private(PrivateContextInputs::empty(), admin_pvt_addr);
+        // check 1 commitment was created:
+        // pvt_circ_pub_inputs.new_commitments is a fixed size array of `SideEffect` objects - each with a counter
+        // There should be just 1 non empty SideEffect object!
+        assert(pvt_circ_pub_inputs.new_commitments[0] != SideEffect::empty()); // has some note hash!
+        // check all subsequent commitments have 0 counter/ 0 value
+        // note that side effect objects are typically sorted decreasingly so no need to check others 
+        // if we check the `counter` on pvt_circ_pub_inputs.new_commitments[0]
+        assert_eq(pvt_circ_pub_inputs.new_commitments[1], SideEffect::empty());
+
+        // check 1 nullifier was created
+        assert(pvt_circ_pub_inputs.new_nullifiers[0] != SideEffectLinkedToNoteHash::empty()); // has some nullifier
+        // check all other are 0s..
+        // ...
+        _mock1.clear();
+
+        // test reading the note:
+        let mut returnVal = [0; VIEW_NOTE_ORACLE_RETURN_LENGTH];
+        returnVal[0] = 1; // return header - num_notes
+        returnVal[1] = 1; // return header - num_contract_address
+        returnVal[2] = 1; // return header - nonce
+        returnVal[3] = 0; // return header - is_transient
+        returnVal[4] = admin_note.value; // note 1 - value
+        // TODO: mock individual items. (print value going to `get_notes_oracle() in notes.nr)
+        OracleMock::mock("getNotes").returns(returnVal).times(2);
+        let pvt_circ_pub_inputs = get_admin_pvt(PrivateContextInputs::empty());
+        assert_eq(pvt_circ_pub_inputs.return_values[0], 10);
+    }
 
     unconstrained fn compute_note_hash_and_nullifier(
         contract_address: AztecAddress,
