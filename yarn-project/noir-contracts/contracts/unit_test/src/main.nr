@@ -105,7 +105,7 @@ contract UnitTest {
     #[aztec(private)]
     fn init_private(admin_pvt: AztecAddress) {
         let mut slow_note = FieldNote::new(admin_pvt.to_field());
-        storage.admin_pvt.initialize(&mut slow_note, Option::none(), false);
+        storage.admin_pvt.initialize(&mut slow_note, false);
     }
     #[aztec(private)]
     fn get_admin_pvt() -> FieldNote {
