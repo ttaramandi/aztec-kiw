@@ -116,12 +116,14 @@ contract UnitTest {
     unconstrained fn test_private_storage() {
         let admin_pvt_addr = AztecAddress { inner: 10 };
         let admin_note = FieldNote::new(10);
-        let serializedNote = admin_note.serialize();
-        let randomHashValue = [1];
 
-        // let _mock1 = OracleMock::mock("notifyCreatedNote").with_params((2, serializedNote, inner_hash)).returns(randomHashValue);
-        // cba calculating note hash. But also feature needed - mock some params but not all. 
-        let _mock1 = OracleMock::mock("notifyCreatedNote").returns(0);
+        // create mock
+        let storageSlot = 2;
+        let randomHashValue = 0;
+        let inner_hash = dep::aztec::note::note_hash::compute_inner_hash(storageSlot, admin_note.compute_note_hash());
+        let _mock1 = OracleMock::mock("notifyCreatedNote").with_params((storageSlot, admin_note.serialize(), inner_hash)).returns(randomHashValue);
+
+        // call fn 
         let pvt_circ_pub_inputs = init_private(PrivateContextInputs::empty(), admin_pvt_addr);
         // check 1 commitment was created:
         // pvt_circ_pub_inputs.new_commitments is a fixed size array of `SideEffect` objects - each with a counter
