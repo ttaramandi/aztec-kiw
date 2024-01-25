@@ -28,7 +28,7 @@ struct PublicGlobalVariables {
     version: Field,
     block_number: Field,
     timestamp: Field,
-}
+    }
 // docs:end:public-global-variables
 
 impl PublicGlobalVariables {
