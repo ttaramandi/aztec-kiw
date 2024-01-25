@@ -89,13 +89,13 @@ contract UnitTest {
         // currently can't check how many times a mock was called. Feature needed!
         // For now, You know the `init()` fn called the right oracle with the right params, else it would have crashed.
         let admin = AztecAddress { inner: 10 };
-        let serializedAdminValue = admin.serialize(); // [10]
+        let serialized_admin_value = admin.serialize(); // [10]
         let randomHashValue = [1];
-        let _mock1 = OracleMock::mock("storageWrite").with_params((1, serializedAdminValue)).returns(randomHashValue);
+        let _mock1 = OracleMock::mock("storageWrite").with_params((1, serialized_admin_value)).returns(randomHashValue);
         init(PublicContextInputs::empty(), admin);
         _mock1.clear();
 
-        OracleMock::mock("storageRead").with_params((1, 1)).returns(serializedAdminValue);
+        OracleMock::mock("storageRead").with_params((1, 1)).returns(serialized_admin_value);
         let pub_circ_pub_inputs = get_admin(PublicContextInputs::empty());
         assert_eq(AztecAddress::from_field(pub_circ_pub_inputs.return_values[0]), admin);
     }
@@ -126,8 +126,8 @@ contract UnitTest {
         // create mock
         let storageSlot = 2;
         let randomHashValue = 0;
-        let inner_hash = dep::aztec::note::note_hash::compute_inner_hash(storageSlot, admin_note.compute_note_hash());
-        let _mock1 = OracleMock::mock("notifyCreatedNote").with_params((storageSlot, admin_note.serialize(), inner_hash)).returns(randomHashValue);
+        let inner_note_hash = dep::aztec::note::note_hash::compute_inner_note_hash(storageSlot, admin_note.compute_note_hash());
+        let _mock1 = OracleMock::mock("notifyCreatedNote").with_params((storageSlot, admin_note.serialize(), inner_note_hash)).returns(randomHashValue);
 
         // call fn 
         let pvt_circ_pub_inputs = init_pvt(PrivateContextInputs::empty(), admin_pvt_addr);
@@ -187,11 +187,11 @@ contract UnitTest {
     #[test]
     fn test_pvt_calls_other_functions() {
         let admin = AztecAddress { inner: 11 };
-        let serializedAdminValue = admin.serialize();
+        let serialized_admin_value = admin.serialize();
         let this_contract_address = AztecAddress::zero();
         let pub_fn_call_selector = FunctionSelector::from_signature("init((Field))");
         let pvt_fn_call_selector = FunctionSelector::from_signature("update_pvt((Field))");
-        let args_hash = hash_args(serializedAdminValue);
+        let args_hash = hash_args(serialized_admin_value);
         let side_effect_counter = 0;
 
         // mock response to call_private_function based on what is needed by  private_context.call_private_function_with_packed_args()
@@ -206,23 +206,25 @@ contract UnitTest {
         mocked_enqueued_public_fn_call_return_data[1] = pub_fn_call_selector.to_field(); // FunctionData.selector
         mocked_enqueued_public_fn_call_return_data[13] = args_hash;
 
-        OracleMock::mock("packArguments").with_params(serializedAdminValue).returns(args_hash).times(2);
+        OracleMock::mock("packArguments").with_params(serialized_admin_value).returns(args_hash).times(2);
         OracleMock::mock("callPrivateFunction").with_params((this_contract_address, pvt_fn_call_selector, args_hash, side_effect_counter)).returns(mocked_call_private_function_return_data);
-        OracleMock::mock("enqueuePublicFunctionCall").with_params((this_contract_address, pub_fn_call_selector, args_hash, side_effect_counter)).returns(mocked_enqueued_public_fn_call_return_data);
+        OracleMock::mock("enqueuePublicFunctionCall").with_params((this_contract_address, pub_fn_call_selector, args_hash, side_effect_counter + 1)).returns(mocked_enqueued_public_fn_call_return_data);
         calls_public_and_private_from_private(PrivateContextInputs::empty(), admin);
         // this would call
         // for public update ->
-        // OracleMock::mock("storageWrite").with_params((1, serializedAdminValue)).returns([args_hash]); // random hash value
+        // OracleMock::mock("storageWrite").with_params((1, serialized_admin_value)).returns([args_hash]); // random hash value
         // init(PublicContextInputs::empty(), admin);
         // for private update ->
         // let mut returnVal = [0; VIEW_NOTE_ORACLE_RETURN_LENGTH];
         // returnVal[0] = 1; // return header - num_notes
         // returnVal[4] = admin_note.value; // note 1 - value
-        // OracleMock::mock("getNotes").returns(returnVal).times(2);
-        // let inner_hash = dep::aztec::note::note_hash::compute_inner_hash(storageSlot, admin_note.compute_note_hash());
+        // todo - will this note be transient? 
+        // OracleMock::mock("getNotes").returns(returnVal);
         // let nullifier = admin_note.compute_nullifier());
-        // OracleMock::mock("notifyNullifiedNote").with_params((nullifier, inner_hash)).returns(randomHashValue);
-        // OracleMock::mock("notifyCreatedNote").with_params((storageSlot, admin_note.serialize(), inner_hash)).returns(randomHashValue);
+        // let nullified_commitment = 0; // todo - check if the note would be transient. If so, nullified_commitment = inner_note_hash
+        // let inner_note_hash = dep::aztec::note::note_hash::compute_inner_note_hash(storageSlot, admin_note.compute_note_hash());
+        // OracleMock::mock("notifyNullifiedNote").with_params((nullifier, inner_note_hash)).returns(randomHashValue);
+        // OracleMock::mock("notifyCreatedNote").with_params((storageSlot, admin_note.serialize(), inner_note_hash)).returns(randomHashValue);
         // 1 nullifier, 1 read request, 1 commitment
     }
 
