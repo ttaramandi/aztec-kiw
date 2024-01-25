@@ -1,6 +1,8 @@
+import { pedersenHash } from '@aztec/foundation/crypto';
 import { Fr } from '@aztec/foundation/fields';
 import { BufferReader, serializeToBuffer } from '@aztec/foundation/serialize';
 import { FieldsOf } from '@aztec/foundation/types';
+import { GeneratorIndex } from '../constants.gen.js';
 
 /**
  * Global variables of the L2 block.
@@ -23,7 +25,7 @@ export class GlobalVariables {
      * Timestamp of the L2 block.
      */
     public timestamp: Fr,
-  ) {}
+      ) {}
 
   static from(fields: FieldsOf<GlobalVariables>): GlobalVariables {
     return new GlobalVariables(...GlobalVariables.getFields(fields));
@@ -40,7 +42,7 @@ export class GlobalVariables {
       Fr.fromBuffer(reader),
       Fr.fromBuffer(reader),
       Fr.fromBuffer(reader),
-    );
+          );
   }
 
   static fromJSON(obj: any): GlobalVariables {
@@ -49,7 +51,7 @@ export class GlobalVariables {
       Fr.fromString(obj.version),
       Fr.fromString(obj.blockNumber),
       Fr.fromString(obj.timestamp),
-    );
+          );
   }
 
   static getFields(fields: FieldsOf<GlobalVariables>) {
@@ -67,6 +69,19 @@ export class GlobalVariables {
       version: this.version.toString(),
       blockNumber: this.blockNumber.toString(),
       timestamp: this.timestamp.toString(),
-    };
+      };
+  }
+
+  hash(): Fr {
+    return Fr.fromBuffer(
+      pedersenHash(
+      [
+        this.chainId.toBuffer(),
+        this.version.toBuffer(),
+        this.blockNumber.toBuffer(),
+        this.timestamp.toBuffer(),
+      ],
+      GeneratorIndex.GLOBAL_VARIABLES,
+    ));
   }
 }

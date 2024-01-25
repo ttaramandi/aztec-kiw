@@ -1173,7 +1173,7 @@ export function mapGlobalVariablesToNoir(globalVariables: GlobalVariables): Glob
     version: mapFieldToNoir(globalVariables.version),
     block_number: mapFieldToNoir(globalVariables.blockNumber),
     timestamp: mapFieldToNoir(globalVariables.timestamp),
-  };
+      };
 }
 
 /**
@@ -1198,7 +1198,7 @@ export function mapGlobalVariablesFromNoir(globalVariables: GlobalVariablesNoir)
     mapFieldFromNoir(globalVariables.version),
     mapFieldFromNoir(globalVariables.block_number),
     mapFieldFromNoir(globalVariables.timestamp),
-  );
+      );
 }
 
 /**

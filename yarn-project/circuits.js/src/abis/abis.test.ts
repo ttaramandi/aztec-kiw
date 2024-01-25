@@ -32,7 +32,6 @@ import {
   computeFunctionLeaf,
   computeFunctionSelector,
   computeFunctionTreeRoot,
-  computeGlobalsHash,
   computeNullifierHash,
   computePrivateCallStackItemHash,
   computePublicCallStackItemHash,
@@ -138,7 +137,7 @@ describe('abis', () => {
       version: new Fr(2n),
       blockNumber: new Fr(3n),
       timestamp: new Fr(4n),
-    });
+      });
     const noteHashTreeRoot = new Fr(5n);
     const nullifierTreeRoot = new Fr(6n);
     const contractTreeRoot = new Fr(7n);
@@ -161,8 +160,8 @@ describe('abis', () => {
       version: new Fr(2n),
       blockNumber: new Fr(3n),
       timestamp: new Fr(4n),
-    });
-    const res = computeGlobalsHash(globals);
+          });
+    const res = globals.hash();
     expect(res).toMatchSnapshot();
   });
 

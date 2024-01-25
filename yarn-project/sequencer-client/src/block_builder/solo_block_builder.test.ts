@@ -94,7 +94,7 @@ describe('sequencer/solo_block_builder', () => {
 
   beforeEach(async () => {
     blockNumber = 3;
-    globalVariables = new GlobalVariables(chainId, version, new Fr(blockNumber), Fr.ZERO);
+    globalVariables = new GlobalVariables(chainId, version, new Fr(blockNumber), /*timestamp=*/Fr.ZERO);
 
     builderDb = await MerkleTrees.new(await AztecLmdbStore.openTmp()).then(t => t.asLatest());
     expectsDb = await MerkleTrees.new(await AztecLmdbStore.openTmp()).then(t => t.asLatest());

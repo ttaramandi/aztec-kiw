@@ -9,7 +9,7 @@ struct GlobalVariables {
     version : Field,
     block_number : Field,
     timestamp : Field,
-}
+    }
 
 impl Eq for GlobalVariables {
     fn eq(self, other : GlobalVariables) -> bool {

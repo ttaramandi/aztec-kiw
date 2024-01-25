@@ -53,7 +53,7 @@ export interface GlobalVariableBuilder {
  */
 export class SimpleTestGlobalVariableBuilder implements GlobalVariableBuilder {
   private log = createDebugLogger('aztec:sequencer:simple_test_global_variable_builder');
-  constructor(private readonly reader: L1GlobalReader) {}
+constructor(private readonly reader: L1GlobalReader) {}
 
   /**
    * Simple builder of global variables that use the minimum time possible.

@@ -8,7 +8,7 @@ import {
   PublicDataWitness,
 } from '@aztec/circuit-types';
 import { BlockHeader } from '@aztec/circuits.js';
-import { computeGlobalsHash, siloNullifier } from '@aztec/circuits.js/abis';
+import { siloNullifier } from '@aztec/circuits.js/abis';
 import { AztecAddress } from '@aztec/foundation/aztec-address';
 import { Fr } from '@aztec/foundation/fields';
 import { createDebugLogger } from '@aztec/foundation/log';
@@ -127,7 +127,7 @@ export class ViewDataOracle extends TypedOracle {
       block.archive.root,
       new Fr(0), // TODO(#3441) privateKernelVkTreeRoot is not present in L2Block and it's not yet populated in noir
       block.header.state.partial.publicDataTree.root,
-      computeGlobalsHash(block.header.globalVariables),
+      block.header.globalVariables.hash(),
     );
   }
 

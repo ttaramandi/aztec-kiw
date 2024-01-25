@@ -286,7 +286,7 @@ export function computeBlockHashWithGlobals(
   publicDataTreeRoot: Fr,
 ): Fr {
   return computeBlockHash(
-    computeGlobalsHash(globals),
+    globals.hash(),
     noteHashTreeRoot,
     nullifierTreeRoot,
     contractTreeRoot,
@@ -324,26 +324,6 @@ export function computeBlockHash(
         publicDataTreeRoot.toBuffer(),
       ],
       GeneratorIndex.BLOCK_HASH,
-    ),
-  );
-}
-
-/**
- * Computes the globals hash given the globals.
- * @param globals - The global variables to put into the block hash.
- * @returns The globals hash.
- * TODO: move this to GlobalVariables?
- */
-export function computeGlobalsHash(globals: GlobalVariables): Fr {
-  return Fr.fromBuffer(
-    pedersenHash(
-      [
-        globals.chainId.toBuffer(),
-        globals.version.toBuffer(),
-        globals.blockNumber.toBuffer(),
-        globals.timestamp.toBuffer(),
-      ],
-      GeneratorIndex.GLOBAL_VARIABLES,
     ),
   );
 }

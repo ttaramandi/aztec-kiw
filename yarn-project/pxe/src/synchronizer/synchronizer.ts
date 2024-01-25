@@ -10,7 +10,6 @@ import {
 } from '@aztec/circuit-types';
 import { NoteProcessorCaughtUpStats } from '@aztec/circuit-types/stats';
 import { AztecAddress, BlockHeader, Fr, PublicKey } from '@aztec/circuits.js';
-import { computeGlobalsHash } from '@aztec/circuits.js/abis';
 import { SerialQueue } from '@aztec/foundation/fifo';
 import { DebugLogger, createDebugLogger } from '@aztec/foundation/log';
 import { RunningPromise } from '@aztec/foundation/running-promise';
@@ -276,7 +275,7 @@ export class Synchronizer {
       return;
     }
 
-    const globalsHash = computeGlobalsHash(latestBlock.block.header.globalVariables);
+    const globalsHash = latestBlock.block.header.globalVariables.hash();
     const blockHeader = new BlockHeader(
       block.header.state.partial.noteHashTree.root,
       block.header.state.partial.nullifierTree.root,

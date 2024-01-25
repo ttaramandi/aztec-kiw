@@ -12,7 +12,6 @@ export interface GlobalReaderConfig {
    * The API key of the ethereum host.
    */
   apiKey?: string;
-
   /**
    * The deployed l1 contract addresses
    */

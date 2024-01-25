@@ -1,3 +1,5 @@
+import {AztecAddress} from "@aztec/foundation/aztec-address";
+
 /**
  * The sequencer configuration.
  */
@@ -14,4 +16,8 @@ export interface SequencerConfig {
    * The minimum number of txs to include in a block.
    */
   minTxsPerBlock?: number;
+  /**
+   * The Coinbase recipient address ( fee collector )
+   */
+  coinbase: AztecAddress;
 }

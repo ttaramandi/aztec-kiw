@@ -1,5 +1,6 @@
 import { L1ContractAddresses, NULL_KEY } from '@aztec/ethereum';
 import { EthAddress } from '@aztec/foundation/eth-address';
+import { AztecAddress } from '@aztec/foundation/aztec-address';
 
 import { Hex } from 'viem';
 
@@ -45,6 +46,7 @@ export function getConfigEnvVars(): SequencerClientConfig {
     INBOX_CONTRACT_ADDRESS,
     CONTRACT_DEPLOYMENT_EMITTER_ADDRESS,
     OUTBOX_CONTRACT_ADDRESS,
+    COINBASE_ADDRESS
   } = process.env;
 
   const publisherPrivateKey: Hex = SEQ_PUBLISHER_PRIVATE_KEY
@@ -64,6 +66,8 @@ export function getConfigEnvVars(): SequencerClientConfig {
       : EthAddress.ZERO,
   };
 
+  const coinbase = COINBASE_ADDRESS ? AztecAddress.fromString(COINBASE_ADDRESS) : AztecAddress.ZERO;
+
   return {
     rpcUrl: ETHEREUM_HOST ? ETHEREUM_HOST : '',
     chainId: CHAIN_ID ? +CHAIN_ID : 31337, // 31337 is the default chain id for anvil
@@ -72,6 +76,7 @@ export function getConfigEnvVars(): SequencerClientConfig {
     requiredConfirmations: SEQ_REQUIRED_CONFIRMATIONS ? +SEQ_REQUIRED_CONFIRMATIONS : 1,
     l1BlockPublishRetryIntervalMS: SEQ_PUBLISH_RETRY_INTERVAL_MS ? +SEQ_PUBLISH_RETRY_INTERVAL_MS : 1_000,
     transactionPollingIntervalMS: SEQ_TX_POLLING_INTERVAL_MS ? +SEQ_TX_POLLING_INTERVAL_MS : 1_000,
+    coinbase,
     l1Contracts: addresses,
     publisherPrivateKey,
     maxTxsPerBlock: SEQ_MAX_TX_PER_BLOCK ? +SEQ_MAX_TX_PER_BLOCK : 32,

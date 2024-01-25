@@ -441,7 +441,12 @@ describe('ACIR public execution simulator', () => {
         });
 
       const computeGlobalVariables = () =>
-        new GlobalVariables(new Fr(preimage.sender.chainId), new Fr(preimage.recipient.version), Fr.ZERO, Fr.ZERO);
+        new GlobalVariables(
+          new Fr(preimage.sender.chainId),
+          new Fr(preimage.recipient.version),
+          /*blockNumber=*/ Fr.ZERO,
+          /*timestamp=*/ Fr.ZERO,
+        );
 
       const mockOracles = () => {
         publicContracts.getBytecode.mockResolvedValue(Buffer.from(mintPublicArtifact.bytecode, 'base64'));

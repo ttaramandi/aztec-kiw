@@ -56,13 +56,11 @@ contract Child {
     // Returns base_value + chain_id + version + block_number + timestamp
     #[aztec(public)]
     fn pubGetValue(base_value: Field) -> Field {
-        let returnValue = base_value
+        base_value
             + context.chain_id()
             + context.version()
             + context.block_number()
-            + context.timestamp();
-
-        returnValue
+            + context.timestamp()
     }
 
     // Sets `current_value` to `new_value`

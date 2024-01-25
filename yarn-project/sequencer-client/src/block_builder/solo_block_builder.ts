@@ -46,7 +46,6 @@ import {
   computeBlockHash,
   computeBlockHashWithGlobals,
   computeContractLeaf,
-  computeGlobalsHash,
 } from '@aztec/circuits.js/abis';
 import { makeTuple } from '@aztec/foundation/array';
 import { toBigIntBE } from '@aztec/foundation/bigint-buffer';
@@ -273,7 +272,7 @@ export class SoloBlockBuilder implements BlockBuilder {
     // Update the root trees with the latest data and contract tree roots,
     // and validate them against the output of the root circuit simulation
     this.debug(`Updating and validating root trees`);
-    const globalVariablesHash = computeGlobalsHash(left[0].constants.globalVariables);
+    const globalVariablesHash = left[0].constants.globalVariables.hash();
     await this.db.updateLatestGlobalVariablesHash(globalVariablesHash);
     await this.db.updateArchive(globalVariablesHash);
 

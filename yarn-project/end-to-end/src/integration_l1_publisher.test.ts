@@ -316,7 +316,7 @@ describe('L1Publisher integration', () => {
     expect(hexStringToBuffer(archiveInRollup_.toString())).toEqual(Buffer.alloc(32, 0));
 
     const blockNumber = await publicClient.getBlockNumber();
-    // random recipient address, just kept consistent for easy testing ts/sol.
+// random recipient address, just kept consistent for easy testing ts/sol.
     const recipientAddress = AztecAddress.fromString(
       '0x1647b194c649f5dd01d7c832f89b0f496043c9150797923ea89e93d5ac619a93',
     );
@@ -362,9 +362,9 @@ describe('L1Publisher integration', () => {
       const globalVariables = new GlobalVariables(
         new Fr(chainId),
         new Fr(config.version),
-        new Fr(1 + i),
+        /*blocknumber=*/ new Fr(1 + i),
         new Fr(await rollup.read.lastBlockTs()),
-      );
+              );
       const [block] = await builder.buildL2Block(globalVariables, txs, l1ToL2Messages);
       prevGlobals = globalVariables;
 
@@ -444,9 +444,9 @@ describe('L1Publisher integration', () => {
       const globalVariables = new GlobalVariables(
         new Fr(chainId),
         new Fr(config.version),
-        new Fr(1 + i),
+        /*blocknumber=*/ new Fr(1 + i),
         new Fr(await rollup.read.lastBlockTs()),
-      );
+              );
       const [block] = await builder.buildL2Block(globalVariables, txs, l1ToL2Messages);
       prevGlobals = globalVariables;
 

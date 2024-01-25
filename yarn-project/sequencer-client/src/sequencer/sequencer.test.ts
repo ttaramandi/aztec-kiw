@@ -99,12 +99,13 @@ describe('sequencer', () => {
     tx.data.constants.txContext.chainId = chainId;
     const block = L2Block.random(lastBlockNumber + 1);
     const proof = makeEmptyProof();
+    const globalVariables = new GlobalVariables(chainId, version, new Fr(lastBlockNumber + 1), /*timestamp=*/Fr.ZERO);
 
     p2p.getTxs.mockResolvedValueOnce([tx]);
     blockBuilder.buildL2Block.mockResolvedValueOnce([block, proof]);
     publisher.processL2Block.mockResolvedValueOnce(true);
     globalVariableBuilder.buildGlobalVariables.mockResolvedValueOnce(
-      new GlobalVariables(chainId, version, new Fr(lastBlockNumber + 1), Fr.ZERO),
+      globalVariables,
     );
 
     await sequencer.initialSync();
@@ -113,7 +114,7 @@ describe('sequencer', () => {
     const expectedTxHashes = [...(await Tx.getHashes([tx])), ...times(1, () => TxHash.ZERO)];
 
     expect(blockBuilder.buildL2Block).toHaveBeenCalledWith(
-      new GlobalVariables(chainId, version, new Fr(lastBlockNumber + 1), Fr.ZERO),
+      globalVariables,
       expectedTxHashes.map(hash => expect.objectContaining({ hash })),
       Array(NUMBER_OF_L1_L2_MESSAGES_PER_ROLLUP).fill(new Fr(0n)),
     );
@@ -128,12 +129,13 @@ describe('sequencer', () => {
     const doubleSpendTx = txs[1];
     const block = L2Block.random(lastBlockNumber + 1);
     const proof = makeEmptyProof();
+    const globalVariables = new GlobalVariables(chainId, version, new Fr(lastBlockNumber + 1), /*timestamp=*/Fr.ZERO);
 
     p2p.getTxs.mockResolvedValueOnce(txs);
     blockBuilder.buildL2Block.mockResolvedValueOnce([block, proof]);
     publisher.processL2Block.mockResolvedValueOnce(true);
     globalVariableBuilder.buildGlobalVariables.mockResolvedValueOnce(
-      new GlobalVariables(chainId, version, new Fr(lastBlockNumber + 1), Fr.ZERO),
+      globalVariables,
     );
 
     // We make a nullifier from tx1 a part of the nullifier tree, so it gets rejected as double spend
@@ -150,7 +152,7 @@ describe('sequencer', () => {
     const expectedTxHashes = await Tx.getHashes([txs[0], txs[2]]);
 
     expect(blockBuilder.buildL2Block).toHaveBeenCalledWith(
-      new GlobalVariables(chainId, version, new Fr(lastBlockNumber + 1), Fr.ZERO),
+      globalVariables,
       expectedTxHashes.map(hash => expect.objectContaining({ hash })),
       Array(NUMBER_OF_L1_L2_MESSAGES_PER_ROLLUP).fill(new Fr(0n)),
     );
@@ -166,12 +168,13 @@ describe('sequencer', () => {
     const invalidChainTx = txs[1];
     const block = L2Block.random(lastBlockNumber + 1);
     const proof = makeEmptyProof();
+    const globalVariables = new GlobalVariables(chainId, version, new Fr(lastBlockNumber + 1), /*timestamp=*/Fr.ZERO);
 
     p2p.getTxs.mockResolvedValueOnce(txs);
     blockBuilder.buildL2Block.mockResolvedValueOnce([block, proof]);
     publisher.processL2Block.mockResolvedValueOnce(true);
     globalVariableBuilder.buildGlobalVariables.mockResolvedValueOnce(
-      new GlobalVariables(chainId, version, new Fr(lastBlockNumber + 1), Fr.ZERO),
+      globalVariables
     );
 
     // We make the chain id on the invalid tx not equal to the configured chain id
@@ -183,7 +186,7 @@ describe('sequencer', () => {
     const expectedTxHashes = await Tx.getHashes([txs[0], txs[2]]);
 
     expect(blockBuilder.buildL2Block).toHaveBeenCalledWith(
-      new GlobalVariables(chainId, version, new Fr(lastBlockNumber + 1), Fr.ZERO),
+      globalVariables,
       expectedTxHashes.map(hash => expect.objectContaining({ hash })),
       Array(NUMBER_OF_L1_L2_MESSAGES_PER_ROLLUP).fill(new Fr(0n)),
     );
@@ -196,12 +199,13 @@ describe('sequencer', () => {
     tx.data.constants.txContext.chainId = chainId;
     const block = L2Block.random(lastBlockNumber + 1);
     const proof = makeEmptyProof();
+    const globalVariables = new GlobalVariables(chainId, version, new Fr(lastBlockNumber + 1), /*timestamp=*/Fr.ZERO);
 
     p2p.getTxs.mockResolvedValueOnce([tx]);
     blockBuilder.buildL2Block.mockResolvedValueOnce([block, proof]);
     publisher.processL2Block.mockResolvedValueOnce(true);
     globalVariableBuilder.buildGlobalVariables.mockResolvedValueOnce(
-      new GlobalVariables(chainId, version, new Fr(lastBlockNumber + 1), Fr.ZERO),
+      globalVariables
     );
 
     await sequencer.initialSync();
@@ -220,6 +224,7 @@ describe('sequencer', () => {
   });
 
   it('publishes contract data', async () => {
+    const globalVariables = new GlobalVariables(chainId, version, new Fr(lastBlockNumber + 1), /*timestamp=*/Fr.ZERO);
     const txWithContract = mockTx(0x10000);
     (txWithContract.newContracts as Array<ExtendedContractData>) = [ExtendedContractData.random()];
     txWithContract.data.constants.txContext.chainId = chainId;
@@ -236,7 +241,7 @@ describe('sequencer', () => {
     publisher.processL2Block.mockResolvedValueOnce(true);
     publisher.processNewContractData.mockResolvedValueOnce(true);
     globalVariableBuilder.buildGlobalVariables.mockResolvedValueOnce(
-      new GlobalVariables(chainId, version, new Fr(lastBlockNumber + 1), Fr.ZERO),
+      globalVariables
     );
 
     await sequencer.initialSync();

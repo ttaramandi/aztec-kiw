@@ -16,7 +16,7 @@ import {
   PublicDataTreeLeaf,
   PublicDataTreeLeafPreimage,
 } from '@aztec/circuits.js';
-import { computeBlockHash, computeGlobalsHash } from '@aztec/circuits.js/abis';
+import { computeBlockHash } from '@aztec/circuits.js/abis';
 import { Committable } from '@aztec/foundation/committable';
 import { SerialQueue } from '@aztec/foundation/fifo';
 import { createDebugLogger } from '@aztec/foundation/log';
@@ -150,7 +150,7 @@ export class MerkleTrees implements MerkleTreeDb {
 
     // The first leaf in the blocks tree contains the empty roots of the other trees and empty global variables.
     if (!fromDb) {
-      const initialGlobalVariablesHash = computeGlobalsHash(GlobalVariables.empty());
+      const initialGlobalVariablesHash = GlobalVariables.empty().hash();
       await this._updateLatestGlobalVariablesHash(initialGlobalVariablesHash);
       await this._updateArchive(initialGlobalVariablesHash, true);
       await this._commit();
@@ -606,7 +606,7 @@ export class MerkleTrees implements MerkleTreeDb {
       }
 
       // Sync and add the block to the blocks tree
-      const globalVariablesHash = computeGlobalsHash(l2Block.header.globalVariables);
+      const globalVariablesHash = l2Block.header.globalVariables.hash();
       await this._updateLatestGlobalVariablesHash(globalVariablesHash);
       this.log(`Synced global variables with hash ${globalVariablesHash}`);
 
