@@ -195,7 +195,7 @@ template <typename Flavor> class SumcheckProverRound {
                                              const bb::PowPolynomial<FF>& pow_polynomial)
     {
         ExtendedUnivariate extended_random_polynomial;
-        // Random poly R(X) = (1-X) + X.zeta_pow
+        // Random poly R(X) = (1-X) + X*zeta_pow
         auto random_polynomial = bb::Univariate<FF, 2>({ 1, pow_polynomial.current_element() });
         extended_random_polynomial = random_polynomial.template extend_to<ExtendedUnivariate::LENGTH>();
 

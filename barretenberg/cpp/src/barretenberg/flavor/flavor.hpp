@@ -68,6 +68,7 @@
 #include "barretenberg/common/std_array.hpp"
 #include "barretenberg/common/std_vector.hpp"
 #include "barretenberg/common/zip_view.hpp"
+#include "barretenberg/flavor/protogalaxy_goblin_ultra.hpp"
 #include "barretenberg/polynomials/barycentric.hpp"
 #include "barretenberg/polynomials/evaluation_domain.hpp"
 #include "barretenberg/polynomials/univariate.hpp"
@@ -296,6 +297,11 @@ template <typename T>
 concept IsGoblinFlavor = IsAnyOf<T, honk::flavor::GoblinUltra,
                                     honk::flavor::GoblinUltraRecursive_<UltraCircuitBuilder>,
                                     honk::flavor::GoblinUltraRecursive_<GoblinUltraCircuitBuilder>>;
+
+template <typename T> 
+concept IsProtoGalaxyGoblinFlavor = IsAnyOf<T, honk::flavor::ProtoGalaxyGoblinUltra,
+                                    /*honk::flavor::GoblinUltraRecursive_<UltraCircuitBuilder>,
+                                    honk::flavor::GoblinUltraRecursive_<GoblinUltraCircuitBuilder>*/>;
 
 template <typename T> 
 concept IsRecursiveFlavor = IsAnyOf<T, honk::flavor::UltraRecursive_<UltraCircuitBuilder>, 

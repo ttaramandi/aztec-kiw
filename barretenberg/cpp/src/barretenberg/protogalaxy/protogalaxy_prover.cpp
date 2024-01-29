@@ -46,13 +46,6 @@ void ProtoGalaxyProver_<ProverInstances>::finalise_and_send_instance(std::shared
         for (size_t idx = 0; idx < Flavor::NUM_WIRES; ++idx) {
             transcript->send_to_verifier(domain_separator + "_" + labels[idx], op_wire_comms[idx]);
         }
-        // Commit to DataBus columns
-        witness_commitments.calldata = commitment_key->commit(instance->proving_key->calldata);
-        witness_commitments.calldata_read_counts = commitment_key->commit(instance->proving_key->calldata_read_counts);
-        transcript->send_to_verifier(domain_separator + "_" + commitment_labels.calldata,
-                                     instance->witness_commitments.calldata);
-        transcript->send_to_verifier(domain_separator + "_" + commitment_labels.calldata_read_counts,
-                                     instance->witness_commitments.calldata_read_counts);
     }
 
     auto eta = transcript->get_challenge(domain_separator + "_eta");
@@ -68,14 +61,6 @@ void ProtoGalaxyProver_<ProverInstances>::finalise_and_send_instance(std::shared
     transcript->send_to_verifier(domain_separator + "_" + commitment_labels.w_4, witness_commitments.w_4);
 
     auto [beta, gamma] = transcript->get_challenges(domain_separator + "_beta", domain_separator + "_gamma");
-
-    if constexpr (IsGoblinFlavor<Flavor>) {
-        instance->compute_logderivative_inverse(beta, gamma);
-        instance->witness_commitments.lookup_inverses =
-            commitment_key->commit(instance->prover_polynomials.lookup_inverses);
-        transcript->send_to_verifier(domain_separator + "_" + commitment_labels.lookup_inverses,
-                                     instance->witness_commitments.lookup_inverses);
-    }
 
     instance->compute_grand_product_polynomials(beta, gamma);
 

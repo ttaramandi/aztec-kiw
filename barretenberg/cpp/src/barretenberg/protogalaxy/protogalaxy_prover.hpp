@@ -136,7 +136,6 @@ template <class ProverInstances_> class ProtoGalaxyProver_ {
                                                          const RelationParameters<FF>& relation_parameters)
     {
         auto instance_size = instance_polynomials.get_polynomial_size();
-        std::optional<FF> linearly_dependent_contribution = FF(0);
         std::vector<FF> full_honk_evaluations(instance_size);
         for (size_t row = 0; row < instance_size; row++) {
             auto row_evaluations = instance_polynomials.get_row(row);
@@ -153,13 +152,11 @@ template <class ProverInstances_> class ProtoGalaxyProver_ {
 
             // Sum relation evaluations, batched by their corresponding relation separator challenge, to get the value
             // of the full honk relation at a specific row
-            Utils::scale_and_batch_elements(
-                relation_evaluations, alpha, running_challenge, output, linearly_dependent_contribution);
+            Utils::scale_and_batch_elements(relation_evaluations, alpha, running_challenge, output);
 
             full_honk_evaluations[row] = output;
         }
         // thsi wont take effect with Ultra cus no linearly dependent relations but maybe we could add constexprr
-        full_honk_evaluations[0] += linearly_dependent_contribution.value();
         return full_honk_evaluations;
     }
 
