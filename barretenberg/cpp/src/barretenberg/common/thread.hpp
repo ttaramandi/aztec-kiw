@@ -9,11 +9,12 @@
 
 inline size_t get_num_cpus()
 {
-#ifdef NO_MULTITHREADING
-    return 1;
-#else
-    return env_hardware_concurrency();
-#endif
+    return 8;
+    // #ifdef NO_MULTITHREADING
+    //     return 1;
+    // #else
+    //     return env_hardware_concurrency();
+    // #endif
 }
 
 // For algorithms that need to be divided amongst power of 2 threads.
