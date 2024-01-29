@@ -42,7 +42,7 @@ template <typename Curve> void bench_commit(::benchmark::State& state)
 BENCHMARK(bench_commit<curve::BN254>)
     ->DenseRange(10, MAX_LOG_NUM_POINTS)
     ->Unit(benchmark::kMillisecond)
-    ->Iterations(10000);
+    ->Iterations(100000);
 
 } // namespace bb
 
