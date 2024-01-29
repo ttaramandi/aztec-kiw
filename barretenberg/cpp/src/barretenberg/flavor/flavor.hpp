@@ -263,6 +263,7 @@ namespace bb::honk::flavor {
 class Ultra;
 class ECCVM;
 class GoblinUltra;
+class ProtoGalaxyGoblinUltra;
 template <typename BuilderType> class UltraRecursive_;
 template <typename BuilderType> class GoblinUltraRecursive_;
 } // namespace bb::honk::flavor
