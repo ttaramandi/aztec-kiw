@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/Barretenberg"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/Barretenberg.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/Barretenberg-complete.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/Barretenberg-prefix/src/Barretenberg-stamp/Barretenberg-build.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/Barretenberg-prefix/src/Barretenberg-stamp/Barretenberg-configure.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/Barretenberg-prefix/src/Barretenberg-stamp/Barretenberg-download.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/Barretenberg-prefix/src/Barretenberg-stamp/Barretenberg-install.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/Barretenberg-prefix/src/Barretenberg-stamp/Barretenberg-mkdir.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/Barretenberg-prefix/src/Barretenberg-stamp/Barretenberg-patch.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/Barretenberg-prefix/src/Barretenberg-stamp/Barretenberg-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"Barretenberg"
+		],
+		"name" : "Barretenberg"
+	}
+}

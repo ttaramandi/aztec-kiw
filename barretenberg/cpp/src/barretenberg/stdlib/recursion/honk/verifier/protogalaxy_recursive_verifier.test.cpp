@@ -51,6 +51,12 @@ class ProtogalaxyRecursiveTest : public testing::Test {
      * @param builder
      * @param public_inputs
      * @param log_num_gates
+<<<<<<< HEAD
+=======
+     *
+     * TODO(https://github.com/AztecProtocol/barretenberg/issues/744): make testing utility with functionality shared
+     * amongst test files
+>>>>>>> master
      */
     static void create_inner_circuit(InnerBuilder& builder, size_t log_num_gates = 10)
     {
@@ -178,6 +184,37 @@ TEST_F(ProtogalaxyRecursiveTest, NewEvaluate)
     EXPECT_EQ(res1, res2.get_value());
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * @brief Tests a simple recursive fold that is valid works as expected.
+ *
+ */
+TEST_F(ProtogalaxyRecursiveTest, RecursiveFoldingTest)
+{
+    // Create two arbitrary circuits for the first round of folding
+    InnerBuilder builder1;
+
+    create_inner_circuit(builder1);
+    InnerBuilder builder2;
+    builder2.add_public_variable(FF(1));
+    create_inner_circuit(builder2);
+
+    InnerComposer inner_composer = InnerComposer();
+    auto instance1 = inner_composer.create_instance(builder1);
+    auto instance2 = inner_composer.create_instance(builder2);
+    auto instances = std::vector<std::shared_ptr<Instance>>{ instance1, instance2 };
+
+    fold_and_verify(instances, inner_composer);
+}
+
+/**
+ * @brief Recursively verify two rounds of folding valid circuits and then recursive verify the final decider proof,
+ * make sure the verifer circuits pass check_circuit(). Ensure that the algorithm of the recursive and native verifiers
+ * are identical by checking the manifests
+
+ */
+>>>>>>> master
 TEST_F(ProtogalaxyRecursiveTest, FullProtogalaxyRecursiveTest)
 {
 

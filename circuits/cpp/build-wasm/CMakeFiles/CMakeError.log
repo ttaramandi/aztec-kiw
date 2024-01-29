@@ -1,0 +1,99 @@
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-DrS6Pv
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_2d40c/fast && /usr/bin/make  -f CMakeFiles/cmTC_2d40c.dir/build.make CMakeFiles/cmTC_2d40c.dir/build
+make[1]: Entering directory '/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-DrS6Pv'
+Building C object CMakeFiles/cmTC_2d40c.dir/src.c.obj
+/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang --sysroot=/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot -DCMAKE_HAVE_LIBC_PTHREAD   -MD -MT CMakeFiles/cmTC_2d40c.dir/src.c.obj -MF CMakeFiles/cmTC_2d40c.dir/src.c.obj.d -o CMakeFiles/cmTC_2d40c.dir/src.c.obj -c /mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-DrS6Pv/src.c
+/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-DrS6Pv/src.c:16:3: error: call to undeclared function 'pthread_exit'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+  pthread_exit(NULL);
+  ^
+/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-DrS6Pv/src.c:16:3: note: did you mean 'pthread_join'?
+/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/pthread.h:85:5: note: 'pthread_join' declared here
+int pthread_join(pthread_t, void **);
+    ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTC_2d40c.dir/build.make:79: CMakeFiles/cmTC_2d40c.dir/src.c.obj] Error 1
+make[1]: Leaving directory '/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-DrS6Pv'
+make: *** [Makefile:127: cmTC_2d40c/fast] Error 2
+
+
+Source file was:
+#include <pthread.h>
+
+static void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-MWOOQv
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_b5311/fast && /usr/bin/make  -f CMakeFiles/cmTC_b5311.dir/build.make CMakeFiles/cmTC_b5311.dir/build
+make[1]: Entering directory '/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-MWOOQv'
+Building C object CMakeFiles/cmTC_b5311.dir/CheckFunctionExists.c.obj
+/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang --sysroot=/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot   -DCHECK_FUNCTION_EXISTS=pthread_create -MD -MT CMakeFiles/cmTC_b5311.dir/CheckFunctionExists.c.obj -MF CMakeFiles/cmTC_b5311.dir/CheckFunctionExists.c.obj.d -o CMakeFiles/cmTC_b5311.dir/CheckFunctionExists.c.obj -c /mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-MWOOQv/CheckFunctionExists.c
+Linking C executable cmTC_b5311
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b5311.dir/link.txt --verbose=1
+/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang --sysroot=/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot  -DCHECK_FUNCTION_EXISTS=pthread_create CMakeFiles/cmTC_b5311.dir/CheckFunctionExists.c.obj -o cmTC_b5311  -lpthreads 
+wasm-ld: error: unable to find library -lpthreads
+clang-16: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [CMakeFiles/cmTC_b5311.dir/build.make:100: cmTC_b5311] Error 1
+make[1]: Leaving directory '/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-MWOOQv'
+make: *** [Makefile:127: cmTC_b5311/fast] Error 2
+
+
+
+Determining if the function pthread_create exists in the pthread failed with the following output:
+Change Dir: /mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-xZzZJv
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_d70c0/fast && /usr/bin/make  -f CMakeFiles/cmTC_d70c0.dir/build.make CMakeFiles/cmTC_d70c0.dir/build
+make[1]: Entering directory '/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-xZzZJv'
+Building C object CMakeFiles/cmTC_d70c0.dir/CheckFunctionExists.c.obj
+/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang --sysroot=/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot   -DCHECK_FUNCTION_EXISTS=pthread_create -MD -MT CMakeFiles/cmTC_d70c0.dir/CheckFunctionExists.c.obj -MF CMakeFiles/cmTC_d70c0.dir/CheckFunctionExists.c.obj.d -o CMakeFiles/cmTC_d70c0.dir/CheckFunctionExists.c.obj -c /mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-xZzZJv/CheckFunctionExists.c
+Linking C executable cmTC_d70c0
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d70c0.dir/link.txt --verbose=1
+/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang --sysroot=/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot  -DCHECK_FUNCTION_EXISTS=pthread_create CMakeFiles/cmTC_d70c0.dir/CheckFunctionExists.c.obj -o cmTC_d70c0  -lpthread 
+wasm-ld: error: CMakeFiles/cmTC_d70c0.dir/CheckFunctionExists.c.obj: undefined symbol: pthread_create
+clang-16: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [CMakeFiles/cmTC_d70c0.dir/build.make:100: cmTC_d70c0] Error 1
+make[1]: Leaving directory '/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-xZzZJv'
+make: *** [Makefile:127: cmTC_d70c0/fast] Error 2
+
+
+
+Determining if compiler accepts -pthread failed with the following output:
+Change Dir: /mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-6J9DMt
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_0f18a/fast && /usr/bin/make  -f CMakeFiles/cmTC_0f18a.dir/build.make CMakeFiles/cmTC_0f18a.dir/build
+make[1]: Entering directory '/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-6J9DMt'
+Building C object CMakeFiles/cmTC_0f18a.dir/CheckForPthreads.c.obj
+/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang --sysroot=/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot    -MD -MT CMakeFiles/cmTC_0f18a.dir/CheckForPthreads.c.obj -MF CMakeFiles/cmTC_0f18a.dir/CheckForPthreads.c.obj.d -o CMakeFiles/cmTC_0f18a.dir/CheckForPthreads.c.obj -c /mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-6J9DMt/CheckForPthreads.c
+Linking C executable cmTC_0f18a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0f18a.dir/link.txt --verbose=1
+/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang --sysroot=/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot CMakeFiles/cmTC_0f18a.dir/CheckForPthreads.c.obj -o cmTC_0f18a  -pthread 
+wasm-ld: error: 'atomics' feature must be used in order to use shared memory
+wasm-ld: error: 'bulk-memory' feature must be used in order to use shared memory
+wasm-ld: error: CMakeFiles/cmTC_0f18a.dir/CheckForPthreads.c.obj: undefined symbol: pthread_create
+wasm-ld: error: CMakeFiles/cmTC_0f18a.dir/CheckForPthreads.c.obj: undefined symbol: pthread_join
+clang-16: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [CMakeFiles/cmTC_0f18a.dir/build.make:100: cmTC_0f18a] Error 1
+make[1]: Leaving directory '/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-6J9DMt'
+make: *** [Makefile:127: cmTC_0f18a/fast] Error 2
+
+
+

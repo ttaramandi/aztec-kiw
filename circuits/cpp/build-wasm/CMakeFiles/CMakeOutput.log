@@ -1,0 +1,216 @@
+The target system is: Generic - 1 - wasm32
+The host system is: Linux - 5.15.0-1040-aws - x86_64
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang++ 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is Clang, found in "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/3.25.2/CompilerIdCXX/a.out"
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+
+The C compiler identification is Clang, found in "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/3.25.2/CompilerIdC/a.out"
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-rRGmgu
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_5b7e7/fast && /usr/bin/make  -f CMakeFiles/cmTC_5b7e7.dir/build.make CMakeFiles/cmTC_5b7e7.dir/build
+make[1]: Entering directory '/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-rRGmgu'
+Building CXX object CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj
+/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang++ --sysroot=/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot   -v -MD -MT CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj -MF CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj.d -o CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj -c /usr/share/cmake-3.25/Modules/CMakeCXXCompilerABI.cpp
+clang version 16.0.0
+Target: wasm32-unknown-wasi
+Thread model: posix
+InstalledDir: /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin
+ (in-process)
+ "/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang-16" -cc1 -triple wasm32-unknown-wasi -emit-obj -mrelax-all -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model static -mframe-pointer=none -ffp-contract=on -fno-rounding-math -mconstructor-aliases -target-cpu generic -fvisibility=hidden -mllvm -treat-scalable-fixed-error-as-warning -debugger-tuning=gdb -v -fcoverage-compilation-dir=/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-rRGmgu -resource-dir /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16 -dependency-file CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj.d -MT CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj -sys-header-deps -isysroot /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot -internal-isystem /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/wasm32-wasi/c++/v1 -internal-isystem /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/c++/v1 -internal-isystem /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/include -internal-isystem /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/wasm32-wasi -internal-isystem /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include -fdeprecated-macro -fdebug-compilation-dir=/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-rRGmgu -ferror-limit 19 -fgnuc-version=4.2.1 -fcxx-exceptions -fexceptions -o CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj -x c++ /usr/share/cmake-3.25/Modules/CMakeCXXCompilerABI.cpp
+clang -cc1 version 16.0.0 based upon LLVM 16.0.0 default target wasm32-wasi
+ignoring nonexistent directory "/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/wasm32-wasi/c++/v1"
+ignoring nonexistent directory "/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/wasm32-wasi"
+#include "..." search starts here:
+#include <...> search starts here:
+ /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/c++/v1
+ /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/include
+ /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include
+End of search list.
+Linking CXX executable cmTC_5b7e7
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5b7e7.dir/link.txt --verbose=1
+/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang++ --sysroot=/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot -O3 -v CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_5b7e7 
+clang version 16.0.0
+Target: wasm32-unknown-wasi
+Thread model: posix
+InstalledDir: /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin
+ "/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/wasm-ld" -m wasm32 -L/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi/crt1-command.o CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj -lc++ -lc++abi -lc /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/lib/wasi/libclang_rt.builtins-wasm32.a -o cmTC_5b7e7
+make[1]: Leaving directory '/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-rRGmgu'
+
+
+
+Parsed CXX implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/c++/v1]
+    add: [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/include]
+    add: [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include]
+  end of search list found
+  collapse include dir [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/c++/v1] ==> [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/c++/v1]
+  collapse include dir [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/include] ==> [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/include]
+  collapse include dir [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include] ==> [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include]
+  implicit include dirs: [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/c++/v1;/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/include;/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include]
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld\.lld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-rRGmgu]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/bin/make -f Makefile cmTC_5b7e7/fast && /usr/bin/make  -f CMakeFiles/cmTC_5b7e7.dir/build.make CMakeFiles/cmTC_5b7e7.dir/build]
+  ignore line: [make[1]: Entering directory '/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-rRGmgu']
+  ignore line: [Building CXX object CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj]
+  ignore line: [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang++ --sysroot=/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot   -v -MD -MT CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj -MF CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj.d -o CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj -c /usr/share/cmake-3.25/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [clang version 16.0.0]
+  ignore line: [Target: wasm32-unknown-wasi]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin]
+  ignore line: [ (in-process)]
+  ignore line: [ "/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang-16" -cc1 -triple wasm32-unknown-wasi -emit-obj -mrelax-all -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model static -mframe-pointer=none -ffp-contract=on -fno-rounding-math -mconstructor-aliases -target-cpu generic -fvisibility=hidden -mllvm -treat-scalable-fixed-error-as-warning -debugger-tuning=gdb -v -fcoverage-compilation-dir=/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-rRGmgu -resource-dir /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16 -dependency-file CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj.d -MT CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj -sys-header-deps -isysroot /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot -internal-isystem /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/wasm32-wasi/c++/v1 -internal-isystem /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/c++/v1 -internal-isystem /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/include -internal-isystem /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/wasm32-wasi -internal-isystem /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include -fdeprecated-macro -fdebug-compilation-dir=/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-rRGmgu -ferror-limit 19 -fgnuc-version=4.2.1 -fcxx-exceptions -fexceptions -o CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj -x c++ /usr/share/cmake-3.25/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [clang -cc1 version 16.0.0 based upon LLVM 16.0.0 default target wasm32-wasi]
+  ignore line: [ignoring nonexistent directory "/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/wasm32-wasi/c++/v1"]
+  ignore line: [ignoring nonexistent directory "/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/wasm32-wasi"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/c++/v1]
+  ignore line: [ /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/include]
+  ignore line: [ /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include]
+  ignore line: [End of search list.]
+  ignore line: [Linking CXX executable cmTC_5b7e7]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5b7e7.dir/link.txt --verbose=1]
+  ignore line: [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang++ --sysroot=/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot -O3 -v CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_5b7e7 ]
+  ignore line: [clang version 16.0.0]
+  ignore line: [Target: wasm32-unknown-wasi]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin]
+  link line: [ "/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/wasm-ld" -m wasm32 -L/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi/crt1-command.o CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj -lc++ -lc++abi -lc /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/lib/wasi/libclang_rt.builtins-wasm32.a -o cmTC_5b7e7]
+    arg [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/wasm-ld] ==> ignore
+    arg [-m] ==> ignore
+    arg [wasm32] ==> ignore
+    arg [-L/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi] ==> dir [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi]
+    arg [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi/crt1-command.o] ==> obj [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi/crt1-command.o]
+    arg [CMakeFiles/cmTC_5b7e7.dir/CMakeCXXCompilerABI.cpp.obj] ==> ignore
+    arg [-lc++] ==> lib [c++]
+    arg [-lc++abi] ==> lib [c++abi]
+    arg [-lc] ==> lib [c]
+    arg [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/lib/wasi/libclang_rt.builtins-wasm32.a] ==> lib [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/lib/wasi/libclang_rt.builtins-wasm32.a]
+    arg [-o] ==> ignore
+    arg [cmTC_5b7e7] ==> ignore
+  remove lib [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/lib/wasi/libclang_rt.builtins-wasm32.a]
+  collapse library dir [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi] ==> [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi]
+  implicit libs: [c++;c++abi;c]
+  implicit objs: [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi/crt1-command.o]
+  implicit dirs: [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi]
+  implicit fwks: []
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-6HtFgu
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_08d06/fast && /usr/bin/make  -f CMakeFiles/cmTC_08d06.dir/build.make CMakeFiles/cmTC_08d06.dir/build
+make[1]: Entering directory '/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-6HtFgu'
+Building C object CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj
+/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang --sysroot=/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot   -v -MD -MT CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj -MF CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj.d -o CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj -c /usr/share/cmake-3.25/Modules/CMakeCCompilerABI.c
+clang version 16.0.0
+Target: wasm32-unknown-wasi
+Thread model: posix
+InstalledDir: /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin
+ (in-process)
+ "/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang-16" -cc1 -triple wasm32-unknown-wasi -emit-obj -mrelax-all -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model static -mframe-pointer=none -ffp-contract=on -fno-rounding-math -mconstructor-aliases -target-cpu generic -fvisibility=hidden -mllvm -treat-scalable-fixed-error-as-warning -debugger-tuning=gdb -v -fcoverage-compilation-dir=/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-6HtFgu -resource-dir /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16 -dependency-file CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj.d -MT CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj -sys-header-deps -isysroot /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot -internal-isystem /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/include -internal-isystem /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/wasm32-wasi -internal-isystem /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include -fdebug-compilation-dir=/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-6HtFgu -ferror-limit 19 -fgnuc-version=4.2.1 -o CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj -x c /usr/share/cmake-3.25/Modules/CMakeCCompilerABI.c
+clang -cc1 version 16.0.0 based upon LLVM 16.0.0 default target wasm32-wasi
+ignoring nonexistent directory "/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/wasm32-wasi"
+#include "..." search starts here:
+#include <...> search starts here:
+ /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/include
+ /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include
+End of search list.
+Linking C executable cmTC_08d06
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_08d06.dir/link.txt --verbose=1
+/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang --sysroot=/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot -O3 -v CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj -o cmTC_08d06 
+clang version 16.0.0
+Target: wasm32-unknown-wasi
+Thread model: posix
+InstalledDir: /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin
+ "/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/wasm-ld" -m wasm32 -L/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi/crt1-command.o CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj -lc /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/lib/wasi/libclang_rt.builtins-wasm32.a -o cmTC_08d06
+make[1]: Leaving directory '/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-6HtFgu'
+
+
+
+Parsed C implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/include]
+    add: [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include]
+  end of search list found
+  collapse include dir [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/include] ==> [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/include]
+  collapse include dir [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include] ==> [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include]
+  implicit include dirs: [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/include;/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include]
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld\.lld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-6HtFgu]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/bin/make -f Makefile cmTC_08d06/fast && /usr/bin/make  -f CMakeFiles/cmTC_08d06.dir/build.make CMakeFiles/cmTC_08d06.dir/build]
+  ignore line: [make[1]: Entering directory '/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-6HtFgu']
+  ignore line: [Building C object CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj]
+  ignore line: [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang --sysroot=/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot   -v -MD -MT CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj -MF CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj.d -o CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj -c /usr/share/cmake-3.25/Modules/CMakeCCompilerABI.c]
+  ignore line: [clang version 16.0.0]
+  ignore line: [Target: wasm32-unknown-wasi]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin]
+  ignore line: [ (in-process)]
+  ignore line: [ "/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang-16" -cc1 -triple wasm32-unknown-wasi -emit-obj -mrelax-all -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model static -mframe-pointer=none -ffp-contract=on -fno-rounding-math -mconstructor-aliases -target-cpu generic -fvisibility=hidden -mllvm -treat-scalable-fixed-error-as-warning -debugger-tuning=gdb -v -fcoverage-compilation-dir=/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-6HtFgu -resource-dir /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16 -dependency-file CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj.d -MT CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj -sys-header-deps -isysroot /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot -internal-isystem /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/include -internal-isystem /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/wasm32-wasi -internal-isystem /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include -fdebug-compilation-dir=/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/CMakeScratch/TryCompile-6HtFgu -ferror-limit 19 -fgnuc-version=4.2.1 -o CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj -x c /usr/share/cmake-3.25/Modules/CMakeCCompilerABI.c]
+  ignore line: [clang -cc1 version 16.0.0 based upon LLVM 16.0.0 default target wasm32-wasi]
+  ignore line: [ignoring nonexistent directory "/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include/wasm32-wasi"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/include]
+  ignore line: [ /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/include]
+  ignore line: [End of search list.]
+  ignore line: [Linking C executable cmTC_08d06]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_08d06.dir/link.txt --verbose=1]
+  ignore line: [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/clang --sysroot=/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot -O3 -v CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj -o cmTC_08d06 ]
+  ignore line: [clang version 16.0.0]
+  ignore line: [Target: wasm32-unknown-wasi]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin]
+  link line: [ "/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/wasm-ld" -m wasm32 -L/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi/crt1-command.o CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj -lc /mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/lib/wasi/libclang_rt.builtins-wasm32.a -o cmTC_08d06]
+    arg [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/wasm-ld] ==> ignore
+    arg [-m] ==> ignore
+    arg [wasm32] ==> ignore
+    arg [-L/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi] ==> dir [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi]
+    arg [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi/crt1-command.o] ==> obj [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi/crt1-command.o]
+    arg [CMakeFiles/cmTC_08d06.dir/CMakeCCompilerABI.c.obj] ==> ignore
+    arg [-lc] ==> lib [c]
+    arg [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/lib/wasi/libclang_rt.builtins-wasm32.a] ==> lib [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/lib/wasi/libclang_rt.builtins-wasm32.a]
+    arg [-o] ==> ignore
+    arg [cmTC_08d06] ==> ignore
+  remove lib [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/lib/clang/16/lib/wasi/libclang_rt.builtins-wasm32.a]
+  collapse library dir [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi] ==> [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi]
+  implicit libs: [c]
+  implicit objs: [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi/crt1-command.o]
+  implicit dirs: [/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi]
+  implicit fwks: []
+
+

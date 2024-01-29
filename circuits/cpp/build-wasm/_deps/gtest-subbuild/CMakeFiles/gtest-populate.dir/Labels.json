@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/_deps/gtest-subbuild/CMakeFiles/gtest-populate"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/_deps/gtest-subbuild/CMakeFiles/gtest-populate.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/_deps/gtest-subbuild/CMakeFiles/gtest-populate-complete.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/_deps/gtest-subbuild/gtest-populate-prefix/src/gtest-populate-stamp/gtest-populate-build.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/_deps/gtest-subbuild/gtest-populate-prefix/src/gtest-populate-stamp/gtest-populate-configure.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/_deps/gtest-subbuild/gtest-populate-prefix/src/gtest-populate-stamp/gtest-populate-download.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/_deps/gtest-subbuild/gtest-populate-prefix/src/gtest-populate-stamp/gtest-populate-install.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/_deps/gtest-subbuild/gtest-populate-prefix/src/gtest-populate-stamp/gtest-populate-mkdir.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/_deps/gtest-subbuild/gtest-populate-prefix/src/gtest-populate-stamp/gtest-populate-patch.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/_deps/gtest-subbuild/gtest-populate-prefix/src/gtest-populate-stamp/gtest-populate-test.rule"
+		},
+		{
+			"file" : "/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/_deps/gtest-subbuild/gtest-populate-prefix/src/gtest-populate-stamp/gtest-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"gtest-populate"
+		],
+		"name" : "gtest-populate"
+	}
+}

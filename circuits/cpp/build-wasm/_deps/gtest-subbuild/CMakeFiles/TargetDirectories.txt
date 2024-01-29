@@ -1,0 +1,3 @@
+/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/_deps/gtest-subbuild/CMakeFiles/gtest-populate.dir
+/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/_deps/gtest-subbuild/CMakeFiles/edit_cache.dir
+/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/_deps/gtest-subbuild/CMakeFiles/rebuild_cache.dir

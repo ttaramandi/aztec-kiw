@@ -1,0 +1,13 @@
+# Target labels
+ Barretenberg
+# Source files and their labels
+/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/Barretenberg
+/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/Barretenberg.rule
+/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/CMakeFiles/Barretenberg-complete.rule
+/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/Barretenberg-prefix/src/Barretenberg-stamp/Barretenberg-build.rule
+/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/Barretenberg-prefix/src/Barretenberg-stamp/Barretenberg-configure.rule
+/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/Barretenberg-prefix/src/Barretenberg-stamp/Barretenberg-download.rule
+/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/Barretenberg-prefix/src/Barretenberg-stamp/Barretenberg-install.rule
+/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/Barretenberg-prefix/src/Barretenberg-stamp/Barretenberg-mkdir.rule
+/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/Barretenberg-prefix/src/Barretenberg-stamp/Barretenberg-patch.rule
+/mnt/user-data/mara/aztec-packages/circuits/cpp/build-wasm/Barretenberg-prefix/src/Barretenberg-stamp/Barretenberg-update.rule

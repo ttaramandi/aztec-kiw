@@ -1,0 +1,2 @@
+/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/llvm-ar qc ../../../lib/libgtest.a "CMakeFiles/gtest.dir/src/gtest-all.cc.obj"
+/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/llvm-ranlib ../../../lib/libgtest.a

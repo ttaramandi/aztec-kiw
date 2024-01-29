@@ -376,7 +376,8 @@ template <typename BuilderType> class UltraRecursive_ {
 
     class VerifierCommitments : public AllEntities<Commitment> {
       public:
-        VerifierCommitments(const std::shared_ptr<VerificationKey>& verification_key)
+        VerifierCommitments(const std::shared_ptr<VerificationKey>& verification_key,
+                            const std::optional<WitnessCommitments>& witness_commitments = std::nullopt)
         {
             this->q_m = verification_key->q_m;
             this->q_l = verification_key->q_l;
@@ -403,6 +404,17 @@ template <typename BuilderType> class UltraRecursive_ {
             this->table_4 = verification_key->table_4;
             this->lagrange_first = verification_key->lagrange_first;
             this->lagrange_last = verification_key->lagrange_last;
+
+            if (witness_commitments.has_value()) {
+                auto commitments = witness_commitments.value();
+                this->w_l = commitments.w_l;
+                this->w_r = commitments.w_r;
+                this->w_o = commitments.w_o;
+                this->sorted_accum = commitments.sorted_accum;
+                this->w_4 = commitments.w_4;
+                this->z_perm = commitments.z_perm;
+                this->z_lookup = commitments.z_lookup;
+            }
         }
 
         VerifierCommitments(const std::shared_ptr<VerificationKey>& verification_key,

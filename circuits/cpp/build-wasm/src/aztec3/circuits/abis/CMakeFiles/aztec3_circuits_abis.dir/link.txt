@@ -1,0 +1,2 @@
+/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/llvm-ar qc libaztec3_circuits_abis.a CMakeFiles/aztec3_circuits_abis_objects.dir/c_bind.cpp.obj
+/mnt/user-data/mara/aztec-packages/circuits/cpp/barretenberg/cpp/src/wasi-sdk-20.0/bin/llvm-ranlib libaztec3_circuits_abis.a
