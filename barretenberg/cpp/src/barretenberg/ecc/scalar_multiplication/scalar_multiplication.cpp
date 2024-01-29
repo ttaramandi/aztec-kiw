@@ -753,7 +753,8 @@ typename Curve::Element evaluate_pippenger_rounds(pippenger_runtime_state<Curve>
         static_cast<Element*>(aligned_alloc(64, num_threads * sizeof(Element))), &aligned_free);
 
     parallel_for(num_threads, [&](size_t j) {
-        thread_accumulators[j].self_set_infinity();
+        Element t_accum;
+        t_accum.self_set_infinity();
 
         for (size_t i = 0; i < num_rounds; ++i) {
 
@@ -839,11 +840,12 @@ typename Curve::Element evaluate_pippenger_rounds(pippenger_runtime_state<Curve>
 
             if (i > 0) {
                 for (size_t k = 0; k < bits_per_bucket + 1; ++k) {
-                    thread_accumulators[j].self_dbl();
+                    t_accum.self_dbl();
                 }
             }
-            thread_accumulators[j] += accumulator;
+            t_accum += accumulator;
         }
+        thread_accumulators[j] = t_accum;
     });
 
     Element result;
