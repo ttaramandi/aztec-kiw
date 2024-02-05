@@ -16,9 +16,13 @@ impl<N> Reader<N> {
 
     pub fn read_array<K>(&mut self, mut result: [Field; K]) -> [Field; K] {
         for i in 0..K {
+            // The assertion below fails when enabled
+            // assert((self.offset + i) as u32 < self.data.len() as u32, "Reader ran out of data");
             result[i] = self.data[self.offset + i];
         }
         self.offset += K;
+        dep::std::println(self.offset); // prints 8
+        dep::std::println(self.data.len()); // prints 5
         result
     }
 
@@ -38,4 +42,15 @@ impl<N> Reader<N> {
     pub fn finish(self) {
         assert(self.offset == self.data.len(), "Reader did not read all data");
     } 
+}
+
+#[test]
+fn issue_demonstration() {
+    let fields = [0; 5];
+    let mut reader = Reader::new(fields);
+
+    let result = [0; 8];
+
+    // Reader happily reads beyond the index 4 and does not throw index out of bounds error
+    let inputs = reader.read_array(result);
 }
