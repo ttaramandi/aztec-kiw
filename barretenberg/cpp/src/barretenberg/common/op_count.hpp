@@ -82,8 +82,7 @@ template <OperationLabel Op> struct GlobalOpCount {
     }
     static constexpr void increment_op_count()
     {
-#ifdef BB_USE_OP_COUNT_TIME_ONLY
-        // TODO(AD): have way to turn off and only have cycle time/clock time
+#ifndef BB_USE_OP_COUNT_TIME_ONLY
         if (std::is_constant_evaluated()) {
             // We do nothing if the compiler tries to run this
             return;

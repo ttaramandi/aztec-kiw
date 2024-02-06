@@ -10,7 +10,9 @@ namespace bb::detail {
 
 GlobalOpCountContainer::~GlobalOpCountContainer()
 {
-    print();
+    // This is useful for printing counts at the end of non-benchmarks.
+    // See op_count_google_bench.hpp for benchmarks.
+    // print();
 }
 
 void GlobalOpCountContainer::add_entry(const char* key, const std::shared_ptr<OpStats>& count)
@@ -29,7 +31,7 @@ void GlobalOpCountContainer::print() const
             std::cout << entry.key << "\t" << entry.count->count << "\t[thread=" << entry.thread_id << "]" << std::endl;
         }
         if (entry.count->time > 0) {
-            std::cout << entry.key << "(t)\t" << static_cast<double>(entry.count->time) / 1000.0
+            std::cout << entry.key << "(t)\t" << static_cast<double>(entry.count->time) / 1000000.0
                       << "ms\t[thread=" << entry.thread_id << "]" << std::endl;
         }
         if (entry.count->cycles > 0) {
@@ -89,8 +91,6 @@ OpCountTimeReporter::OpCountTimeReporter(OpStats* stats)
 {
     auto now = std::chrono::high_resolution_clock::now();
     auto now_ns = std::chrono::time_point_cast<std::chrono::nanoseconds>(now);
-    std::cout << "HEY!"
-              << "cs:" << now_ns.time_since_epoch().count() << std::endl;
     time = static_cast<std::size_t>(now_ns.time_since_epoch().count());
 }
 OpCountTimeReporter::~OpCountTimeReporter()
