@@ -130,8 +130,6 @@ struct OpCountTimeReporter {
 };
 } // namespace bb::detail
 
-struct OpCountTimeReporter {};
-
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define BB_OP_COUNT_TRACK() bb::detail::GlobalOpCount<__func__>::increment_op_count()
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)

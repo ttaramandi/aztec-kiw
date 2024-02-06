@@ -87,6 +87,8 @@ OpCountTimeReporter::~OpCountTimeReporter()
 {
     auto now = std::chrono::high_resolution_clock::now();
     auto now_ns = std::chrono::time_point_cast<std::chrono::nanoseconds>(now);
+    std::cout << "HEY!"
+              << "ns:" << now_ns.time_since_epoch().count() << std::endl;
     stats->count += 1;
     stats->time += time - static_cast<std::size_t>(now_ns.time_since_epoch().count());
 }
