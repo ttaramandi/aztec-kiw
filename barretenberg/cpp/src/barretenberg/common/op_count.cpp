@@ -63,32 +63,32 @@ GlobalOpCountContainer GLOBAL_OP_COUNTS;
 OpCountCycleReporter::OpCountCycleReporter(OpStats* stats)
     : stats(stats)
 {
-#if __clang__ && (defined(__x86_64__) || defined(_M_X64) || defined(__i386) || defined(_M_IX86))
-    // Don't support any other targets but x86 clang for now, this is a bit lazy but more than fits our needs
-    cycles = __builtin_ia32_rdtsc();
-#endif
+    // #if __clang__ && (defined(__x86_64__) || defined(_M_X64) || defined(__i386) || defined(_M_IX86))
+    //     // Don't support any other targets but x86 clang for now, this is a bit lazy but more than fits our needs
+    //     cycles = __builtin_ia32_rdtsc();
+    // #endif
 }
 OpCountCycleReporter::~OpCountCycleReporter()
 {
-#if __clang__ && (defined(__x86_64__) || defined(_M_X64) || defined(__i386) || defined(_M_IX86))
-    // Don't support any other targets but x86 clang for now, this is a bit lazy but more than fits our needs
-    stats->count += 1;
-    stats->cycles += __builtin_ia32_rdtsc() - cycles;
-#endif
+    // #if __clang__ && (defined(__x86_64__) || defined(_M_X64) || defined(__i386) || defined(_M_IX86))
+    //     // Don't support any other targets but x86 clang for now, this is a bit lazy but more than fits our needs
+    //     stats->count += 1;
+    //     stats->cycles += __builtin_ia32_rdtsc() - cycles;
+    // #endif
 }
 OpCountTimeReporter::OpCountTimeReporter(OpStats* stats)
     : stats(stats)
 {
-    auto now = std::chrono::high_resolution_clock::now();
-    auto now_ns = std::chrono::time_point_cast<std::chrono::nanoseconds>(now);
-    time = static_cast<std::size_t>(now_ns.time_since_epoch().count());
+    // auto now = std::chrono::high_resolution_clock::now();
+    // auto now_ns = std::chrono::time_point_cast<std::chrono::nanoseconds>(now);
+    // time = static_cast<std::size_t>(now_ns.time_since_epoch().count());
 }
 OpCountTimeReporter::~OpCountTimeReporter()
 {
-    auto now = std::chrono::high_resolution_clock::now();
-    auto now_ns = std::chrono::time_point_cast<std::chrono::nanoseconds>(now);
-    stats->count += 1;
-    stats->time += time - static_cast<std::size_t>(now_ns.time_since_epoch().count());
+    // auto now = std::chrono::high_resolution_clock::now();
+    // auto now_ns = std::chrono::time_point_cast<std::chrono::nanoseconds>(now);
+    // stats->count += 1;
+    // stats->time += time - static_cast<std::size_t>(now_ns.time_since_epoch().count());
 }
 } // namespace bb::detail
 #endif
