@@ -29,8 +29,8 @@ void GlobalOpCountContainer::print() const
             std::cout << entry.key << "\t" << entry.count->count << "\t[thread=" << entry.thread_id << "]" << std::endl;
         }
         if (entry.count->time > 0) {
-            std::cout << entry.key << "(t)\t" << static_cast<double>(entry.count->time) / 1000.0 / 1000.0
-                      << "\t[thread=" << entry.thread_id << "]" << std::endl;
+            std::cout << entry.key << "(t)\t" << static_cast<double>(entry.count->time) / 1000.0
+                      << "ms\t[thread=" << entry.thread_id << "]" << std::endl;
         }
         if (entry.count->cycles > 0) {
             std::cout << entry.key << "(c)\t" << entry.count->cycles << "\t[thread=" << entry.thread_id << "]"
