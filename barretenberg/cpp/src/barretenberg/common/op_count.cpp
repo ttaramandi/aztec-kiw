@@ -28,6 +28,14 @@ void GlobalOpCountContainer::print() const
         if (entry.count->count > 0) {
             std::cout << entry.key << "\t" << entry.count->count << "\t[thread=" << entry.thread_id << "]" << std::endl;
         }
+        if (entry.count->time > 0) {
+            std::cout << entry.key << "(t)\t" << entry.count->time << "\t[thread=" << entry.thread_id << "]"
+                      << std::endl;
+        }
+        if (entry.count->cycles > 0) {
+            std::cout << entry.key << "(c)\t" << entry.count->cycles << "\t[thread=" << entry.thread_id << "]"
+                      << std::endl;
+        }
     }
     std::cout << "print_op_counts() END" << std::endl;
 }
@@ -91,6 +99,7 @@ OpCountTimeReporter::~OpCountTimeReporter()
               << "ns:" << now_ns.time_since_epoch().count() << std::endl;
     stats->count += 1;
     stats->time += time - static_cast<std::size_t>(now_ns.time_since_epoch().count());
+    std::cout << "HEY!" << stats->time << std::endl;
 }
 } // namespace bb::detail
 #endif
