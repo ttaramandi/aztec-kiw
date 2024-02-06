@@ -284,7 +284,7 @@ TEST(grumpkin, BatchMul)
 
     std::vector<grumpkin::g1::affine_element> affine_points;
     for (size_t i = 0; i < num_points; ++i) {
-        affine_points.emplace_back(points[i]);
+        affine_points.emplace_back(grumpkin::g1::affine_element::infinity());
     }
     const grumpkin::fr exponent = grumpkin::fr::random_element();
 

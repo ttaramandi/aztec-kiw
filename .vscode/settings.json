@@ -156,5 +156,5 @@
   "C_Cpp.default.includePath": [
     "barretenberg/cpp/src"
   ],
-  "cmake.sourceDirectory": "/mnt/user-data/adam/aztec-packages/barretenberg/cpp",
+  "cmake.sourceDirectory": "/mnt/user-data/adam/aztec-packages/barretenberg/cpp"
 }
