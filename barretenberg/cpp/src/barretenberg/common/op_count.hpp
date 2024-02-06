@@ -8,6 +8,8 @@
 #define BB_OP_COUNT_TRACK() (void)0
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define BB_OP_COUNT_TRACK_NAME(name) (void)0
+#define BB_OP_COUNT_CYCLES() (void)0
+#define BB_OP_COUNT_TIME() (void)0
 #else
 /**
  * Provides an abstraction that counts operations based on function names.
