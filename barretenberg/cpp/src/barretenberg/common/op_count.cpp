@@ -60,7 +60,8 @@ void GlobalOpCountContainer::clear()
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 GlobalOpCountContainer GLOBAL_OP_COUNTS;
 
-OpCountCycleReporter::OpCountCycleReporter()
+OpCountCycleReporter::OpCountCycleReporter(OpStats* stats)
+    : stats(stats)
 {
 #if __clang__ && (defined(__x86_64__) || defined(_M_X64) || defined(__i386) || defined(_M_IX86))
     // Don't support any other targets but x86 clang for now, this is a bit lazy but more than fits our needs
@@ -75,7 +76,8 @@ OpCountCycleReporter::~OpCountCycleReporter()
     stats->cycles += __builtin_ia32_rdtsc() - cycles;
 #endif
 }
-OpCountTimeReporter::OpCountTimeReporter()
+OpCountTimeReporter::OpCountTimeReporter(OpStats* stats)
+    : stats(stats)
 {
     auto now = std::chrono::high_resolution_clock::now();
     auto now_ns = std::chrono::time_point_cast<std::chrono::nanoseconds>(now);

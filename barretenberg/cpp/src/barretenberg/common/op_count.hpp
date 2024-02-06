@@ -115,15 +115,15 @@ template <OperationLabel Op> thread_local std::shared_ptr<OpStats> GlobalOpCount
 // NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
 struct OpCountCycleReporter {
     OpStats* stats;
-    std::size_t cycles = 0;
-    OpCountCycleReporter();
+    std::size_t cycles;
+    OpCountCycleReporter(OpStats* stats);
     ~OpCountCycleReporter();
 };
 // NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
 struct OpCountTimeReporter {
     OpStats* stats;
-    std::size_t time = 0;
-    OpCountTimeReporter();
+    std::size_t time;
+    OpCountTimeReporter(OpStats* stats);
     ~OpCountTimeReporter();
 };
 } // namespace bb::detail
@@ -133,11 +133,11 @@ struct OpCountTimeReporter {};
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define BB_OP_COUNT_TRACK() bb::detail::GlobalOpCount<__func__>::increment_op_count()
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define BB_OP_COUNT_TRACK_NAME(name) bb::detail::GlobalOpCount<name>::increment_op_count(
+#define BB_OP_COUNT_TRACK_NAME(name) bb::detail::GlobalOpCount<name>::increment_op_count()
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define BB_OP_COUNT_CYCLES()                                                                                           \
-    bb::detail::OpCountCycleReporter __bb_op_count_cyles{ bb::detail::GlobalOpCount<__func__>::ensure_stats() };
+    bb::detail::OpCountCycleReporter __bb_op_count_cyles(bb::detail::GlobalOpCount<__func__>::ensure_stats())
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define BB_OP_COUNT_TIME() bb::detail::GlobalOpCount<__func__>::ensure_stats)   \
-    bb::detail::OpCountTimeReporter __bb_op_count_time{ bb::detail::GlobalOpCount<__func__>::ensure_stats() };
+#define BB_OP_COUNT_TIME()                                                                                             \
+    bb::detail::OpCountTimeReporter __bb_op_count_time(bb::detail::GlobalOpCount<__func__>::ensure_stats())
 #endif
