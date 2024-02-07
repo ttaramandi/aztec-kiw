@@ -18,6 +18,7 @@ trait NoteInterface<N> {
     fn compute_nullifier_without_context(self) -> Field;
 
     fn broadcast(self, context: &mut PrivateContext, slot: Field) -> ();
+
+    fn get_note_type_id() -> Field;
 }
 // docs:end:note_interface
-

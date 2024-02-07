@@ -31,7 +31,7 @@ pub fn create_note<Note, N>(
     context.push_new_note_hash(inner_note_hash);
 
     if broadcast {
-        Note::broadcast(*note, context, storage_slot);
+        Note::broadcast(*note, context, storage_slot, Note::get_note_type_id());
     }
 }
 

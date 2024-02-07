@@ -93,6 +93,12 @@ impl NoteInterface<VALUE_NOTE_LEN> for ValueNote {
             self.serialize_content(),
         );
     }
+
+    fn get_note_type_id() -> Field {
+        // TODO: autogenerate
+        // int(''.join(str(ord(c)) for c in 'ValueNote'))
+        869710811710178111116101
+    }
 }
 
 impl ValueNote {
