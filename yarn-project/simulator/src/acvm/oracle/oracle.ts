@@ -149,7 +149,9 @@ export class Oracle {
   async getNotes(
     [storageSlot]: ACVMField[],
     [numSelects]: ACVMField[],
-    selectBy: ACVMField[],
+    selectByIndex: ACVMField[],
+    selectByOffset: ACVMField[],
+    selectByLength: ACVMField[],
     selectValues: ACVMField[],
     selectComparators: ACVMField[],
     sortBy: ACVMField[],
@@ -162,7 +164,9 @@ export class Oracle {
     const noteDatas = await this.typedOracle.getNotes(
       fromACVMField(storageSlot),
       +numSelects,
-      selectBy.map(s => +s),
+      selectByIndex.map(s => +s),
+      selectByOffset.map(s => +s),
+      selectByLength.map(s => +s),
       selectValues.map(fromACVMField),
       selectComparators.map(s => +s),
       sortBy.map(s => +s),

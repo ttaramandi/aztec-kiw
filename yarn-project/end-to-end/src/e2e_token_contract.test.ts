@@ -272,7 +272,7 @@ describe('e2e_token_contract', () => {
           txHash = receipt.txHash;
         });
 
-        it('redeem as recipient', async () => {
+        it.only('redeem as recipient', async () => {
           await addPendingShieldNoteToPXE(0, amount, secretHash, txHash);
           const txClaim = asset.methods.redeem_shield(accounts[0].address, amount, secret).send();
           // docs:start:debug

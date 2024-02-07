@@ -4,6 +4,18 @@ use dep::protocol_types::{
 };
 use crate::note::note_interface::NoteInterface;
 
+struct FieldSelector {
+    index: u8,
+    offset: u8,
+    length: u8,
+}
+
+impl FieldSelector {
+    pub fn new(index: u8, offset: u8, length: u8) -> Self {
+        FieldSelector { index, offset, length }
+    }
+}
+
 struct ComparatorEnum {
     EQ: u3,
     NEQ: u3,
@@ -23,14 +35,14 @@ global Comparator = ComparatorEnum {
 };
 
 struct Select {
-    field_index: u8,
+    field_selector: FieldSelector,
     value: Field,
     comparator: u3,
 }
 
 impl Select {
-    pub fn new(field_index: u8, value: Field, comparator: u3) -> Self {
-        Select { field_index, value, comparator }
+    pub fn new(field_selector: FieldSelector, value: Field, comparator: u3) -> Self {
+        Select { field_selector, value, comparator }
     }
 }
 
@@ -121,11 +133,12 @@ impl<Note, N, FILTER_ARGS> NoteGetterOptions<Note, N, FILTER_ARGS> {
     }
 
     // This method adds a `Select` criterion to the options.
-    // It takes a field_index indicating which field to select, 
+    // It takes a field_selector indicating which field to select, 
     // a value representing the specific value to match in that field, and 
     // a comparator (For possible values of comparators, please see the Comparator enum above)
     pub fn select(&mut self, field_index: u8, value: Field, comparator: Option<u3>) -> Self {
-        self.selects.push(Option::some(Select::new(field_index, value, comparator.unwrap_or(Comparator.EQ))));
+        let field_selector = FieldSelector::new(field_index, 0, 32);
+        self.selects.push(Option::some(Select::new(field_selector, value, comparator.unwrap_or(Comparator.EQ))));
         *self
     }
 
