@@ -36,10 +36,10 @@ fn check_note_fields<N>(serialized_note: [Field; N], selects: BoundedVec<Option<
         let offset = select.field_selector.offset;
         let length = select.field_selector.length;
         let mut value_field = 0 as Field;
-        let mut acc: u64 = 1;
+        let mut acc: Field = 1;
         for i in 0..32 {
             if i < length {
-                value_field += (value[i + offset] as u64 * acc) as Field;
+                value_field += value[31 + offset - i] as Field * acc;
                 acc = acc * 256;
             }
         }

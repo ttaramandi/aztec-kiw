@@ -1,5 +1,4 @@
 import { Comparator, Note } from '@aztec/circuit-types';
-import { fr } from '@aztec/circuits.js/factories';
 import { Fr } from '@aztec/foundation/fields';
 
 /**
