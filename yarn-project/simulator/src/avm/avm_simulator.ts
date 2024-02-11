@@ -71,9 +71,14 @@ export class AvmSimulator {
    */
   private async fetchAndDecodeBytecode(): Promise<Instruction[]> {
     // NOTE: the following is mocked as getPublicBytecode does not exist yet
+<<<<<<< Updated upstream:yarn-project/simulator/src/avm/avm_simulator.ts
 
     const selector = this.context.environment.temporaryFunctionSelector;
     const bytecode = await this.context.worldState.hostStorage.contractsDb.getBytecode(
+=======
+    const selector = new FunctionSelector(0);
+    const bytecode = await this.context.worldState.hostAztecState.contractsDb.getBytecode(
+>>>>>>> Stashed changes:yarn-project/acir-simulator/src/avm/avm_simulator.ts
       this.context.environment.address,
       selector,
     );

@@ -63,7 +63,7 @@ export class EmitUnencryptedLog extends Instruction {
     }
 
     const log = context.machineState.memory.getSlice(this.logOffset, this.logSize).map(f => f.toFr());
-    context.worldState.writeLog(log);
+    context.worldState.writeUnencryptedLog(log);
 
     context.machineState.incrementPc();
   }
@@ -85,7 +85,7 @@ export class SendL2ToL1Message extends Instruction {
     }
 
     const msg = context.machineState.memory.getSlice(this.msgOffset, this.msgSize).map(f => f.toFr());
-    context.worldState.writeL1Message(msg);
+    context.worldState.writeL2ToL1Message(msg);
 
     context.machineState.incrementPc();
   }

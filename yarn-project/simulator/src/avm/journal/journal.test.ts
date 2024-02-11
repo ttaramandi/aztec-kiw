@@ -3,20 +3,20 @@ import { Fr } from '@aztec/foundation/fields';
 import { MockProxy, mock } from 'jest-mock-extended';
 
 import { CommitmentsDB, PublicContractsDB, PublicStateDB } from '../../index.js';
-import { HostStorage } from './host_storage.js';
-import { AvmWorldStateJournal, JournalData } from './journal.js';
+import { HostAztecState } from './host_storage.js';
+import { AvmWorldState, JournalData } from './journal.js';
 
 describe('journal', () => {
   let publicDb: MockProxy<PublicStateDB>;
-  let journal: AvmWorldStateJournal;
+  let journal: AvmWorldState;
 
   beforeEach(() => {
     publicDb = mock<PublicStateDB>();
     const commitmentsDb = mock<CommitmentsDB>();
     const contractsDb = mock<PublicContractsDB>();
 
-    const hostStorage = new HostStorage(publicDb, contractsDb, commitmentsDb);
-    journal = new AvmWorldStateJournal(hostStorage);
+    const hostStorage = new HostAztecState(publicDb, contractsDb, commitmentsDb);
+    journal = new AvmWorldState(hostStorage);
   });
 
   describe('Public Storage', () => {
@@ -42,7 +42,7 @@ describe('journal', () => {
 
       publicDb.storageRead.mockResolvedValue(Promise.resolve(storedValue));
 
-      const childJournal = new AvmWorldStateJournal(journal.hostStorage, journal);
+      const childJournal = new AvmWorldState(journal.hostAztecState, journal);
 
       // Get the cache miss
       const cacheMissResult = await childJournal.readStorage(contractAddress, key);
@@ -104,7 +104,7 @@ describe('journal', () => {
 
     it('Should maintain l1 messages', () => {
       const utxo = [new Fr(1)];
-      journal.writeL1Message(utxo);
+      journal.writeL2ToL1Message(utxo);
 
       const journalUpdates = journal.flush();
       expect(journalUpdates.newL1Messages).toEqual([utxo]);
@@ -139,16 +139,16 @@ describe('journal', () => {
     journal.writeStorage(contractAddress, key, value);
     await journal.readStorage(contractAddress, key);
     journal.writeNoteHash(commitment);
-    journal.writeLog(logs);
-    journal.writeL1Message(logs);
+    journal.writeUnencryptedLog(logs);
+    journal.writeL2ToL1Message(logs);
     journal.writeNullifier(commitment);
 
-    const childJournal = new AvmWorldStateJournal(journal.hostStorage, journal);
+    const childJournal = new AvmWorldState(journal.hostAztecState, journal);
     childJournal.writeStorage(contractAddress, key, valueT1);
     await childJournal.readStorage(contractAddress, key);
     childJournal.writeNoteHash(commitmentT1);
-    childJournal.writeLog(logsT1);
-    childJournal.writeL1Message(logsT1);
+    childJournal.writeUnencryptedLog(logsT1);
+    childJournal.writeL2ToL1Message(logsT1);
     childJournal.writeNullifier(commitmentT1);
 
     journal.acceptNestedWorldState(childJournal);
@@ -199,16 +199,16 @@ describe('journal', () => {
     journal.writeStorage(contractAddress, key, value);
     await journal.readStorage(contractAddress, key);
     journal.writeNoteHash(commitment);
-    journal.writeLog(logs);
-    journal.writeL1Message(logs);
+    journal.writeUnencryptedLog(logs);
+    journal.writeL2ToL1Message(logs);
     journal.writeNullifier(commitment);
 
-    const childJournal = new AvmWorldStateJournal(journal.hostStorage, journal);
+    const childJournal = new AvmWorldState(journal.hostAztecState, journal);
     childJournal.writeStorage(contractAddress, key, valueT1);
     await childJournal.readStorage(contractAddress, key);
     childJournal.writeNoteHash(commitmentT1);
-    childJournal.writeLog(logsT1);
-    childJournal.writeL1Message(logsT1);
+    childJournal.writeUnencryptedLog(logsT1);
+    childJournal.writeL2ToL1Message(logsT1);
     childJournal.writeNullifier(commitmentT1);
 
     journal.rejectNestedWorldState(childJournal);
@@ -239,7 +239,7 @@ describe('journal', () => {
   });
 
   it('Can fork and merge journals', () => {
-    const rootJournal = new AvmWorldStateJournal(journal.hostStorage);
+    const rootJournal = new AvmWorldState(journal.hostAztecState);
     const childJournal = rootJournal.fork();
 
     expect(() => rootJournal.acceptNestedWorldState(childJournal));

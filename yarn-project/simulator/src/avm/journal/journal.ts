@@ -1,6 +1,14 @@
 import { Fr } from '@aztec/foundation/fields';
 
-import { HostStorage } from './host_storage.js';
+import { HostAztecState } from './host_storage.js';
+
+
+type TracedPublicStorageAccess = {
+  contractAddress: Fr; // TODO: should be callPointer
+  slot: Fr;
+  value: Fr;
+  counter: Fr;
+};
 
 /**
  * Data held within the journal
@@ -14,10 +22,12 @@ export type JournalData = {
   /** contract address -\> key -\> value */
   currentStorageValue: Map<bigint, Map<bigint, Fr>>;
 
+  /** These traces will be an input to the AVM circuit to and Public Kernel.
+   *
   /** contract address -\> key -\> value[] (stored in order of access) */
-  storageWrites: Map<bigint, Map<bigint, Fr[]>>;
+  storageReads: Array<TracedPublicStorageAccess>;
   /** contract address -\> key -\> value[] (stored in order of access) */
-  storageReads: Map<bigint, Map<bigint, Fr[]>>;
+  storageWrites: Array<TracedPublicStorageAccess>;
 };
 
 /**
@@ -28,38 +38,61 @@ export type JournalData = {
  * When a call fails, it's journal is discarded and the parent is used from this point forward
  * When a call succeeds's we can merge a child into its parent
  */
-export class AvmWorldStateJournal {
-  /** Reference to node storage */
-  public readonly hostStorage: HostStorage;
+export class AvmWorldState {
+  /**
+   * Reference to node's Aztec state
+   * State reads fall back on node's Aztec state when
+   * there is a miss in latest state (here) and parent state
+   */
+  private readonly hostAztecState: HostAztecState;
+  /**
+   * Parent world state journal
+   * State reads fall back on parent when
+   * there is a miss in latest state (here)
+   */
+  private readonly parentWorldState: AvmWorldState | undefined;
 
+  /**
+   * Latest public storage (including staged modifications)
+   * Type: contract address -> key -> value
+   */
+  private publicStorage: Map<bigint, Map<bigint, Fr>> = new Map();
+
+  /**
+   * List of pending nullifiers per contract
+   */
+  private nullifiers: Map<bigint, Set<Fr>> = new Map();
+
+  // World state access trace
+  private sideEffectCounter = 0;
   // Reading state - must be tracked for vm execution
   // contract address -> key -> value[] (array stored in order of reads)
-  private storageReads: Map<bigint, Map<bigint, Fr[]>> = new Map();
-  private storageWrites: Map<bigint, Map<bigint, Fr[]>> = new Map();
+  //private storageReads: Map<bigint, Map<bigint, Fr[]>> = new Map();
+  private storageReads: Array<TracedPublicStorageAccess> = [];
+  //private storageWrites: Map<bigint, Map<bigint, Fr[]>> = new Map();
+  private storageWrites: Array<TracedPublicStorageAccess> = [];
 
   // New written state
   private newNoteHashes: Fr[] = [];
   private newNullifiers: Fr[] = [];
 
-  // New Substate
-  private newL1Messages: Fr[][] = [];
-  private newLogs: Fr[][] = [];
+  // Accrued Substate
+  private newL2ToL1Messages: Fr[][] = [];
+  private newUnencryptedLogs: Fr[][] = [];
 
-  // contract address -> key -> value
-  private currentStorageValue: Map<bigint, Map<bigint, Fr>> = new Map();
 
-  private parentJournal: AvmWorldStateJournal | undefined;
-
-  constructor(hostStorage: HostStorage, parentJournal?: AvmWorldStateJournal) {
-    this.hostStorage = hostStorage;
-    this.parentJournal = parentJournal;
+  constructor(hostStorage: HostAztecState, parentWorldState?: AvmWorldState, sideEffectCounter = 0) {
+    this.hostAztecState = hostStorage;
+    this.parentWorldState = parentWorldState;
+    this.sideEffectCounter = sideEffectCounter;
   }
 
   /**
-   * Create a new world state journal forked from this one
+   * Fork this world state, creating a world state usable by a nested call
    */
   public fork() {
-    return new AvmWorldStateJournal(this.hostStorage, this);
+    // TODO: should making a nested call increment side effect counter?
+    return new AvmWorldState(this.hostAztecState, this, this.sideEffectCounter);
   }
 
   /**
@@ -70,15 +103,16 @@ export class AvmWorldStateJournal {
    * @param value -
    */
   public writeStorage(contractAddress: Fr, key: Fr, value: Fr) {
-    let contractMap = this.currentStorageValue.get(contractAddress.toBigInt());
-    if (!contractMap) {
-      contractMap = new Map();
-      this.currentStorageValue.set(contractAddress.toBigInt(), contractMap);
+    let storageForContract = this.publicStorage.get(contractAddress.toBigInt());
+    // If this contract's storage has no staged modifications, create a new Map to store them
+    if (!storageForContract) {
+      storageForContract = new Map();
+      this.publicStorage.set(contractAddress.toBigInt(), storageForContract);
     }
-    contractMap.set(key.toBigInt(), value);
+    storageForContract.set(key.toBigInt(), value);
 
     // We want to keep track of all performed writes in the journal
-    this.journalWrite(contractAddress, key, value);
+    this.tracePublicStorageWrite(contractAddress, key, value);
   }
 
   /**
@@ -90,65 +124,68 @@ export class AvmWorldStateJournal {
    * @returns current value
    */
   public async readStorage(contractAddress: Fr, key: Fr): Promise<Fr> {
-    // - We first try this journal's storage cache ( if written to before in this call frame )
-    // - Then we try the parent journal's storage cache ( if it exists ) ( written to earlier in this block )
-    // - Finally we try the host storage ( a trip to the database )
-
     // Do not early return as we want to keep track of reads in this.storageReads
-    let value = this.currentStorageValue.get(contractAddress.toBigInt())?.get(key.toBigInt());
-    if (!value && this.parentJournal) {
-      value = await this.parentJournal?.readStorage(contractAddress, key);
+
+    // First try this storage cache (if written to earlier during the current call's execution)
+    let value = this.publicStorage.get(contractAddress.toBigInt())?.get(key.toBigInt());
+    // Then try parent's storage cache (if it exists / written to earlier in this TX)
+    if (!value && this.parentWorldState) {
+      value = await this.parentWorldState?.readStorage(contractAddress, key);
     }
+    // Finally try the host's Aztec state (a trip to the database)
     if (!value) {
-      value = await this.hostStorage.publicStateDb.storageRead(contractAddress, key);
+      value = await this.hostAztecState.publicStorageDb.storageRead(contractAddress, key);
     }
 
-    this.journalRead(contractAddress, key, value);
+    this.tracePublicStorageRead(contractAddress, key, value);
     return Promise.resolve(value);
   }
 
-  /**
-   * We want to keep track of all performed reads in the journal
-   * This information is hinted to the avm circuit
-
-   * @param contractAddress -
-   * @param key -
-   * @param value -
-   */
-  journalUpdate(map: Map<bigint, Map<bigint, Fr[]>>, contractAddress: Fr, key: Fr, value: Fr): void {
-    let contractMap = map.get(contractAddress.toBigInt());
-    if (!contractMap) {
-      contractMap = new Map<bigint, Array<Fr>>();
-      map.set(contractAddress.toBigInt(), contractMap);
-    }
-
-    let accessArray = contractMap.get(key.toBigInt());
-    if (!accessArray) {
-      accessArray = new Array<Fr>();
-      contractMap.set(key.toBigInt(), accessArray);
-    }
-    accessArray.push(value);
-  }
-
-  // Create an instance of journalUpdate that appends to the read array
-  private journalRead = this.journalUpdate.bind(this, this.storageReads);
-  // Create an instance of journalUpdate that appends to the writes array
-  private journalWrite = this.journalUpdate.bind(this, this.storageWrites);
-
   public writeNoteHash(noteHash: Fr) {
     this.newNoteHashes.push(noteHash);
+    this.sideEffectCounter++;
   }
 
-  public writeL1Message(message: Fr[]) {
-    this.newL1Messages.push(message);
-  }
+  public writeNullifier(contractAddress: Fr, nullifier: Fr) {
+    let nullifiersForContract = this.nullifiers.get(contractAddress.toBigInt());
+    // If this contract's nullifier set has no pending nullifier, create a new Map to store them
+    if (!nullifiersForContract) {
+      nullifiersForContract = new Set();
+      this.nullifiers.set(contractAddress.toBigInt(), nullifiersForContract);
+    }
+    if (nullifiersForContract.has(nullifier)) {
+      throw new Error(`Nullifier ${nullifier} already exists for contract ${contractAddress}`);
+    }
+    nullifiersForContract.add(nullifier);
 
-  public writeNullifier(nullifier: Fr) {
     this.newNullifiers.push(nullifier);
+    this.sideEffectCounter++;
   }
 
-  public writeLog(log: Fr[]) {
-    this.newLogs.push(log);
+  ///**
+  // * Check for existence of the specified nullifier.
+  // */
+  //public async checkNullifierExists(contractAddress: Fr, nullifier: Fr): Promise<boolean> {
+  //  const exists = await this.hostAztecState.nullifierDb.nullifierExists(nullifier);
+  //  return exists;
+  //}
+
+  /**
+   * Append to Accrued Substate vector of L1-To-L2 messages.
+   * @param message - the payload
+   */
+  public writeL2ToL1Message(message: Fr[]) {
+    this.newL2ToL1Messages.push(message);
+    this.sideEffectCounter++;
+  }
+
+  /**
+   * Append to Accrued Substate vector of unencryptedLogs.
+   * @param log - the payload
+   */
+  public writeUnencryptedLog(log: Fr[]) {
+    this.newUnencryptedLogs.push(log);
+    this.sideEffectCounter++;
   }
 
   /**
@@ -157,19 +194,23 @@ export class AvmWorldStateJournal {
    * - Public state changes are merged, with the value in the incoming journal taking precedent
    * - Public state journals (r/w logs), with the accessing being appended in chronological order
    */
-  public acceptNestedWorldState(nestedJournal: AvmWorldStateJournal) {
-    // Merge UTXOs
-    this.newNoteHashes = this.newNoteHashes.concat(nestedJournal.newNoteHashes);
-    this.newL1Messages = this.newL1Messages.concat(nestedJournal.newL1Messages);
-    this.newNullifiers = this.newNullifiers.concat(nestedJournal.newNullifiers);
-    this.newLogs = this.newLogs.concat(nestedJournal.newLogs);
-
+  public acceptNestedWorldState(nestedCallState: AvmWorldState) {
     // Merge Public State
-    mergeCurrentValueMaps(this.currentStorageValue, nestedJournal.currentStorageValue);
+    this.acceptNestedCallPublicStorage(nestedCallState);
 
-    // Merge storage read and write journals
-    mergeContractJournalMaps(this.storageReads, nestedJournal.storageReads);
-    mergeContractJournalMaps(this.storageWrites, nestedJournal.storageWrites);
+    // Merge UTXOs
+    this.newNoteHashes = this.newNoteHashes.concat(nestedCallState.newNoteHashes);
+    this.newL2ToL1Messages = this.newL2ToL1Messages.concat(nestedCallState.newL2ToL1Messages);
+    this.newNullifiers = this.newNullifiers.concat(nestedCallState.newNullifiers);
+    this.newUnencryptedLogs = this.newUnencryptedLogs.concat(nestedCallState.newUnencryptedLogs);
+
+    // Append nested call's traces
+    this.storageReads.push.apply(nestedCallState.storageReads);
+    this.storageWrites.push.apply(nestedCallState.storageWrites);
+
+    // Nested call increments the side effect counter and caller
+    // must account for any side effects made by callee
+    this.sideEffectCounter = nestedCallState.sideEffectCounter;
   }
 
   /**
@@ -178,10 +219,15 @@ export class AvmWorldStateJournal {
    * - Public state changes are dropped
    * - Public state journals (r/w logs) are maintained, with the accessing being appended in chronological order
    */
-  public rejectNestedWorldState(nestedJournal: AvmWorldStateJournal) {
-    // Merge storage read and write journals
-    mergeContractJournalMaps(this.storageReads, nestedJournal.storageReads);
-    mergeContractJournalMaps(this.storageWrites, nestedJournal.storageWrites);
+  public rejectNestedWorldState(nestedCallState: AvmWorldState) {
+    // TODO: need to accept traces for rejected nested journals
+    // Append nested call's traces
+    this.storageReads.push.apply(nestedCallState.storageReads);
+    this.storageWrites.push.apply(nestedCallState.storageWrites);
+
+    // Nested call increments the side effect counter and caller
+    // must account for any side effects made by callee
+    this.sideEffectCounter = nestedCallState.sideEffectCounter;
   }
 
   /**
@@ -193,74 +239,53 @@ export class AvmWorldStateJournal {
     return {
       newNoteHashes: this.newNoteHashes,
       newNullifiers: this.newNullifiers,
-      newL1Messages: this.newL1Messages,
-      newLogs: this.newLogs,
-      currentStorageValue: this.currentStorageValue,
+      newL1Messages: this.newL2ToL1Messages,
+      newLogs: this.newUnencryptedLogs,
+      currentStorageValue: this.publicStorage,
       storageReads: this.storageReads,
       storageWrites: this.storageWrites,
     };
   }
-}
 
-/**
- * Merges two contract current value together
- * Where childMap keys will take precedent over the hostMap
- * The assumption being that the child map is created at a later time
- * And thus contains more up to date information
- *
- * @param hostMap - The map to be merged into
- * @param childMap - The map to be merged from
- */
-function mergeCurrentValueMaps(hostMap: Map<bigint, Map<bigint, Fr>>, childMap: Map<bigint, Map<bigint, Fr>>) {
-  for (const [key, value] of childMap) {
-    const map1Value = hostMap.get(key);
-    if (!map1Value) {
-      hostMap.set(key, value);
-    } else {
-      mergeStorageCurrentValueMaps(map1Value, value);
-    }
+  /**
+   * Trace a public storage read
+   */
+  private tracePublicStorageRead(contractAddress: Fr, slot: Fr, value: Fr): void {
+    this.storageReads.push({ contractAddress, slot, value, counter: new Fr(this.sideEffectCounter) });
+    this.sideEffectCounter++;
   }
-}
-
-/**
- * @param hostMap - The map to be merge into
- * @param childMap - The map to be merged from
- */
-function mergeStorageCurrentValueMaps(hostMap: Map<bigint, Fr>, childMap: Map<bigint, Fr>) {
-  for (const [key, value] of childMap) {
-    hostMap.set(key, value);
+  /**
+   * Trace a public storage write
+   */
+  private tracePublicStorageWrite(contractAddress: Fr, slot: Fr, value: Fr): void {
+    this.storageWrites.push({ contractAddress, slot, value, counter: new Fr(this.sideEffectCounter) });
+    this.sideEffectCounter++;
   }
-}
 
-/**
- * Merges two contract journalling maps together
- * For read maps, we just append the childMap arrays into the host map arrays, as the order is important
- *
- * @param hostMap - The map to be merged into
- * @param childMap - The map to be merged from
- */
-function mergeContractJournalMaps(hostMap: Map<bigint, Map<bigint, Fr[]>>, childMap: Map<bigint, Map<bigint, Fr[]>>) {
-  for (const [key, value] of childMap) {
-    const map1Value = hostMap.get(key);
-    if (!map1Value) {
-      hostMap.set(key, value);
-    } else {
-      mergeStorageJournalMaps(map1Value, value);
-    }
-  }
-}
-
-/**
- * @param hostMap - The map to be merge into
- * @param childMap - The map to be merged from
- */
-function mergeStorageJournalMaps(hostMap: Map<bigint, Fr[]>, childMap: Map<bigint, Fr[]>) {
-  for (const [key, value] of childMap) {
-    const readArr = hostMap.get(key);
-    if (!readArr) {
-      hostMap.set(key, value);
-    } else {
-      hostMap.set(key, readArr?.concat(...value));
+  /**
+   * Merges a nested/child call's staged public storage modifications
+   * into the current/parent.
+   *
+   * Staged modifications in the child take precedent as they are assumed
+   * to occur after the parent's.
+   *
+   * @param nestedCallState - the nested call state to accept storage modifications from
+   */
+  private acceptNestedCallPublicStorage(nestedCallState: AvmWorldState) {
+    // Iterate over all contracts with staged writes in the child.
+    for (const [contractAddress, contractStorageInChild] of nestedCallState.publicStorage) {
+      const contractStorageInParent = this.publicStorage.get(contractAddress);
+      if (!contractStorageInParent) {
+        // This contract has no storage writes staged in parent,
+        // so just accept the child's storage for this contract as-is.
+        this.publicStorage.set(contractAddress, contractStorageInChild);
+      } else {
+        // Child and parent both have staged writes for this contract.
+        // Merge in the child's staged writes.
+        for (const [slot, value] of contractStorageInChild) {
+          contractStorageInParent.set(slot, value);
+        }
+      }
     }
   }
 }

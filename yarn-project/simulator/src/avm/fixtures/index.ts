@@ -11,14 +11,14 @@ import { CommitmentsDB, PublicContractsDB, PublicStateDB } from '../../index.js'
 import { AvmContext } from '../avm_context.js';
 import { AvmExecutionEnvironment } from '../avm_execution_environment.js';
 import { AvmMachineState } from '../avm_machine_state.js';
-import { HostStorage } from '../journal/host_storage.js';
-import { AvmWorldStateJournal } from '../journal/journal.js';
+import { HostAztecState } from '../journal/host_storage.js';
+import { AvmWorldState } from '../journal/journal.js';
 
 /**
  * Create a new AVM context with default values.
  */
 export function initContext(overrides?: {
-  worldState?: AvmWorldStateJournal;
+  worldState?: AvmWorldState;
   env?: AvmExecutionEnvironment;
   machineState?: AvmMachineState;
 }): AvmContext {
@@ -30,9 +30,9 @@ export function initContext(overrides?: {
 }
 
 /** Creates an empty world state with mocked storage. */
-export function initMockWorldStateJournal(): AvmWorldStateJournal {
-  const hostStorage = new HostStorage(mock<PublicStateDB>(), mock<PublicContractsDB>(), mock<CommitmentsDB>());
-  return new AvmWorldStateJournal(hostStorage);
+export function initMockWorldStateJournal(): AvmWorldState {
+  const hostStorage = new HostAztecState(mock<PublicStateDB>(), mock<PublicContractsDB>(), mock<CommitmentsDB>());
+  return new AvmWorldState(hostStorage);
 }
 
 /**
