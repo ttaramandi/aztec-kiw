@@ -191,7 +191,7 @@ contract Token {
         let secret_hash = compute_secret_hash(secret);
         // Get 1 note (set_limit(1)) which has amount stored in field with index 0 (select(0, amount, Option::none())) and secret_hash
         // stored in field with index 1 (select(1, secret_hash, Option::none())).
-        let options = NoteGetterOptions::new().select(0, amount, Option::none()).select(1, secret_hash, Option::none()).set_limit(1);
+        let options = NoteGetterOptions::new().select(TransparentNote::fields().amount, amount, Option::none()).select(1, secret_hash, Option::none()).set_limit(1);
         let notes = pending_shields.get_notes(options);
         let note = notes[0].unwrap_unchecked();
         // Remove the note from the pending shields set
@@ -328,7 +328,11 @@ contract Token {
     ) -> pub [Field; 4] {
         let note_header = NoteHeader::new(contract_address, nonce, storage_slot);
         if (storage_slot == storage.pending_shields.get_storage_slot()) {
-            note_utils::compute_note_hash_and_nullifier(TransparentNote::deserialize_content, note_header, serialized_note)
+            note_utils::compute_note_hash_and_nullifier(
+                TransparentNote::deserialize_content,
+                note_header,
+                serialized_note
+            )
         } else {
             note_utils::compute_note_hash_and_nullifier(TokenNote::deserialize_content, note_header, serialized_note)
         }

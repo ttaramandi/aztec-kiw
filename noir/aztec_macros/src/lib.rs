@@ -4,19 +4,19 @@ use std::vec;
 use iter_extended::vecmap;
 use noirc_frontend::macros_api::FieldElement;
 use noirc_frontend::macros_api::{
-    BlockExpression, CallExpression, CastExpression, Distinctness, Expression, ExpressionKind,
-    ForLoopStatement, ForRange, FunctionDefinition, FunctionReturnType, FunctionVisibility,
-    HirContext, HirExpression, HirLiteral, HirStatement, Ident, ImportStatement, IndexExpression,
-    LetStatement, Literal, MemberAccessExpression, MethodCallExpression, NoirFunction, NoirStruct,
-    Param, Path, PathKind, Pattern, PrefixExpression, SecondaryAttribute, Signedness, Span,
-    Statement, StatementKind, StructType, Type, TypeImpl, UnaryOp, UnresolvedType,
-    UnresolvedTypeData, Visibility,
+    ArrayLiteral, BlockExpression, CallExpression, CastExpression, Distinctness, Expression,
+    ExpressionKind, ForLoopStatement, ForRange, FunctionDefinition, FunctionReturnType,
+    FunctionVisibility, HirContext, HirExpression, HirLiteral, HirStatement, Ident,
+    ImportStatement, IndexExpression, LetStatement, Literal, MemberAccessExpression,
+    MethodCallExpression, NoirFunction, NoirStruct, Param, Path, PathKind, Pattern,
+    PrefixExpression, SecondaryAttribute, Signedness, Span, Statement, StatementKind, StructType,
+    Type, TypeImpl, UnaryOp, UnresolvedType, UnresolvedTypeData, Visibility,
 };
 use noirc_frontend::macros_api::{CrateId, FileId};
 use noirc_frontend::macros_api::{MacroError, MacroProcessor};
 use noirc_frontend::macros_api::{ModuleDefId, NodeInterner, SortedModule, StructId};
 use noirc_frontend::node_interner::{TraitId, TraitImplKind};
-use noirc_frontend::Lambda;
+use noirc_frontend::{Lambda, TraitImplItem, UnresolvedTypeExpression};
 
 pub struct AztecMacro;
 
@@ -267,6 +267,10 @@ fn transform(
 ) -> Result<SortedModule, (MacroError, FileId)> {
     // Usage -> mut ast -> aztec_library::transform(&mut ast)
 
+    let crate_graph = &context.crate_graph[crate_id];
+    generate_note_serialization_impl(&mut ast)
+        .map_err(|err| (err.into(), crate_graph.root_file_id))?;
+
     // Covers all functions in the ast
     for submodule in ast.submodules.iter_mut().filter(|submodule| submodule.is_contract) {
         if transform_module(&mut submodule.contents, crate_id, context)
@@ -459,6 +463,82 @@ fn transform_module(
     }
 
     Ok(has_transformed_module)
+}
+
+fn generate_note_serialization_impl(module: &mut SortedModule) -> Result<(), AztecMacroError> {
+    let mut note_interface_trait_impls = vec![];
+
+    module.trait_impls.iter_mut().for_each(|trait_imp| {
+        let trait_name = trait_imp.trait_name.segments.last();
+        if trait_name.is_some() {
+            if trait_name.unwrap().0.contents == "NoteInterface" {
+                note_interface_trait_impls.push(trait_imp)
+            }
+        }
+    });
+
+    for trait_imp in note_interface_trait_impls {
+        let const_path = match &trait_imp.trait_generics[0].typ {
+            UnresolvedTypeData::Named(path, _) => Ok(path.clone()),
+            _ => Err(AztecMacroError::AztecDepNotFound),
+        }?;
+        match &trait_imp.object_type.typ {
+            UnresolvedTypeData::Named(struct_path, _) => {
+                let note_struct = module
+                    .types
+                    .iter()
+                    .find(|typ| {
+                        typ.name.0.contents == struct_path.segments.last().unwrap().0.contents
+                    })
+                    .ok_or(AztecMacroError::AztecDepNotFound)?;
+                if let Some(_) = trait_imp.items.iter().find(|item| match item {
+                    TraitImplItem::Function(func) => {
+                        func.def.name.0.contents == "serialize_content"
+                    }
+                    _ => false,
+                }) {
+                    continue;
+                }
+                let struct_fields_as_fields = note_struct
+                    .fields
+                    .iter()
+                    .filter(|(ident, _)| ident.0.contents != "header")
+                    .map(|(id, _)| {
+                        method_call(
+                            member_access("self", id.0.contents.as_str()),
+                            "to_field",
+                            vec![],
+                        )
+                    })
+                    .collect();
+                trait_imp.items.push(TraitImplItem::Function(NoirFunction::normal(
+                    FunctionDefinition::normal(
+                        &ident("serialize_content"),
+                        &vec![],
+                        &[(
+                            ident("self"),
+                            make_type(UnresolvedTypeData::Named(chained_path!("Self"), vec![])),
+                        )],
+                        &BlockExpression(vec![make_statement(StatementKind::Expression(
+                            Expression::new(
+                                ExpressionKind::Literal(Literal::Array(ArrayLiteral::Standard(
+                                    struct_fields_as_fields,
+                                ))),
+                                Span::default(),
+                            ),
+                        ))]),
+                        &[],
+                        &FunctionReturnType::Ty(make_type(UnresolvedTypeData::Array(
+                            Some(UnresolvedTypeExpression::Variable(const_path)),
+                            Box::new(make_type(UnresolvedTypeData::FieldElement)),
+                        ))),
+                    ),
+                )));
+            }
+            _ => return Err(AztecMacroError::AztecDepNotFound),
+        };
+    }
+    Ok(())
 }
 
 /// Auxiliary function to generate the storage constructor for a given field, using

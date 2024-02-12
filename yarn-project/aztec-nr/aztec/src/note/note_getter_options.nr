@@ -1,6 +1,7 @@
 use dep::std::option::Option;
 use dep::protocol_types::{
     constants::MAX_READ_REQUESTS_PER_CALL,
+    traits::ToField
 };
 use crate::note::note_interface::NoteInterface;
 
@@ -8,12 +9,6 @@ struct FieldSelector {
     index: u8,
     offset: u8,
     length: u8,
-}
-
-impl FieldSelector {
-    pub fn new(index: u8, offset: u8, length: u8) -> Self {
-        FieldSelector { index, offset, length }
-    }
 }
 
 struct ComparatorEnum {
@@ -136,9 +131,8 @@ impl<Note, N, FILTER_ARGS> NoteGetterOptions<Note, N, FILTER_ARGS> {
     // It takes a field_selector indicating which field to select, 
     // a value representing the specific value to match in that field, and 
     // a comparator (For possible values of comparators, please see the Comparator enum above)
-    pub fn select(&mut self, field_index: u8, value: Field, comparator: Option<u3>) -> Self {
-        let field_selector = FieldSelector::new(field_index, 0, 32);
-        self.selects.push(Option::some(Select::new(field_selector, value, comparator.unwrap_or(Comparator.EQ))));
+    pub fn select<T>(&mut self, field_selector: FieldSelector, value: T, comparator: Option<u3>) -> Self where T: ToField {
+        self.selects.push(Option::some(Select::new(field_selector, value.to_field(), comparator.unwrap_or(Comparator.EQ))));
         *self
     }
 

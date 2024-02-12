@@ -20,7 +20,7 @@ contract DocsExample {
     use dep::aztec::{
         note::{
             note_header::NoteHeader,
-            note_getter_options::{NoteGetterOptions, Comparator},
+            note_getter_options::{Comparator},
             note_viewer_options::{NoteViewerOptions},
             utils as note_utils,
         },
@@ -156,7 +156,7 @@ contract DocsExample {
 
     // docs:start:state_vars-NoteGetterOptionsComparatorExampleNoir
     unconstrained fn read_note(amount: Field, comparator: u3) -> pub [Option<CardNote>; 10] {
-        let options = NoteViewerOptions::new().select(0, amount, Option::some(comparator));
+        let options = NoteViewerOptions::new().select(CardNote::fields().points, amount, Option::some(comparator));
         let notes = storage.set.view_notes(options);
 
         notes

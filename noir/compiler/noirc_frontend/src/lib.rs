@@ -59,9 +59,9 @@ pub mod macros_api {
         Pattern, Statement, UnresolvedType, UnresolvedTypeData, Visibility,
     };
     pub use crate::{
-        ForLoopStatement, ForRange, FunctionDefinition, FunctionVisibility, ImportStatement,
-        NoirStruct, Param, PrefixExpression, Signedness, StatementKind, StructType, Type, TypeImpl,
-        UnaryOp,
+        ArrayLiteral, ForLoopStatement, ForRange, FunctionDefinition, FunctionVisibility,
+        ImportStatement, NoirStruct, Param, PrefixExpression, Signedness, StatementKind,
+        StructType, Type, TypeImpl, UnaryOp,
     };
 
     /// Methods to process the AST before and after type checking

@@ -3,6 +3,7 @@ use dep::aztec::{
         note_header::NoteHeader,
         note_interface::NoteInterface,
         utils::compute_note_hash_for_consumption,
+        note_getter_options::FieldSelector,
     },
     oracle::{
         nullifier_key::get_nullifier_secret_key,
@@ -26,9 +27,15 @@ struct CardNote {
     points: u8,
     randomness: Field,
     owner: AztecAddress,
-    header: NoteHeader,
+    header: NoteHeader
 }
 // docs:end:state_vars-CardNote
+
+struct CardNoteFields {
+    points: FieldSelector,
+    randomness: FieldSelector,
+    owner: FieldSelector,
+}
 
 impl CardNote {
     pub fn new(points: u8, randomness: Field, owner: AztecAddress) -> Self {
@@ -39,13 +46,17 @@ impl CardNote {
             header: NoteHeader::empty(),
         }
     }
+
+    pub fn fields() -> CardNoteFields {
+        CardNoteFields {
+            points: FieldSelector { index: 0, offset: 0, length: 32 },
+            randomness: FieldSelector { index: 1, offset: 0, length: 32 },
+            owner: FieldSelector { index: 2, offset: 0, length: 32 },
+        }
+    }
 }
 
 impl NoteInterface<CARD_NOTE_LEN> for CardNote {
-    fn serialize_content(self) -> [Field; CARD_NOTE_LEN] {
-        [self.points as Field, self.randomness, self.owner.to_field()]
-    }
-
     fn deserialize_content(serialized_note: [Field; CARD_NOTE_LEN]) -> Self {
         CardNote {
             points: serialized_note[0] as u8,
