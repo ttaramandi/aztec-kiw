@@ -204,9 +204,15 @@ export class Oracle {
     return returnData.concat(paddedZeros);
   }
 
-  notifyCreatedNote([storageSlot]: ACVMField[], note: ACVMField[], [innerNoteHash]: ACVMField[]): ACVMField {
+  notifyCreatedNote(
+    [storageSlot]: ACVMField[],
+    [noteTypeId]: ACVMField[],
+    note: ACVMField[],
+    [innerNoteHash]: ACVMField[],
+  ): ACVMField {
     this.typedOracle.notifyCreatedNote(
       fromACVMField(storageSlot),
+      fromACVMField(noteTypeId),
       note.map(fromACVMField),
       fromACVMField(innerNoteHash),
     );
@@ -247,6 +253,7 @@ export class Oracle {
   emitEncryptedLog(
     [contractAddress]: ACVMField[],
     [storageSlot]: ACVMField[],
+    [noteTypeId]: ACVMField[],
     [publicKeyX]: ACVMField[],
     [publicKeyY]: ACVMField[],
     log: ACVMField[],
@@ -255,6 +262,7 @@ export class Oracle {
     this.typedOracle.emitEncryptedLog(
       AztecAddress.fromString(contractAddress),
       Fr.fromString(storageSlot),
+      Fr.fromString(noteTypeId),
       publicKey,
       log.map(fromACVMField),
     );
