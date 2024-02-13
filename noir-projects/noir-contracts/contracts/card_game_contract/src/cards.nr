@@ -5,6 +5,7 @@ use dep::aztec::{
             MAX_NOTES_PER_PAGE,
             MAX_READ_REQUESTS_PER_CALL,
         },
+        traits::{ ToField, Serialize, FromField }
     },
     context::{PrivateContext, PublicContext, Context},
     note::{
@@ -27,8 +28,8 @@ struct Card {
     points: u16,
 }
 
-impl Card {
-    pub fn from_field(field: Field) -> Card {
+impl FromField for Card {
+ fn from_field(field: Field) -> Card {
         let value_bytes = field.to_le_bytes(32);
         let strength = (value_bytes[0] as u16) + (value_bytes[1] as u16) * 256;
         let points = (value_bytes[2] as u16) + (value_bytes[3] as u16) * 256;
@@ -37,12 +38,16 @@ impl Card {
             points,
         }
     }
+}
 
-    pub fn to_field(self) -> Field {
+impl ToField for Card {
+ fn to_field(self) -> Field {
         self.strength as Field + (self.points as Field)*65536
     }
+}
 
-    pub fn serialize(self) -> [Field; 2] {
+impl Serialize<2> for Card {
+    fn serialize(self) -> [Field; 2] {
         [self.strength as Field, self.points as Field]
     }
 }

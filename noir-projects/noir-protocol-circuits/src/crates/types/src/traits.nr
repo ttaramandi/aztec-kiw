@@ -51,6 +51,23 @@ impl ToField for u16 { fn to_field(self) -> Field { self as Field } }
 impl ToField for u32 { fn to_field(self) -> Field { self as Field } }
 impl ToField for u64 { fn to_field(self) -> Field { self as Field } }
 
+trait FromField {
+    fn from_field(value: Field) -> Self;
+}
+
+impl FromField for Field {
+    fn from_field(value: Field) -> Self {
+        value
+    }
+}
+
+impl FromField for u1 { fn from_field(value: Field) -> Self { value as u1 } }
+impl FromField for u8 { fn from_field(value: Field) -> Self { value as u8 } }
+impl FromField for u16 { fn from_field(value: Field) -> Self { value as u16 } }
+impl FromField for u32 { fn from_field(value: Field) -> Self { value as u32 } }
+impl FromField for u64 { fn from_field(value: Field) -> Self { value as u64 } }
+
+
 // docs:start:serialize
 trait Serialize<N> {
     fn serialize(self) -> [Field; N];

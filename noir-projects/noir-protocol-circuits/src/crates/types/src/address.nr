@@ -3,7 +3,7 @@ use crate::{
     hash::pedersen_hash, contract_class::ContractClassId, utils, grumpkin_point::GrumpkinPoint
 };
 use dep::std::cmp::Eq;
-use crate::traits::{Empty, ToField, Serialize, Deserialize};
+use crate::traits::{Empty, ToField, Serialize, Deserialize, FromField};
 use crate::type_serialization::{ETH_ADDRESS_SERIALIZED_LEN, AZTEC_ADDRESS_SERIALIZED_LEN};
 
 // Aztec address
@@ -43,13 +43,15 @@ impl Deserialize<AZTEC_ADDRESS_SERIALIZED_LEN> for AztecAddress {
     }
 }
 
+impl FromField for AztecAddress {
+    fn from_field(field: Field) -> Self {
+        Self { inner: field }
+    }
+}
+
 impl AztecAddress {
     pub fn zero() -> Self {
         Self { inner: 0 }
-    }
-
-    pub fn from_field(field: Field) -> Self {
-        Self { inner: field }
     }
 
     pub fn compute_from_public_key(
@@ -131,13 +133,15 @@ impl Deserialize<ETH_ADDRESS_SERIALIZED_LEN> for EthAddress {
     }
 }
 
+impl FromField for EthAddress {
+    fn from_field(field: Field) -> Self {
+        Self { inner: field }
+    }
+}
+
 impl EthAddress {
     pub fn zero() -> Self {
         Self { inner: 0 }
-    }
-
-    pub fn from_field(field: Field) -> Self {
-        Self { inner: field }
     }
 
     pub fn is_zero(self) -> bool {
@@ -165,11 +169,13 @@ impl ToField for PartialAddress {
     }
 }
 
-impl PartialAddress {
-    pub fn from_field(field: Field) -> Self {
+impl FromField for PartialAddress {
+    fn from_field(field: Field) -> Self {
         Self { inner: field }
     }
+}
 
+impl PartialAddress {
     pub fn compute(
         contract_class_id: ContractClassId,
         salt: Field,
@@ -197,10 +203,6 @@ impl PartialAddress {
         )
     }
 
-    pub fn to_field(self) -> Field {
-        self.inner
-    }
-
     pub fn assert_is_zero(self) {
         assert(self.to_field() == 0);
     }
@@ -217,11 +219,13 @@ impl ToField for SaltedInitializationHash {
     }
 }
 
-impl SaltedInitializationHash {
-    pub fn from_field(field: Field) -> Self {
+impl FromField for SaltedInitializationHash {
+    fn from_field(field: Field) -> Self {
         Self { inner: field }
     }
+}
 
+impl SaltedInitializationHash {
     pub fn compute(salt: Field, initialization_hash: Field, portal_contract_address: EthAddress) -> Self {
         SaltedInitializationHash::from_field(
             pedersen_hash(
@@ -233,10 +237,6 @@ impl SaltedInitializationHash {
                 GENERATOR_INDEX__PARTIAL_ADDRESS
             )
         )
-    }
-
-    pub fn to_field(self) -> Field {
-        self.inner
     }
 
     pub fn assert_is_zero(self) {
@@ -267,11 +267,13 @@ impl Deserialize<1> for PublicKeysHash {
     }
 }
 
-impl PublicKeysHash {
-    pub fn from_field(field: Field) -> Self {
+impl FromField for PublicKeysHash {
+    fn from_field(field: Field) -> Self {
         Self { inner: field }
     }
+}
 
+impl PublicKeysHash {
     pub fn compute(public_key: GrumpkinPoint) -> Self {
         PublicKeysHash::from_field(
             pedersen_hash(

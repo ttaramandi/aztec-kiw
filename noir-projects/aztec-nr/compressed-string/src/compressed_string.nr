@@ -1,4 +1,4 @@
-use dep::aztec::protocol_types::{utils::field::field_from_bytes, traits::{Serialize, Deserialize}};
+use dep::aztec::protocol_types::{utils::field::field_from_bytes, traits::{Serialize, Deserialize, FromField}};
 use dep::std;
 
 // A Fixedsize Compressed String.
@@ -19,13 +19,15 @@ impl Deserialize<1> for FieldCompressedString {
   }
 }
 
+impl FromField for FieldCompressedString {
+    fn from_field(input_field: Field) -> Self {
+        Self { value: input_field }
+    }
+}
+
 impl FieldCompressedString {
     pub fn is_eq(self, other: FieldCompressedString) -> bool {
         self.value == other.value
-    }
-
-    pub fn from_field(input_field: Field) -> Self {
-        Self { value: input_field }
     }
 
     pub fn from_string(input_string: str<31>) -> Self {

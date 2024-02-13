@@ -4,7 +4,7 @@ use crate::abis::{
 };
 use crate::address::AztecAddress;
 use crate::constants::{GENERATOR_INDEX__CONTRACT_LEAF};
-use crate::traits::Hash;
+use crate::traits::{ToField, FromField, Hash, Serialize, Deserialize};
 
 struct ContractClassId {
   inner: Field
@@ -13,6 +13,30 @@ struct ContractClassId {
 impl Eq for ContractClassId {
     fn eq(self, other: ContractClassId) -> bool {
         other.inner == self.inner
+    }
+}
+
+impl ToField for ContractClassId {
+    fn to_field(self) -> Field {
+        self.inner
+    }
+}
+
+impl FromField for ContractClassId {
+    fn from_field(value: Field) -> Self {
+        Self { inner: value }
+    }
+}
+
+impl Serialize<1> for ContractClassId {
+    fn serialize(self: Self) -> [Field; 1] {
+        [self.inner]
+    }
+}
+
+impl Deserialize<1> for ContractClassId {
+  fn deserialize(fields: [Field; 1]) -> Self {
+        Self { inner: fields[0] }
     }
 }
 
@@ -32,22 +56,6 @@ impl ContractClassId {
         ); // TODO(@spalladino): Update generator index
 
         ContractClassId::from_field(hash)
-    }
-
-    fn to_field(self) -> Field {
-        self.inner as Field
-    }
-
-    pub fn from_field(value: Field) -> Self {
-        Self { inner: value }
-    }
-
-    pub fn serialize(self: Self) -> [Field; 1] {
-        [self.inner]
-    }
-
-    pub fn deserialize(fields: [Field; 1]) -> Self {
-        Self { inner: fields[0] }
     }
 
     pub fn assert_is_zero(self) {
