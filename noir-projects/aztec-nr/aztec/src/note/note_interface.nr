@@ -1,4 +1,5 @@
-use crate::context::PrivateContext;
+// use crate::context::PrivateContext;
+use crate::context::private_context::PrivContext;
 use crate::note::note_header::NoteHeader;
 
 // docs:start:note_interface
@@ -17,7 +18,7 @@ trait NoteInterface<N> {
 
     fn compute_nullifier_without_context(self) -> Field;
 
-    fn broadcast(self, context: &mut PrivateContext, slot: Field) -> ();
+    fn broadcast(self, context: &mut PrivateContext, slot: Field) -> () where Ctx: PrivateContext;
 
     fn get_note_type_id() -> Field;
 }

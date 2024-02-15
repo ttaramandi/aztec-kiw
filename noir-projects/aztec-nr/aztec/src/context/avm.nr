@@ -1,5 +1,23 @@
 use dep::protocol_types::address::{AztecAddress, EthAddress};
 
+use crate::context::context_trait::Context;
+impl Context for AVMContext {
+    #[oracle(sender)]
+    fn msg_sender(self) -> AztecAddress {}
+
+    #[oracle(address)]
+    fn address(self) -> AztecAddress {}
+
+    #[oracle(portal)]
+    fn portal_address(self) -> EthAddress {}
+
+    #[oracle(chainId)]
+    fn chain_id(self) -> Field {}
+
+    #[oracle(version)]
+    fn version(self) -> Field {}
+}
+
 // Getters that will be converted by the transpiler into their
 // own opcodes
 struct AVMContext {}
@@ -10,20 +28,11 @@ impl AVMContext {
         Self {}
     }
 
-    #[oracle(address)]
-    pub fn address(self) -> AztecAddress {}
-
     #[oracle(storageAddress)]
-    pub fn storage_address(self) -> AztecAddress {}
+    fn storage_address(self) -> AztecAddress {}
 
     #[oracle(origin)]
     pub fn origin(self) -> AztecAddress {}
-
-    #[oracle(sender)]
-    pub fn sender(self) -> AztecAddress {}
-
-    #[oracle(portal)]
-    pub fn portal(self) -> EthAddress {}
 
     #[oracle(feePerL1Gas)]
     pub fn fee_per_l1_gas(self) -> Field {}
@@ -34,11 +43,6 @@ impl AVMContext {
     #[oracle(feePerDaGas)]
     pub fn fee_per_da_gas(self) -> Field {}
 
-    #[oracle(chainId)]
-    pub fn chain_id(self) -> Field {}
-
-    #[oracle(version)]
-    pub fn version(self) -> Field {}
 
     #[oracle(blockNumber)]
     pub fn block_number(self) -> Field {}

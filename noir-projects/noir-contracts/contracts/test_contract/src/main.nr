@@ -61,7 +61,7 @@ contract Test {
     // Get the address of this contract (taken from the input context)
     #[aztec(private)]
     fn get_this_address() -> AztecAddress {
-        context.this_address()
+        context.address()
     }
 
     #[aztec(private)]

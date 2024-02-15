@@ -1284,24 +1284,24 @@ fn abstract_return_values(func: &NoirFunction) -> Option<Statement> {
 /// unconstrained fn lol() {
 ///   let storage = Storage::init(Context::none());
 /// }
-fn abstract_storage(typ: &str, unconstrained: bool) -> Statement {
-    let init_context_call = if unconstrained {
-        call(
-            variable_path(chained_path!("aztec", "context", "Context", "none")), // Path
-            vec![],                                                              // args
-        )
-    } else {
-        call(
-            variable_path(chained_path!("aztec", "context", "Context", typ)), // Path
-            vec![mutable_reference("context")],                               // args
-        )
-    };
+fn abstract_storage(_typ: &str, _unconstrained: bool) -> Statement {
+    // let init_context_call = if unconstrained {
+    //     call(
+    //         variable_path(chained_path!("aztec", "context", "Context", "none")), // Path
+    //         vec![],                                                              // args
+    //     )
+    // } else {
+    //     call(
+    //         variable_path(chained_path!("aztec", "context", "Context", typ)), // Path
+    //         vec![mutable_reference("context")],                               // args
+    //     )
+    // };
 
     assignment(
         "storage", // Assigned to
         call(
             variable_path(chained_path!("Storage", "init")), // Path
-            vec![init_context_call],                         // args
+            vec![mutable_reference("context")],                         // args
         ),
     )
 }

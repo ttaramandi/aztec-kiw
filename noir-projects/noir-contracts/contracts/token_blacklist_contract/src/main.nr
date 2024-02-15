@@ -69,7 +69,7 @@ contract TokenBlacklist {
         // docs:end:constructor
         let selector = FunctionSelector::from_signature("_initialize((Field),(Field))");
         context.call_public_function(
-            context.this_address(),
+            context.address(),
             selector,
             [admin.to_field(), slow_updates_contract.to_field()]
         );
@@ -89,7 +89,7 @@ contract TokenBlacklist {
         slow.update_at_private(&mut context, user.to_field(), roles);
         // docs:end:get_and_update_private
         context.call_public_function(
-            context.this_address(),
+            context.address(),
             FunctionSelector::from_signature("_init_slow_tree((Field))"),
             [context.msg_sender().to_field()]
         );
@@ -263,7 +263,7 @@ contract TokenBlacklist {
         storage.balances.sub(from, SafeU120::new(amount));
 
         let selector = FunctionSelector::from_signature("_increase_public_balance((Field),Field)");
-        context.call_public_function(context.this_address(), selector, [to.to_field(), amount]);
+        context.call_public_function(context.address(), selector, [to.to_field(), amount]);
     }
 
     // docs:start:transfer_private
@@ -302,7 +302,7 @@ contract TokenBlacklist {
         storage.balances.sub(from, SafeU120::new(amount));
 
         let selector = FunctionSelector::from_signature("_reduce_total_supply(Field)");
-        context.call_public_function(context.this_address(), selector, [amount]);
+        context.call_public_function(context.address(), selector, [amount]);
     }
 
     /// Internal ///

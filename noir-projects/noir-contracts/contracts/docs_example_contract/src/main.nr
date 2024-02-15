@@ -169,7 +169,7 @@ contract DocsExample {
         storage.legendary_card.replace(&mut new_card, true);
 
         context.call_public_function(
-            context.this_address(),
+            context.address(),
             FunctionSelector::from_signature("update_leader((Field),u8)"),
             [context.msg_sender().to_field(), points as Field]
         );
@@ -192,7 +192,7 @@ contract DocsExample {
         // docs:end:state_vars-SingletonReplace
 
         context.call_public_function(
-            context.this_address(),
+            context.address(),
             FunctionSelector::from_signature("update_leader((Field),u8)"),
             [context.msg_sender().to_field(), points as Field]
         );

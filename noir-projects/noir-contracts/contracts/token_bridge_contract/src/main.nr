@@ -26,7 +26,7 @@ contract TokenBridge {
     #[aztec(private)]
     fn constructor(token: AztecAddress) {
         let selector = FunctionSelector::from_signature("_initialize((Field))");
-        context.call_public_function(context.this_address(), selector, [token.to_field()]);
+        context.call_public_function(context.address(), selector, [token.to_field()]);
     }
     // docs:end:token_bridge_storage_and_constructor
 
@@ -82,7 +82,7 @@ contract TokenBridge {
         // which then calls the public method on the token contract.
         // Since the secret_hash is passed, no secret is leaked.
         context.call_public_function(
-            context.this_address(),
+            context.address(),
             FunctionSelector::from_signature("_call_mint_on_token(Field,Field)"),
             [amount, secret_hash_for_redeeming_minted_notes]
         );
@@ -107,7 +107,7 @@ contract TokenBridge {
         // docs:start:call_assert_token_is_same
         // Assert that user provided token address is same as seen in storage.
         context.call_public_function(
-            context.this_address(),
+            context.address(),
             FunctionSelector::from_signature("_assert_token_is_same((Field))"),
             [token.to_field()]
         );

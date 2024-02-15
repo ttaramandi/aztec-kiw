@@ -20,7 +20,7 @@ contract Escrow {
     // docs:start:constructor
     #[aztec(private)]
     fn constructor(owner: pub AztecAddress) {
-        let this = context.this_address();
+        let this = context.address();
 
         // Create a new note and add it to the owners set.
         let mut note = AddressNote::new(owner, this);
@@ -33,7 +33,7 @@ contract Escrow {
     // Withdraws balance. Requires that msg.sender is registered as an owner.
     #[aztec(private)]
     fn withdraw(token: AztecAddress, amount: Field, recipient: AztecAddress) {
-        let this = context.this_address();
+        let this = context.address();
         let sender = context.msg_sender();
 
         // We don't remove note from the owners set. If a note exists, the owner and recipient are legit.

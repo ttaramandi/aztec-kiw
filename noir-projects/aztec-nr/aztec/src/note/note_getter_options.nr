@@ -1,4 +1,8 @@
 use dep::std::option::Option;
+
+// TODO: CLEAN
+use crate::context::private_context::PrivContext;
+
 use dep::protocol_types::{
     constants::MAX_READ_REQUESTS_PER_CALL,
 };
@@ -89,9 +93,9 @@ struct NoteGetterOptions<Note, N, FILTER_ARGS> {
 // The database-level configurations are applied first:
 // `selects` to specify fields, `sorts` to establish sorting criteria, `offset` to skip items, and `limit` to cap the result size.
 // And finally, a custom filter to refine the outcome further.
-impl<Note, N, FILTER_ARGS> NoteGetterOptions<Note, N, FILTER_ARGS> {
+impl<Ctx, Note, N, FILTER_ARGS> NoteGetterOptions<Note, N, FILTER_ARGS> {
     // This function initializes a NoteGetterOptions that simply returns the maximum number of notes allowed in a call.
-    pub fn new() -> NoteGetterOptions<Note, N, Field> where Note: NoteInterface<N> {
+    pub fn new() -> NoteGetterOptions<Ctx, Note, N, Field> where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
         NoteGetterOptions {
             selects: BoundedVec::new(Option::none()),
             sorts: BoundedVec::new(Option::none()),
@@ -108,7 +112,7 @@ impl<Note, N, FILTER_ARGS> NoteGetterOptions<Note, N, FILTER_ARGS> {
     pub fn with_filter(
         filter: fn ([Option<Note>; MAX_READ_REQUESTS_PER_CALL], FILTER_ARGS) -> [Option<Note>; MAX_READ_REQUESTS_PER_CALL],
         filter_args: FILTER_ARGS,
-    ) -> Self where Note: NoteInterface<N> {
+    ) -> Self where Note: NoteInterface<Ctx, N>, where Ctx: PrivContext {
          NoteGetterOptions {
             selects: BoundedVec::new(Option::none()),
             sorts: BoundedVec::new(Option::none()),

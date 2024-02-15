@@ -2,7 +2,10 @@ use dep::std::option::Option;
 
 use dep::protocol_types::{address::AztecAddress, constants::{GENERATOR_INDEX__INITIALIZATION_NULLIFIER}, hash::pedersen_hash};
 
-use crate::context::{PrivateContext, PublicContext, Context};
+// TOOC: CLRAN
+use crate::context::private_context::PrivContext;
+
+use crate::context::{PrivateContext, Context};
 use crate::note::{
     lifecycle::{create_note, destroy_note}, note_getter::{get_note, view_notes},
     note_interface::NoteInterface, note_viewer_options::NoteViewerOptions
@@ -11,19 +14,19 @@ use crate::oracle::{nullifier_key::get_nullifier_secret_key, notes::check_nullif
 use crate::state_vars::storage::Storage;
 
 // docs:start:struct
-struct Singleton<Note> {
-    context: Option<&mut PrivateContext>,
+struct Singleton<Ctx, Note> {
+    context: Ctx,
     storage_slot: Field
 }
 // docs:end:struct
 
-impl<T> Storage<T> for Singleton<T> {}
+impl<Ctx, T> Storage<T> for Singleton<Ctx, T> {}
 
-impl<Note> Singleton<Note> {
+impl<Ctx, Note> Singleton<Ctx, Note> {
     // docs:start:new
-    pub fn new(context: Context, storage_slot: Field) -> Self {
+    pub fn new(context: Ctx, storage_slot: Field) -> Self where Ctx: PrivContext {
         assert(storage_slot != 0, "Storage slot 0 not allowed. Storage slots must start from 1.");
-        Self { context: context.private, storage_slot }
+        Self { context: context, storage_slot }
     }
     // docs:end:new
 
@@ -50,8 +53,8 @@ impl<Note> Singleton<Note> {
     // docs:end:is_initialized
 
     // docs:start:initialize
-    pub fn initialize<N>(self, note: &mut Note, broadcast: bool) where Note: NoteInterface<N> {
-        let context = self.context.unwrap();
+    pub fn initialize<Ctx, N>(self, note: &mut Note, broadcast: bool) where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
+        let context = self.context;
 
         // Nullify the storage slot.
         let nullifier = self.compute_initialization_nullifier();
@@ -62,8 +65,8 @@ impl<Note> Singleton<Note> {
     // docs:end:initialize
 
     // docs:start:replace
-    pub fn replace<N>(self, new_note: &mut Note, broadcast: bool) where Note: NoteInterface<N> {
-        let context = self.context.unwrap();
+    pub fn replace<Ctx, N>(self, new_note: &mut Note, broadcast: bool) where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
+        let context = self.context;
         let prev_note = get_note(context, self.storage_slot);
 
         // Nullify previous note.
@@ -75,8 +78,8 @@ impl<Note> Singleton<Note> {
     // docs:end:replace
 
     // docs:start:get_note
-    pub fn get_note<N>(self, broadcast: bool) -> Note where Note: NoteInterface<N> {
-        let context = self.context.unwrap();
+    pub fn get_note<Ctx, N>(self, broadcast: bool) -> Note where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
+        let context = self.context;
         let mut note = get_note(context, self.storage_slot);
 
         // Nullify current note to make sure it's reading the latest note.
@@ -91,7 +94,7 @@ impl<Note> Singleton<Note> {
     // docs:end:get_note
 
     // docs:start:view_note
-    unconstrained pub fn view_note<N>(self) -> Note where Note: NoteInterface<N> {
+    unconstrained pub fn view_note<Ctx, N>(self) -> Note where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
         let options = NoteViewerOptions::new().set_limit(1);
         view_notes(self.storage_slot, options)[0].unwrap()
     }

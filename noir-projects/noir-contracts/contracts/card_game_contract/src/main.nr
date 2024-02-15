@@ -45,7 +45,7 @@ contract CardGame {
         let selector = FunctionSelector::from_signature("on_game_joined(u32,(Field),u32)");
         let strength = compute_deck_strength(cards);
         context.call_public_function(
-            context.this_address(),
+            context.address(),
             selector,
             [game as Field, player.to_field(), strength]
         );
@@ -80,7 +80,7 @@ contract CardGame {
         let selector = FunctionSelector::from_signature("on_card_played(u32,(Field),Field)");
         // docs:start:call_public_function
         context.call_public_function(
-            context.this_address(),
+            context.address(),
             selector,
             [game as Field, player.to_field(), card.to_field()]
         );
@@ -111,7 +111,7 @@ contract CardGame {
 
         let selector = FunctionSelector::from_signature("on_cards_claimed(u32,(Field),Field)");
         context.call_public_function(
-            context.this_address(),
+            context.address(),
             selector,
             [game as Field, player.to_field(), pedersen_hash(cards_fields, 0)]
         );

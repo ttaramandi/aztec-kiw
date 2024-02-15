@@ -15,6 +15,7 @@ use crate::utils::{dbg_print_avm_program, dbg_print_brillig_program};
 /// Transpile a Brillig program to AVM bytecode
 pub fn brillig_to_avm(brillig: &Brillig) -> Vec<u8> {
     dbg_print_brillig_program(brillig);
+    return vec![];
 
     let mut avm_instrs: Vec<AvmInstruction> = Vec::new();
 
@@ -239,9 +240,23 @@ fn handle_foreign_call(
             handle_2_field_hash_instruction(avm_instrs, function, destinations, inputs)
         }
         "poseidon" => handle_field_hash_instruction(avm_instrs, function, destinations, inputs),
+        "storageWrite" => handle_storage_write(avm_instrs, function, destinations, inputs),
         _ => handle_getter_instruction(avm_instrs, function, destinations, inputs),
     }
 }
+
+fn handle_storage_write(
+    avm_instrs: &mut Vec<AvmInstruction>,
+    function: &String,
+    destinations: &[ValueOrArray],
+    inputs: &[ValueOrArray],
+) {
+    println!("storageWrite: {:?}", function);
+    println!("destinations: {:?}", destinations);
+    println!("inputs: {:?}", inputs);
+    // We alter public storage to write one at a time?
+}
+
 
 fn handle_2_field_hash_instruction(
     avm_instrs: &mut Vec<AvmInstruction>,

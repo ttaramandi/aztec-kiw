@@ -135,18 +135,14 @@ export class PublicExecutionContext extends TypedOracle {
    * @param startStorageSlot - The starting storage slot.
    * @param values - The values to be written.
    */
-  public async storageWrite(startStorageSlot: Fr, values: Fr[]) {
-    const newValues = [];
-    for (let i = 0; i < values.length; i++) {
-      const storageSlot = new Fr(startStorageSlot.value + BigInt(i));
-      const newValue = values[i];
-      const sideEffectCounter = this.sideEffectCounter.count();
-      this.storageActions.write(storageSlot, newValue, sideEffectCounter);
-      await this.stateDb.storageWrite(this.execution.contractAddress, storageSlot, newValue);
-      this.log(`Oracle storage write: slot=${storageSlot.toString()} value=${newValue.toString()}`);
-      newValues.push(newValue);
-    }
-    return newValues;
+  public async storageWrite(startStorageSlot: Fr, value: Fr) {
+    const storageSlot = new Fr(startStorageSlot.value);
+    const sideEffectCounter = this.sideEffectCounter.count();
+    this.storageActions.write(storageSlot, value, sideEffectCounter);
+    await this.stateDb.storageWrite(this.execution.contractAddress, storageSlot, newValue);
+    this.log(`Oracle storage write: slot=${storageSlot.toString()} value=${newValue.toString()}`);
+
+    return value;
   }
 
   /**

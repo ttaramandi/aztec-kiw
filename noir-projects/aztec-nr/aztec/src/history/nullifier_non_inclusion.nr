@@ -43,20 +43,20 @@ pub fn prove_nullifier_not_included_at(nullifier: Field, block_number: u32, cont
     _nullifier_non_inclusion(nullifier, header);
 }
 
-pub fn prove_note_not_nullified<Note, N>(
+pub fn prove_note_not_nullified<Ctx, Note, N>(
     note: Note,
-    context: &mut PrivateContext
-) where Note: NoteInterface<N> {
+    context: &mut Ctx
+) where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
     let nullifier = compute_siloed_nullifier(note, context);
 
     _nullifier_non_inclusion(nullifier, context.historical_header);
 }
 
-pub fn prove_note_not_nullified_at<Note, N>(
+pub fn prove_note_not_nullified_at<Ctx, Note, N>(
     note: Note,
     block_number: u32, // The block at which we'll prove that the note was not nullified
-    context: &mut PrivateContext
-) where Note: NoteInterface<N> {
+    context: &mut Ctx
+) where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
     let nullifier = compute_siloed_nullifier(note, context);
     let header = context.get_header_at(block_number);
 

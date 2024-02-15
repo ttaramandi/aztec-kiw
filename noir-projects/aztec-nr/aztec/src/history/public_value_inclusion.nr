@@ -4,6 +4,9 @@ use dep::protocol_types::{
 };
 use dep::std::merkle::compute_merkle_root;
 
+// TODO: CLEAN
+use create::context::private_context::PrivContext;
+
 use crate::{context::PrivateContext, oracle::get_public_data_witness::{get_public_data_witness}};
 
 fn _public_value_inclusion(
@@ -51,12 +54,12 @@ fn _public_value_inclusion(
     // `value` was really set in a given contract storage slot at block `block_number` in public data tree.
 }
 
-pub fn prove_public_value_inclusion(
+pub fn prove_public_value_inclusion<Ctx>(
     value: Field, // The value that we want to prove is in the public data tree
     storage_slot: Field, // The storage slot in which the value is stored
     contract_address: AztecAddress, // The contract we want to look into
-    context: PrivateContext
-) {
+    context: Ctx
+) where Ctx: PrivContext {
     _public_value_inclusion(
         value,
         storage_slot,
@@ -65,13 +68,13 @@ pub fn prove_public_value_inclusion(
     );
 }
 
-pub fn prove_public_value_inclusion_at(
+pub fn prove_public_value_inclusion_at<Ctx>(
     value: Field, // The value that we want to prove is in the public data tree
     storage_slot: Field, // The storage slot in which the value is stored
     contract_address: AztecAddress, // The contract we want to look into
     block_number: u32, // The block at which we'll prove that the note exists
-    context: PrivateContext
-) {
+    context: Ctx
+) where Ctx: PrivContext {
     let header = context.get_header_at(block_number);
 
     _public_value_inclusion(value, storage_slot, contract_address, header);

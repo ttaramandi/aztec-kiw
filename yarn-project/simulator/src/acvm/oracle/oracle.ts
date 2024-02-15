@@ -241,9 +241,9 @@ export class Oracle {
     return values.map(toACVMField);
   }
 
-  async storageWrite([startStorageSlot]: ACVMField[], values: ACVMField[]): Promise<ACVMField[]> {
-    const newValues = await this.typedOracle.storageWrite(fromACVMField(startStorageSlot), values.map(fromACVMField));
-    return newValues.map(toACVMField);
+  async storageWrite([startStorageSlot]: ACVMField[], [value]: ACVMField[]): Promise<ACVMField> {
+    const newValue = await this.typedOracle.storageWrite(fromACVMField(startStorageSlot), fromACVMField(value));
+    return toACVMField(newValue);
   }
 
   emitEncryptedLog(

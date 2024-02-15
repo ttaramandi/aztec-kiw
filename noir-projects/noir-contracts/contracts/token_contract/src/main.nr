@@ -77,7 +77,7 @@ contract Token {
         let name_s = FieldCompressedString::from_string(name);
         let symbol_s = FieldCompressedString::from_string(symbol);
         context.call_public_function(
-            context.this_address(),
+            context.address(),
             selector,
             [admin.to_field(), name_s.serialize()[0], symbol_s.serialize()[0], decimals as Field]
         );
@@ -271,7 +271,7 @@ contract Token {
         storage.balances.sub(from, SafeU120::new(amount));
 
         let selector = FunctionSelector::from_signature("_increase_public_balance((Field),Field)");
-        let _void = context.call_public_function(context.this_address(), selector, [to.to_field(), amount]);
+        let _void = context.call_public_function(context.address(), selector, [to.to_field(), amount]);
     }
     // docs:end:unshield
 
@@ -306,7 +306,7 @@ contract Token {
         storage.balances.sub(from, SafeU120::new(amount));
 
         let selector = FunctionSelector::from_signature("_reduce_total_supply(Field)");
-        let _void = context.call_public_function(context.this_address(), selector, [amount]);
+        let _void = context.call_public_function(context.address(), selector, [amount]);
     }
     // docs:end:burn
 

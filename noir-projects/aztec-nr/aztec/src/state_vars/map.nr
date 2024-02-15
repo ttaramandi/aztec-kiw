@@ -1,25 +1,26 @@
-use crate::context::{PrivateContext, PublicContext, Context};
+use crate::context::{PrivateContext, PublicContext};
+use crate::context::context_trait::Context;
 use dep::std::option::Option;
 use dep::protocol_types::{hash::pedersen_hash, traits::{ToField}};
 use crate::state_vars::storage::Storage;
 
 // docs:start:map
-struct Map<K, V> {
-    context: Context,
+struct Map<C, K, V> {
+    context: C,
     storage_slot: Field,
-    state_var_constructor: fn(Context, Field) -> V,
+    state_var_constructor: fn(C, Field) -> V,
 }
 // docs:end:map
 
-impl<K, T> Storage<T> for Map<K, T> {}
+impl<C, K, T> Storage<T> for Map<C, K, T> {}
 
-impl<K, V> Map<K, V> {
+impl<C, K, V> Map<C, K, V> {
     // docs:start:new
     pub fn new(
-        context: Context,
+        context: C,
         storage_slot: Field,
-        state_var_constructor: fn(Context, Field) -> V
-    ) -> Self {
+        state_var_constructor: fn(C, Field) -> V
+    ) -> Self where C: Context {
         assert(storage_slot != 0, "Storage slot 0 not allowed. Storage slots must start from 1.");
         Map { context, storage_slot, state_var_constructor }
     }

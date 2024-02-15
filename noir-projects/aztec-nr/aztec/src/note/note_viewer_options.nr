@@ -5,8 +5,11 @@ use dep::protocol_types::{
 };
 use crate::note::note_interface::NoteInterface;
 
+// TODO: clean
+use crate::context::private_context::PrivContext;
+
 // docs:start:NoteViewerOptions
-struct NoteViewerOptions<Note, N> {
+struct NoteViewerOptions<Ctx, Note, N> {
     selects: BoundedVec<Option<Select>, N>,
     sorts: BoundedVec<Option<Sort>, N>,
     limit: u32,
@@ -15,8 +18,8 @@ struct NoteViewerOptions<Note, N> {
 }
 // docs:end:NoteViewerOptions
 
-impl<Note, N> NoteViewerOptions<Note, N> {
-    pub fn new() -> NoteViewerOptions<Note, N> where Note: NoteInterface<N> {
+impl<Ctx, Note, N> NoteViewerOptions<Ctx, Note, N> {
+    pub fn new() -> NoteViewerOptions<Ctx, Note, N> where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
         NoteViewerOptions {
             selects: BoundedVec::new(Option::none()),
             sorts: BoundedVec::new(Option::none()),

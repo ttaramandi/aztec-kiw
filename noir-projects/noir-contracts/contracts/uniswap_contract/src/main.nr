@@ -57,14 +57,14 @@ contract Uniswap {
         Token::at(input_asset).transfer_public(
             context,
             sender,
-            context.this_address(),
+            context.address(),
             input_amount,
             nonce_for_transfer_approval
         );
 
         // Approve bridge to burn this contract's funds and exit to L1 Uniswap Portal
         let _void = context.call_public_function(
-            context.this_address(),
+            context.address(),
             FunctionSelector::from_signature("_approve_bridge_and_exit_input_asset_to_L1((Field),(Field),Field)"),
             [input_asset.to_field(), input_asset_bridge.to_field(), input_amount]
         );
@@ -119,7 +119,7 @@ contract Uniswap {
         // Assert that user provided token address is same as expected by token bridge.
         // we can't directly use `input_asset_bridge.token` because that is a public method and public can't return data to private
         context.call_public_function(
-            context.this_address(),
+            context.address(),
             FunctionSelector::from_signature("_assert_token_is_same((Field),(Field))"),
             [input_asset.to_field(), input_asset_bridge.to_field()]
         );
@@ -128,14 +128,14 @@ contract Uniswap {
         Token::at(input_asset).unshield(
             &mut context,
             context.msg_sender(),
-            context.this_address(),
+            context.address(),
             input_amount,
             nonce_for_unshield_approval
         );
 
         // Approve bridge to burn this contract's funds and exit to L1 Uniswap Portal
         context.call_public_function(
-            context.this_address(),
+            context.address(),
             FunctionSelector::from_signature("_approve_bridge_and_exit_input_asset_to_L1((Field),(Field),Field)"),
             [input_asset.to_field(), input_asset_bridge.to_field(), input_amount]
         );
@@ -194,7 +194,7 @@ contract Uniswap {
             token_bridge,
             token,
             selector,
-            [context.this_address().to_field(), amount, nonce_for_burn_approval]
+            [context.address().to_field(), amount, nonce_for_burn_approval]
         );
         storage.approved_action.at(message_hash).write(true);
 

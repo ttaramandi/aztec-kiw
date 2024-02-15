@@ -65,6 +65,56 @@ struct PrivateContext {
     nullifier_key: Option<NullifierKeyPair>,
 }
 
+// TODO: lil cleanup
+use crate::context::context_trait::Context;
+
+impl Context for PrivateContext {
+    fn msg_sender(self) -> AztecAddress {
+        self.inputs.call_context.msg_sender
+    }
+
+    fn address(self) -> AztecAddress {
+        self.inputs.call_context.storage_contract_address
+    }
+
+    fn portal_address(self) -> EthAddress {
+        self.inputs.call_context.portal_contract_address
+    }
+
+    fn chain_id(self) -> Field {
+        self.inputs.private_global_variables.chain_id
+    }
+
+    fn version(self) -> Field {
+        self.inputs.private_global_variables.version
+    }
+}
+
+trait PrivContext {
+    fn push_read_request(&mut self, read_request: Field) {}
+    fn push_new_note_hash(&mut self, note_hash: Field) {}
+    fn push_new_nullifier(&mut self, nullifier: Field, nullified_commitment: Field) {}
+}
+impl PrivContext for PrivateContext {
+    fn push_read_request(&mut self, read_request: Field) {
+        let side_effect = SideEffect { value: read_request, counter: self.side_effect_counter };
+        self.read_requests.push(side_effect);
+        self.side_effect_counter = self.side_effect_counter + 1;
+    }
+
+    fn push_new_note_hash(&mut self, note_hash: Field) {
+        let side_effect = SideEffect { value: note_hash, counter: self.side_effect_counter };
+        self.new_commitments.push(side_effect);
+        self.side_effect_counter = self.side_effect_counter + 1;
+    }
+
+    fn push_new_nullifier(&mut self, nullifier: Field, nullified_commitment: Field) {
+        let side_effect = SideEffectLinkedToNoteHash { value: nullifier, note_hash: nullified_commitment, counter: self.side_effect_counter };
+        self.new_nullifiers.push(side_effect);
+        self.side_effect_counter = self.side_effect_counter + 1;
+    }
+}
+
 impl PrivateContext {
     pub fn new(inputs: PrivateContextInputs, args_hash: Field) -> PrivateContext {
         PrivateContext {
@@ -88,25 +138,6 @@ impl PrivateContext {
         }
     }
 
-    pub fn msg_sender(self) -> AztecAddress {
-        self.inputs.call_context.msg_sender
-    }
-
-    pub fn this_address(self) -> AztecAddress {
-        self.inputs.call_context.storage_contract_address
-    }
-
-    pub fn this_portal_address(self) -> EthAddress {
-        self.inputs.call_context.portal_contract_address
-    }
-
-    pub fn chain_id(self) -> Field {
-        self.inputs.private_global_variables.chain_id
-    }
-
-    pub fn version(self) -> Field {
-        self.inputs.private_global_variables.version
-    }
 
     pub fn selector(self) -> FunctionSelector {
         self.inputs.call_context.function_selector
@@ -163,23 +194,6 @@ impl PrivateContext {
         self.max_non_revertible_side_effect_counter = self.side_effect_counter;
     }
 
-    pub fn push_read_request(&mut self, read_request: Field) {
-        let side_effect = SideEffect { value: read_request, counter: self.side_effect_counter };
-        self.read_requests.push(side_effect);
-        self.side_effect_counter = self.side_effect_counter + 1;
-    }
-
-    pub fn push_new_note_hash(&mut self, note_hash: Field) {
-        let side_effect = SideEffect { value: note_hash, counter: self.side_effect_counter };
-        self.new_commitments.push(side_effect);
-        self.side_effect_counter = self.side_effect_counter + 1;
-    }
-
-    pub fn push_new_nullifier(&mut self, nullifier: Field, nullified_commitment: Field) {
-        let side_effect = SideEffectLinkedToNoteHash { value: nullifier, note_hash: nullified_commitment, counter: self.side_effect_counter };
-        self.new_nullifiers.push(side_effect);
-        self.side_effect_counter = self.side_effect_counter + 1;
-    }
 
     pub fn request_nullifier_secret_key(&mut self, account: AztecAddress) -> GrumpkinPrivateKey {
         let key_pair = if self.nullifier_key.is_none() {
@@ -215,8 +229,8 @@ impl PrivateContext {
         // docs:end:context_consume_l1_to_l2_message
         let nullifier = process_l1_to_l2_message(
             self.historical_header.state.l1_to_l2_message_tree.root,
-            self.this_address(),
-            self.this_portal_address(),
+            self.address(),
+            self.portal_address(),
             self.chain_id(),
             self.version(),
             msg_key,

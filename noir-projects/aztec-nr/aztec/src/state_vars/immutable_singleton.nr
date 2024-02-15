@@ -1,6 +1,10 @@
 use dep::std::option::Option;
 use dep::protocol_types::{address::AztecAddress, constants::{GENERATOR_INDEX__INITIALIZATION_NULLIFIER}, hash::pedersen_hash};
 
+// TODO: Clean
+use crate::context::private_context::PrivContext;
+use crate::context::context_trait::Context;
+
 use crate::context::{PrivateContext, Context};
 use crate::note::{
     lifecycle::create_note, note_getter::{get_note, view_notes}, note_interface::NoteInterface,
@@ -10,19 +14,19 @@ use crate::oracle::notes::check_nullifier_exists;
 use crate::state_vars::storage::Storage;
 
 // docs:start:struct
-struct ImmutableSingleton<Note> {
-    context: Option<&mut PrivateContext>,
+struct ImmutableSingleton<Ctx, Note> {
+    context: Ctx,
     storage_slot: Field,
 }
 // docs:end:struct
 
-impl<T> Storage<T> for ImmutableSingleton<T> {}
+impl<Ctx, T> Storage<T> for ImmutableSingleton<Ctx, T> {}
 
-impl<Note> ImmutableSingleton<Note> {
+impl<Ctx, Note> ImmutableSingleton<Ctx, Note> {
     // docs:start:new
-    pub fn new(context: Context, storage_slot: Field) -> Self {
+    pub fn new(context: Ctx, storage_slot: Field) -> Self where Ctx: PrivContext, Ctx: Context {
         assert(storage_slot != 0, "Storage slot 0 not allowed. Storage slots must start from 1.");
-        Self { context: context.private, storage_slot }
+        Self { context, storage_slot }
     }
     // docs:end:new
 
@@ -47,27 +51,27 @@ impl<Note> ImmutableSingleton<Note> {
     // docs:end:is_initialized
 
     // docs:start:initialize
-    pub fn initialize<N>(self, note: &mut Note, broadcast: bool) where Note: NoteInterface<N> {
-        let context = self.context.unwrap();
+    pub fn initialize<Ctx, N>(self, note: &mut Note, broadcast: bool) where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
+        let context = self.context;
 
         // Nullify the storage slot.
         let nullifier = self.compute_initialization_nullifier();
         context.push_new_nullifier(nullifier, 0);
 
-        create_note(context, self.storage_slot, note, broadcast);
+        create_note(&mut context, self.storage_slot, note, broadcast);
     }
     // docs:end:initialize
 
     // docs:start:get_note
-    pub fn get_note<N>(self) -> Note where Note: NoteInterface<N> {
-        let context = self.context.unwrap();
+    pub fn get_note<Ctx, N>(self) -> Note where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
+        let context = self.context;
         let storage_slot = self.storage_slot;
         get_note(context, storage_slot)
     }
     // docs:end:get_note
 
     // docs:start:view_note
-    unconstrained pub fn view_note<N>(self) -> Note  where Note: NoteInterface<N> {
+    unconstrained pub fn view_note<Ctx, N>(self) -> Note  where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
         let options = NoteViewerOptions::new().set_limit(1);
         view_notes(self.storage_slot, options)[0].unwrap()
     }

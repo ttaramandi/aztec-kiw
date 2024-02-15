@@ -21,7 +21,7 @@ pub fn emit_encrypted_log<N>(
 }
 
 pub fn emit_unencrypted_log<T>(context: &mut PublicContext, log: T) {
-    let contract_address = context.this_address();
+    let contract_address = context.address();
     let event_selector = 5; // TODO: compute actual event selector.
     let _ = oracle::logs::emit_unencrypted_log(contract_address, event_selector, log);
     // context.accumulate_unencrypted_logs(log);
@@ -32,7 +32,7 @@ pub fn emit_unencrypted_log<T>(context: &mut PublicContext, log: T) {
 // it would be less easy to accidentally leak information.
 // If we decide to keep this function around would make sense to wait for traits and then merge it with emit_unencrypted_log.
 pub fn emit_unencrypted_log_from_private<T>(context: &mut PrivateContext, log: T) {
-    let contract_address = context.this_address();
+    let contract_address = context.address();
     let event_selector = 5; // TODO: compute actual event selector.
     let _ = oracle::logs::emit_unencrypted_log(contract_address, event_selector, log);
     // context.accumulate_unencrypted_logs(log);

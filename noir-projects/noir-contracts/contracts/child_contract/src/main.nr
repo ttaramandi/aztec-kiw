@@ -109,7 +109,7 @@ contract Child {
     #[aztec(public)]
     fn setValueTwiceWithNestedFirst() {
         let pubSetValueSelector = FunctionSelector::from_signature("pubSetValue(Field)");
-        let _ret = context.call_public_function(context.this_address(), pubSetValueSelector, [10]);
+        let _ret = context.call_public_function(context.address(), pubSetValueSelector, [10]);
 
         storage.current_value.write(20);
         emit_unencrypted_log(&mut context, 20);
@@ -121,7 +121,7 @@ contract Child {
         emit_unencrypted_log(&mut context, 20);
 
         let pubSetValueSelector = FunctionSelector::from_signature("pubSetValue(Field)");
-        let _ret = context.call_public_function(context.this_address(), pubSetValueSelector, [10]);
+        let _ret = context.call_public_function(context.address(), pubSetValueSelector, [10]);
     }
 
     // TODO: remove this placeholder once https://github.com/AztecProtocol/aztec-packages/issues/2918 is implemented

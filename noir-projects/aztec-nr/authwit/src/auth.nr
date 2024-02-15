@@ -29,7 +29,7 @@ pub fn assert_current_call_valid_authwit(context: &mut PrivateContext, on_behalf
     // message_hash = H(caller, contract_this, selector, args_hash)
     let message_hash = pedersen_hash(
         [
-        context.msg_sender().to_field(), context.this_address().to_field(), context.selector().to_field(), context.args_hash
+        context.msg_sender().to_field(), context.address().to_field(), context.selector().to_field(), context.args_hash
     ],
         GENERATOR_INDEX__SIGNATURE_PAYLOAD
     );
@@ -53,7 +53,7 @@ pub fn assert_current_call_valid_authwit_public(context: &mut PublicContext, on_
     // message_hash = H(caller, contract_this, selector, args_hash)
     let message_hash = pedersen_hash(
         [
-        context.msg_sender().to_field(), context.this_address().to_field(), context.selector().to_field(), context.args_hash
+        context.msg_sender().to_field(), context.address().to_field(), context.selector().to_field(), context.args_hash
     ],
         GENERATOR_INDEX__SIGNATURE_PAYLOAD
     );

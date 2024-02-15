@@ -64,7 +64,7 @@ contract SlowTree {
         let expected_root = compute_merkle_root(p.value, p.index, p.sibling_path);
         let selector = FunctionSelector::from_signature("_assert_current_root(Field,Field)");
         context.call_public_function(
-            context.this_address(),
+            context.address(),
             selector,
             [context.msg_sender().to_field(), expected_root]
         );
@@ -101,7 +101,7 @@ contract SlowTree {
 
         let selector = FunctionSelector::from_signature("_update(Field,Field,Field,Field,Field,Field)");
         context.call_public_function(
-            context.this_address(),
+            context.address(),
             selector,
             [
             context.msg_sender().to_field(),

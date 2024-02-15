@@ -1,4 +1,5 @@
 use crate::{context::PrivateContext, note::{note_header::NoteHeader, note_interface::NoteInterface}};
+use create::context::private_context::PrivContext;
 
 use dep::protocol_types::{
     address::AztecAddress,
@@ -19,7 +20,7 @@ fn compute_unique_hash(nonce: Field, siloed_note_hash: Field) -> Field {
     pedersen_hash(inputs, GENERATOR_INDEX__UNIQUE_COMMITMENT)
 }
 
-fn compute_inner_note_hash<Note, N>(note: Note) -> Field where Note: NoteInterface<N> {
+fn compute_inner_note_hash<Ctx, Note, N>(note: Note) -> Field where Note: NoteInterface<Ctx, N>, Ctx: PrivContext{
     let header = note.get_header();
     let note_hash = note.compute_note_content_hash();
 
@@ -27,7 +28,7 @@ fn compute_inner_note_hash<Note, N>(note: Note) -> Field where Note: NoteInterfa
     pedersen_hash([header.storage_slot, note_hash], 0)
 }
 
-fn compute_siloed_note_hash<Note, N>(note_with_header: Note) -> Field where Note: NoteInterface<N> {
+fn compute_siloed_note_hash<Ctx, Note, N>(note_with_header: Note) -> Field where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
     let header = note_with_header.get_header();
 
     let inner_note_hash = compute_inner_note_hash(note_with_header);
@@ -35,7 +36,7 @@ fn compute_siloed_note_hash<Note, N>(note_with_header: Note) -> Field where Note
     compute_siloed_hash(header.contract_address, inner_note_hash)
 }
 
-fn compute_unique_siloed_note_hash<Note, N>(note_with_header: Note) -> Field where Note: NoteInterface<N> {
+fn compute_unique_siloed_note_hash<Ctx, Note, N>(note_with_header: Note) -> Field where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
     let header = note_with_header.get_header();
 
     let siloed_note_hash = compute_siloed_note_hash(note_with_header);
@@ -43,10 +44,10 @@ fn compute_unique_siloed_note_hash<Note, N>(note_with_header: Note) -> Field whe
     compute_unique_hash(header.nonce, siloed_note_hash)
 }
 
-pub fn compute_siloed_nullifier<Note, N>(
+pub fn compute_siloed_nullifier<Ctx, Note, N>(
     note_with_header: Note,
-    context: &mut PrivateContext
-) -> Field where Note: NoteInterface<N> {
+    context: &mut Ctx
+) -> Field where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
     let header = note_with_header.get_header();
     let inner_nullifier = note_with_header.compute_nullifier(context);
 
@@ -54,11 +55,11 @@ pub fn compute_siloed_nullifier<Note, N>(
     pedersen_hash(input, GENERATOR_INDEX__OUTER_NULLIFIER)
 }
 
-pub fn compute_note_hash_for_insertion<Note, N>(note: Note) -> Field where Note: NoteInterface<N> {
+pub fn compute_note_hash_for_insertion<Ctx, Note, N>(note: Note) -> Field where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
     compute_inner_note_hash(note)
 }
 
-pub fn compute_note_hash_for_consumption<Note, N>(note: Note) -> Field where Note: NoteInterface<N> {
+pub fn compute_note_hash_for_consumption<Ctx, Note, N>(note: Note) -> Field where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
     let header = note.get_header();
     // There are 3 cases for reading a note intended for consumption:
     // 1. The note was inserted in this transaction, and is transient.
@@ -80,11 +81,11 @@ pub fn compute_note_hash_for_consumption<Note, N>(note: Note) -> Field where Not
     }
 }
 
-pub fn compute_note_hash_and_nullifier<T, N, S>(
+pub fn compute_note_hash_and_nullifier<Ctx, T, N, S>(
     deserialize_content: fn([Field; N]) -> T,
     note_header: NoteHeader,
     serialized_note: [Field; S]
-) -> [Field; 4] where T: NoteInterface<N> {
+) -> [Field; 4] where T: NoteInterface<Ctx, N>, Ctx: PrivContext {
     let mut note = deserialize_content(arr_copy_slice(serialized_note, [0; N], 0));
     // TODO: change this to note.setHeader(header) once https://github.com/noir-lang/noir/issues/4095 is fixed
     T::set_header((&mut note), note_header);

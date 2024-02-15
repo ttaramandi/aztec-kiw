@@ -46,6 +46,33 @@ struct PublicContext {
     prover_address: AztecAddress,
 }
 
+// TODO: cleanup
+use crate::context::context_trait::Context;
+impl Context for PublicContext {
+    fn msg_sender(self) -> AztecAddress {
+        self.inputs.call_context.msg_sender
+    }
+
+    fn address(self) -> AztecAddress {
+        self.inputs.call_context.storage_contract_address
+    }
+
+    fn portal_address(self) -> EthAddress {
+        self.inputs.call_context.portal_contract_address
+    }
+
+    fn chain_id(self) -> Field {
+        self.inputs.public_global_variables.chain_id
+    }
+
+    fn version(self) -> Field {
+        self.inputs.public_global_variables.version
+    }
+}
+
+trait PubContext {}
+impl PubContext for PublicContext {}
+
 impl PublicContext {
     pub fn new(inputs: PublicContextInputs, args_hash: Field) -> PublicContext {
         let empty_storage_read = StorageRead::empty();
@@ -70,25 +97,6 @@ impl PublicContext {
         }
     }
 
-    pub fn msg_sender(self) -> AztecAddress {
-        self.inputs.call_context.msg_sender
-    }
-
-    pub fn this_address(self) -> AztecAddress {
-        self.inputs.call_context.storage_contract_address
-    }
-
-    pub fn this_portal_address(self) -> EthAddress {
-        self.inputs.call_context.portal_contract_address
-    }
-
-    pub fn chain_id(self) -> Field {
-        self.inputs.public_global_variables.chain_id
-    }
-
-    pub fn version(self) -> Field {
-        self.inputs.public_global_variables.version
-    }
 
     pub fn selector(self) -> FunctionSelector {
         self.inputs.call_context.function_selector

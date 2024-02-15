@@ -39,7 +39,7 @@ contract InclusionProofs {
     #[aztec(private)]
     fn constructor(public_value: Field) {
         let selector = FunctionSelector::from_signature("_initialize(Field)");
-        context.call_public_function(context.this_address(), selector, [public_value]);
+        context.call_public_function(context.address(), selector, [public_value]);
     }
 
     #[aztec(public)]
@@ -192,7 +192,7 @@ contract InclusionProofs {
         prove_public_value_inclusion_at(
             0,
             storage.public_unused_value.storage_slot,
-            context.this_address(),
+            context.address(),
             block_number,
             context
         );
@@ -208,7 +208,7 @@ contract InclusionProofs {
             prove_public_value_inclusion_at(
                 public_value,
                 storage.public_value.storage_slot,
-                context.this_address(),
+                context.address(),
                 block_number,
                 context
             );
@@ -216,7 +216,7 @@ contract InclusionProofs {
             prove_public_value_inclusion(
                 public_value,
                 storage.public_value.storage_slot,
-                context.this_address(),
+                context.address(),
                 context
             );
         }

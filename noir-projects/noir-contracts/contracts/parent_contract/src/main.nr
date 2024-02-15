@@ -60,7 +60,7 @@ contract Parent {
     ) {
         let enqueueCallToChildSelector = FunctionSelector::from_signature("enqueueCallToChild((Field),(u32),Field)");
         let _ret = context.call_private_function(
-            context.this_address(),
+            context.address(),
             enqueueCallToChildSelector,
             [targetContract.to_field(), targetSelector.to_field(), 10]
         );
@@ -78,7 +78,7 @@ contract Parent {
         context.call_public_function(targetContract, targetSelector, [20]);
         let enqueueCallToChildSelector = FunctionSelector::from_signature("enqueueCallToChild((Field),(u32),Field)");
         let _ret = context.call_private_function(
-            context.this_address(),
+            context.address(),
             enqueueCallToChildSelector,
             [targetContract.to_field(), targetSelector.to_field(), 10]
         );
@@ -105,7 +105,7 @@ contract Parent {
         targetValue: Field
     ) {
         let pubEntryPointSelector = FunctionSelector::from_signature("pubEntryPoint((Field),(u32),Field)");
-        let thisAddress = context.this_address();
+        let thisAddress = context.address();
         let _void = context.call_public_function(
             thisAddress,
             pubEntryPointSelector,
@@ -121,7 +121,7 @@ contract Parent {
         targetValue: Field
     ) {
         let pubEntryPointSelector = FunctionSelector::from_signature("pubEntryPoint((Field),(u32),Field)");
-        let thisAddress = context.this_address();
+        let thisAddress = context.address();
 
         context.call_public_function(
             thisAddress,

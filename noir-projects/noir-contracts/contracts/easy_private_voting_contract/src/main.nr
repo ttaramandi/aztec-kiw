@@ -18,7 +18,7 @@ contract EasyPrivateVoting {
     fn constructor(admin: AztecAddress) { // called when contract is deployed
         context.call_public_function(
             // we cannot update public state directly from private function but we can call public function (which queues it)
-            context.this_address(),// contract address whose method we want to call
+            context.address(),// contract address whose method we want to call
             FunctionSelector::from_signature("_initialize((Field))"), // function selector
             [admin.to_field()] // parameters
         );
@@ -38,7 +38,7 @@ contract EasyPrivateVoting {
         let nullifier = dep::std::hash::pedersen_hash([context.msg_sender().to_field(), secret.low, secret.high]); // compute nullifier with this secret key so others can't descrypt it
         context.push_new_nullifier(nullifier, 0); // push nullifier
         context.call_public_function(
-            context.this_address(),
+            context.address(),
             FunctionSelector::from_signature("add_to_tally_public(Field)"),
             [candidate]
         );

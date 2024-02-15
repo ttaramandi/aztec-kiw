@@ -2,7 +2,7 @@ use dep::std::merkle::compute_merkle_root;
 use dep::protocol_types::header::Header;
 
 use crate::{
-    context::PrivateContext, oracle::get_nullifier_membership_witness::get_nullifier_membership_witness,
+    context::private_context::PrivContext, oracle::get_nullifier_membership_witness::get_nullifier_membership_witness,
     note::{utils::compute_siloed_nullifier, note_interface::NoteInterface}
 };
 
@@ -39,20 +39,20 @@ pub fn prove_nullifier_inclusion_at(
     _nullifier_inclusion(nullifier, header);
 }
 
-pub fn prove_note_is_nullified<Note, N>(
+pub fn prove_note_is_nullified<Ctx, Note, N>(
     note: Note,
     context: &mut PrivateContext
-) where Note: NoteInterface<N> {
+) where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
     let nullifier = compute_siloed_nullifier(note, context);
 
     _nullifier_inclusion(nullifier, context.historical_header);
 }
 
-pub fn prove_note_is_nullified_at<Note, N>(
+pub fn prove_note_is_nullified_at<Ctx,Note, N>(
     note: Note,
     block_number: u32,
-    context: &mut PrivateContext
-) where Note: NoteInterface<N> {
+    context: &mut Ctx
+) where Note: NoteInterface<Ctx, N>, Ctx: PrivContext{
     let nullifier = compute_siloed_nullifier(note, context);
     let header = context.get_header_at(block_number);
 
