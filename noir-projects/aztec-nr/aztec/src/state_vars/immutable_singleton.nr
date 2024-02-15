@@ -14,17 +14,17 @@ use crate::oracle::notes::check_nullifier_exists;
 use crate::state_vars::storage::Storage;
 
 // docs:start:struct
-struct ImmutableSingleton<Ctx, Note> {
-    context: Ctx,
+struct ImmutableSingleton<Note> {
+    context: PrivateContext,
     storage_slot: Field,
 }
 // docs:end:struct
 
-impl<Ctx, T> Storage<T> for ImmutableSingleton<Ctx, T> {}
+impl<T> Storage<T> for ImmutableSingleton<T> {}
 
-impl<Ctx, Note> ImmutableSingleton<Ctx, Note> {
+impl<Note> ImmutableSingleton<Note> {
     // docs:start:new
-    pub fn new(context: Ctx, storage_slot: Field) -> Self where Ctx: PrivContext, Ctx: Context {
+    pub fn new(context: PrivateContext, storage_slot: Field) -> Self {
         assert(storage_slot != 0, "Storage slot 0 not allowed. Storage slots must start from 1.");
         Self { context, storage_slot }
     }
@@ -51,7 +51,7 @@ impl<Ctx, Note> ImmutableSingleton<Ctx, Note> {
     // docs:end:is_initialized
 
     // docs:start:initialize
-    pub fn initialize<Ctx, N>(self, note: &mut Note, broadcast: bool) where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
+    pub fn initialize<N>(self, note: &mut Note, broadcast: bool) where Note: NoteInterface<N> {
         let context = self.context;
 
         // Nullify the storage slot.
@@ -63,7 +63,7 @@ impl<Ctx, Note> ImmutableSingleton<Ctx, Note> {
     // docs:end:initialize
 
     // docs:start:get_note
-    pub fn get_note<Ctx, N>(self) -> Note where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
+    pub fn get_note<N>(self) -> Note where Note: NoteInterface< N> {
         let context = self.context;
         let storage_slot = self.storage_slot;
         get_note(context, storage_slot)
@@ -71,7 +71,7 @@ impl<Ctx, Note> ImmutableSingleton<Ctx, Note> {
     // docs:end:get_note
 
     // docs:start:view_note
-    unconstrained pub fn view_note<Ctx, N>(self) -> Note  where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
+    unconstrained pub fn view_note<N>(self) -> Note  where Note: NoteInterface<N>{
         let options = NoteViewerOptions::new().set_limit(1);
         view_notes(self.storage_slot, options)[0].unwrap()
     }

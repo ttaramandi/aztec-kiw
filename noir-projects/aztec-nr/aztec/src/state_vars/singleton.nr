@@ -2,10 +2,7 @@ use dep::std::option::Option;
 
 use dep::protocol_types::{address::AztecAddress, constants::{GENERATOR_INDEX__INITIALIZATION_NULLIFIER}, hash::pedersen_hash};
 
-// TOOC: CLRAN
-use crate::context::private_context::PrivContext;
-
-use crate::context::{PrivateContext, Context};
+use crate::context::{PrivateContext};
 use crate::note::{
     lifecycle::{create_note, destroy_note}, note_getter::{get_note, view_notes},
     note_interface::NoteInterface, note_viewer_options::NoteViewerOptions
@@ -14,19 +11,19 @@ use crate::oracle::{nullifier_key::get_nullifier_secret_key, notes::check_nullif
 use crate::state_vars::storage::Storage;
 
 // docs:start:struct
-struct Singleton<Ctx, Note> {
-    context: Ctx,
+struct Singleton<Note> {
+    context: PrivateContext,
     storage_slot: Field
 }
 // docs:end:struct
 
-impl<Ctx, T> Storage<T> for Singleton<Ctx, T> {}
+impl<T> Storage<T> for Singleton<T> {}
 
-impl<Ctx, Note> Singleton<Ctx, Note> {
+impl<Note> Singleton<Note> {
     // docs:start:new
-    pub fn new(context: Ctx, storage_slot: Field) -> Self where Ctx: PrivContext {
+    pub fn new(context: PrivateContext, storage_slot: Field) -> Self {
         assert(storage_slot != 0, "Storage slot 0 not allowed. Storage slots must start from 1.");
-        Self { context: context, storage_slot }
+        Self { context, storage_slot }
     }
     // docs:end:new
 
@@ -53,48 +50,44 @@ impl<Ctx, Note> Singleton<Ctx, Note> {
     // docs:end:is_initialized
 
     // docs:start:initialize
-    pub fn initialize<Ctx, N>(self, note: &mut Note, broadcast: bool) where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
-        let context = self.context;
-
+    pub fn initialize<N>(&mut self, note: &mut Note, broadcast: bool) where Note: NoteInterface<N>{
         // Nullify the storage slot.
         let nullifier = self.compute_initialization_nullifier();
-        context.push_new_nullifier(nullifier, 0);
+        self.context.push_new_nullifier(nullifier, 0);
 
-        create_note(context, self.storage_slot, note, broadcast);
+        create_note(&mut self.context, self.storage_slot, note, broadcast);
     }
     // docs:end:initialize
 
     // docs:start:replace
-    pub fn replace<Ctx, N>(self, new_note: &mut Note, broadcast: bool) where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
-        let context = self.context;
-        let prev_note = get_note(context, self.storage_slot);
+    pub fn replace<N>(&mut self, new_note: &mut Note, broadcast: bool) where Note: NoteInterface<N> {
+        let prev_note = get_note(&mut self.context, self.storage_slot);
 
         // Nullify previous note.
-        destroy_note(context, prev_note);
+        destroy_note(&mut self.context, prev_note);
 
         // Add replacement note.
-        create_note(context, self.storage_slot, new_note, broadcast);
+        create_note(&mut self.context, self.storage_slot, new_note, broadcast);
     }
     // docs:end:replace
 
     // docs:start:get_note
-    pub fn get_note<Ctx, N>(self, broadcast: bool) -> Note where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
-        let context = self.context;
-        let mut note = get_note(context, self.storage_slot);
+    pub fn get_note<N>(&mut self, broadcast: bool) -> Note where Note: NoteInterface<N> {
+        let mut note = get_note(&mut self.context, self.storage_slot);
 
         // Nullify current note to make sure it's reading the latest note.
-        destroy_note(context, note);
+        destroy_note(&mut self.context, note);
 
         // Add the same note again.
         // Because a nonce is added to every note in the kernel, its nullifier will be different.
-        create_note(context, self.storage_slot, &mut note, broadcast);
+        create_note(&mut self.context, self.storage_slot, &mut note, broadcast);
 
         note
     }
     // docs:end:get_note
 
     // docs:start:view_note
-    unconstrained pub fn view_note<Ctx, N>(self) -> Note where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
+    unconstrained pub fn view_note<N>(self) -> Note where Note: NoteInterface<N>{
         let options = NoteViewerOptions::new().set_limit(1);
         view_notes(self.storage_slot, options)[0].unwrap()
     }

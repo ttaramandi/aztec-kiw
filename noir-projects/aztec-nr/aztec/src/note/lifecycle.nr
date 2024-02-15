@@ -10,12 +10,12 @@ use crate::context::private_context::PrivContext;
 use crate::context::public_context::PubContext;
 use crate::context::context_trait::Context;
 
-pub fn create_note<Ctx, Note, N>(
-    context: &mut Ctx,
+pub fn create_note<Note, N>(
+    context: &mut PrivateContext,
     storage_slot: Field,
     note: &mut Note,
     broadcast: bool
-) where Note: NoteInterface<Ctx, N>, Ctx: PrivContext, Ctx: Context {
+) where Note: NoteInterface<N> {
     let contract_address = (*context).address();
 
     let header = NoteHeader { contract_address, storage_slot, nonce: 0, is_transient: true };
@@ -43,11 +43,11 @@ pub fn create_note<Ctx, Note, N>(
     }
 }
 
-pub fn create_note_hash_from_public<Ctx, Note, N>(
-    context: &mut Ctx,
+pub fn create_note_hash_from_public< Note, N>(
+    context: &mut PrivateContext,
     storage_slot: Field,
     note: &mut Note
-) where Note: NoteInterface<Ctx, N>, Ctx: PubContext {
+) where Note: NoteInterface< N> {
     let contract_address = (*context).this_address();
 
     let header = NoteHeader { contract_address, storage_slot, nonce: 0, is_transient: true };
@@ -58,7 +58,7 @@ pub fn create_note_hash_from_public<Ctx, Note, N>(
     context.push_new_note_hash(inner_note_hash);
 }
 
-pub fn destroy_note<Ctx, Note, N>(context: &mut Ctx, note: Note) where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
+pub fn destroy_note< Note, N>(context: &mut PrivateContext, note: Note) where Note: NoteInterface< N> {
     let mut nullifier = 0;
     let mut consumed_note_hash: Field = 0;
     nullifier = note.compute_nullifier(context);

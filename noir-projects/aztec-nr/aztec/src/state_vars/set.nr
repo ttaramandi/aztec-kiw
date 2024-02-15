@@ -15,23 +15,23 @@ use crate::note::{
 use crate::state_vars::storage::Storage;
 
 // docs:start:struct
-struct Set<Cxt, Note> {
+struct Set<Note> {
     context: PrivateContext,
     storage_slot: Field,
 }
 // docs:end:struct
 
-impl<Cxt, T> Storage<T> for Set<Ctx, T> {}
+impl<T> Storage<T> for Set<T> {}
 
-impl<Ctx, Note> Set<Ctx, Note> {
+impl<Note> Set<Note> {
     // docs:start:new
-    pub fn new(context: Ctx, storage_slot: Field) -> Self where Ctx: Context {
+    pub fn new(context: PrivateContext, storage_slot: Field) -> Self {
         assert(storage_slot != 0, "Storage slot 0 not allowed. Storage slots must start from 1.");
         Set { context, storage_slot }
     }
     // docs:end:new
     // docs:start:insert
-    pub fn insert<Ctx, N>(self, note: &mut Note, broadcast: bool) where Note: NoteInterface<Ctx,N>, Ctx: PrivContext {
+    pub fn insert<N>(self, note: &mut Note, broadcast: bool) where Note: NoteInterface<N> {
         create_note(
             self.context.private.unwrap(),
             self.storage_slot,
@@ -42,7 +42,7 @@ impl<Ctx, Note> Set<Ctx, Note> {
     // docs:end:insert
 
     // docs:start:insert_from_public
-    pub fn insert_from_public<Ctx, N>(self, note: &mut Note) where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
+    pub fn insert_from_public<N>(self, note: &mut Note) where Note: NoteInterface<N> {
         create_note_hash_from_public(self.context.public.unwrap(), self.storage_slot, note);
     }
     // docs:end:insert_from_public
@@ -62,7 +62,7 @@ impl<Ctx, Note> Set<Ctx, Note> {
     }
 
     // docs:start:remove
-    pub fn remove<Ctx, N>(self, note: Note) where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
+    pub fn remove<N>(self, note: Note) where Note: NoteInterface<N> {
         let mut context = self.context;
         let note_hash = compute_note_hash_for_consumption(note);
         let has_been_read = context.read_requests.any(|r: SideEffect| r.value == note_hash);
@@ -73,10 +73,10 @@ impl<Ctx, Note> Set<Ctx, Note> {
     // docs:end:remove
 
     // docs:start:get_notes
-    pub fn get_notes<Ctx, N, FILTER_ARGS>(
+    pub fn get_notes<N, FILTER_ARGS>(
         self,
         options: NoteGetterOptions<Note, N, FILTER_ARGS>
-    ) -> [Option<Note>; MAX_READ_REQUESTS_PER_CALL] where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
+    ) -> [Option<Note>; MAX_READ_REQUESTS_PER_CALL] where Note: NoteInterface<N> {
         let storage_slot = self.storage_slot;
         let opt_notes = get_notes(self.context, storage_slot, options);
         opt_notes
@@ -84,10 +84,10 @@ impl<Ctx, Note> Set<Ctx, Note> {
     // docs:end:get_notes
 
     // docs:start:view_notes
-    unconstrained pub fn view_notes<Ctx, N>(
+    unconstrained pub fn view_notes<N>(
         self,
         options: NoteViewerOptions<Note, N>
-    ) -> [Option<Note>; MAX_NOTES_PER_PAGE] where Note: NoteInterface<Ctx, N>, Ctx: PrivContext {
+    ) -> [Option<Note>; MAX_NOTES_PER_PAGE] where Note: NoteInterface<N> {
         view_notes(self.storage_slot, options)
     }
     // docs:end:view_notes
