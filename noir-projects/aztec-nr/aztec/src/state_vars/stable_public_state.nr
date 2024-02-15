@@ -29,7 +29,9 @@ impl<T> StablePublicState<T> {
         // This is currently impractical, as public functions are never marked `is_contract_deployment`
         // in the `call_context`, only private functions will have this flag set.
         let fields = T::serialize(value);
-        storage_write(self.storage_slot, fields);
+        for i in 0..fields.len() {
+            storage_write(self.storage_slot + i, fields[i]);
+        }
     }
 
     pub fn read_public<T_SERIALIZED_LEN>(self) -> T where T: Deserialize<T_SERIALIZED_LEN> {

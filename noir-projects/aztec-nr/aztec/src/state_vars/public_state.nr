@@ -1,6 +1,7 @@
 use crate::context::{Context};
 use crate::oracle::storage::storage_read;
 use crate::oracle::storage::storage_write;
+use crate::oracle::storage::storage_writes;
 use dep::std::option::Option;
 use dep::protocol_types::traits::{Deserialize, Serialize};
 use crate::state_vars::storage::Storage;
@@ -38,7 +39,11 @@ impl<T> PublicState<T> {
     pub fn write<T_SERIALIZED_LEN>(self, value: T) where T: Serialize<T_SERIALIZED_LEN> {
         assert(self.context.private.is_none(), "Public state writes only supported in public functions");
         let fields = T::serialize(value);
-        storage_write(self.storage_slot, fields);
+        // storage_writes(self.storage_slot, fields);
+        for i in 0..1 {
+            // Convert this in the public simulator
+            println(i);
+        }
     }
     // docs:end:public_state_struct_write
 }

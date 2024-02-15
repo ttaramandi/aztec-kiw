@@ -239,6 +239,7 @@ impl<'block> BrilligBlock<'block> {
         let instruction = &dfg[instruction_id];
         self.brillig_context.set_call_stack(dfg.get_call_stack(instruction_id));
 
+        dbg!(&instruction);
         match instruction {
             Instruction::Binary(binary) => {
                 let result_register = self.variables.define_register_variable(
@@ -341,7 +342,10 @@ impl<'block> BrilligBlock<'block> {
                 let bit_size = get_bit_size_from_ssa_type(&dfg.type_of_value(*value));
                 self.brillig_context.not_instruction(condition_register, bit_size, result_register);
             }
-            Instruction::Call { func, arguments } => match &dfg[*func] {
+            Instruction::Call { func, arguments } => {
+                dbg!(&dfg[*func]);
+                match &dfg[*func] {
+
                 Value::ForeignFunction(func_name) => {
                     let result_ids = dfg.instruction_results(instruction_id);
 
@@ -545,6 +549,7 @@ impl<'block> BrilligBlock<'block> {
                 }
                 _ => {
                     unreachable!("unsupported function call type {:?}", dfg[*func])
+                }
                 }
             },
             Instruction::Truncate { value, bit_size, .. } => {

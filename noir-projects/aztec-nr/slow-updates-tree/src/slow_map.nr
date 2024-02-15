@@ -125,7 +125,9 @@ impl<N,M> SlowMap<N,M> {
       after: initial_root,
     };
     let fields = root_object.serialize();
-    storage_write(self.storage_slot, fields);
+    for i in 0..fields.len() {
+      storage_write(self.storage_slot + i, fields[i]);
+    }
   }
 
   // Reads the "CURRENT" value of the root
@@ -249,10 +251,14 @@ impl<N,M> SlowMap<N,M> {
   fn update_unsafe(self: Self, index: Field, leaf: Leaf, root: Leaf) {
     let derived_storage_slot = pedersen_hash([self.storage_slot, index]);
     let fields = leaf.serialize();
-    storage_write(derived_storage_slot, fields);
+    for i in 0..fields.len() {
+      storage_write(self.storage_slot + i, fields[i]);
+    }
     
     let fields = root.serialize();
-    storage_write(self.storage_slot, fields);
+    for i in 0..fields.len() {
+      storage_write(self.storage_slot + i, fields[i]);
+    }
   }
 }
 
