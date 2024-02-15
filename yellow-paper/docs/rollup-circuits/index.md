@@ -26,7 +26,7 @@ And for the message compression we have:
 - The `compress` circuit
   - Merges `N` `compress` or `compress_leaf` proofs
 - The `compress_leaf` circuit
-  - Merges `N` messages 
+  - Merges `N` l1 to l2 messages in a subtree 
 
 In the diagram the sizes of the trees are limited for show.
 In reality larger trees would have more layers between the leafs and the root.
