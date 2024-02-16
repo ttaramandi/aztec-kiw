@@ -37,13 +37,13 @@ class AvmMiniFlavor {
     using RelationSeparator = FF;
 
     static constexpr size_t NUM_PRECOMPUTED_ENTITIES = 2;
-    static constexpr size_t NUM_WITNESS_ENTITIES = 66;
+    static constexpr size_t NUM_WITNESS_ENTITIES = 69;
     static constexpr size_t NUM_WIRES = NUM_WITNESS_ENTITIES + NUM_PRECOMPUTED_ENTITIES;
     // We have two copies of the witness entities, so we subtract the number of fixed ones (they have no shift), one for
     // the unshifted and one for the shifted
-    static constexpr size_t NUM_ALL_ENTITIES = 82;
+    static constexpr size_t NUM_ALL_ENTITIES = 85;
 
-    using Relations = std::tuple<AvmMini_vm::mem_trace<FF>, AvmMini_vm::alu_chip<FF>, AvmMini_vm::avm_mini<FF>>;
+    using Relations = std::tuple<AvmMini_vm::alu_chip<FF>, AvmMini_vm::avm_mini<FF>, AvmMini_vm::mem_trace<FF>>;
 
     static constexpr size_t MAX_PARTIAL_RELATION_LENGTH = compute_max_partial_relation_length<Relations>();
 
@@ -97,6 +97,7 @@ class AvmMiniFlavor {
                               aluChip_alu_op_mul,
                               aluChip_alu_op_div,
                               aluChip_alu_op_not,
+                              aluChip_alu_op_eq,
                               aluChip_alu_ff_tag,
                               aluChip_alu_u8_tag,
                               aluChip_alu_u16_tag,
@@ -115,6 +116,7 @@ class AvmMiniFlavor {
                               aluChip_alu_u16_r7,
                               aluChip_alu_u64_r0,
                               aluChip_alu_cf,
+                              aluChip_alu_inv_diff,
                               avmMini_pc,
                               avmMini_internal_return_ptr,
                               avmMini_sel_internal_call,
@@ -126,6 +128,7 @@ class AvmMiniFlavor {
                               avmMini_sel_op_mul,
                               avmMini_sel_op_div,
                               avmMini_sel_op_not,
+                              avmMini_sel_op_eq,
                               avmMini_in_tag,
                               avmMini_op_err,
                               avmMini_tag_err,
@@ -166,6 +169,7 @@ class AvmMiniFlavor {
                      aluChip_alu_op_mul,
                      aluChip_alu_op_div,
                      aluChip_alu_op_not,
+                     aluChip_alu_op_eq,
                      aluChip_alu_ff_tag,
                      aluChip_alu_u8_tag,
                      aluChip_alu_u16_tag,
@@ -184,6 +188,7 @@ class AvmMiniFlavor {
                      aluChip_alu_u16_r7,
                      aluChip_alu_u64_r0,
                      aluChip_alu_cf,
+                     aluChip_alu_inv_diff,
                      avmMini_pc,
                      avmMini_internal_return_ptr,
                      avmMini_sel_internal_call,
@@ -195,6 +200,7 @@ class AvmMiniFlavor {
                      avmMini_sel_op_mul,
                      avmMini_sel_op_div,
                      avmMini_sel_op_not,
+                     avmMini_sel_op_eq,
                      avmMini_in_tag,
                      avmMini_op_err,
                      avmMini_tag_err,
@@ -241,6 +247,7 @@ class AvmMiniFlavor {
                               aluChip_alu_op_mul,
                               aluChip_alu_op_div,
                               aluChip_alu_op_not,
+                              aluChip_alu_op_eq,
                               aluChip_alu_ff_tag,
                               aluChip_alu_u8_tag,
                               aluChip_alu_u16_tag,
@@ -259,6 +266,7 @@ class AvmMiniFlavor {
                               aluChip_alu_u16_r7,
                               aluChip_alu_u64_r0,
                               aluChip_alu_cf,
+                              aluChip_alu_inv_diff,
                               avmMini_pc,
                               avmMini_internal_return_ptr,
                               avmMini_sel_internal_call,
@@ -270,6 +278,7 @@ class AvmMiniFlavor {
                               avmMini_sel_op_mul,
                               avmMini_sel_op_div,
                               avmMini_sel_op_not,
+                              avmMini_sel_op_eq,
                               avmMini_in_tag,
                               avmMini_op_err,
                               avmMini_tag_err,
@@ -287,20 +296,20 @@ class AvmMiniFlavor {
                               avmMini_mem_idx_b,
                               avmMini_mem_idx_c,
                               avmMini_last,
-                              memTrace_m_rw_shift,
-                              memTrace_m_val_shift,
-                              memTrace_m_addr_shift,
-                              memTrace_m_tag_shift,
-                              aluChip_alu_u16_r1_shift,
-                              aluChip_alu_u16_r4_shift,
-                              aluChip_alu_u16_r7_shift,
+                              aluChip_alu_u16_r2_shift,
                               aluChip_alu_u16_r0_shift,
                               aluChip_alu_u16_r5_shift,
                               aluChip_alu_u16_r6_shift,
-                              aluChip_alu_u16_r2_shift,
+                              aluChip_alu_u16_r1_shift,
+                              aluChip_alu_u16_r7_shift,
                               aluChip_alu_u16_r3_shift,
+                              aluChip_alu_u16_r4_shift,
+                              avmMini_pc_shift,
                               avmMini_internal_return_ptr_shift,
-                              avmMini_pc_shift)
+                              memTrace_m_tag_shift,
+                              memTrace_m_rw_shift,
+                              memTrace_m_addr_shift,
+                              memTrace_m_val_shift)
 
         RefVector<DataType> get_wires()
         {
@@ -326,6 +335,7 @@ class AvmMiniFlavor {
                      aluChip_alu_op_mul,
                      aluChip_alu_op_div,
                      aluChip_alu_op_not,
+                     aluChip_alu_op_eq,
                      aluChip_alu_ff_tag,
                      aluChip_alu_u8_tag,
                      aluChip_alu_u16_tag,
@@ -344,6 +354,7 @@ class AvmMiniFlavor {
                      aluChip_alu_u16_r7,
                      aluChip_alu_u64_r0,
                      aluChip_alu_cf,
+                     aluChip_alu_inv_diff,
                      avmMini_pc,
                      avmMini_internal_return_ptr,
                      avmMini_sel_internal_call,
@@ -355,6 +366,7 @@ class AvmMiniFlavor {
                      avmMini_sel_op_mul,
                      avmMini_sel_op_div,
                      avmMini_sel_op_not,
+                     avmMini_sel_op_eq,
                      avmMini_in_tag,
                      avmMini_op_err,
                      avmMini_tag_err,
@@ -372,20 +384,20 @@ class AvmMiniFlavor {
                      avmMini_mem_idx_b,
                      avmMini_mem_idx_c,
                      avmMini_last,
-                     memTrace_m_rw_shift,
-                     memTrace_m_val_shift,
-                     memTrace_m_addr_shift,
-                     memTrace_m_tag_shift,
-                     aluChip_alu_u16_r1_shift,
-                     aluChip_alu_u16_r4_shift,
-                     aluChip_alu_u16_r7_shift,
+                     aluChip_alu_u16_r2_shift,
                      aluChip_alu_u16_r0_shift,
                      aluChip_alu_u16_r5_shift,
                      aluChip_alu_u16_r6_shift,
-                     aluChip_alu_u16_r2_shift,
+                     aluChip_alu_u16_r1_shift,
+                     aluChip_alu_u16_r7_shift,
                      aluChip_alu_u16_r3_shift,
+                     aluChip_alu_u16_r4_shift,
+                     avmMini_pc_shift,
                      avmMini_internal_return_ptr_shift,
-                     avmMini_pc_shift };
+                     memTrace_m_tag_shift,
+                     memTrace_m_rw_shift,
+                     memTrace_m_addr_shift,
+                     memTrace_m_val_shift };
         };
         RefVector<DataType> get_unshifted()
         {
@@ -411,6 +423,7 @@ class AvmMiniFlavor {
                      aluChip_alu_op_mul,
                      aluChip_alu_op_div,
                      aluChip_alu_op_not,
+                     aluChip_alu_op_eq,
                      aluChip_alu_ff_tag,
                      aluChip_alu_u8_tag,
                      aluChip_alu_u16_tag,
@@ -429,6 +442,7 @@ class AvmMiniFlavor {
                      aluChip_alu_u16_r7,
                      aluChip_alu_u64_r0,
                      aluChip_alu_cf,
+                     aluChip_alu_inv_diff,
                      avmMini_pc,
                      avmMini_internal_return_ptr,
                      avmMini_sel_internal_call,
@@ -440,6 +454,7 @@ class AvmMiniFlavor {
                      avmMini_sel_op_mul,
                      avmMini_sel_op_div,
                      avmMini_sel_op_not,
+                     avmMini_sel_op_eq,
                      avmMini_in_tag,
                      avmMini_op_err,
                      avmMini_tag_err,
@@ -460,37 +475,23 @@ class AvmMiniFlavor {
         };
         RefVector<DataType> get_to_be_shifted()
         {
-            return { memTrace_m_rw,
-                     memTrace_m_val,
-                     memTrace_m_addr,
-                     memTrace_m_tag,
-                     aluChip_alu_u16_r1,
-                     aluChip_alu_u16_r4,
-                     aluChip_alu_u16_r7,
-                     aluChip_alu_u16_r0,
-                     aluChip_alu_u16_r5,
-                     aluChip_alu_u16_r6,
-                     aluChip_alu_u16_r2,
-                     aluChip_alu_u16_r3,
-                     avmMini_internal_return_ptr,
-                     avmMini_pc };
+            return { aluChip_alu_u16_r2, aluChip_alu_u16_r0,
+                     aluChip_alu_u16_r5, aluChip_alu_u16_r6,
+                     aluChip_alu_u16_r1, aluChip_alu_u16_r7,
+                     aluChip_alu_u16_r3, aluChip_alu_u16_r4,
+                     avmMini_pc,         avmMini_internal_return_ptr,
+                     memTrace_m_tag,     memTrace_m_rw,
+                     memTrace_m_addr,    memTrace_m_val };
         };
         RefVector<DataType> get_shifted()
         {
-            return { memTrace_m_rw_shift,
-                     memTrace_m_val_shift,
-                     memTrace_m_addr_shift,
-                     memTrace_m_tag_shift,
-                     aluChip_alu_u16_r1_shift,
-                     aluChip_alu_u16_r4_shift,
-                     aluChip_alu_u16_r7_shift,
-                     aluChip_alu_u16_r0_shift,
-                     aluChip_alu_u16_r5_shift,
-                     aluChip_alu_u16_r6_shift,
-                     aluChip_alu_u16_r2_shift,
-                     aluChip_alu_u16_r3_shift,
-                     avmMini_internal_return_ptr_shift,
-                     avmMini_pc_shift };
+            return { aluChip_alu_u16_r2_shift, aluChip_alu_u16_r0_shift,
+                     aluChip_alu_u16_r5_shift, aluChip_alu_u16_r6_shift,
+                     aluChip_alu_u16_r1_shift, aluChip_alu_u16_r7_shift,
+                     aluChip_alu_u16_r3_shift, aluChip_alu_u16_r4_shift,
+                     avmMini_pc_shift,         avmMini_internal_return_ptr_shift,
+                     memTrace_m_tag_shift,     memTrace_m_rw_shift,
+                     memTrace_m_addr_shift,    memTrace_m_val_shift };
         };
     };
 
@@ -503,20 +504,13 @@ class AvmMiniFlavor {
 
         RefVector<DataType> get_to_be_shifted()
         {
-            return { memTrace_m_rw,
-                     memTrace_m_val,
-                     memTrace_m_addr,
-                     memTrace_m_tag,
-                     aluChip_alu_u16_r1,
-                     aluChip_alu_u16_r4,
-                     aluChip_alu_u16_r7,
-                     aluChip_alu_u16_r0,
-                     aluChip_alu_u16_r5,
-                     aluChip_alu_u16_r6,
-                     aluChip_alu_u16_r2,
-                     aluChip_alu_u16_r3,
-                     avmMini_internal_return_ptr,
-                     avmMini_pc };
+            return { aluChip_alu_u16_r2, aluChip_alu_u16_r0,
+                     aluChip_alu_u16_r5, aluChip_alu_u16_r6,
+                     aluChip_alu_u16_r1, aluChip_alu_u16_r7,
+                     aluChip_alu_u16_r3, aluChip_alu_u16_r4,
+                     avmMini_pc,         avmMini_internal_return_ptr,
+                     memTrace_m_tag,     memTrace_m_rw,
+                     memTrace_m_addr,    memTrace_m_val };
         };
 
         // The plookup wires that store plookup read data.
@@ -615,6 +609,7 @@ class AvmMiniFlavor {
             Base::aluChip_alu_op_mul = "ALUCHIP_ALU_OP_MUL";
             Base::aluChip_alu_op_div = "ALUCHIP_ALU_OP_DIV";
             Base::aluChip_alu_op_not = "ALUCHIP_ALU_OP_NOT";
+            Base::aluChip_alu_op_eq = "ALUCHIP_ALU_OP_EQ";
             Base::aluChip_alu_ff_tag = "ALUCHIP_ALU_FF_TAG";
             Base::aluChip_alu_u8_tag = "ALUCHIP_ALU_U8_TAG";
             Base::aluChip_alu_u16_tag = "ALUCHIP_ALU_U16_TAG";
@@ -633,6 +628,7 @@ class AvmMiniFlavor {
             Base::aluChip_alu_u16_r7 = "ALUCHIP_ALU_U16_R7";
             Base::aluChip_alu_u64_r0 = "ALUCHIP_ALU_U64_R0";
             Base::aluChip_alu_cf = "ALUCHIP_ALU_CF";
+            Base::aluChip_alu_inv_diff = "ALUCHIP_ALU_INV_DIFF";
             Base::avmMini_pc = "AVMMINI_PC";
             Base::avmMini_internal_return_ptr = "AVMMINI_INTERNAL_RETURN_PTR";
             Base::avmMini_sel_internal_call = "AVMMINI_SEL_INTERNAL_CALL";
@@ -644,6 +640,7 @@ class AvmMiniFlavor {
             Base::avmMini_sel_op_mul = "AVMMINI_SEL_OP_MUL";
             Base::avmMini_sel_op_div = "AVMMINI_SEL_OP_DIV";
             Base::avmMini_sel_op_not = "AVMMINI_SEL_OP_NOT";
+            Base::avmMini_sel_op_eq = "AVMMINI_SEL_OP_EQ";
             Base::avmMini_in_tag = "AVMMINI_IN_TAG";
             Base::avmMini_op_err = "AVMMINI_OP_ERR";
             Base::avmMini_tag_err = "AVMMINI_TAG_ERR";
@@ -700,6 +697,7 @@ class AvmMiniFlavor {
         Commitment aluChip_alu_op_mul;
         Commitment aluChip_alu_op_div;
         Commitment aluChip_alu_op_not;
+        Commitment aluChip_alu_op_eq;
         Commitment aluChip_alu_ff_tag;
         Commitment aluChip_alu_u8_tag;
         Commitment aluChip_alu_u16_tag;
@@ -718,6 +716,7 @@ class AvmMiniFlavor {
         Commitment aluChip_alu_u16_r7;
         Commitment aluChip_alu_u64_r0;
         Commitment aluChip_alu_cf;
+        Commitment aluChip_alu_inv_diff;
         Commitment avmMini_pc;
         Commitment avmMini_internal_return_ptr;
         Commitment avmMini_sel_internal_call;
@@ -729,6 +728,7 @@ class AvmMiniFlavor {
         Commitment avmMini_sel_op_mul;
         Commitment avmMini_sel_op_div;
         Commitment avmMini_sel_op_not;
+        Commitment avmMini_sel_op_eq;
         Commitment avmMini_in_tag;
         Commitment avmMini_op_err;
         Commitment avmMini_tag_err;
@@ -785,6 +785,7 @@ class AvmMiniFlavor {
             aluChip_alu_op_mul = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             aluChip_alu_op_div = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             aluChip_alu_op_not = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
+            aluChip_alu_op_eq = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             aluChip_alu_ff_tag = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             aluChip_alu_u8_tag = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             aluChip_alu_u16_tag = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
@@ -803,6 +804,7 @@ class AvmMiniFlavor {
             aluChip_alu_u16_r7 = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             aluChip_alu_u64_r0 = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             aluChip_alu_cf = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
+            aluChip_alu_inv_diff = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             avmMini_pc = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             avmMini_internal_return_ptr = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             avmMini_sel_internal_call = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
@@ -814,6 +816,7 @@ class AvmMiniFlavor {
             avmMini_sel_op_mul = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             avmMini_sel_op_div = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             avmMini_sel_op_not = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
+            avmMini_sel_op_eq = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             avmMini_in_tag = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             avmMini_op_err = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             avmMini_tag_err = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
@@ -874,6 +877,7 @@ class AvmMiniFlavor {
             serialize_to_buffer<Commitment>(aluChip_alu_op_mul, Transcript::proof_data);
             serialize_to_buffer<Commitment>(aluChip_alu_op_div, Transcript::proof_data);
             serialize_to_buffer<Commitment>(aluChip_alu_op_not, Transcript::proof_data);
+            serialize_to_buffer<Commitment>(aluChip_alu_op_eq, Transcript::proof_data);
             serialize_to_buffer<Commitment>(aluChip_alu_ff_tag, Transcript::proof_data);
             serialize_to_buffer<Commitment>(aluChip_alu_u8_tag, Transcript::proof_data);
             serialize_to_buffer<Commitment>(aluChip_alu_u16_tag, Transcript::proof_data);
@@ -892,6 +896,7 @@ class AvmMiniFlavor {
             serialize_to_buffer<Commitment>(aluChip_alu_u16_r7, Transcript::proof_data);
             serialize_to_buffer<Commitment>(aluChip_alu_u64_r0, Transcript::proof_data);
             serialize_to_buffer<Commitment>(aluChip_alu_cf, Transcript::proof_data);
+            serialize_to_buffer<Commitment>(aluChip_alu_inv_diff, Transcript::proof_data);
             serialize_to_buffer<Commitment>(avmMini_pc, Transcript::proof_data);
             serialize_to_buffer<Commitment>(avmMini_internal_return_ptr, Transcript::proof_data);
             serialize_to_buffer<Commitment>(avmMini_sel_internal_call, Transcript::proof_data);
@@ -903,6 +908,7 @@ class AvmMiniFlavor {
             serialize_to_buffer<Commitment>(avmMini_sel_op_mul, Transcript::proof_data);
             serialize_to_buffer<Commitment>(avmMini_sel_op_div, Transcript::proof_data);
             serialize_to_buffer<Commitment>(avmMini_sel_op_not, Transcript::proof_data);
+            serialize_to_buffer<Commitment>(avmMini_sel_op_eq, Transcript::proof_data);
             serialize_to_buffer<Commitment>(avmMini_in_tag, Transcript::proof_data);
             serialize_to_buffer<Commitment>(avmMini_op_err, Transcript::proof_data);
             serialize_to_buffer<Commitment>(avmMini_tag_err, Transcript::proof_data);

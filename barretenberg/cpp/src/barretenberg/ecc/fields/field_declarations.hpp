@@ -10,7 +10,7 @@
 #include <random>
 #include <span>
 
-#ifndef DISABLE_SHENANIGANS
+#ifndef DISABLE_ASM
 #ifdef __BMI2__
 #define BBERG_NO_ASM 0
 #else
@@ -475,7 +475,6 @@ template <class Params_> struct alignas(32) field {
     void msgpack_unpack(auto o);
     void msgpack_schema(auto& packer) const { packer.pack_alias(Params::schema_name, "bin32"); }
 
-  private:
     static constexpr uint256_t twice_modulus = modulus + modulus;
     static constexpr uint256_t not_modulus = -modulus;
     static constexpr uint256_t twice_not_modulus = -twice_modulus;
