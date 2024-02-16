@@ -69,16 +69,20 @@ export class AvmWorldStateJournal {
    * @param key -
    * @param value -
    */
-  public writeStorage(contractAddress: Fr, key: Fr, value: Fr) {
+  public writeStorage(contractAddress: Fr, key: Fr, value: /*temporarily an array*/ Fr[]) {
     let contractMap = this.currentStorageValue.get(contractAddress.toBigInt());
     if (!contractMap) {
       contractMap = new Map();
       this.currentStorageValue.set(contractAddress.toBigInt(), contractMap);
     }
-    contractMap.set(key.toBigInt(), value);
+    
+    // TODO: talk about Loop below is inefficient as it will be deleted
+    for (const [i, val] of Array.from(value).entries()) {
 
-    // We want to keep track of all performed writes in the journal
-    this.journalWrite(contractAddress, key, value);
+      contractMap.set((key.toBigInt() + BigInt(i)), val);
+      // We want to keep track of all performed writes in the journal
+      this.journalWrite(contractAddress, (key.add(new Fr(i))), val);
+    }
   }
 
   /**

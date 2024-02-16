@@ -20,12 +20,20 @@ abstract class BaseStorageInstruction extends Instruction {
   }
 }
 
-export class SStore extends BaseStorageInstruction {
+export class SStore extends /* temporarily disabled: BaseStorageInstruction*/ Instruction {
   static readonly type: string = 'SSTORE';
   static readonly opcode = Opcode.SSTORE;
 
-  constructor(indirect: number, srcOffset: number, slotOffset: number) {
-    super(indirect, srcOffset, slotOffset);
+  public static readonly wireFormat: OperandType[] = [
+    OperandType.UINT8,
+    OperandType.UINT8,
+    OperandType.UINT32,
+    OperandType.UINT32,
+    OperandType.UINT32,
+  ];
+
+  constructor(private _indirect: number, private srcOffset: number, private /*temporary*/srcSize: number, private  slotOffset: number) {
+    super();
   }
 
   async execute(context: AvmContext): Promise<void> {
@@ -33,13 +41,13 @@ export class SStore extends BaseStorageInstruction {
       throw new StaticCallStorageAlterError();
     }
 
-    const slot = context.machineState.memory.get(this.aOffset);
-    const data = context.machineState.memory.get(this.bOffset);
+    const slot = context.machineState.memory.get(this.slotOffset).toFr();
+    const data = context.machineState.memory.getSlice(this.srcOffset, this.srcSize).map((field) => field.toFr());
 
     context.worldState.writeStorage(
       context.environment.storageAddress,
-      new Fr(slot.toBigInt()),
-      new Fr(data.toBigInt()),
+      slot,
+      data,
     );
 
     context.machineState.incrementPc();
