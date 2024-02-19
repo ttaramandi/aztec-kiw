@@ -329,7 +329,6 @@ fn handle_2_field_hash_instruction(
 ) {
     // handle field returns differently
     let hash_offset_maybe = inputs[0];
-    println!("hash_offset_maybe: {:?}", hash_offset_maybe);
     let (hash_offset, hash_size) = match hash_offset_maybe {
         ValueOrArray::HeapArray(HeapArray { pointer, size }) => (pointer.0, size),
         _ => panic!("Keccak | Sha256 address inputs destination should be a single value"),
