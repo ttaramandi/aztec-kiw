@@ -1,8 +1,10 @@
 mod subscription_note;
+mod dapp_payload;
 
 contract AppSubscriptionContract {
     use dep::std;
     use dep::std::option::Option;
+    use crate::dapp_payload::DAppPayload;
 
     use dep::aztec::protocol_types::{address::AztecAddress, abis::function_selector::FunctionSelector};
 
@@ -11,10 +13,7 @@ contract AppSubscriptionContract {
         oracle::get_public_key::get_public_key,
         state_vars::{map::Map, singleton::Singleton, public_state::PublicState, stable_public_state::StablePublicState}
     };
-    use dep::authwit::{
-        entrypoint::{function_call::FunctionCall, app::AppPayload, fee::FeePayload},
-        account::AccountActions, auth_witness::get_auth_witness
-    };
+    use dep::authwit::{account::AccountActions, auth_witness::get_auth_witness, auth::assert_current_call_valid_authwit};
 
     use crate::subscription_note::{SubscriptionNote, SUBSCRIPTION_NOTE_LEN};
 
@@ -46,11 +45,13 @@ contract AppSubscriptionContract {
     }
 
     #[aztec(private)]
-    fn entrypoint(call: FunctionCall, user_address: AztecAddress) {
+    fn entrypoint(payload: pub DAppPayload, user_address: pub AztecAddress) {
         assert(context.msg_sender().to_field() == 0);
-        assert(call.target_address == storage.target_address.read_private());
+        // assert(call.target_address == storage.target_address.read_private());
         let note = storage.subscriptions.at(user_address).get_note(false);
         assert(note.remaining_txs as u64 > 0);
+
+        assert_current_call_valid_authwit(&mut context, user_address);
 
         context.call_public_function(
             context.this_address(),
@@ -58,23 +59,7 @@ contract AppSubscriptionContract {
             [note.expiry_block_number]
         );
 
-        if call.is_public {
-            context.call_public_function_with_packed_args(
-                call.target_address,
-                call.function_selector,
-                call.args_hash,
-                false,
-                false
-            );
-        } else {
-            let _result = context.call_private_function_with_packed_args(
-                call.target_address,
-                call.function_selector,
-                call.args_hash,
-                false,
-                false
-            );
-        }
+        payload.execute_calls(&mut context, storage.target_address.read_private());
     }
 
     #[aztec(public)]
