@@ -11,6 +11,7 @@
 #include "fixed_base_scalar_mul.hpp"
 #include "keccak_constraint.hpp"
 #include "logic_constraint.hpp"
+#include "lookup_operations.hpp"
 #include "pedersen.hpp"
 #include "poseidon2_constraint.hpp"
 #include "range_constraint.hpp"
@@ -53,6 +54,8 @@ struct AcirFormat {
     std::vector<BigIntFromLeBytes> bigint_from_le_bytes_constraints;
     std::vector<BigIntToLeBytes> bigint_to_le_bytes_constraints;
     std::vector<BigIntOperation> bigint_operations;
+    std::vector<InitConstantLookup> lookup_init;
+    std::vector<ConstLookupRead> const_lookup_read;
 
     // A standard plonk arithmetic constraint, as defined in the poly_triple struct, consists of selector values
     // for q_M,q_L,q_R,q_O,q_C and indices of three variables taking the role of left, right and output wire
@@ -87,7 +90,9 @@ struct AcirFormat {
                    block_constraints,
                    bigint_from_le_bytes_constraints,
                    bigint_to_le_bytes_constraints,
-                   bigint_operations);
+                   bigint_operations,
+                   lookup_init,
+                   const_lookup_read);
 
     friend bool operator==(AcirFormat const& lhs, AcirFormat const& rhs) = default;
 };
