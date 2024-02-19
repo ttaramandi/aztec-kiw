@@ -6,7 +6,7 @@ use acvm::brillig_vm::brillig::{
 };
 
 use crate::instructions::{
-    AvmInstruction, AvmOperand, AvmTypeTag, ALL_DIRECT, FIRST_OPERAND_INDIRECT,
+    AvmInstruction, AvmOperand, AvmTypeTag, ALL_DIRECT, FIRST_OPERAND_INDIRECT, SECOND_OPERAND_INDIRECT,
     ZEROTH_OPERAND_INDIRECT,
 };
 use crate::opcodes::AvmOpcode;
@@ -238,9 +238,87 @@ fn handle_foreign_call(
         "keccak256" | "sha256" => {
             handle_2_field_hash_instruction(avm_instrs, function, destinations, inputs)
         }
+        "storageWrite" => handle_storage_write(avm_instrs, destinations, inputs),
+        "storageRead" => handle_storage_read(avm_instrs, destinations, inputs),
         "poseidon" => handle_field_hash_instruction(avm_instrs, function, destinations, inputs),
         _ => handle_getter_instruction(avm_instrs, function, destinations, inputs),
     }
+}
+
+fn handle_storage_write(
+    avm_instrs: &mut Vec<AvmInstruction>,
+    destinations: &Vec<ValueOrArray>,
+    inputs: &Vec<ValueOrArray>,
+) {
+    // For the foreign calls we want to handle, we do not want inputs, as they are getters
+    assert!(inputs.len() == 2);
+    assert!(destinations.len() == 1); // TODO: we want this to be empty - change aztec nr?
+
+    let slot_offset_maybe = inputs[0];
+    let slot_offset = match slot_offset_maybe {
+        ValueOrArray::MemoryAddress(slot_offset) => slot_offset.0,
+        _ => panic!("ForeignCall address destination should be a single value"),
+    };
+
+    let src_offset_maybe = inputs[1];
+    let (src_offset, src_size) = match src_offset_maybe {
+        ValueOrArray::HeapArray(HeapArray { pointer, size }) => (pointer.0, size),
+        _ => panic!("Storage write address inputs should be an array of values"),
+    };
+
+    avm_instrs.push(AvmInstruction {
+        opcode: AvmOpcode::SSTORE,
+        indirect: Some(ZEROTH_OPERAND_INDIRECT),
+        operands: vec![AvmOperand::U32 {
+            value: src_offset as u32,
+        },
+        AvmOperand::U32 {
+            value: src_size as u32,
+        },
+        AvmOperand::U32 {
+            value: slot_offset as u32,
+        }],
+        ..Default::default()
+    })
+}
+
+// TODO: storage reads also temporarily return a heap array of values, rather than a single value
+fn handle_storage_read(
+    avm_instrs: &mut Vec<AvmInstruction>,
+    destinations: &Vec<ValueOrArray>,
+    inputs: &Vec<ValueOrArray>,
+) {
+    // For the foreign calls we want to handle, we do not want inputs, as they are getters
+    assert!(inputs.len() == 2); // output, len - but we dont use this len - its for the oracle
+    assert!(destinations.len() == 1);
+
+    let slot_offset_maybe = inputs[0];
+    let slot_offset = match slot_offset_maybe {
+        ValueOrArray::MemoryAddress(slot_offset) => slot_offset.0,
+        _ => panic!("ForeignCall address destination should be a single value"),
+    };
+
+
+    let dest_offset_maybe = destinations[0];
+    let (dest_offset, src_size) = match dest_offset_maybe {
+        ValueOrArray::HeapArray(HeapArray { pointer, size }) => (pointer.0, size),
+        _ => panic!("Storage write address inputs should be an array of values"),
+    };
+
+    avm_instrs.push(AvmInstruction {
+        opcode: AvmOpcode::SLOAD,
+        indirect: Some(SECOND_OPERAND_INDIRECT),
+        operands: vec![AvmOperand::U32 {
+            value: slot_offset as u32,
+        },
+        AvmOperand::U32 {
+            value: src_size as u32,
+        },
+        AvmOperand::U32 {
+            value: dest_offset as u32,
+        }],
+        ..Default::default()
+    })
 }
 
 fn handle_2_field_hash_instruction(

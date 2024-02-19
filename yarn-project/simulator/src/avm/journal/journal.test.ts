@@ -26,7 +26,7 @@ describe('journal', () => {
       const key = new Fr(2);
       const value = new Fr(3);
 
-      journal.writeStorage(contractAddress, key, value);
+      journal.writeStorage(contractAddress, key, [value]);
 
       const journalUpdates: JournalData = journal.flush();
       expect(journalUpdates.currentStorageValue.get(contractAddress.toBigInt())?.get(key.toBigInt())).toEqual(value);
@@ -49,12 +49,12 @@ describe('journal', () => {
       expect(cacheMissResult).toEqual(storedValue);
 
       // Write to storage
-      journal.writeStorage(contractAddress, key, parentValue);
+      journal.writeStorage(contractAddress, key, [parentValue]);
       const parentResult = await childJournal.readStorage(contractAddress, key);
       expect(parentResult).toEqual(parentValue);
 
       // Get the parent value
-      childJournal.writeStorage(contractAddress, key, cachedValue);
+      childJournal.writeStorage(contractAddress, key, [cachedValue]);
 
       // Get the storage value
       const cachedResult = await childJournal.readStorage(contractAddress, key);
@@ -75,7 +75,7 @@ describe('journal', () => {
       expect(cacheMissResult).toEqual(storedValue);
 
       // Write to storage
-      journal.writeStorage(contractAddress, key, cachedValue);
+      journal.writeStorage(contractAddress, key, [cachedValue]);
 
       // Get the storage value
       const cachedResult = await journal.readStorage(contractAddress, key);
@@ -136,7 +136,7 @@ describe('journal', () => {
     const logs = [new Fr(1), new Fr(2)];
     const logsT1 = [new Fr(3), new Fr(4)];
 
-    journal.writeStorage(contractAddress, key, value);
+    journal.writeStorage(contractAddress, key, [value]);
     await journal.readStorage(contractAddress, key);
     journal.writeNoteHash(commitment);
     journal.writeLog(logs);
@@ -144,7 +144,7 @@ describe('journal', () => {
     journal.writeNullifier(commitment);
 
     const childJournal = new AvmWorldStateJournal(journal.hostStorage, journal);
-    childJournal.writeStorage(contractAddress, key, valueT1);
+    childJournal.writeStorage(contractAddress, key, [valueT1]);
     await childJournal.readStorage(contractAddress, key);
     childJournal.writeNoteHash(commitmentT1);
     childJournal.writeLog(logsT1);
@@ -196,7 +196,7 @@ describe('journal', () => {
     const logs = [new Fr(1), new Fr(2)];
     const logsT1 = [new Fr(3), new Fr(4)];
 
-    journal.writeStorage(contractAddress, key, value);
+    journal.writeStorage(contractAddress, key, [value]);
     await journal.readStorage(contractAddress, key);
     journal.writeNoteHash(commitment);
     journal.writeLog(logs);
@@ -204,7 +204,7 @@ describe('journal', () => {
     journal.writeNullifier(commitment);
 
     const childJournal = new AvmWorldStateJournal(journal.hostStorage, journal);
-    childJournal.writeStorage(contractAddress, key, valueT1);
+    childJournal.writeStorage(contractAddress, key, [valueT1]);
     await childJournal.readStorage(contractAddress, key);
     childJournal.writeNoteHash(commitmentT1);
     childJournal.writeLog(logsT1);

@@ -157,7 +157,7 @@ export class Mov extends Instruction {
       [this.srcOffset, this.dstOffset],
       context.machineState.memory,
     );
-
+    
     const a = context.machineState.memory.get(srcOffset);
 
     context.machineState.memory.set(dstOffset, a);

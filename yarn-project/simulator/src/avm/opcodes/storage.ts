@@ -5,6 +5,7 @@ import { Field } from '../avm_memory_types.js';
 import { InstructionExecutionError } from '../errors.js';
 import { Opcode, OperandType } from '../serialization/instruction_serialization.js';
 import { Instruction } from './instruction.js';
+import { Addressing } from './addressing_mode.js';
 
 abstract class BaseStorageInstruction extends Instruction {
   // Informs (de)serialization. See Instruction.deserialize.
@@ -13,27 +14,20 @@ abstract class BaseStorageInstruction extends Instruction {
     OperandType.UINT8,
     OperandType.UINT32,
     OperandType.UINT32,
+    OperandType.UINT32,
   ];
 
-  constructor(protected indirect: number, protected aOffset: number, protected bOffset: number) {
+  constructor(protected indirect: number, protected aOffset: number, protected /*temporary*/ size: number, protected bOffset: number) {
     super();
   }
 }
 
-export class SStore extends /* temporarily disabled: BaseStorageInstruction*/ Instruction {
+export class SStore extends BaseStorageInstruction {
   static readonly type: string = 'SSTORE';
   static readonly opcode = Opcode.SSTORE;
 
-  public static readonly wireFormat: OperandType[] = [
-    OperandType.UINT8,
-    OperandType.UINT8,
-    OperandType.UINT32,
-    OperandType.UINT32,
-    OperandType.UINT32,
-  ];
-
-  constructor(private _indirect: number, private srcOffset: number, private /*temporary*/srcSize: number, private  slotOffset: number) {
-    super();
+  constructor(indirect: number, srcOffset: number, /*temporary*/srcSize: number, slotOffset: number) {
+    super(indirect, srcOffset, srcSize, slotOffset);
   }
 
   async execute(context: AvmContext): Promise<void> {
@@ -41,8 +35,10 @@ export class SStore extends /* temporarily disabled: BaseStorageInstruction*/ In
       throw new StaticCallStorageAlterError();
     }
 
-    const slot = context.machineState.memory.get(this.slotOffset).toFr();
-    const data = context.machineState.memory.getSlice(this.srcOffset, this.srcSize).map((field) => field.toFr());
+    const [srcOffset] = Addressing.fromWire(this.indirect).resolve([this.aOffset], context.machineState.memory);
+
+    const slot = context.machineState.memory.get(srcOffset).toFr();
+    const data = context.machineState.memory.getSlice(srcOffset, this.size).map((field) => field.toFr());
 
     context.worldState.writeStorage(
       context.environment.storageAddress,
@@ -58,16 +54,21 @@ export class SLoad extends BaseStorageInstruction {
   static readonly type: string = 'SLOAD';
   static readonly opcode = Opcode.SLOAD;
 
-  constructor(indirect: number, slotOffset: number, dstOffset: number) {
-    super(indirect, slotOffset, dstOffset);
+  constructor(indirect: number, slotOffset: number, size: number, dstOffset: number) {
+    super(indirect, slotOffset, size, dstOffset);
   }
 
   async execute(context: AvmContext): Promise<void> {
-    const slot = context.machineState.memory.get(this.aOffset);
+    const [aOffset, size, bOffset] = Addressing.fromWire(this.indirect).resolve([this.aOffset, this.size, this.bOffset], context.machineState.memory);
 
-    const data: Fr = await context.worldState.readStorage(context.environment.storageAddress, new Fr(slot.toBigInt()));
+    const slot = context.machineState.memory.get(aOffset);
 
-    context.machineState.memory.set(this.bOffset, new Field(data));
+    // Write each read value from storage into memory
+    for (let i = 0; i < size; i++) {
+      const data: Fr = await context.worldState.readStorage(context.environment.storageAddress, new Fr(slot.toBigInt()));
+
+      context.machineState.memory.set(bOffset + i, new Field(data));
+    } 
 
     context.machineState.incrementPc();
   }

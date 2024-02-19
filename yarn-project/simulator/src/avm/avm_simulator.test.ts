@@ -143,6 +143,65 @@ describe('AVM simulator', () => {
       });
     });
 
+    describe("Storage accesses", () => {
+      it("Should set a single value in storage", async () => {
+        
+        // We want to set 
+        const calldata: Fr[] = [];
+        // We are setting the owner 
+        const slot = 1n;
+        const sender = AztecAddress.fromField(new Fr(1));
+        const address = AztecAddress.fromField(new Fr(420));
+
+        // Get contract function artifact
+        const artifact = AvmTestContractArtifact.functions.find(f => f.name === 'avm_setAdmin')!;
+
+        // Decode bytecode into instructions
+        const bytecode = Buffer.from(artifact.bytecode, 'base64');
+
+        const context = initContext({ env: initExecutionEnvironment({ calldata, sender, address, storageAddress: address }) });
+        jest
+          .spyOn(context.worldState.hostStorage.contractsDb, 'getBytecode')
+          .mockReturnValue(Promise.resolve(bytecode));
+
+        const simulator = new AvmSimulator(context);
+        const results = await simulator.execute();
+        expect(results.reverted).toBe(false);
+
+        // Contract 420 - Storage slot 1 should contain the value 1
+        const worldState = context.worldState.flush();
+
+        const storageSlot = worldState.currentStorageValue.get(address.toBigInt())!;
+        const adminSlotValue = storageSlot.get(slot)!;
+        expect(adminSlotValue).toEqual(sender.toField());
+      })
+
+      it("Should read a value from storage", async () => {
+        const calldata: Fr[] = [];
+        // We are setting the owner 
+        const sender = AztecAddress.fromField(new Fr(1));
+        const address = AztecAddress.fromField(new Fr(420));
+
+        // Get contract function artifact
+        const artifact = AvmTestContractArtifact.functions.find(f => f.name === 'avm_setAndRead')!;
+
+        // Decode bytecode into instructions
+        const bytecode = Buffer.from(artifact.bytecode, 'base64');
+
+        const context = initContext({ env: initExecutionEnvironment({ calldata, sender, address, storageAddress: address }) });
+        jest
+          .spyOn(context.worldState.hostStorage.contractsDb, 'getBytecode')
+          .mockReturnValue(Promise.resolve(bytecode));
+
+        const simulator = new AvmSimulator(context);
+        const results = await simulator.execute();
+        expect(results.reverted).toBe(false);
+
+        const returnData = results.output;
+        expect(returnData[0]).toEqual(sender.toField());
+      })
+    })
+
     describe('Test env getters from noir contract', () => {
       const testEnvGetter = async (valueName: string, value: any, functionName: string, globalVar: boolean = false) => {
         const getterArtifact = AvmTestContractArtifact.functions.find(f => f.name === functionName)!;
