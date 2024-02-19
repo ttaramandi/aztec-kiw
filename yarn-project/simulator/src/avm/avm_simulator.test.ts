@@ -143,12 +143,11 @@ describe('AVM simulator', () => {
       });
     });
 
-    describe("Storage accesses", () => {
-      it("Should set a single value in storage", async () => {
-        
-        // We want to set 
+    describe('Storage accesses', () => {
+      it('Should set a single value in storage', async () => {
+        // We want to set
         const calldata: Fr[] = [];
-        // We are setting the owner 
+        // We are setting the owner
         const slot = 1n;
         const sender = AztecAddress.fromField(new Fr(1));
         const address = AztecAddress.fromField(new Fr(420));
@@ -159,7 +158,9 @@ describe('AVM simulator', () => {
         // Decode bytecode into instructions
         const bytecode = Buffer.from(artifact.bytecode, 'base64');
 
-        const context = initContext({ env: initExecutionEnvironment({ calldata, sender, address, storageAddress: address }) });
+        const context = initContext({
+          env: initExecutionEnvironment({ calldata, sender, address, storageAddress: address }),
+        });
         jest
           .spyOn(context.worldState.hostStorage.contractsDb, 'getBytecode')
           .mockReturnValue(Promise.resolve(bytecode));
@@ -174,11 +175,11 @@ describe('AVM simulator', () => {
         const storageSlot = worldState.currentStorageValue.get(address.toBigInt())!;
         const adminSlotValue = storageSlot.get(slot)!;
         expect(adminSlotValue).toEqual(sender.toField());
-      })
+      });
 
-      it("Should read a value from storage", async () => {
+      it('Should read a value from storage', async () => {
         const calldata: Fr[] = [];
-        // We are setting the owner 
+        // We are setting the owner
         const sender = AztecAddress.fromField(new Fr(1));
         const address = AztecAddress.fromField(new Fr(420));
 
@@ -188,7 +189,9 @@ describe('AVM simulator', () => {
         // Decode bytecode into instructions
         const bytecode = Buffer.from(artifact.bytecode, 'base64');
 
-        const context = initContext({ env: initExecutionEnvironment({ calldata, sender, address, storageAddress: address }) });
+        const context = initContext({
+          env: initExecutionEnvironment({ calldata, sender, address, storageAddress: address }),
+        });
         jest
           .spyOn(context.worldState.hostStorage.contractsDb, 'getBytecode')
           .mockReturnValue(Promise.resolve(bytecode));
@@ -199,8 +202,8 @@ describe('AVM simulator', () => {
 
         const returnData = results.output;
         expect(returnData[0]).toEqual(sender.toField());
-      })
-    })
+      });
+    });
 
     describe('Test env getters from noir contract', () => {
       const testEnvGetter = async (valueName: string, value: any, functionName: string, globalVar: boolean = false) => {

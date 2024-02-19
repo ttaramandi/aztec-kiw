@@ -6,8 +6,8 @@ use acvm::brillig_vm::brillig::{
 };
 
 use crate::instructions::{
-    AvmInstruction, AvmOperand, AvmTypeTag, ALL_DIRECT, FIRST_OPERAND_INDIRECT, SECOND_OPERAND_INDIRECT,
-    ZEROTH_OPERAND_INDIRECT,
+    AvmInstruction, AvmOperand, AvmTypeTag, ALL_DIRECT, FIRST_OPERAND_INDIRECT,
+    SECOND_OPERAND_INDIRECT, ZEROTH_OPERAND_INDIRECT,
 };
 use crate::opcodes::AvmOpcode;
 use crate::utils::{dbg_print_avm_program, dbg_print_brillig_program};
@@ -269,15 +269,17 @@ fn handle_storage_write(
     avm_instrs.push(AvmInstruction {
         opcode: AvmOpcode::SSTORE,
         indirect: Some(ZEROTH_OPERAND_INDIRECT),
-        operands: vec![AvmOperand::U32 {
-            value: src_offset as u32,
-        },
-        AvmOperand::U32 {
-            value: src_size as u32,
-        },
-        AvmOperand::U32 {
-            value: slot_offset as u32,
-        }],
+        operands: vec![
+            AvmOperand::U32 {
+                value: src_offset as u32,
+            },
+            AvmOperand::U32 {
+                value: src_size as u32,
+            },
+            AvmOperand::U32 {
+                value: slot_offset as u32,
+            },
+        ],
         ..Default::default()
     })
 }
@@ -298,7 +300,6 @@ fn handle_storage_read(
         _ => panic!("ForeignCall address destination should be a single value"),
     };
 
-
     let dest_offset_maybe = destinations[0];
     let (dest_offset, src_size) = match dest_offset_maybe {
         ValueOrArray::HeapArray(HeapArray { pointer, size }) => (pointer.0, size),
@@ -308,15 +309,17 @@ fn handle_storage_read(
     avm_instrs.push(AvmInstruction {
         opcode: AvmOpcode::SLOAD,
         indirect: Some(SECOND_OPERAND_INDIRECT),
-        operands: vec![AvmOperand::U32 {
-            value: slot_offset as u32,
-        },
-        AvmOperand::U32 {
-            value: src_size as u32,
-        },
-        AvmOperand::U32 {
-            value: dest_offset as u32,
-        }],
+        operands: vec![
+            AvmOperand::U32 {
+                value: slot_offset as u32,
+            },
+            AvmOperand::U32 {
+                value: src_size as u32,
+            },
+            AvmOperand::U32 {
+                value: dest_offset as u32,
+            },
+        ],
         ..Default::default()
     })
 }
