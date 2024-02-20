@@ -2,6 +2,7 @@ import { AuthWitnessProvider, EntrypointInterface } from '@aztec/aztec.js/accoun
 import { FunctionCall, PackedArguments, TxExecutionRequest } from '@aztec/circuit-types';
 import { AztecAddress, Fr, FunctionData, GeneratorIndex, TxContext } from '@aztec/circuits.js';
 import { FunctionAbi, encodeArguments } from '@aztec/foundation/abi';
+import { pedersenHash } from '@aztec/foundation/crypto';
 
 import { DEFAULT_CHAIN_ID, DEFAULT_VERSION } from './constants.js';
 import { buildDappPayload, hashDappPayload } from './entrypoint_payload.js';
@@ -28,14 +29,27 @@ export class DefaultDappEntrypoint implements EntrypointInterface {
     const abi = this.getEntrypointAbi();
     const entrypointPackedArgs = PackedArguments.fromArgs(encodeArguments(abi, [payload, this.userAddress]));
 
-    const authWitness = await this.userAuthWitnessProvider.createAuthWitness(
-      Fr.fromBuffer(hashDappPayload(payload, this.userAddress, GeneratorIndex.SIGNATURE_PAYLOAD)),
+    //     [
+    //     context.msg_sender().to_field(),
+    //     context.this_address().to_field(), context.selector().to_field(), context.args_hash
+    // ],
+    const functionData = FunctionData.fromAbi(abi);
+    const hash = pedersenHash(
+      [
+        Fr.ZERO.toBuffer(),
+        this.dappEntrypointAddress.toBuffer(),
+        functionData.selector.toBuffer(),
+        entrypointPackedArgs.hash.toBuffer(),
+      ],
+      GeneratorIndex.SIGNATURE_PAYLOAD,
     );
+    console.log(hash.toString('hex'));
+    const authWitness = await this.userAuthWitnessProvider.createAuthWitness(Fr.fromBuffer(hash));
 
     const txRequest = TxExecutionRequest.from({
       argsHash: entrypointPackedArgs.hash,
       origin: this.dappEntrypointAddress,
-      functionData: FunctionData.fromAbi(abi),
+      functionData,
       txContext: TxContext.empty(this.chainId, this.version),
       packedArguments: [...packedArguments, entrypointPackedArgs],
       authWitnesses: [authWitness],
