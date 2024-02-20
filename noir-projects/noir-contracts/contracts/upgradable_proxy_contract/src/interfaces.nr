@@ -12,7 +12,7 @@ impl SlowMap {
     }
 
     pub fn initialize(self: Self, context: PublicContext) {
-        let _ = context.call_public_function_no_args(
+        context.call_public_function_no_args(
             self.address,
             FunctionSelector::from_signature("initialize()")
         );
@@ -37,7 +37,7 @@ impl SlowMap {
     }
 
     pub fn update_at_private(self: Self, context: &mut PrivateContext, index: Field, new_value: Field) {
-        let _ = context.call_private_function(
+        context.call_private_function(
             self.address,
             FunctionSelector::from_signature("update_at_private(Field,Field)"),
             [index, new_value]

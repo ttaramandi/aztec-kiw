@@ -177,6 +177,14 @@ export class ClientExecutionContext extends ViewDataOracle {
   }
 
   /**
+   * Unpack the arguments of the given argsHash.
+   * @param args_hash - The hash of previously packed arguments
+   */
+  public unpackArguments(argsHash: Fr): Promise<Fr[]> {
+    return Promise.resolve(this.packedArgsCache.unpack(argsHash));
+  }
+
+  /**
    * Gets some notes for a storage slot.
    *
    * @remarks
