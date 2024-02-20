@@ -709,6 +709,17 @@ jobs:
           name: "Test"
           command: cond_spot_run_compose end-to-end 4 ./scripts/docker-compose.yml TEST=e2e_delegate_calls.test.ts
 
+  e2e-proxy:
+    docker:
+      - image: aztecprotocol/alpine-build-image
+    resource_class: small
+    steps:
+      - *checkout
+      - *setup_env
+      - run:
+          name: "Test"
+          command: cond_spot_run_compose end-to-end 4 ./scripts/docker-compose.yml TEST=e2e_proxy.test.ts
+
   e2e-non-contract-account:
     docker:
       - image: aztecprotocol/alpine-build-image
@@ -1354,6 +1365,7 @@ workflows:
       - e2e-nested-contract: *e2e_test
       - e2e-static-calls: *e2e_test
       - e2e-delegate-calls: *e2e_test
+      - e2e-proxy: *e2e_test
       - e2e-non-contract-account: *e2e_test
       - e2e-multiple-accounts-1-enc-key: *e2e_test
       - e2e-cli: *e2e_test
@@ -1399,6 +1411,7 @@ workflows:
             - e2e-nested-contract
             - e2e-static-calls
             - e2e-delegate-calls
+            - e2e-proxy
             - e2e-non-contract-account
             - e2e-multiple-accounts-1-enc-key
             - e2e-cli

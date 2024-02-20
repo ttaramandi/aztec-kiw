@@ -117,6 +117,10 @@ export class PrivateFunctionsTree {
     );
   }
 
+  // public getFunctionLeaves() {
+  //   this.getContractClass().privateFunctions.map(leaf => { computePrivateFunctionLeaf(leaf));
+  // }
+
   private getTree() {
     if (!this.tree) {
       const fns = this.getContractClass().privateFunctions;

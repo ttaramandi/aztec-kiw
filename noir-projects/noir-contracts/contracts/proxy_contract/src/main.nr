@@ -1,5 +1,5 @@
 // A contract used along with `Parent` contract to test nested calls.
-contract Delegator {
+contract Proxy {
     use dep::std::option::Option;
 
     use dep::aztec::{
@@ -20,36 +20,6 @@ contract Delegator {
     fn constructor() {}
 
     #[aztec(private)]
-    fn private_delegate_set_value(
-        targetContract: AztecAddress,
-        targetSelector: FunctionSelector,
-        args: [Field; 2]
-    ) {
-        // Call the target private function
-        let return_values = context.delegate_call_private_function(targetContract, targetSelector, args);
-        // Copy the return value from the call to this function's return values
-        return_values[0]
-    }
-
-    #[aztec(private)]
-    fn enqueued_delegate_set_value(
-        targetContract: AztecAddress,
-        targetSelector: FunctionSelector,
-        args: [Field; 1]
-    ) {
-        context.delegate_call_public_function(targetContract, targetSelector, args);
-    }
-
-    #[aztec(public)]
-    fn public_delegate_set_value(
-        targetContract: AztecAddress,
-        targetSelector: FunctionSelector,
-        args: [Field; 1]
-    ) {
-        let _ = context.delegate_call_public_function(targetContract, targetSelector, args);
-    }
-
-    #[aztec(private)]
     fn initialize(owner: AztecAddress, target_contract: AztecAddress) {
         let mut note = ValueNote::new(target_contract.to_field(), owner);
         storage.implementation.initialize(&mut note, true);
@@ -62,7 +32,7 @@ contract Delegator {
     }
 
     #[aztec(private)]
-    fn fallback(target_selector: Field, args_hash: Field) {
+    fn private_fallback(target_selector: Field, args_hash: Field) {
         let target_selector = FunctionSelector::from_field(target_selector);
         let target_note = storage.implementation.get_note(false);
         let target_address = AztecAddress::from_field(target_note.value);
@@ -77,17 +47,5 @@ contract Delegator {
 
     unconstrained fn view_public_value() -> pub Field {
         storage.current_value.read()
-    }
-
-    // TODO: remove this placeholder once https://github.com/AztecProtocol/aztec-packages/issues/2918 is implemented
-    unconstrained fn compute_note_hash_and_nullifier(
-        contract_address: AztecAddress,
-        nonce: Field,
-        storage_slot: Field,
-        note_type_id: Field,
-        serialized_note: [Field; VALUE_NOTE_LEN]
-    ) -> pub [Field; 4] {
-        let note_header = NoteHeader::new(contract_address, nonce, storage_slot);
-        note_utils::compute_note_hash_and_nullifier(ValueNote::deserialize_content, note_header, serialized_note)
     }
 }

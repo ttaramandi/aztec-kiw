@@ -341,7 +341,23 @@ export class ClientExecutionContext extends ViewDataOracle {
       `Calling private function ${this.contractAddress}:${functionSelector} from ${this.callContext.storageContractAddress}`,
     );
 
-    const targetArtifact = await this.db.getFunctionArtifact(targetContractAddress, functionSelector);
+    // TODO: Move this to the kernel!!!
+    let targetArtifact;
+    try {
+      targetArtifact = await this.db.getFunctionArtifact(targetContractAddress, functionSelector);
+    } catch (e) {
+      this.log(
+        `No function artifact found for ${targetContractAddress}:${functionSelector}. Trying to find a fallback function artifact.`,
+      );
+      targetArtifact = await this.db.getFunctionArtifact(
+        targetContractAddress,
+        FunctionSelector.fromSignature('private_fallback(Field,Field)'),
+      );
+      argsHash = await this.packArguments([functionSelector.toField(), argsHash]);
+      this.log(`Fallback function artifact found for ${targetContractAddress}`);
+    }
+    targetArtifact = targetArtifact as FunctionArtifact;
+
     const targetFunctionData = FunctionData.fromAbi(targetArtifact);
 
     const derivedTxContext = new TxContext(
