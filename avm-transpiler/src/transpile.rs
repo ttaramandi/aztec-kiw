@@ -247,6 +247,8 @@ fn handle_foreign_call(
     }
 }
 
+/// Emit a storage write opcode
+/// The current implementation writes an array of values into storage ( contiguous slots in memory )
 fn emit_storage_write(
     avm_instrs: &mut Vec<AvmInstruction>,
     destinations: &Vec<ValueOrArray>,
@@ -286,7 +288,8 @@ fn emit_storage_write(
     })
 }
 
-// TODO: storage reads also temporarily return a heap array of values, rather than a single value
+/// Emit a storage read opcode
+/// The current implementation reads an array of values from storage ( contiguous slots in memory )
 fn emit_storage_read(
     avm_instrs: &mut Vec<AvmInstruction>,
     destinations: &Vec<ValueOrArray>,
