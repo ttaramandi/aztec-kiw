@@ -21,7 +21,7 @@ describe('e2e_deploy_contract', () => {
   beforeAll(async () => {
     ({ teardown, pxe, accounts, logger, wallet} = await setup());
     owner = accounts[0].address;
-    counterContract = await CounterContract.deploy(wallet,10, wallet.getCompleteAddress().address).send().deployed();
+    counterContract = await CounterContract.deploy(wallet,10, owner).send().deployed();
     proxyContract = await ProxyContract.deploy(wallet).send().deployed();
   }, 100_000);
 
@@ -36,5 +36,12 @@ describe('e2e_deploy_contract', () => {
     const tx = proxyContract.methods.initialize_counter(counterContract.address, 120, owner, fn_select).send();
     const receipt = await tx.wait();
     expect(receipt.status).toBe(TxStatus.MINED);
+    expect(await counterContract.methods.get_counter(owner).view()).toBe(10n);
+    expect(await proxyContract.methods.get_counter(owner).view()).toBe(120n);
+    const fn_select_2 = counterContract.methods.increment.selector;
+    const tx_2 = proxyContract.methods.increment(counterContract.address, owner, fn_select_2).send();
+    await tx_2.wait();
+    expect(await counterContract.methods.get_counter(owner).view()).toBe(10n);
+    expect(await proxyContract.methods.get_counter(owner).view()).toBe(121n);
   }, 60_000);
 });

@@ -155,5 +155,7 @@
   "C_Cpp.vcpkg.enabled": false,
   "C_Cpp.default.includePath": [
     "barretenberg/cpp/src"
-  ]
+  ],
+  "noir.nargoPath": "/Users/ilyas/.aztec/bin/aztec-nargo",
+  "cmake.configureOnOpen": false
 }

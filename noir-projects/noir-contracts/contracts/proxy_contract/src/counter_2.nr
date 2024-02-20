@@ -1,4 +1,4 @@
-contract Counter {
+contract Counter2 {
     // docs:start:imports
     use dep::aztec::protocol_types::address::AztecAddress;
     use dep::aztec::{
@@ -26,12 +26,6 @@ contract Counter {
     // docs:end:storage_struct
 
     // docs:start:constructor
-    #[aztec(private)]
-    fn constructor(headstart: u120, owner: AztecAddress) {
-        let counters = storage.counters;
-        counters.at(owner).add(headstart, owner);
-    }
-
     #[aztec(private)]
     fn initialise(headstart: u120, owner: AztecAddress) {
         let counters = storage.counters;
