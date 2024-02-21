@@ -7,6 +7,7 @@ import { computeVarArgsHash } from '../hash/hash.js';
 import { CallContext } from './call_context.js';
 import { CallRequest, CallerContext } from './call_request.js';
 import { FunctionData } from './function_data.js';
+import { FunctionSelector } from './index.js';
 import { PublicCallStackItem } from './public_call_stack_item.js';
 import { PublicCircuitPublicInputs } from './public_circuit_public_inputs.js';
 import { Vector } from './shared.js';
@@ -130,6 +131,10 @@ export class PublicCallRequest {
    * @returns Hash of the arguments for this request.
    */
   getArgsHash() {
-    return computeVarArgsHash(this.args);
+    let args = this.args;
+    if (this.functionData.selector.value === FunctionSelector.fromSignature('public_fallback(Field,Field)').value) {
+      args = this.args.slice(0, 2);
+    }
+    return computeVarArgsHash(args);
   }
 }

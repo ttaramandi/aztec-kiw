@@ -436,6 +436,7 @@ export class ClientExecutionContext extends ViewDataOracle {
   ): Promise<PublicCallRequest> {
     // TODO: Move this to the kernel!!!
     let targetArtifact;
+    let args = this.packedArgsCache.unpack(argsHash);
     try {
       targetArtifact = await this.db.getFunctionArtifact(targetContractAddress, functionSelector);
     } catch (e) {
@@ -446,7 +447,7 @@ export class ClientExecutionContext extends ViewDataOracle {
         targetContractAddress,
         FunctionSelector.fromSignature('public_fallback(Field,Field)'),
       );
-      argsHash = await this.packArguments([functionSelector.toField(), argsHash]);
+      args = [functionSelector.toField(), argsHash, ...args];
       this.log(`Fallback function artifact found for ${targetContractAddress}`);
     }
     targetArtifact = targetArtifact as FunctionArtifact;
@@ -457,7 +458,6 @@ export class ClientExecutionContext extends ViewDataOracle {
       isDelegateCall,
       isStaticCall,
     );
-    const args = this.packedArgsCache.unpack(argsHash);
     const enqueuedRequest = PublicCallRequest.from({
       args,
       callContext: derivedCallContext,

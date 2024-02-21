@@ -1,4 +1,4 @@
-import { GlobalVariables, Header, PublicCircuitPublicInputs } from '@aztec/circuits.js';
+import { FunctionSelector, GlobalVariables, Header, PublicCircuitPublicInputs } from '@aztec/circuits.js';
 import { createDebugLogger } from '@aztec/foundation/log';
 
 import { Oracle, acvm, extractCallStack, extractReturnWitness } from '../acvm/index.js';
@@ -106,10 +106,13 @@ export class PublicExecutor {
     if (!acir) {
       throw new Error(`Bytecode not found for ${execution.contractAddress}:${selector}`);
     }
-
     // Functions can request to pack arguments before calling other functions.
     // We use this cache to hold the packed arguments.
-    const packedArgs = PackedArgsCache.create([]);
+    const packedArgsCache = PackedArgsCache.create([]);
+    const fallbackSelector = FunctionSelector.fromSignature('public_fallback(Field,Field)');
+    if (selector.value === fallbackSelector.value) {
+      packedArgsCache.pack(execution.args.splice(2, execution.args.length - 2));
+    }
 
     const sideEffectCounter = new SideEffectCounter();
 
@@ -117,7 +120,7 @@ export class PublicExecutor {
       execution,
       this.header,
       globalVariables,
-      packedArgs,
+      packedArgsCache,
       sideEffectCounter,
       this.stateDb,
       this.contractsDb,
