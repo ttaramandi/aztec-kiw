@@ -85,6 +85,14 @@ export class PublicExecutionContext extends TypedOracle {
   }
 
   /**
+   * Unpack the arguments of the given argsHash.
+   * @param args_hash - The hash of previously packed arguments
+   */
+  public unpackArguments(argsHash: Fr): Promise<Fr[]> {
+    return Promise.resolve(this.packedArgsCache.unpack(argsHash));
+  }
+
+  /**
    * Fetches the a message from the db, given its key.
    * @param msgKey - A buffer representing the message key.
    * @returns The l1 to l2 message data

@@ -85,6 +85,10 @@ export abstract class TypedOracle {
     throw new Error('Not available.');
   }
 
+  unpackArguments(_argsHash: Fr): Promise<Fr[]> {
+    throw new Error('Not available.');
+  }
+
   getNullifierKeyPair(_accountAddress: AztecAddress): Promise<KeyPair> {
     throw new Error('Not available.');
   }

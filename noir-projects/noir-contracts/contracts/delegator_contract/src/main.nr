@@ -11,7 +11,6 @@ contract Delegator {
     use dep::value_note::value_note::{ValueNote, VALUE_NOTE_LEN};
 
     struct Storage {
-        implementation: Singleton<ValueNote>,
         current_value: PublicState<Field>,
         a_private_value: Set<ValueNote>,
     }
@@ -47,26 +46,6 @@ contract Delegator {
         args: [Field; 1]
     ) {
         let _ = context.delegate_call_public_function(targetContract, targetSelector, args);
-    }
-
-    #[aztec(private)]
-    fn initialize(owner: AztecAddress, target_contract: AztecAddress) {
-        let mut note = ValueNote::new(target_contract.to_field(), owner);
-        storage.implementation.initialize(&mut note, true);
-    }
-
-    #[aztec(private)]
-    fn upgrade(target_contract: AztecAddress, owner: AztecAddress) {
-        let mut note = ValueNote::new(target_contract.to_field(), owner);
-        storage.implementation.replace(&mut note, true);
-    }
-
-    #[aztec(private)]
-    fn fallback(target_selector: Field, args_hash: Field) {
-        let target_selector = FunctionSelector::from_field(target_selector);
-        let target_note = storage.implementation.get_note(false);
-        let target_address = AztecAddress::from_field(target_note.value);
-        let _ = context.call_private_function_with_packed_args(target_address, target_selector, args_hash, false, true);
     }
 
     unconstrained fn view_private_value(amount: Field, owner: AztecAddress) -> pub Field {

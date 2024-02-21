@@ -147,6 +147,9 @@ export abstract class TreeBase implements MerkleTree {
     return this.store.transaction(() => {
       const keys = Object.getOwnPropertyNames(this.cache);
       for (const key of keys) {
+        if (this.name === 'test') {
+          console.log(`committing key: ${key}: ${this.cache[key].toString('hex')}`);
+        }
         void this.nodes.set(key, this.cache[key]);
       }
       this.size = this.getNumLeaves(true);
@@ -243,6 +246,9 @@ export abstract class TreeBase implements MerkleTree {
     }
     const committed = this.dbGet(key);
     if (committed !== undefined) {
+      if (this.name === 'test') {
+        console.log(`getLatestValueAtIndex: ${key}: ${committed.toString('hex')}`);
+      }
       return committed;
     }
     return this.zeroHashes[level - 1];

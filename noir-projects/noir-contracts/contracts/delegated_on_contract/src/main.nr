@@ -14,7 +14,6 @@ contract DelegatedOn {
     use dep::value_note::value_note::{ValueNote, VALUE_NOTE_LEN};
 
     struct Storage {
-        implementation: Singleton<ValueNote>,
         current_value: PublicState<Field>,
         a_private_value: Set<ValueNote>,
     }

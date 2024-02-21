@@ -28,6 +28,11 @@ export class Oracle {
     return toACVMField(packed);
   }
 
+  async unpackArguments([argsHash]: ACVMField[]): Promise<ACVMField[]> {
+    const packed = await this.typedOracle.unpackArguments(fromACVMField(argsHash));
+    return packed.map(toACVMField);
+  }
+
   async getNullifierKeyPair([accountAddress]: ACVMField[]): Promise<ACVMField[]> {
     const { publicKey, secretKey } = await this.typedOracle.getNullifierKeyPair(fromACVMField(accountAddress));
     return [
