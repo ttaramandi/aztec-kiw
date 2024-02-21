@@ -52,14 +52,13 @@ contract AppSubscriptionContract {
     #[aztec(private)]
     fn entrypoint(payload: pub DAppPayload, user_address: pub AztecAddress) {
         assert(context.msg_sender().to_field() == 0);
-        // assert(call.target_address == storage.target_address.read_private());
+        assert_current_call_valid_authwit(&mut context, user_address);
+
         let mut note = storage.subscriptions.at(user_address).get_note(false);
-        assert(note.remaining_txs as u64 > 0);
+        assert(note.remaining_txs as u64 > 0, "you're out of txs");
 
         note.remaining_txs -= 1;
         storage.subscriptions.at(user_address).replace(&mut note, true);
-
-        assert_current_call_valid_authwit(&mut context, user_address);
 
         context.call_public_function(
             storage.gas_token_address.read_private(),

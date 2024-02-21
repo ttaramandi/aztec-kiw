@@ -1,4 +1,3 @@
-import { DefaultDappEntrypoint } from '@aztec/accounts/defaults';
 import {
   AccountWalletWithPrivateKey,
   AztecAddress,
@@ -10,6 +9,7 @@ import {
   SentTx,
   computeAuthWitMessageHash,
 } from '@aztec/aztec.js';
+import { DefaultDappEntrypoint } from '@aztec/entrypoints/dapp';
 import {
   AppSubscriptionContractContract,
   CounterContract,
@@ -144,9 +144,9 @@ describe('e2e_fees', () => {
   }
 
   async function dappIncrement() {
-    const dappPayload = new DefaultDappEntrypoint(aliceAddress, aliceWallet, appSubContract.address);
+    const dappEntrypoint = new DefaultDappEntrypoint(aliceAddress, aliceWallet, appSubContract.address);
     const action = appContract.methods.increment(bobAddress).request();
-    const txExReq = await dappPayload.createTxExecutionRequest([action]);
+    const txExReq = await dappEntrypoint.createTxExecutionRequest([action]);
     const tx = await pxe.simulateTx(txExReq, true);
     const sentTx = new SentTx(pxe, pxe.sendTx(tx));
     return sentTx.wait();

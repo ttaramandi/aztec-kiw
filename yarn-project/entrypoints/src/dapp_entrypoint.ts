@@ -5,7 +5,7 @@ import { FunctionAbi, encodeArguments } from '@aztec/foundation/abi';
 import { pedersenHash } from '@aztec/foundation/crypto';
 
 import { DEFAULT_CHAIN_ID, DEFAULT_VERSION } from './constants.js';
-import { buildDappPayload, hashDappPayload } from './entrypoint_payload.js';
+import { buildDappPayload } from './entrypoint_payload.js';
 
 /**
  * Implementation for an entrypoint interface that follows the default entrypoint signature
@@ -29,10 +29,6 @@ export class DefaultDappEntrypoint implements EntrypointInterface {
     const abi = this.getEntrypointAbi();
     const entrypointPackedArgs = PackedArguments.fromArgs(encodeArguments(abi, [payload, this.userAddress]));
 
-    //     [
-    //     context.msg_sender().to_field(),
-    //     context.this_address().to_field(), context.selector().to_field(), context.args_hash
-    // ],
     const functionData = FunctionData.fromAbi(abi);
     const hash = pedersenHash(
       [
@@ -43,7 +39,7 @@ export class DefaultDappEntrypoint implements EntrypointInterface {
       ],
       GeneratorIndex.SIGNATURE_PAYLOAD,
     );
-    console.log(hash.toString('hex'));
+
     const authWitness = await this.userAuthWitnessProvider.createAuthWitness(Fr.fromBuffer(hash));
 
     const txRequest = TxExecutionRequest.from({

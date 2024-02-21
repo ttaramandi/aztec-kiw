@@ -1,15 +1,12 @@
 {
-  "name": "@aztec/accounts",
+  "name": "@aztec/entrypoints",
   "homepage": "https://github.com/AztecProtocol/aztec-packages/tree/master/yarn-project/accounts",
   "description": "Implementation of sample account contracts for Aztec Network",
   "version": "0.1.0",
   "type": "module",
   "exports": {
-    "./defaults": "./dest/defaults/index.js",
-    "./ecdsa": "./dest/ecdsa/index.js",
-    "./schnorr": "./dest/schnorr/index.js",
-    "./single_key": "./dest/single_key/index.js",
-    "./testing": "./dest/testing/index.js"
+    "./dapp": "./dest/dapp_entrypoint.js",
+    "./account": "./dest/account_entrypoint.js"
   },
   "typedocOptions": {
     "entryPoints": [
@@ -48,7 +45,6 @@
     "@aztec/aztec.js": "workspace:^",
     "@aztec/circuit-types": "workspace:^",
     "@aztec/circuits.js": "workspace:^",
-    "@aztec/entrypoints": "workspace:^",
     "@aztec/ethereum": "workspace:^",
     "@aztec/foundation": "workspace:^",
     "@aztec/types": "workspace:^",
