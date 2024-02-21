@@ -35,7 +35,7 @@ describe('e2e_fees', () => {
     testContract = await TokenContract.deploy(wallet, aliceAddress, 'Test', 'TEST', 1).send().deployed();
 
     // Alice gets a balance of 1000 gas token
-    await gasTokenContract.methods.redeem_bridged_balance(1000).send().wait();
+    await gasTokenContract.methods.redeem_bridged_balance(aliceAddress, 1000).send().wait();
   }, 100_000);
 
   it('deploys gas token contract at canonical address', () => {

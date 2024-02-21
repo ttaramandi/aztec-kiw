@@ -23,10 +23,11 @@ contract AppSubscriptionContract {
         subscription_recipient_address: StablePublicState<AztecAddress>,
         subscription_price: StablePublicState<Field>,
         subscriptions: Map<AztecAddress, Singleton<SubscriptionNote>>,
+        gas_token_address: StablePublicState<AztecAddress>,
     }
 
     global SUBSCRIPTION_DURATION_IN_BLOCKS = 5;
-    global GAS_TOKEN_ADDRESS = AztecAddress::from_field(0x1dbbefd6012061cc5179339636fb0cf9d8f0d934afea55b9d89268d529ee4c60);
+    // global GAS_TOKEN_ADDRESS = AztecAddress::from_field(0x08c0e8041f92758ca49ccb62a77318b46090019d380552ddaec5cd0b54804636);
 
     // Constructs the contract
     #[aztec(private)]
@@ -34,13 +35,14 @@ contract AppSubscriptionContract {
         target_address: AztecAddress,
         subscription_recipient_address: AztecAddress,
         subscription_token_address: AztecAddress,
-        subscription_price: Field
+        subscription_price: Field,
+        gas_token_address: AztecAddress
     ) {
         context.call_public_function(
             context.this_address(),
-            FunctionSelector::from_signature("init((Field),(Field),(Field),Field)"),
+            FunctionSelector::from_signature("init((Field),(Field),(Field),Field,(Field))"),
             [
-            target_address.to_field(), subscription_token_address.to_field(), subscription_recipient_address.to_field(), subscription_price
+            target_address.to_field(), subscription_token_address.to_field(), subscription_recipient_address.to_field(), subscription_price, gas_token_address.to_field()
         ]
         );
     }
@@ -58,19 +60,19 @@ contract AppSubscriptionContract {
         assert_current_call_valid_authwit(&mut context, user_address);
 
         context.call_public_function(
-            GAS_TOKEN_ADDRESS,
+            storage.gas_token_address.read_private(),
             FunctionSelector::from_signature("check_balance(Field)"),
             // max gas limit in Gas tokens
             [42]
         );
 
         context.call_public_function(
-            GAS_TOKEN_ADDRESS,
+            storage.gas_token_address.read_private(),
             FunctionSelector::from_signature("pay_fee(Field)"),
             [42]
         );
 
-        // context.capture_min_revertible_side_effect_counter();
+        context.capture_min_revertible_side_effect_counter();
 
         context.call_public_function(
             context.this_address(),
@@ -82,25 +84,18 @@ contract AppSubscriptionContract {
     }
 
     #[aztec(public)]
-    fn secretly_redeem() {
-        let _void = context.call_public_function(
-            GAS_TOKEN_ADDRESS,
-            FunctionSelector::from_signature("redeem_bridged_balance(Field)"),
-            [1000]
-        );
-    }
-
-    #[aztec(public)]
     internal fn init(
         target_address: AztecAddress,
         subscription_token_address: AztecAddress,
         subscription_recipient_address: AztecAddress,
-        subscription_price: Field
+        subscription_price: Field,
+        gas_token_address: AztecAddress
     ) {
         storage.target_address.initialize(target_address);
         storage.subscription_token_address.initialize(subscription_token_address);
         storage.subscription_recipient_address.initialize(subscription_recipient_address);
         storage.subscription_price.initialize(subscription_price);
+        storage.gas_token_address.initialize(gas_token_address);
     }
 
     #[aztec(public)]
