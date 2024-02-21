@@ -18,6 +18,7 @@ contract AppSubscriptionContract {
     use crate::subscription_note::{SubscriptionNote, SUBSCRIPTION_NOTE_LEN};
 
     struct Storage {
+        // todo change this to immutable singletons because it's only needed in private
         target_address: StablePublicState<AztecAddress>,
         subscription_token_address: StablePublicState<AztecAddress>,
         subscription_recipient_address: StablePublicState<AztecAddress>,
@@ -27,6 +28,7 @@ contract AppSubscriptionContract {
     }
 
     global SUBSCRIPTION_DURATION_IN_BLOCKS = 5;
+    global SUBSCRIPTION_TXS = 5;
     // global GAS_TOKEN_ADDRESS = AztecAddress::from_field(0x08c0e8041f92758ca49ccb62a77318b46090019d380552ddaec5cd0b54804636);
 
     // Constructs the contract
@@ -76,7 +78,7 @@ contract AppSubscriptionContract {
 
         context.call_public_function(
             context.this_address(),
-            FunctionSelector::from_signature("assert_block_number(Field)"),
+            FunctionSelector::from_signature("assert_not_expired(Field)"),
             [note.expiry_block_number]
         );
 
@@ -99,6 +101,11 @@ contract AppSubscriptionContract {
     }
 
     #[aztec(public)]
+    internal fn assert_not_expired(expiry_block_number: Field) {
+        assert((context.block_number()) as u64 < expiry_block_number as u64);
+    }
+
+    #[aztec(public)]
     internal fn assert_block_number(expiry_block_number: Field) {
         assert(
             (context.block_number() + SUBSCRIPTION_DURATION_IN_BLOCKS) as u64
@@ -107,7 +114,14 @@ contract AppSubscriptionContract {
     }
 
     #[aztec(private)]
-    fn subscribe(subscriber_address: AztecAddress, nonce: Field, expiry_block_number: Field) {
+    fn subscribe(
+        subscriber_address: AztecAddress,
+        nonce: Field,
+        expiry_block_number: Field,
+        tx_count: Field
+    ) {
+        assert(tx_count as u64 <= SUBSCRIPTION_TXS as u64);
+
         let _ = context.call_private_function(
             storage.subscription_token_address.read_private(),
             FunctionSelector::from_signature("transfer((Field),(Field),Field,Field)"),
@@ -123,7 +137,7 @@ contract AppSubscriptionContract {
             [expiry_block_number]
         );
 
-        let mut subscription_note = SubscriptionNote::new(subscriber_address, expiry_block_number, 10);
+        let mut subscription_note = SubscriptionNote::new(subscriber_address, expiry_block_number, tx_count);
         if (!is_initialized(subscriber_address)) {
             storage.subscriptions.at(subscriber_address).initialize(&mut subscription_note, true);
         } else {

@@ -18,7 +18,11 @@ import {
 } from '@aztec/noir-contracts.js';
 import { getCanonicalGasToken } from '@aztec/protocol-contracts/gas-token';
 
+import { jest } from '@jest/globals';
+
 import { setup } from './fixtures/utils.js';
+
+jest.setTimeout(100_000);
 
 describe('e2e_fees', () => {
   let accounts: CompleteAddress[];
@@ -74,7 +78,7 @@ describe('e2e_fees', () => {
       bobWallet,
       appContract.address,
       bobAddress,
-      // purchase a subscription for 100 test tokens
+      // anyone can purchase a subscription for 100 test tokens
       testTokenContract.address,
       100n,
       // I had to pass this in because the address kept changing
@@ -93,18 +97,7 @@ describe('e2e_fees', () => {
 
   it('should allow Alice to subscribe', async () => {
     // Authorize the subscription contract to transfer the subscription amount from the subscriber.
-    const nonce = Fr.random();
-    const action = testTokenContract.methods.transfer(aliceAddress, bobAddress, 100n, nonce);
-    const messageHash = computeAuthWitMessageHash(appSubContract.address, action.request());
-    const witness = await aliceWallet.createAuthWitness(messageHash);
-    await aliceWallet.addAuthWitness(witness);
-
-    await appSubContract
-      .withWallet(aliceWallet)
-      .methods.subscribe(aliceAddress, nonce, (await pxe.getBlockNumber()) + 5)
-      .send()
-      .wait();
-
+    await subscribe();
     expect(await testTokenContract.methods.balance_of_private(aliceAddress).view()).toBe(900n);
   }, 100_000);
 
@@ -120,4 +113,42 @@ describe('e2e_fees', () => {
     expect(await gasTokenContract.methods.balance_of(appSubContract).view()).toBe(999n);
     expect(await gasTokenContract.methods.balance_of(sequencerAddress).view()).toBe(1n);
   }, 100_000);
+
+  it('should reject after the sub runs out', async () => {
+    // subscribe again. This will overwrite the subscription
+    await subscribe(0);
+    await expect(dappIncrement()).rejects.toThrow(
+      "Failed to solve brillig function, reason: explicit trap hit in brillig '(context.block_number()) as u64 < expiry_block_number as u64'",
+    );
+  }, 100_000);
+
+  it('should reject after the txs run out', async () => {
+    // subscribe again. This will overwrite the subscription
+    await subscribe(5, 1);
+    await expect(dappIncrement()).resolves.toBeDefined();
+    await expect(dappIncrement()).rejects.toThrow(/note.remaining_txs as u64 > 0/);
+  }, 100_000);
+
+  async function subscribe(blockDelta: number = 5, txCount: number = 4) {
+    const nonce = Fr.random();
+    const action = testTokenContract.methods.transfer(aliceAddress, bobAddress, 100n, nonce);
+    const messageHash = computeAuthWitMessageHash(appSubContract.address, action.request());
+    const witness = await aliceWallet.createAuthWitness(messageHash);
+    await aliceWallet.addAuthWitness(witness);
+
+    return appSubContract
+      .withWallet(aliceWallet)
+      .methods.subscribe(aliceAddress, nonce, (await pxe.getBlockNumber()) + blockDelta, txCount)
+      .send()
+      .wait();
+  }
+
+  async function dappIncrement() {
+    const dappPayload = new DefaultDappEntrypoint(aliceAddress, aliceWallet, appSubContract.address);
+    const action = appContract.methods.increment(bobAddress).request();
+    const txExReq = await dappPayload.createTxExecutionRequest([action]);
+    const tx = await pxe.simulateTx(txExReq, true);
+    const sentTx = new SentTx(pxe, pxe.sendTx(tx));
+    return sentTx.wait();
+  }
 });
