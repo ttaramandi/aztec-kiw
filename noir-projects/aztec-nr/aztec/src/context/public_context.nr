@@ -186,6 +186,17 @@ impl PublicContext {
         // TODO(https://github.com/AztecProtocol/aztec-packages/issues/1165)
     }
 
+    pub fn call_public_function_with_packed_args(
+        _self: Self,
+        contract_address: AztecAddress,
+        function_selector: FunctionSelector,
+        args_hash: Field,
+        is_static_call: bool,
+        is_delegate_call: bool
+    ) -> [Field; RETURN_VALUES_LENGTH] {
+        call_public_function_internal(contract_address, function_selector, args_hash, is_static_call, is_delegate_call)
+    }
+
     pub fn call_public_function<ARGS_COUNT>(
         _self: Self,
         contract_address: AztecAddress,

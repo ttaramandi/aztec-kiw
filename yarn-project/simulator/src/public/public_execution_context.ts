@@ -175,19 +175,7 @@ export class PublicExecutionContext extends TypedOracle {
     this.log(`Public function call: addr=${targetContractAddress} selector=${functionSelector} args=${args.join(',')}`);
     const portalAddress = (await this.contractsDb.getPortalContractAddress(targetContractAddress)) ?? EthAddress.ZERO;
 
-    // TODO: Move this to the kernel!!!
-    let isInternal;
-    try {
-      isInternal = await this.contractsDb.getIsInternal(targetContractAddress, functionSelector);
-    } catch (e) {
-      this.log(
-        `No function artifact found for ${targetContractAddress}:${functionSelector}. Trying to find a fallback function artifact.`,
-      );
-      functionSelector = FunctionSelector.fromSignature('public_fallback(Field,Field)');
-      argsHash = await this.packArguments([functionSelector.toField(), argsHash]);
-      isInternal = await this.contractsDb.getIsInternal(targetContractAddress, functionSelector);
-      this.log(`Fallback function artifact found for ${targetContractAddress}`);
-    }
+    let isInternal = await this.contractsDb.getIsInternal(targetContractAddress, functionSelector);
 
     if (isInternal === undefined) {
       throw new Error(`ERR: Method not found - ${targetContractAddress.toString()}:${functionSelector.toString()}`);

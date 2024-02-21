@@ -8,11 +8,11 @@ contract Proxy {
         log::emit_unencrypted_log,
         protocol_types::{abis::{function_selector::FunctionSelector}, address::AztecAddress, hash},
         note::{note_viewer_options::NoteViewerOptions, utils as note_utils, note_header::NoteHeader},
-        oracle::arguments,
-        state_vars::{
-        immutable_singleton::ImmutableSingleton, public_state::PublicState, set::Set,
-        stable_public_state::StablePublicState
-    },
+         oracle::arguments,
+         state_vars::{
+            immutable_singleton::ImmutableSingleton, public_state::PublicState, set::Set,
+            stable_public_state::StablePublicState
+        },
         context::Context
     };
     use dep::field_note::field_note::FieldNote;
@@ -95,6 +95,20 @@ contract Proxy {
                 true
             );
         }
+    }
+
+    #[aztec(public)]
+    fn public_fallback(fn_selector: Field, args_hash: Field) {
+        let slow = SlowMap::at(storage.public_slow_update.read());
+        let target = AztecAddress::from_field(slow.read_at_pub(context, TARGET_SLOW_TREE_STORAGE_SLOT));
+        // TODO: return the return value
+        let _ = context.call_public_function_with_packed_args(
+            target,
+            FunctionSelector::from_field(fn_selector),
+            args_hash,
+            false,
+            true
+        );
     }
 
     unconstrained fn view_private_value(amount: Field, owner: AztecAddress) -> pub Field {

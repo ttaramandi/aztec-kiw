@@ -25,8 +25,6 @@ describe('e2e_proxy', () => {
     index: bigint,
     includeUncommitted: boolean,
   ) => {
-    let currentLeafValue = slowUpdateTreeSimulator.getLeafValue(index, includeUncommitted);
-    console.log(`current leaf: ??${currentLeafValue!.toString()}¿¿`);
     return {
       index,
       value: Fr.fromBuffer(slowUpdateTreeSimulator.getLeafValue(index, includeUncommitted)!),
@@ -150,6 +148,8 @@ describe('e2e_proxy', () => {
 
     it("runs another contract's enqueued public function on proxy's storage via fallback", async () => {
       const sentValue = 42n;
+
+      await userWallet.addCapsule(getMembershipCapsule(await getMembershipProof(slowUpdateTreeSimulator, 1n, false)));
 
       await proxyContractInterface.methods.public_set_value(sentValue).send().wait();
 
