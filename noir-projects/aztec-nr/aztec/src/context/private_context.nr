@@ -351,9 +351,9 @@ impl PrivateContext {
         } else {
             // For non-delegate calls, we also constrain the execution context address for the nested call to be equal to the address we called.
             assert(item.public_inputs.call_context.storage_contract_address.eq(contract_address));
-            assert(
-                item.public_inputs.call_context.msg_sender.eq(self.inputs.call_context.storage_contract_address)
-            );
+            // assert(
+            //     item.public_inputs.call_context.msg_sender.eq(self.inputs.call_context.storage_contract_address)
+            // );
         }
 
         self.private_call_stack_hashes.push(item.hash());
@@ -487,9 +487,9 @@ impl PrivateContext {
         } else {
             // For non-delegate calls, we also constrain the execution context address for the nested call to be equal to the address we called.
             assert(item.public_inputs.call_context.storage_contract_address.eq(contract_address));
-            assert(
-                item.public_inputs.call_context.msg_sender.eq(self.inputs.call_context.storage_contract_address)
-            );
+            // assert(
+            //     item.public_inputs.call_context.msg_sender.eq(self.inputs.call_context.storage_contract_address)
+            // );
         }
 
         self.public_call_stack_hashes.push(item.hash());

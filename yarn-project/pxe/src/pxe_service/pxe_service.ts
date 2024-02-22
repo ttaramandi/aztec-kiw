@@ -15,6 +15,7 @@ import {
   MerkleTreeId,
   NoteFilter,
   PXE,
+  PackedArguments,
   SimulationError,
   Tx,
   TxExecutionRequest,
@@ -43,7 +44,7 @@ import {
   getContractClassFromArtifact,
 } from '@aztec/circuits.js';
 import { computeCommitmentNonce, siloNullifier } from '@aztec/circuits.js/hash';
-import { DecodedReturn, encodeArguments } from '@aztec/foundation/abi';
+import { DecodedReturn, FunctionSelector, encodeArguments } from '@aztec/foundation/abi';
 import { arrayNonEmptyLength, padArrayEnd } from '@aztec/foundation/collection';
 import { Fr } from '@aztec/foundation/fields';
 import { SerialQueue } from '@aztec/foundation/fifo';
@@ -60,6 +61,7 @@ import {
 import { ContractInstanceWithAddress } from '@aztec/types/contracts';
 import { NodeInfo } from '@aztec/types/interfaces';
 
+import { PackedArgsCache } from '../../../simulator/src/common/packed_args_cache.js';
 import { PXEServiceConfig, getPackageInfo } from '../config/index.js';
 import { ContractDataOracle } from '../contract_data_oracle/index.js';
 import { PxeDatabase } from '../database/index.js';
@@ -531,12 +533,31 @@ export class PXEService implements PXE {
    * @param execRequest - The transaction request object containing details of the contract call.
    * @returns An object containing the contract address, function artifact, portal contract address, and historical tree roots.
    */
-  async #getSimulationParameters(execRequest: FunctionCall | TxExecutionRequest) {
+  async #getSimulationParameters(execRequest: FunctionCall | TxExecutionRequest, packedArgsCache: PackedArgsCache) {
     const contractAddress = (execRequest as FunctionCall).to ?? (execRequest as TxExecutionRequest).origin;
-    const functionArtifact = await this.contractDataOracle.getFunctionArtifact(
-      contractAddress,
-      execRequest.functionData.selector,
-    );
+    let functionArtifact;
+    try {
+      functionArtifact = await this.contractDataOracle.getFunctionArtifact(
+        contractAddress,
+        execRequest.functionData.selector,
+      );
+    } catch (err) {
+      this.log.debug(
+        `Function artifact not found for ${contractAddress}:${execRequest.functionData.selector}, looking for fallback`,
+      );
+      const txRequest = execRequest as TxExecutionRequest;
+      packedArgsCache.add(txRequest.packedArguments);
+      txRequest.packedArguments = [
+        PackedArguments.fromArgs([execRequest.functionData.selector.toField(), txRequest.argsHash]),
+      ];
+      txRequest.argsHash = txRequest.packedArguments[0].hash;
+      execRequest.functionData.selector = FunctionSelector.fromSignature('private_fallback(Field,Field)');
+      functionArtifact = await this.contractDataOracle.getFunctionArtifact(
+        contractAddress,
+        execRequest.functionData.selector,
+      );
+      this.log.debug(`Found private fallback for ${contractAddress}`);
+    }
     const debug = await this.contractDataOracle.getFunctionDebugMetadata(
       contractAddress,
       execRequest.functionData.selector,
@@ -555,12 +576,21 @@ export class PXEService implements PXE {
 
   async #simulate(txRequest: TxExecutionRequest): Promise<ExecutionResult> {
     // TODO - Pause syncing while simulating.
-
-    const { contractAddress, functionArtifact, portalContract } = await this.#getSimulationParameters(txRequest);
+    const packedArgsCache = PackedArgsCache.create([]);
+    const { contractAddress, functionArtifact, portalContract } = await this.#getSimulationParameters(
+      txRequest,
+      packedArgsCache,
+    );
 
     this.log('Executing simulator...');
     try {
-      const result = await this.simulator.run(txRequest, functionArtifact, contractAddress, portalContract);
+      const result = await this.simulator.run(
+        txRequest,
+        functionArtifact,
+        contractAddress,
+        portalContract,
+        packedArgsCache,
+      );
       this.log('Simulation completed!');
       return result;
     } catch (err) {
@@ -580,7 +610,10 @@ export class PXEService implements PXE {
    * @returns The simulation result containing the outputs of the unconstrained function.
    */
   async #simulateUnconstrained(execRequest: FunctionCall) {
-    const { contractAddress, functionArtifact } = await this.#getSimulationParameters(execRequest);
+    const { contractAddress, functionArtifact } = await this.#getSimulationParameters(
+      execRequest,
+      PackedArgsCache.create([]),
+    );
 
     this.log('Executing unconstrained simulator...');
     try {

@@ -23,6 +23,12 @@ export class PackedArgsCache {
     return new PackedArgsCache(initialArguments);
   }
 
+  public add(args: PackedArguments[]) {
+    for (const arg of args) {
+      this.cache.set(arg.hash.toBigInt(), arg.args);
+    }
+  }
+
   /**
    * Unpacks packed arguments.
    * @param hash - The hash of the packed arguments.

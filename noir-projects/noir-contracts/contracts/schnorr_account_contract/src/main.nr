@@ -37,6 +37,14 @@ contract SchnorrAccount {
         // docs:end:initialize
     }
 
+    // Constructor for proxies
+    #[aztec(private)]
+    fn initialize(signing_pub_key_x: pub Field, signing_pub_key_y: pub Field) {
+        let this = context.this_address();
+        let mut pub_key_note = PublicKeyNote::new(signing_pub_key_x, signing_pub_key_y, this);
+        storage.signing_public_key.initialize(&mut pub_key_note, true);
+    }
+
     // Note: If you globally change the entrypoint signature don't forget to update default_entrypoint.ts file
     #[aztec(private)]
     fn entrypoint(app_payload: pub AppPayload, fee_payload: pub FeePayload) {

@@ -55,6 +55,8 @@ export { AuthWitnessProvider } from './account/index.js';
 export { AccountContract } from './account/index.js';
 export { AccountManager } from './account_manager/index.js';
 
+export { DeployAccountSentTx } from './account_manager/deploy_account_sent_tx.js';
+
 export { AccountWalletWithPrivateKey, AccountWallet, Wallet, SignerlessWallet } from './wallet/index.js';
 
 // // TODO https://github.com/AztecProtocol/aztec-packages/issues/2632 --> FunctionSelector might not need to be exposed

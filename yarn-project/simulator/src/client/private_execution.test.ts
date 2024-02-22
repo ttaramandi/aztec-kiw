@@ -58,6 +58,7 @@ import { MockProxy, mock } from 'jest-mock-extended';
 import { getFunctionSelector } from 'viem';
 
 import { KeyPair, MessageLoadOracleInputs } from '../acvm/index.js';
+import { PackedArgsCache } from '../common/packed_args_cache.js';
 import { buildL1ToL2Message } from '../test/utils.js';
 import { computeSlotForMapping } from '../utils.js';
 import { DBOracle } from './db_oracle.js';
@@ -131,6 +132,7 @@ describe('Private Execution test suite', () => {
       artifact,
       functionData.isConstructor ? AztecAddress.ZERO : contractAddress,
       portalContractAddress,
+      PackedArgsCache.create([]),
       msgSender,
     );
   };

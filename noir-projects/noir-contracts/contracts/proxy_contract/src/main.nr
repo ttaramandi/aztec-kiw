@@ -1,4 +1,6 @@
 mod interfaces;
+mod public_key_note;
+mod value_note;
 
 // A contract used along with `Parent` contract to test nested calls.
 contract Proxy {
@@ -8,21 +10,19 @@ contract Proxy {
         log::emit_unencrypted_log,
         protocol_types::{abis::{function_selector::FunctionSelector}, address::AztecAddress, hash},
         note::{note_viewer_options::NoteViewerOptions, utils as note_utils, note_header::NoteHeader},
-         oracle::arguments,
-         state_vars::{
-            immutable_singleton::ImmutableSingleton, public_state::PublicState, set::Set,
-            stable_public_state::StablePublicState
-        },
+        oracle::arguments,
+        state_vars::{
+        immutable_singleton::ImmutableSingleton, public_state::PublicState, set::Set,
+        stable_public_state::StablePublicState
+    },
         context::Context
     };
     use dep::field_note::field_note::FieldNote;
-    use dep::value_note::value_note::{ValueNote, VALUE_NOTE_LEN};
-
     use crate::interfaces::SlowMap;
+    use crate::public_key_note::PublicKeyNote;
+    use crate::value_note::ValueNote;
 
     struct Storage {
-        current_value: PublicState<Field>,
-        a_private_value: Set<ValueNote>,
         admin: StablePublicState<AztecAddress>,
         slow_update: ImmutableSingleton<FieldNote>,
         public_slow_update: PublicState<AztecAddress>,
@@ -31,8 +31,6 @@ contract Proxy {
     impl Storage {
         fn init(context: Context) -> Self {
             Storage {
-                current_value: PublicState::new(context, 1),
-                a_private_value: Set::new(context, 2),
                 admin: StablePublicState::new(context, 97),
                 slow_update: ImmutableSingleton::new(context, 98),
                 public_slow_update: PublicState::new(context, 99)
@@ -40,7 +38,6 @@ contract Proxy {
         }
     }
 
-  
     global TARGET_SLOW_TREE_STORAGE_SLOT: Field = 1;
 
     #[aztec(private)]
@@ -111,13 +108,25 @@ contract Proxy {
         );
     }
 
-    unconstrained fn view_private_value(amount: Field, owner: AztecAddress) -> pub Field {
-        let options = NoteViewerOptions::new().select(0, amount, Option::none()).select(1, owner.to_field(), Option::none()).set_limit(1);
-        let notes = storage.a_private_value.view_notes(options);
-        notes[0].unwrap_unchecked().value
-    }
+    unconstrained fn compute_note_hash_and_nullifier(
+        contract_address: AztecAddress,
+        nonce: Field,
+        storage_slot: Field,
+        note_type_id: Field,
+        serialized_note: [Field; 20]
+    ) -> pub [Field; 4] {
+        let note_header = NoteHeader::new(contract_address, nonce, storage_slot);
 
-    unconstrained fn view_public_value() -> pub Field {
-        storage.current_value.read()
+        if note_type_id == PublicKeyNote::get_note_type_id() {
+            note_utils::compute_note_hash_and_nullifier(
+                PublicKeyNote::deserialize_content,
+                note_header,
+                serialized_note
+            )
+        } else if note_type_id == FieldNote::get_note_type_id() {
+            note_utils::compute_note_hash_and_nullifier(FieldNote::deserialize_content, note_header, serialized_note)
+        } else {
+            note_utils::compute_note_hash_and_nullifier(ValueNote::deserialize_content, note_header, serialized_note)
+        }
     }
 }

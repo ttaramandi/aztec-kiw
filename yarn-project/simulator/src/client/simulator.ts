@@ -70,6 +70,7 @@ export class AcirSimulator {
     entryPointArtifact: FunctionArtifactWithDebugMetadata,
     contractAddress: AztecAddress,
     portalContractAddress: EthAddress,
+    packedArgsCache: PackedArgsCache,
     msgSender = AztecAddress.ZERO,
   ): Promise<ExecutionResult> {
     if (entryPointArtifact.functionType !== FunctionType.SECRET) {
@@ -96,6 +97,7 @@ export class AcirSimulator {
       // TODO: when contract deployment is done in-app, we should only reserve one counter for the tx hash
       2, // 2 counters are reserved for tx hash and contract deployment nullifier
     );
+    packedArgsCache.add(request.packedArguments);
     const context = new ClientExecutionContext(
       contractAddress,
       request.argsHash,
@@ -103,7 +105,7 @@ export class AcirSimulator {
       callContext,
       header,
       request.authWitnesses,
-      PackedArgsCache.create(request.packedArguments),
+      packedArgsCache,
       new ExecutionNoteCache(),
       this.db,
       curve,

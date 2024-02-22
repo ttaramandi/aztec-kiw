@@ -1,7 +1,31 @@
-import { CheatCodes, ExtendedNote, Fr, Note, Wallet } from '@aztec/aztec.js';
+import { SchnorrAccountContract } from '@aztec/accounts/schnorr';
+import {
+  AccountWallet,
+  AztecAddress,
+  CheatCodes,
+  ContractDeployer,
+  DebugLogger,
+  DeployAccountSentTx,
+  ExtendedNote,
+  Fr,
+  GrumpkinScalar,
+  Note,
+  PXE,
+  Point,
+  Wallet,
+  generatePublicKey,
+} from '@aztec/aztec.js';
 import { openTmpStore } from '@aztec/kv-store/utils';
 import { Pedersen, SparseTree, newTree } from '@aztec/merkle-tree';
-import { DelegatedOnContract, ProxyContract, SlowTreeContract } from '@aztec/noir-contracts.js';
+import {
+  ChildContract,
+  DelegatedOnContract,
+  ProxyContract,
+  SchnorrAccountContract as SchnorrAccountContractRaw,
+  SlowTreeContract,
+} from '@aztec/noir-contracts.js';
+
+import { after } from 'node:test';
 
 import { setup } from './fixtures/utils.js';
 
@@ -17,6 +41,11 @@ describe('e2e_proxy', () => {
   let slowTreeContract: SlowTreeContract;
   let slowUpdateTreeSimulator: SparseTree;
   let cheatCodes: CheatCodes;
+  let pxe: PXE;
+  let logger: DebugLogger;
+  let deploymentPrivateKey: GrumpkinScalar;
+  let deploymentPublicKey: Point;
+  let extendedSlowNote: ExtendedNote;
 
   let teardown: () => Promise<void>;
 
@@ -76,7 +105,7 @@ describe('e2e_proxy', () => {
   afterAll(() => teardown());
 
   beforeAll(async () => {
-    ({ teardown, wallets, cheatCodes } = await setup(2));
+    ({ teardown, wallets, cheatCodes, pxe, logger } = await setup(2));
     [userWallet, adminWallet] = wallets;
     slowTreeContract = await SlowTreeContract.deploy(userWallet).send().deployed();
     implementationContract = await DelegatedOnContract.deploy(userWallet).send().deployed();
@@ -87,8 +116,10 @@ describe('e2e_proxy', () => {
     // Add data
     await updateSlowTree(slowUpdateTreeSimulator, userWallet, 1n, implementationContract.address.toField());
 
-    // Progress to next "epoch"
-    const proxyReceipt = await ProxyContract.deploy(
+    deploymentPrivateKey = GrumpkinScalar.random();
+    deploymentPublicKey = generatePublicKey(deploymentPrivateKey);
+    const proxyReceipt = await ProxyContract.deployWithPublicKey(
+      deploymentPublicKey,
       userWallet,
       adminWallet.getCompleteAddress().address,
       implementationContract.address,
@@ -104,7 +135,7 @@ describe('e2e_proxy', () => {
     const slowNote = new Note([slowTreeContract.address.toField()]);
     const slowNoteStorageSlot = new Fr(SLOW_TREE_STORAGE_SLOT);
 
-    const extendedSlowNote = new ExtendedNote(
+    extendedSlowNote = new ExtendedNote(
       slowNote,
       userWallet.getCompleteAddress().address,
       proxyContract.address,
@@ -134,16 +165,11 @@ describe('e2e_proxy', () => {
         .send()
         .wait();
 
-      const proxyValue = await proxyContract.methods
-        .view_private_value(sentValue, userWallet.getCompleteAddress().address)
-        .view();
-
       const implementationValue = await implementationContract.methods
         .view_private_value(sentValue, userWallet.getCompleteAddress().address)
         .view();
 
       expect(implementationValue).toEqual(0n);
-      expect(proxyValue).toEqual(sentValue);
     }, 100_000);
 
     it("runs another contract's enqueued public function on proxy's storage via fallback", async () => {
@@ -153,12 +179,69 @@ describe('e2e_proxy', () => {
 
       await proxyContractInterface.methods.public_set_value(sentValue).send().wait();
 
-      const proxyValue = await proxyContract.methods.view_public_value().view();
-
       const implementationValue = await implementationContract.methods.view_public_value().view();
 
       expect(implementationValue).toEqual(0n);
-      expect(proxyValue).toEqual(sentValue);
     }, 100_000);
+  });
+
+  describe(`behaves like an account contract`, () => {
+    let child: ChildContract;
+    let proxiedWallet: Wallet;
+
+    beforeAll(async () => {
+      const completeAddress = await pxe.registerAccount(deploymentPrivateKey, proxyContract.partialAddress);
+      const signingPrivateKey = GrumpkinScalar.random();
+      const accountContract = new SchnorrAccountContract(signingPrivateKey);
+      const nodeInfo = await pxe.getNodeInfo();
+      const accountInterface = accountContract.getInterface(completeAddress, nodeInfo);
+      proxiedWallet = new AccountWallet(pxe, accountInterface);
+
+      const deployer = new ContractDeployer(accountContract.getContractArtifact(), pxe, deploymentPublicKey);
+      const args = accountContract.getDeploymentArgs();
+      const deployMethod = deployer.deploy(...args);
+      await deployMethod.create({ contractAddressSalt: Fr.random() });
+      await pxe.registerAccount(deploymentPrivateKey, deployMethod.partialAddress!);
+      const sentTx = deployMethod.send();
+
+      const deploymentResult = await new DeployAccountSentTx(proxiedWallet, sentTx.getTxHash()).wait();
+
+      await updateSlowTree(slowUpdateTreeSimulator, proxiedWallet, 1n, deploymentResult.contractAddress!.toField());
+
+      await proxiedWallet.addNote(extendedSlowNote);
+      await proxyContract.methods
+        .upgrade(deploymentResult.contractAddress as AztecAddress)
+        .send()
+        .wait();
+      const time = await cheatCodes.eth.timestamp();
+      await cheatCodes.aztec.warp(time + 200);
+      await slowUpdateTreeSimulator.commit();
+      const [signingX, signingY] = accountContract.getDeploymentArgs();
+      const proxyAsImplementation = await SchnorrAccountContractRaw.at(proxyContract.address, userWallet);
+      await userWallet.addCapsule(getMembershipCapsule(await getMembershipProof(slowUpdateTreeSimulator, 1n, false)));
+      await proxyAsImplementation.methods.initialize(signingX, signingY).send().wait();
+
+      child = await ChildContract.deploy(proxiedWallet).send().deployed();
+    }, 60_000);
+
+    afterAll(() => teardown());
+
+    it('calls a private function', async () => {
+      logger('Calling private function...');
+      await proxiedWallet.addCapsule(
+        getMembershipCapsule(await getMembershipProof(slowUpdateTreeSimulator, 1n, false)),
+      );
+      await child.methods.value(42).send().wait({ interval: 0.1 });
+    }, 60_000);
+
+    it('calls a public function', async () => {
+      logger('Calling public function...');
+      await proxiedWallet.addCapsule(
+        getMembershipCapsule(await getMembershipProof(slowUpdateTreeSimulator, 1n, false)),
+      );
+      await child.methods.pubIncValue(42).send().wait({ interval: 0.1 });
+      const storedValue = await pxe.getPublicStorageAt(child.address, new Fr(1));
+      expect(storedValue).toEqual(new Fr(42n));
+    }, 60_000);
   });
 });

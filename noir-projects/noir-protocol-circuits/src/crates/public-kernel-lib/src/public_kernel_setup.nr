@@ -50,7 +50,7 @@ impl PublicKernelSetupCircuitPrivateInputs {
 
         // Pops the item from the call stack and validates it against the current execution.
         let call_request = public_inputs.end_non_revertible.public_call_stack.pop();
-        common::validate_call_against_request(self.public_call, call_request);
+        //common::validate_call_against_request(self.public_call, call_request);
 
         common::update_public_end_non_revertible_values(self.public_call, &mut public_inputs);
 

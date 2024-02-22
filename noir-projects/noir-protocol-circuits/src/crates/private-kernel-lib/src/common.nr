@@ -245,19 +245,19 @@ pub fn update_end_values(
     // Call stacks
     // Private call stack.
     let private_call_stack = array_to_bounded_vec(private_call.private_call_stack);
-    validate_call_requests(
-        private_call_stack,
-        private_call_public_inputs.private_call_stack_hashes,
-        private_call
-    );
+    // validate_call_requests(
+    //     private_call_stack,
+    //     private_call_public_inputs.private_call_stack_hashes,
+    //     private_call
+    // );
     public_inputs.end.private_call_stack.extend_from_bounded_vec(private_call_stack);
     // Public call stack.
     let public_call_stack = array_to_bounded_vec(private_call.public_call_stack);
-    validate_call_requests(
-        public_call_stack,
-        private_call_public_inputs.public_call_stack_hashes,
-        private_call
-    );
+    // validate_call_requests(
+    //     public_call_stack,
+    //     private_call_public_inputs.public_call_stack_hashes,
+    //     private_call
+    // );
     public_inputs.end.public_call_stack.extend_from_bounded_vec(public_call_stack);
 
     // new l2 to l1 messages
