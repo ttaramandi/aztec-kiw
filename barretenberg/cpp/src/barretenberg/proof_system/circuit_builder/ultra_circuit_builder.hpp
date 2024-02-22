@@ -1,7 +1,4 @@
 #pragma once
-// #include "barretenberg/plonk/proof_system/constants.hpp"
-// #include "barretenberg/plonk/proof_system/types/polynomial_manifest.hpp"
-// #include "barretenberg/plonk/proof_system/types/prover_settings.hpp"
 #include "barretenberg/polynomials/polynomial.hpp"
 #include "barretenberg/proof_system/op_queue/ecc_op_queue.hpp"
 #include "barretenberg/proof_system/plookup_tables/plookup_tables.hpp"
@@ -30,6 +27,7 @@ using namespace bb;
 template <typename Arithmetization>
 class UltraCircuitBuilder_ : public CircuitBuilderBase<typename Arithmetization::FF> {
   public:
+    using Selectors = Arithmetization;
     using FF = typename Arithmetization::FF;
     static constexpr size_t NUM_WIRES = Arithmetization::NUM_WIRES;
     // Keeping NUM_WIRES, at least temporarily, for backward compatibility
@@ -458,6 +456,9 @@ class UltraCircuitBuilder_ : public CircuitBuilderBase<typename Arithmetization:
             builder->q_elliptic().resize(num_gates);
             builder->q_aux().resize(num_gates);
             builder->q_lookup_type().resize(num_gates);
+            if constexpr (HasAdditionalSelectors<Arithmetization>) {
+                builder->selectors.resize_additional(num_gates);
+            }
         }
         /**
          * @brief Checks that the circuit state is the same as the stored circuit's one
@@ -673,7 +674,8 @@ class UltraCircuitBuilder_ : public CircuitBuilderBase<typename Arithmetization:
     UltraCircuitBuilder_(const size_t size_hint,
                          auto& witness_values,
                          const std::vector<uint32_t>& public_inputs,
-                         size_t varnum)
+                         size_t varnum,
+                         bool recursive = false)
         : CircuitBuilderBase<FF>(size_hint)
     {
         selectors.reserve(size_hint);
@@ -696,6 +698,8 @@ class UltraCircuitBuilder_ : public CircuitBuilderBase<typename Arithmetization:
         // incorporated into variables.
         this->zero_idx = put_constant_variable(FF::zero());
         this->tau.insert({ DUMMY_TAG, DUMMY_TAG }); // TODO(luke): explain this
+
+        this->is_recursive_circuit = recursive;
     };
     UltraCircuitBuilder_(const UltraCircuitBuilder_& other) = default;
     UltraCircuitBuilder_(UltraCircuitBuilder_&& other)
@@ -941,6 +945,32 @@ class UltraCircuitBuilder_ : public CircuitBuilderBase<typename Arithmetization:
     }
 
     /**
+     * @brief Get combined size of all tables used in circuit
+     *
+     */
+    size_t get_tables_size() const
+    {
+        size_t tables_size = 0;
+        for (const auto& table : lookup_tables) {
+            tables_size += table.size;
+        }
+        return tables_size;
+    }
+
+    /**
+     * @brief Get total number of lookups used in circuit
+     *
+     */
+    size_t get_lookups_size() const
+    {
+        size_t lookups_size = 0;
+        for (const auto& table : lookup_tables) {
+            lookups_size += table.lookup_gates.size();
+        }
+        return lookups_size;
+    }
+
+    /**
      * @brief Get the size of the circuit if it was finalized now
      *
      * @details This method estimates the size of the circuit without rounding up to the next power of 2. It takes into
@@ -951,14 +981,7 @@ class UltraCircuitBuilder_ : public CircuitBuilderBase<typename Arithmetization:
      */
     size_t get_total_circuit_size() const
     {
-        size_t tables_size = 0;
-        size_t lookups_size = 0;
-        for (const auto& table : lookup_tables) {
-            tables_size += table.size;
-            lookups_size += table.lookup_gates.size();
-        }
-
-        auto minimum_circuit_size = tables_size + lookups_size;
+        auto minimum_circuit_size = get_tables_size() + get_lookups_size();
         auto num_filled_gates = get_num_gates() + this->public_inputs.size();
         return std::max(minimum_circuit_size, num_filled_gates) + NUM_RESERVED_GATES;
     }
@@ -1168,5 +1191,5 @@ class UltraCircuitBuilder_ : public CircuitBuilderBase<typename Arithmetization:
 
     bool check_circuit();
 };
-using UltraCircuitBuilder = UltraCircuitBuilder_<arithmetization::Ultra<bb::fr>>;
+using UltraCircuitBuilder = UltraCircuitBuilder_<UltraArith<bb::fr>>;
 } // namespace bb

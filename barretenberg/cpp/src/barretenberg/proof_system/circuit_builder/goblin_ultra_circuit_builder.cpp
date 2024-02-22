@@ -12,7 +12,7 @@ namespace bb {
 
 template <typename FF> void GoblinUltraCircuitBuilder_<FF>::finalize_circuit()
 {
-    UltraCircuitBuilder_<arithmetization::UltraHonk<FF>>::finalize_circuit();
+    UltraCircuitBuilder_<UltraHonkArith<FF>>::finalize_circuit();
 }
 
 /**
@@ -26,7 +26,7 @@ template <typename FF> void GoblinUltraCircuitBuilder_<FF>::finalize_circuit()
 template <typename FF> void GoblinUltraCircuitBuilder_<FF>::add_gates_to_ensure_all_polys_are_non_zero()
 {
     // Most polynomials are handled via the conventional Ultra method
-    UltraCircuitBuilder_<arithmetization::UltraHonk<FF>>::add_gates_to_ensure_all_polys_are_non_zero();
+    UltraCircuitBuilder_<UltraHonkArith<FF>>::add_gates_to_ensure_all_polys_are_non_zero();
 
     // All that remains is to handle databus related and poseidon2 related polynomials. In what follows we populate the
     // calldata with some mock data then constuct a single calldata read gate
@@ -60,6 +60,7 @@ template <typename FF> void GoblinUltraCircuitBuilder_<FF>::add_gates_to_ensure_
     this->q_busread().emplace_back(0);
     this->q_poseidon2_external().emplace_back(1);
     this->q_poseidon2_internal().emplace_back(1);
+    this->check_selector_length_consistency();
 
     ++this->num_gates;
 
@@ -82,6 +83,7 @@ template <typename FF> void GoblinUltraCircuitBuilder_<FF>::add_gates_to_ensure_
     this->q_busread().emplace_back(0);
     this->q_poseidon2_external().emplace_back(0);
     this->q_poseidon2_internal().emplace_back(0);
+    this->check_selector_length_consistency();
 
     ++this->num_gates;
 }
@@ -209,11 +211,17 @@ template <typename FF> void GoblinUltraCircuitBuilder_<FF>::populate_ecc_op_wire
     ecc_op_wire_2().emplace_back(in.x_lo);
     ecc_op_wire_3().emplace_back(in.x_hi);
     ecc_op_wire_4().emplace_back(in.y_lo);
+    for (auto& selector : ecc_op_block.selectors.get()) {
+        selector.emplace_back(0);
+    }
 
     ecc_op_wire_1().emplace_back(this->zero_idx);
     ecc_op_wire_2().emplace_back(in.y_hi);
     ecc_op_wire_3().emplace_back(in.z_1);
     ecc_op_wire_4().emplace_back(in.z_2);
+    for (auto& selector : ecc_op_block.selectors.get()) {
+        selector.emplace_back(0);
+    }
 
     num_ecc_op_gates += 2;
 };
@@ -255,6 +263,7 @@ void GoblinUltraCircuitBuilder_<FF>::create_calldata_lookup_gate(const databus_l
     this->q_aux().emplace_back(0);
     this->q_poseidon2_external().emplace_back(0);
     this->q_poseidon2_internal().emplace_back(0);
+    this->check_selector_length_consistency();
 
     ++this->num_gates;
 }
@@ -283,6 +292,7 @@ void GoblinUltraCircuitBuilder_<FF>::create_poseidon2_external_gate(const poseid
     this->q_busread().emplace_back(0);
     this->q_poseidon2_external().emplace_back(1);
     this->q_poseidon2_internal().emplace_back(0);
+    this->check_selector_length_consistency();
     ++this->num_gates;
 }
 
@@ -310,6 +320,7 @@ void GoblinUltraCircuitBuilder_<FF>::create_poseidon2_internal_gate(const poseid
     this->q_busread().emplace_back(0);
     this->q_poseidon2_external().emplace_back(0);
     this->q_poseidon2_internal().emplace_back(1);
+    this->check_selector_length_consistency();
     ++this->num_gates;
 }
 
@@ -340,6 +351,7 @@ template <typename FF> void GoblinUltraCircuitBuilder_<FF>::create_poseidon2_end
     this->q_busread().emplace_back(0);
     this->q_poseidon2_external().emplace_back(0);
     this->q_poseidon2_internal().emplace_back(0);
+    this->check_selector_length_consistency();
     ++this->num_gates;
 }
 
@@ -448,7 +460,7 @@ inline FF GoblinUltraCircuitBuilder_<FF>::compute_poseidon2_internal_identity(FF
 template <typename FF> bool GoblinUltraCircuitBuilder_<FF>::check_circuit()
 {
     bool result = true;
-    if (!UltraCircuitBuilder_<arithmetization::UltraHonk<FF>>::check_circuit()) {
+    if (!UltraCircuitBuilder_<UltraHonkArith<FF>>::check_circuit()) {
         return false;
     }
 

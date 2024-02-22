@@ -17,22 +17,22 @@ DeciderRecursiveVerifier_<Flavor>::DeciderRecursiveVerifier_(Builder* builder)
  *
  */
 template <typename Flavor>
-std::array<typename Flavor::GroupElement, 2> DeciderRecursiveVerifier_<Flavor>::verify_proof(
-    const bb::plonk::proof& proof)
+std::array<typename Flavor::GroupElement, 2> DeciderRecursiveVerifier_<Flavor>::verify_proof(const HonkProof& proof)
 {
-    using Sumcheck = ::bb::honk::sumcheck::SumcheckVerifier<Flavor>;
+    using Sumcheck = ::bb::SumcheckVerifier<Flavor>;
     using Curve = typename Flavor::Curve;
-    using ZeroMorph = ::bb::honk::pcs::zeromorph::ZeroMorphVerifier_<Curve>;
+    using ZeroMorph = ::bb::ZeroMorphVerifier_<Curve>;
     using VerifierCommitments = typename Flavor::VerifierCommitments;
     using Transcript = typename Flavor::Transcript;
-    using Instance = typename ::bb::honk::VerifierInstance_<Flavor>;
+    using Instance = VerifierInstance_<Flavor>;
 
     static constexpr size_t NUM_SUBRELATIONS = Flavor::NUM_SUBRELATIONS;
-    transcript = std::make_shared<Transcript>(builder, proof.proof_data);
+    StdlibProof<Builder> stdlib_proof = bb::convert_proof_to_witness(builder, proof);
+    transcript = std::make_shared<Transcript>(stdlib_proof);
     auto inst = std::make_unique<Instance>();
 
-    const auto instance_size = transcript->template receive_from_prover<uint32_t>("instance_size");
-    const auto public_input_size = transcript->template receive_from_prover<uint32_t>("public_input_size");
+    const auto instance_size = transcript->template receive_from_prover<FF>("instance_size");
+    const auto public_input_size = transcript->template receive_from_prover<FF>("public_input_size");
     const auto log_instance_size = static_cast<size_t>(numeric::get_msb(uint32_t(instance_size.get_value())));
 
     for (size_t i = 0; i < uint32_t(public_input_size.get_value()); ++i) {
@@ -91,6 +91,6 @@ std::array<typename Flavor::GroupElement, 2> DeciderRecursiveVerifier_<Flavor>::
     return pairing_points;
 }
 
-template class DeciderRecursiveVerifier_<bb::honk::flavor::UltraRecursive_<GoblinUltraCircuitBuilder>>;
-template class DeciderRecursiveVerifier_<bb::honk::flavor::GoblinUltraRecursive_<GoblinUltraCircuitBuilder>>;
+template class DeciderRecursiveVerifier_<bb::UltraRecursiveFlavor_<GoblinUltraCircuitBuilder>>;
+template class DeciderRecursiveVerifier_<bb::GoblinUltraRecursiveFlavor_<GoblinUltraCircuitBuilder>>;
 } // namespace bb::stdlib::recursion::honk

@@ -1,45 +1,49 @@
 import { ContractArtifact, FunctionSelector, FunctionType } from '@aztec/foundation/abi';
-import { pedersenHash } from '@aztec/foundation/crypto';
 import { Fr } from '@aztec/foundation/fields';
-import { ContractClass } from '@aztec/types/contracts';
+import { ContractClass, ContractClassWithId } from '@aztec/types/contracts';
 
-import chunk from 'lodash.chunk';
-
-import { GeneratorIndex } from '../constants.gen.js';
+import { computeArtifactHash } from './artifact_hash.js';
+import { ContractClassIdPreimage, computeContractClassIdWithPreimage } from './contract_class_id.js';
+import { packBytecode } from './public_bytecode.js';
 
 /** Contract artifact including its artifact hash */
 type ContractArtifactWithHash = ContractArtifact & { artifactHash: Fr };
 
-/**
- * Creates a ContractClass from a contract compilation artifact with its artifact hash.
- */
-export function createContractClassFromArtifact(artifact: ContractArtifactWithHash): ContractClass {
-  return {
+/** Creates a ContractClass from a contract compilation artifact. */
+export function getContractClassFromArtifact(
+  artifact: ContractArtifact | ContractArtifactWithHash,
+): ContractClassWithId & ContractClassIdPreimage {
+  const artifactHash = 'artifactHash' in artifact ? artifact.artifactHash : computeArtifactHash(artifact);
+  const publicFunctions: ContractClass['publicFunctions'] = artifact.functions
+    .filter(f => f.functionType === FunctionType.OPEN)
+    .map(f => ({
+      selector: FunctionSelector.fromNameAndParameters(f.name, f.parameters),
+      bytecode: Buffer.from(f.bytecode, 'base64'),
+      isInternal: f.isInternal,
+    }));
+  const packedBytecode = packBytecode(publicFunctions);
+
+  const contractClass: ContractClass = {
     version: 1,
-    artifactHash: artifact.artifactHash,
-    publicFunctions: artifact.functions
-      .filter(f => f.functionType === FunctionType.OPEN)
-      .map(f => ({
-        selector: FunctionSelector.fromNameAndParameters(f.name, f.parameters),
-        bytecode: Buffer.from(f.bytecode, 'base64'),
-        isInternal: f.isInternal,
-      })),
+    artifactHash,
+    publicFunctions,
+    packedBytecode,
     privateFunctions: artifact.functions
       .filter(f => f.functionType === FunctionType.SECRET)
       .map(f => ({
         selector: FunctionSelector.fromNameAndParameters(f.name, f.parameters),
-        vkHash: getVerificationKeyHash(Buffer.from(f.verificationKey!, 'base64')),
+        vkHash: getVerificationKeyHash(f.verificationKey!),
         isInternal: f.isInternal,
       })),
-    packedBytecode: Buffer.alloc(0),
   };
+  return { ...contractClass, ...computeContractClassIdWithPreimage(contractClass) };
 }
 
 /**
  * Calculates the hash of a verification key.
- * TODO(@spalladino) Check this is the correct calculation of vkhash
- * */
-function getVerificationKeyHash(vk: Buffer) {
-  const chunks = chunk(vk, 32).map(nums => Buffer.from(nums));
-  return Fr.fromBuffer(pedersenHash(chunks, GeneratorIndex.VK));
+ * Returns zero for consistency with Noir.
+ */
+function getVerificationKeyHash(_verificationKeyInBase64: string) {
+  // return Fr.fromBuffer(hashVKStr(verificationKeyInBase64));
+  return Fr.ZERO;
 }

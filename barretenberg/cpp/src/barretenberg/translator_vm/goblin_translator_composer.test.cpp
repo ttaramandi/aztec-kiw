@@ -8,20 +8,18 @@
 
 #include <gtest/gtest.h>
 using namespace bb;
-using namespace bb::honk;
-using CircuitBuilder = flavor::GoblinTranslator::CircuitBuilder;
-using Transcript = flavor::GoblinTranslator::Transcript;
-using OpQueue = ECCOpQueue;
 
 namespace {
+using CircuitBuilder = GoblinTranslatorFlavor::CircuitBuilder;
+using Transcript = GoblinTranslatorFlavor::Transcript;
+using OpQueue = ECCOpQueue;
 auto& engine = numeric::get_debug_randomness();
-}
 
 std::vector<uint32_t> add_variables(auto& circuit_constructor, std::vector<bb::fr> variables)
 {
     std::vector<uint32_t> res;
-    for (size_t i = 0; i < variables.size(); i++) {
-        res.emplace_back(circuit_constructor.add_variable(variables[i]));
+    for (fr& variable : variables) {
+        res.emplace_back(circuit_constructor.add_variable(variable));
     }
     return res;
 }
@@ -39,6 +37,7 @@ class GoblinTranslatorComposerTests : public ::testing::Test {
   protected:
     static void SetUpTestSuite() { bb::srs::init_crs_factory("../srs_db/ignition"); }
 };
+} // namespace
 
 /**
  * @brief Test simple circuit with public inputs
@@ -64,7 +63,7 @@ TEST_F(GoblinTranslatorComposerTests, Basic)
     auto prover_transcript = std::make_shared<Transcript>();
     prover_transcript->send_to_verifier("init", Fq::random_element());
     prover_transcript->export_proof();
-    Fq translation_batching_challenge = prover_transcript->get_challenge("Translation:batching_challenge");
+    Fq translation_batching_challenge = prover_transcript->template get_challenge<Fq>("Translation:batching_challenge");
     Fq translation_evaluation_challenge = Fq::random_element();
     auto circuit_builder = CircuitBuilder(translation_batching_challenge, translation_evaluation_challenge, op_queue);
     EXPECT_TRUE(circuit_builder.check_circuit());

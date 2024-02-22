@@ -94,7 +94,7 @@ impl CompilerContext {
         program_width: usize,
     ) -> Result<JsCompileResult, JsCompileError> {
         let compile_options = CompileOptions::default();
-        let np_language = acvm::ExpressionWidth::Bounded { width: program_width };
+        let np_language = acvm::acir::circuit::ExpressionWidth::Bounded { width: program_width };
 
         let root_crate_id = *self.context.root_crate_id();
 
@@ -109,7 +109,7 @@ impl CompilerContext {
                 })?
                 .0;
 
-        let optimized_program = nargo::ops::optimize_program(compiled_program, np_language);
+        let optimized_program = nargo::ops::transform_program(compiled_program, np_language);
 
         let compile_output = generate_program_artifact(optimized_program);
         Ok(JsCompileResult::new(compile_output))
@@ -120,7 +120,7 @@ impl CompilerContext {
         program_width: usize,
     ) -> Result<JsCompileResult, JsCompileError> {
         let compile_options = CompileOptions::default();
-        let np_language = acvm::ExpressionWidth::Bounded { width: program_width };
+        let np_language = acvm::acir::circuit::ExpressionWidth::Bounded { width: program_width };
         let root_crate_id = *self.context.root_crate_id();
 
         let compiled_contract =
@@ -134,7 +134,7 @@ impl CompilerContext {
                 })?
                 .0;
 
-        let optimized_contract = nargo::ops::optimize_contract(compiled_contract, np_language);
+        let optimized_contract = nargo::ops::transform_contract(compiled_contract, np_language);
 
         let compile_output = generate_contract_artifact(optimized_contract);
         Ok(JsCompileResult::new(compile_output))

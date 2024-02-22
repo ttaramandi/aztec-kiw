@@ -1,4 +1,3 @@
-import { AcirSimulator } from '@aztec/acir-simulator';
 import {
   AztecNode,
   FunctionL2Logs,
@@ -12,12 +11,13 @@ import {
   Note,
   TxL2Logs,
 } from '@aztec/circuit-types';
-import { EthAddress, Fr, MAX_NEW_COMMITMENTS_PER_TX } from '@aztec/circuits.js';
+import { Fr, MAX_NEW_COMMITMENTS_PER_TX } from '@aztec/circuits.js';
 import { Grumpkin } from '@aztec/circuits.js/barretenberg';
 import { pedersenHash } from '@aztec/foundation/crypto';
 import { Point } from '@aztec/foundation/fields';
 import { ConstantKeyPair } from '@aztec/key-store';
-import { AztecLmdbStore } from '@aztec/kv-store';
+import { openTmpStore } from '@aztec/kv-store/utils';
+import { AcirSimulator } from '@aztec/simulator';
 
 import { jest } from '@jest/globals';
 import { MockProxy, mock } from 'jest-mock-extended';
@@ -105,7 +105,11 @@ describe('Note Processor', () => {
       } = createEncryptedLogsAndOwnedL1NotePayloads(isTargetBlock ? ownedData : [], isTargetBlock ? ownedNotes : []);
       encryptedLogsArr.push(encryptedLogs);
       ownedL1NotePayloads.push(...payloads);
-      block.newCommitments = newNotes.map(n => computeMockNoteHash(n.note));
+      for (let i = 0; i < TXS_PER_BLOCK; i++) {
+        block.body.txEffects[i].newNoteHashes = newNotes
+          .map(n => computeMockNoteHash(n.note))
+          .slice(i * MAX_NEW_COMMITMENTS_PER_TX, (i + 1) * MAX_NEW_COMMITMENTS_PER_TX);
+      }
 
       const randomBlockContext = new L2BlockContext(block);
       blockContexts.push(randomBlockContext);
@@ -118,8 +122,8 @@ describe('Note Processor', () => {
     owner = ConstantKeyPair.random(grumpkin);
   });
 
-  beforeEach(async () => {
-    database = new KVPxeDatabase(await AztecLmdbStore.create(EthAddress.random()));
+  beforeEach(() => {
+    database = new KVPxeDatabase(openTmpStore());
     addNotesSpy = jest.spyOn(database, 'addNotes');
 
     aztecNode = mock<AztecNode>();
@@ -139,7 +143,7 @@ describe('Note Processor', () => {
       Promise.resolve({
         innerNoteHash: Fr.random(),
         siloedNoteHash: Fr.random(),
-        uniqueSiloedNoteHash: computeMockNoteHash(args[3]),
+        uniqueSiloedNoteHash: computeMockNoteHash(args[4]), // args[4] is note
         innerNullifier: Fr.random(),
       }),
     );
@@ -192,7 +196,7 @@ describe('Note Processor', () => {
         index: BigInt(thisBlockDataStartIndex + MAX_NEW_COMMITMENTS_PER_TX * (4 - 1) + 2),
       }),
     ]);
-  });
+  }, 30_000);
 
   it('should not store notes that do not belong to us', async () => {
     const { blockContexts, encryptedLogsArr } = mockData([]);

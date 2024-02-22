@@ -74,6 +74,10 @@ impl GeneratedAcir {
         }
     }
 
+    pub(crate) fn opcodes(&self) -> &[AcirOpcode] {
+        &self.opcodes
+    }
+
     pub(crate) fn take_opcodes(&mut self) -> Vec<AcirOpcode> {
         std::mem::take(&mut self.opcodes)
     }
@@ -252,7 +256,7 @@ impl GeneratedAcir {
                 rhs: constant_inputs[1].to_u128() as u32,
                 output: constant_outputs[0].to_u128() as u32,
             },
-            BlackBoxFunc::BigIntNeg => BlackBoxFuncCall::BigIntNeg {
+            BlackBoxFunc::BigIntSub => BlackBoxFuncCall::BigIntSub {
                 lhs: constant_inputs[0].to_u128() as u32,
                 rhs: constant_inputs[1].to_u128() as u32,
                 output: constant_outputs[0].to_u128() as u32,
@@ -280,6 +284,11 @@ impl GeneratedAcir {
                 inputs: inputs[0].clone(),
                 outputs,
                 len: constant_inputs[0].to_u128() as u32,
+            },
+            BlackBoxFunc::Sha256Compression => BlackBoxFuncCall::Sha256Compression {
+                inputs: inputs[0].clone(),
+                hash_values: inputs[1].clone(),
+                outputs,
             },
         };
 
@@ -558,40 +567,6 @@ impl GeneratedAcir {
         }
     }
 
-    /// Generate gates and control bits witnesses which ensure that out_expr is a permutation of in_expr
-    /// Add the control bits of the sorting network used to generate the constrains
-    /// into the PermutationSort directive for solving in ACVM.
-    /// The directive is solving the control bits so that the outputs are sorted in increasing order.
-    ///
-    /// n.b. A sorting network is a predetermined set of switches,
-    /// the control bits indicate the configuration of each switch: false for pass-through and true for cross-over
-    pub(crate) fn permutation(
-        &mut self,
-        in_expr: &[Expression],
-        out_expr: &[Expression],
-    ) -> Result<(), RuntimeError> {
-        let mut bits_len = 0;
-        for i in 0..in_expr.len() {
-            bits_len += ((i + 1) as f32).log2().ceil() as u32;
-        }
-
-        let bits = vecmap(0..bits_len, |_| self.next_witness_index());
-        let inputs = in_expr.iter().map(|a| vec![a.clone()]).collect();
-        self.push_opcode(AcirOpcode::Directive(Directive::PermutationSort {
-            inputs,
-            tuple: 1,
-            bits: bits.clone(),
-            sort_by: vec![0],
-        }));
-        let (_, b) = self.permutation_layer(in_expr, &bits, false)?;
-
-        // Constrain the network output to out_expr
-        for (b, o) in b.iter().zip(out_expr) {
-            self.push_opcode(AcirOpcode::AssertZero(b - o));
-        }
-        Ok(())
-    }
-
     pub(crate) fn last_acir_opcode_location(&self) -> OpcodeLocation {
         OpcodeLocation::Acir(self.opcodes.len() - 1)
     }
@@ -617,6 +592,8 @@ fn black_box_func_expected_input_size(name: BlackBoxFunc) -> Option<usize> {
         // The permutation takes a fixed number of inputs, but the inputs length depends on the proving system implementation.
         BlackBoxFunc::Poseidon2Permutation => None,
 
+        // SHA256 compression requires 16 u32s as input message and 8 u32s for the hash state.
+        BlackBoxFunc::Sha256Compression => Some(24),
         // Can only apply a range constraint to one
         // witness at a time.
         BlackBoxFunc::RANGE => Some(1),
@@ -639,7 +616,7 @@ fn black_box_func_expected_input_size(name: BlackBoxFunc) -> Option<usize> {
 
         // Big integer operations take in 0 inputs. They use constants for their inputs.
         BlackBoxFunc::BigIntAdd
-        | BlackBoxFunc::BigIntNeg
+        | BlackBoxFunc::BigIntSub
         | BlackBoxFunc::BigIntMul
         | BlackBoxFunc::BigIntDiv
         | BlackBoxFunc::BigIntToLeBytes => Some(0),
@@ -667,6 +644,7 @@ fn black_box_expected_output_size(name: BlackBoxFunc) -> Option<usize> {
         // The permutation returns a fixed number of outputs, equals to the inputs length which depends on the proving system implementation.
         BlackBoxFunc::Poseidon2Permutation => None,
 
+        BlackBoxFunc::Sha256Compression => Some(8),
         // Pedersen commitment returns a point
         BlackBoxFunc::PedersenCommitment => Some(2),
 
@@ -688,7 +666,7 @@ fn black_box_expected_output_size(name: BlackBoxFunc) -> Option<usize> {
 
         // Big integer operations return a big integer
         BlackBoxFunc::BigIntAdd
-        | BlackBoxFunc::BigIntNeg
+        | BlackBoxFunc::BigIntSub
         | BlackBoxFunc::BigIntMul
         | BlackBoxFunc::BigIntDiv
         | BlackBoxFunc::BigIntFromLeBytes => Some(0),

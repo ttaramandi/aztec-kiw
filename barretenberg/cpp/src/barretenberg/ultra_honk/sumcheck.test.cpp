@@ -15,10 +15,8 @@
 #include <gtest/gtest.h>
 
 using namespace bb;
-using namespace bb::honk;
-using namespace bb::honk::sumcheck;
 
-using Flavor = honk::flavor::Ultra;
+using Flavor = UltraFlavor;
 using FF = typename Flavor::FF;
 
 class SumcheckTestsRealCircuit : public ::testing::Test {
@@ -32,7 +30,7 @@ class SumcheckTestsRealCircuit : public ::testing::Test {
  */
 TEST_F(SumcheckTestsRealCircuit, Ultra)
 {
-    using Flavor = flavor::Ultra;
+    using Flavor = UltraFlavor;
     using FF = typename Flavor::FF;
     using Transcript = typename Flavor::Transcript;
     using RelationSeparator = typename Flavor::RelationSeparator;
@@ -168,7 +166,7 @@ TEST_F(SumcheckTestsRealCircuit, Ultra)
 
     RelationSeparator prover_alphas;
     for (size_t idx = 0; idx < prover_alphas.size(); idx++) {
-        prover_alphas[idx] = prover_transcript->get_challenge("Sumcheck:alpha_" + std::to_string(idx));
+        prover_alphas[idx] = prover_transcript->template get_challenge<FF>("Sumcheck:alpha_" + std::to_string(idx));
     }
 
     instance->alphas = prover_alphas;
@@ -176,7 +174,7 @@ TEST_F(SumcheckTestsRealCircuit, Ultra)
     std::vector<FF> prover_gate_challenges(log_circuit_size);
     for (size_t idx = 0; idx < log_circuit_size; idx++) {
         prover_gate_challenges[idx] =
-            prover_transcript->get_challenge("Sumcheck:gate_challenge_" + std::to_string(idx));
+            prover_transcript->template get_challenge<FF>("Sumcheck:gate_challenge_" + std::to_string(idx));
     }
     instance->gate_challenges = prover_gate_challenges;
     auto prover_output = sumcheck_prover.prove(instance);
@@ -186,13 +184,13 @@ TEST_F(SumcheckTestsRealCircuit, Ultra)
     auto sumcheck_verifier = SumcheckVerifier<Flavor>(log_circuit_size, verifier_transcript);
     RelationSeparator verifier_alphas;
     for (size_t idx = 0; idx < verifier_alphas.size(); idx++) {
-        verifier_alphas[idx] = verifier_transcript->get_challenge("Sumcheck:alpha_" + std::to_string(idx));
+        verifier_alphas[idx] = verifier_transcript->template get_challenge<FF>("Sumcheck:alpha_" + std::to_string(idx));
     }
 
     std::vector<FF> verifier_gate_challenges(log_circuit_size);
     for (size_t idx = 0; idx < log_circuit_size; idx++) {
         verifier_gate_challenges[idx] =
-            verifier_transcript->get_challenge("Sumcheck:gate_challenge_" + std::to_string(idx));
+            verifier_transcript->template get_challenge<FF>("Sumcheck:gate_challenge_" + std::to_string(idx));
     }
     auto verifier_output =
         sumcheck_verifier.verify(instance->relation_parameters, verifier_alphas, verifier_gate_challenges);

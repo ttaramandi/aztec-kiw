@@ -14,7 +14,7 @@ static void construct_proof_ultrahonk(State& state,
                                       void (*test_circuit_function)(UltraCircuitBuilder&, size_t)) noexcept
 {
     size_t num_iterations = 10; // 10x the circuit
-    bb::mock_proofs::construct_proof_with_specified_num_iterations<honk::UltraComposer>(
+    bb::mock_proofs::construct_proof_with_specified_num_iterations<UltraComposer>(
         state, test_circuit_function, num_iterations);
 }
 
@@ -24,29 +24,27 @@ static void construct_proof_ultrahonk(State& state,
 static void construct_proof_ultrahonk_power_of_2(State& state) noexcept
 {
     auto log2_of_gates = static_cast<size_t>(state.range(0));
-    bb::mock_proofs::construct_proof_with_specified_num_iterations<honk::UltraComposer>(
+    bb::mock_proofs::construct_proof_with_specified_num_iterations<UltraComposer>(
         state, &bb::mock_proofs::generate_basic_arithmetic_circuit<UltraCircuitBuilder>, log2_of_gates);
 }
 
 // Define benchmarks
-BENCHMARK_CAPTURE(construct_proof_ultrahonk,
-                  sha256,
-                  &bb::mock_proofs::generate_sha256_test_circuit<UltraCircuitBuilder>)
+BENCHMARK_CAPTURE(construct_proof_ultrahonk, sha256, &stdlib::generate_sha256_test_circuit<UltraCircuitBuilder>)
     ->Unit(kMillisecond);
-BENCHMARK_CAPTURE(construct_proof_ultrahonk,
-                  keccak,
-                  &bb::mock_proofs::generate_keccak_test_circuit<UltraCircuitBuilder>)
+BENCHMARK_CAPTURE(construct_proof_ultrahonk, keccak, &stdlib::generate_keccak_test_circuit<UltraCircuitBuilder>)
     ->Unit(kMillisecond);
 BENCHMARK_CAPTURE(construct_proof_ultrahonk,
                   ecdsa_verification,
-                  &bb::mock_proofs::generate_ecdsa_verification_test_circuit<UltraCircuitBuilder>)
+                  &stdlib::generate_ecdsa_verification_test_circuit<UltraCircuitBuilder>)
     ->Unit(kMillisecond);
 BENCHMARK_CAPTURE(construct_proof_ultrahonk,
                   merkle_membership,
-                  &bb::mock_proofs::generate_merkle_membership_test_circuit<UltraCircuitBuilder>)
+                  &stdlib::generate_merkle_membership_test_circuit<UltraCircuitBuilder>)
     ->Unit(kMillisecond);
 
 BENCHMARK(construct_proof_ultrahonk_power_of_2)
     // 2**15 gates to 2**20 gates
     ->DenseRange(15, 20)
     ->Unit(kMillisecond);
+
+BENCHMARK_MAIN();

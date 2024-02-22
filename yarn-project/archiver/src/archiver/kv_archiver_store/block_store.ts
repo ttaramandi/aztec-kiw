@@ -9,7 +9,6 @@ type BlockContext = {
   blockNumber: number;
   l1BlockNumber: bigint;
   block: Buffer;
-  blockHash: Buffer;
 };
 
 /**
@@ -28,10 +27,10 @@ export class BlockStore {
   #log = createDebugLogger('aztec:archiver:block_store');
 
   constructor(private db: AztecKVStore) {
-    this.#blocks = db.createMap('archiver_blocks');
+    this.#blocks = db.openMap('archiver_blocks');
 
-    this.#txIndex = db.createMap('archiver_tx_index');
-    this.#contractIndex = db.createMap('archiver_contract_index');
+    this.#txIndex = db.openMap('archiver_tx_index');
+    this.#contractIndex = db.openMap('archiver_contract_index');
   }
 
   /**
@@ -46,7 +45,6 @@ export class BlockStore {
           blockNumber: block.number,
           block: block.toBuffer(),
           l1BlockNumber: block.getL1BlockNumber(),
-          blockHash: block.getBlockHash(),
         });
 
         for (const [i, tx] of block.getTxs().entries()) {
@@ -56,7 +54,7 @@ export class BlockStore {
           void this.#txIndex.set(tx.txHash.toString(), [block.number, i]);
         }
 
-        for (const [i, contractData] of block.newContractData.entries()) {
+        for (const [i, contractData] of block.body.txEffects.flatMap(txEffect => txEffect.contractData).entries()) {
           if (contractData.contractAddress.isZero()) {
             continue;
           }
@@ -77,7 +75,7 @@ export class BlockStore {
    */
   *getBlocks(start: number, limit: number): IterableIterator<L2Block> {
     for (const blockCtx of this.#blocks.values(this.#computeBlockRange(start, limit))) {
-      yield L2Block.fromBuffer(blockCtx.block, blockCtx.blockHash);
+      yield L2Block.fromBuffer(blockCtx.block);
     }
   }
 
@@ -92,9 +90,7 @@ export class BlockStore {
       return undefined;
     }
 
-    const block = L2Block.fromBuffer(blockCtx.block, blockCtx.blockHash);
-
-    return block;
+    return L2Block.fromBuffer(blockCtx.block);
   }
 
   /**
