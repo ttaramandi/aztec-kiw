@@ -3,6 +3,7 @@
 #include "barretenberg/dsl/types.hpp"
 #include "barretenberg/numeric/uint256/uint256.hpp"
 #include "barretenberg/stdlib/primitives/bigfield/bigfield.hpp"
+#include "barretenberg/stdlib/primitives/bigfield/bigfield_dyn.hpp"
 #include <cstddef>
 #include <cstdint>
 
@@ -287,6 +288,7 @@ void create_bigint_from_le_bytes_constraint(Builder& builder,
     uint64_t modulus_64 = 0;
     uint64_t base = 1;
     std::vector<uint64_t> modulus_limbs;
+    uint512_t modulus_u512 = 0;
     for (std::size_t i = 0; i < 32; ++i) {
         if (i < input.modulus.size()) {
             modulus_64 += input.modulus[i] * base;
@@ -298,6 +300,12 @@ void create_bigint_from_le_bytes_constraint(Builder& builder,
             }
         }
     }
+
+    uint512_t two_64 = uint512_t(1) << 64;
+    modulus_u512 = uint512_t(modulus_limbs[0]) + uint512_t(modulus_limbs[1]) * two_64 +
+                   uint512_t(modulus_limbs[2]) * two_64 * two_64 +
+                   uint512_t(modulus_limbs[2]) * two_64 * two_64 * two_64 * two_64;
+
     auto modulus = ModulusParam{ .modulus_0 = modulus_limbs[0],
                                  .modulus_1 = modulus_limbs[1],
                                  .modulus_2 = modulus_limbs[2],
@@ -329,6 +337,7 @@ void create_bigint_from_le_bytes_constraint(Builder& builder,
     }
     case SECP256K1_FQ: {
         auto big = big_secp256k1_fq(bytes);
+        stdlib::bigfielddyn<Builder> ffi(bytes, modulus_u512);
         dsl_bigints.set_secp256k1_fq(big, input.result);
         break;
     }
