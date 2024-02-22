@@ -15,6 +15,7 @@
 #include "barretenberg/polynomials/polynomial.hpp"
 #include "barretenberg/relations/generated/toy/toy_avm.hpp"
 #include "barretenberg/relations/generated/toy/two_column_perm.hpp"
+#include "barretenberg/relations/generated/toy/two_column_sparse_perm.hpp"
 #include "barretenberg/transcript/transcript.hpp"
 
 namespace bb {
@@ -27,22 +28,21 @@ class ToyFlavor {
 
     using FF = G1::subgroup_field;
     using Polynomial = bb::Polynomial<FF>;
-    using PolynomialHandle = std::span<FF>;
     using GroupElement = G1::element;
     using Commitment = G1::affine_element;
-    using CommitmentHandle = G1::affine_element;
     using CommitmentKey = bb::CommitmentKey<Curve>;
     using VerifierCommitmentKey = bb::VerifierCommitmentKey<Curve>;
     using RelationSeparator = FF;
 
     static constexpr size_t NUM_PRECOMPUTED_ENTITIES = 1;
-    static constexpr size_t NUM_WITNESS_ENTITIES = 16;
+    static constexpr size_t NUM_WITNESS_ENTITIES = 27;
     static constexpr size_t NUM_WIRES = NUM_WITNESS_ENTITIES + NUM_PRECOMPUTED_ENTITIES;
     // We have two copies of the witness entities, so we subtract the number of fixed ones (they have no shift), one for
     // the unshifted and one for the shifted
-    static constexpr size_t NUM_ALL_ENTITIES = 17;
+    static constexpr size_t NUM_ALL_ENTITIES = 28;
 
-    using Relations = std::tuple<Toy_vm::toy_avm<FF>, two_column_perm_relation<FF>>;
+    using Relations =
+        std::tuple<Toy_vm::toy_avm<FF>, two_column_perm_relation<FF>, two_column_sparse_perm_relation<FF>>;
 
     static constexpr size_t MAX_PARTIAL_RELATION_LENGTH = compute_max_partial_relation_length<Relations>();
 
@@ -67,10 +67,10 @@ class ToyFlavor {
 
         DEFINE_FLAVOR_MEMBERS(DataType, toy_first)
 
-        RefVector<DataType> get_selectors() { return { toy_first }; };
-        RefVector<DataType> get_sigma_polynomials() { return {}; };
-        RefVector<DataType> get_id_polynomials() { return {}; };
-        RefVector<DataType> get_table_polynomials() { return {}; };
+        auto get_selectors() { return RefArray{ toy_first }; };
+        auto get_sigma_polynomials() { return RefArray<DataType, 0>{}; };
+        auto get_id_polynomials() { return RefArray<DataType, 0>{}; };
+        auto get_table_polynomials() { return RefArray<DataType, 0>{}; };
     };
 
     template <typename DataType> class WitnessEntities {
@@ -81,6 +81,10 @@ class ToyFlavor {
                               toy_set_1_column_2,
                               toy_set_2_column_1,
                               toy_set_2_column_2,
+                              toy_sparse_column_1,
+                              toy_sparse_column_2,
+                              toy_sparse_lhs,
+                              toy_sparse_rhs,
                               toy_xor_a,
                               toy_xor_b,
                               toy_xor_c,
@@ -89,18 +93,48 @@ class ToyFlavor {
                               toy_table_xor_c,
                               toy_q_xor,
                               toy_q_xor_table,
+                              toy_q_err,
+                              toy_q_err_check,
+                              toy_clk,
+                              toy_m_clk,
                               two_column_perm,
+                              two_column_sparse_perm,
                               lookup_xor,
-                              lookup_xor_counts)
+                              lookup_err,
+                              lookup_xor_counts,
+                              lookup_err_counts)
 
-        RefVector<DataType> get_wires()
+        auto get_wires()
         {
-            return { toy_q_tuple_set,    toy_set_1_column_1, toy_set_1_column_2, toy_set_2_column_1,
-                     toy_set_2_column_2, toy_xor_a,          toy_xor_b,          toy_xor_c,
-                     toy_table_xor_a,    toy_table_xor_b,    toy_table_xor_c,    toy_q_xor,
-                     toy_q_xor_table,    two_column_perm,    lookup_xor,         lookup_xor_counts };
+            return RefArray{ toy_q_tuple_set,
+                             toy_set_1_column_1,
+                             toy_set_1_column_2,
+                             toy_set_2_column_1,
+                             toy_set_2_column_2,
+                             toy_sparse_column_1,
+                             toy_sparse_column_2,
+                             toy_sparse_lhs,
+                             toy_sparse_rhs,
+                             toy_xor_a,
+                             toy_xor_b,
+                             toy_xor_c,
+                             toy_table_xor_a,
+                             toy_table_xor_b,
+                             toy_table_xor_c,
+                             toy_q_xor,
+                             toy_q_xor_table,
+                             toy_q_err,
+                             toy_q_err_check,
+                             toy_clk,
+                             toy_m_clk,
+                             two_column_perm,
+                             two_column_sparse_perm,
+                             lookup_xor,
+                             lookup_err,
+                             lookup_xor_counts,
+                             lookup_err_counts };
         };
-        RefVector<DataType> get_sorted_polynomials() { return {}; };
+        auto get_sorted_polynomials() { return RefArray<DataType, 0>{}; };
     };
 
     template <typename DataType> class AllEntities {
@@ -112,6 +146,10 @@ class ToyFlavor {
                               toy_set_1_column_2,
                               toy_set_2_column_1,
                               toy_set_2_column_2,
+                              toy_sparse_column_1,
+                              toy_sparse_column_2,
+                              toy_sparse_lhs,
+                              toy_sparse_rhs,
                               toy_xor_a,
                               toy_xor_b,
                               toy_xor_c,
@@ -120,26 +158,45 @@ class ToyFlavor {
                               toy_table_xor_c,
                               toy_q_xor,
                               toy_q_xor_table,
+                              toy_q_err,
+                              toy_q_err_check,
+                              toy_clk,
+                              toy_m_clk,
                               two_column_perm,
+                              two_column_sparse_perm,
                               lookup_xor,
-                              lookup_xor_counts)
+                              lookup_err,
+                              lookup_xor_counts,
+                              lookup_err_counts)
 
-        RefVector<DataType> get_wires()
+        auto get_wires()
         {
-            return { toy_first,          toy_q_tuple_set,  toy_set_1_column_1, toy_set_1_column_2, toy_set_2_column_1,
-                     toy_set_2_column_2, toy_xor_a,        toy_xor_b,          toy_xor_c,          toy_table_xor_a,
-                     toy_table_xor_b,    toy_table_xor_c,  toy_q_xor,          toy_q_xor_table,    two_column_perm,
-                     lookup_xor,         lookup_xor_counts };
+            return RefArray{ toy_first,           toy_q_tuple_set,     toy_set_1_column_1,
+                             toy_set_1_column_2,  toy_set_2_column_1,  toy_set_2_column_2,
+                             toy_sparse_column_1, toy_sparse_column_2, toy_sparse_lhs,
+                             toy_sparse_rhs,      toy_xor_a,           toy_xor_b,
+                             toy_xor_c,           toy_table_xor_a,     toy_table_xor_b,
+                             toy_table_xor_c,     toy_q_xor,           toy_q_xor_table,
+                             toy_q_err,           toy_q_err_check,     toy_clk,
+                             toy_m_clk,           two_column_perm,     two_column_sparse_perm,
+                             lookup_xor,          lookup_err,          lookup_xor_counts,
+                             lookup_err_counts };
         };
-        RefVector<DataType> get_unshifted()
+        auto get_unshifted()
         {
-            return { toy_first,          toy_q_tuple_set,  toy_set_1_column_1, toy_set_1_column_2, toy_set_2_column_1,
-                     toy_set_2_column_2, toy_xor_a,        toy_xor_b,          toy_xor_c,          toy_table_xor_a,
-                     toy_table_xor_b,    toy_table_xor_c,  toy_q_xor,          toy_q_xor_table,    two_column_perm,
-                     lookup_xor,         lookup_xor_counts };
+            return RefArray{ toy_first,           toy_q_tuple_set,     toy_set_1_column_1,
+                             toy_set_1_column_2,  toy_set_2_column_1,  toy_set_2_column_2,
+                             toy_sparse_column_1, toy_sparse_column_2, toy_sparse_lhs,
+                             toy_sparse_rhs,      toy_xor_a,           toy_xor_b,
+                             toy_xor_c,           toy_table_xor_a,     toy_table_xor_b,
+                             toy_table_xor_c,     toy_q_xor,           toy_q_xor_table,
+                             toy_q_err,           toy_q_err_check,     toy_clk,
+                             toy_m_clk,           two_column_perm,     two_column_sparse_perm,
+                             lookup_xor,          lookup_err,          lookup_xor_counts,
+                             lookup_err_counts };
         };
-        RefVector<DataType> get_to_be_shifted() { return {}; };
-        RefVector<DataType> get_shifted() { return {}; };
+        auto get_to_be_shifted() { return RefArray<DataType, 0>{}; };
+        auto get_shifted() { return RefArray<DataType, 0>{}; };
     };
 
   public:
@@ -149,10 +206,10 @@ class ToyFlavor {
         using Base = ProvingKey_<PrecomputedEntities<Polynomial>, WitnessEntities<Polynomial>>;
         using Base::Base;
 
-        RefVector<DataType> get_to_be_shifted() { return {}; };
+        auto get_to_be_shifted() { return RefArray<DataType, 0>{}; };
 
         // The plookup wires that store plookup read data.
-        std::array<PolynomialHandle, 0> get_table_column_wires() { return {}; };
+        RefArray<Polynomial, 0> get_table_column_wires() { return {}; };
     };
 
     using VerificationKey = VerificationKey_<PrecomputedEntities<Commitment>>;
@@ -231,6 +288,10 @@ class ToyFlavor {
             Base::toy_set_1_column_2 = "TOY_SET_1_COLUMN_2";
             Base::toy_set_2_column_1 = "TOY_SET_2_COLUMN_1";
             Base::toy_set_2_column_2 = "TOY_SET_2_COLUMN_2";
+            Base::toy_sparse_column_1 = "TOY_SPARSE_COLUMN_1";
+            Base::toy_sparse_column_2 = "TOY_SPARSE_COLUMN_2";
+            Base::toy_sparse_lhs = "TOY_SPARSE_LHS";
+            Base::toy_sparse_rhs = "TOY_SPARSE_RHS";
             Base::toy_xor_a = "TOY_XOR_A";
             Base::toy_xor_b = "TOY_XOR_B";
             Base::toy_xor_c = "TOY_XOR_C";
@@ -239,9 +300,16 @@ class ToyFlavor {
             Base::toy_table_xor_c = "TOY_TABLE_XOR_C";
             Base::toy_q_xor = "TOY_Q_XOR";
             Base::toy_q_xor_table = "TOY_Q_XOR_TABLE";
+            Base::toy_q_err = "TOY_Q_ERR";
+            Base::toy_q_err_check = "TOY_Q_ERR_CHECK";
+            Base::toy_clk = "TOY_CLK";
+            Base::toy_m_clk = "TOY_M_CLK";
             Base::two_column_perm = "TWO_COLUMN_PERM";
+            Base::two_column_sparse_perm = "TWO_COLUMN_SPARSE_PERM";
             Base::lookup_xor = "LOOKUP_XOR";
+            Base::lookup_err = "LOOKUP_ERR";
             Base::lookup_xor_counts = "LOOKUP_XOR_COUNTS";
+            Base::lookup_err_counts = "LOOKUP_ERR_COUNTS";
         };
     };
 
@@ -265,6 +333,10 @@ class ToyFlavor {
         Commitment toy_set_1_column_2;
         Commitment toy_set_2_column_1;
         Commitment toy_set_2_column_2;
+        Commitment toy_sparse_column_1;
+        Commitment toy_sparse_column_2;
+        Commitment toy_sparse_lhs;
+        Commitment toy_sparse_rhs;
         Commitment toy_xor_a;
         Commitment toy_xor_b;
         Commitment toy_xor_c;
@@ -273,9 +345,16 @@ class ToyFlavor {
         Commitment toy_table_xor_c;
         Commitment toy_q_xor;
         Commitment toy_q_xor_table;
+        Commitment toy_q_err;
+        Commitment toy_q_err_check;
+        Commitment toy_clk;
+        Commitment toy_m_clk;
         Commitment two_column_perm;
+        Commitment two_column_sparse_perm;
         Commitment lookup_xor;
+        Commitment lookup_err;
         Commitment lookup_xor_counts;
+        Commitment lookup_err_counts;
 
         std::vector<bb::Univariate<FF, BATCHED_RELATION_PARTIAL_LENGTH>> sumcheck_univariates;
         std::array<FF, NUM_ALL_ENTITIES> sumcheck_evaluations;
@@ -300,6 +379,10 @@ class ToyFlavor {
             toy_set_1_column_2 = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             toy_set_2_column_1 = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             toy_set_2_column_2 = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
+            toy_sparse_column_1 = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
+            toy_sparse_column_2 = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
+            toy_sparse_lhs = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
+            toy_sparse_rhs = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             toy_xor_a = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             toy_xor_b = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             toy_xor_c = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
@@ -308,9 +391,16 @@ class ToyFlavor {
             toy_table_xor_c = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             toy_q_xor = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             toy_q_xor_table = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
+            toy_q_err = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
+            toy_q_err_check = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
+            toy_clk = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
+            toy_m_clk = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             two_column_perm = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
+            two_column_sparse_perm = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             lookup_xor = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
+            lookup_err = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
             lookup_xor_counts = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
+            lookup_err_counts = deserialize_from_buffer<Commitment>(Transcript::proof_data, num_frs_read);
 
             for (size_t i = 0; i < log_n; ++i) {
                 sumcheck_univariates.emplace_back(
@@ -339,6 +429,10 @@ class ToyFlavor {
             serialize_to_buffer<Commitment>(toy_set_1_column_2, Transcript::proof_data);
             serialize_to_buffer<Commitment>(toy_set_2_column_1, Transcript::proof_data);
             serialize_to_buffer<Commitment>(toy_set_2_column_2, Transcript::proof_data);
+            serialize_to_buffer<Commitment>(toy_sparse_column_1, Transcript::proof_data);
+            serialize_to_buffer<Commitment>(toy_sparse_column_2, Transcript::proof_data);
+            serialize_to_buffer<Commitment>(toy_sparse_lhs, Transcript::proof_data);
+            serialize_to_buffer<Commitment>(toy_sparse_rhs, Transcript::proof_data);
             serialize_to_buffer<Commitment>(toy_xor_a, Transcript::proof_data);
             serialize_to_buffer<Commitment>(toy_xor_b, Transcript::proof_data);
             serialize_to_buffer<Commitment>(toy_xor_c, Transcript::proof_data);
@@ -347,9 +441,16 @@ class ToyFlavor {
             serialize_to_buffer<Commitment>(toy_table_xor_c, Transcript::proof_data);
             serialize_to_buffer<Commitment>(toy_q_xor, Transcript::proof_data);
             serialize_to_buffer<Commitment>(toy_q_xor_table, Transcript::proof_data);
+            serialize_to_buffer<Commitment>(toy_q_err, Transcript::proof_data);
+            serialize_to_buffer<Commitment>(toy_q_err_check, Transcript::proof_data);
+            serialize_to_buffer<Commitment>(toy_clk, Transcript::proof_data);
+            serialize_to_buffer<Commitment>(toy_m_clk, Transcript::proof_data);
             serialize_to_buffer<Commitment>(two_column_perm, Transcript::proof_data);
+            serialize_to_buffer<Commitment>(two_column_sparse_perm, Transcript::proof_data);
             serialize_to_buffer<Commitment>(lookup_xor, Transcript::proof_data);
+            serialize_to_buffer<Commitment>(lookup_err, Transcript::proof_data);
             serialize_to_buffer<Commitment>(lookup_xor_counts, Transcript::proof_data);
+            serialize_to_buffer<Commitment>(lookup_err_counts, Transcript::proof_data);
 
             for (size_t i = 0; i < log_n; ++i) {
                 serialize_to_buffer(sumcheck_univariates[i], Transcript::proof_data);

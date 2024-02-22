@@ -24,7 +24,7 @@ Prior to the VM circuit's execution, a vector is assembled to contain the byteco
 Each entry in the bytecode vector will be paired with a call pointer and program counter. This **Bytecode Table** maps a call pointer and program counter to an instruction, and is used by the Instruction Controller to fetch instructions.
 > Note: "call pointer" is expanded on in a later section.
 
-Each contract's public bytecode is committed to during contract deployment. As part of the AVM circuit verification algorithm, the bytecode vector (as a concatenation of all relevant contract bytecodes) is verified against the corresponding bytecode commitments. This is expanded on in ["Bytecode Validation Circuit"](./bytecode-validation-circuit.md). While the AVM circuit enforces that the correct instructions are executed according to its bytecode table, the verifier checks that bytecode table against the previously validated bytecode commitments.
+Each contract's public bytecode is committed to during contract deployment. As part of the AVM circuit verification algorithm, the bytecode vector (as a concatenation of all relevant contract bytecodes) is verified against the corresponding bytecode commitments. This is expanded on in ["Bytecode Validation Circuit"](./bytecode-validation-circuit). While the AVM circuit enforces that the correct instructions are executed according to its bytecode table, the verifier checks that bytecode table against the previously validated bytecode commitments.
 
 ## Instruction Controller
 The Instruction Controller's responsibilities include instruction fetching and decoding.
@@ -32,7 +32,7 @@ The Instruction Controller's responsibilities include instruction fetching and d
 ### Instruction fetching
 The Instruction Controller's **instruction fetch** mechanism makes use of the bytecode table to determine which instruction to execute based on the call pointer and program counter. Each instruction fetch corresponds to a circuit lookup to enforce that the correct instruction is processed for a given contract and program counter.
 
-The combination of the instruction fetch circuitry, the bytecode table, and the ["Bytecode Validation Circuit"](./bytecode-validation-circuit.md) ensure that VM circuit processes the proper sequence of instructions.
+The combination of the instruction fetch circuitry, the bytecode table, and the ["Bytecode Validation Circuit"](./bytecode-validation-circuit) ensure that VM circuit processes the proper sequence of instructions.
 
 ### Instruction decoding and sub-operations
 An instruction (its opcode, flags, and arguments) represents some high-level VM operation. For example, an `ADD` instruction says "add two items from memory and store the result in memory". The Instruction Controller **instruction decode** mechanism decodes instructions into sub-operations. While an instruction likely requires many circuit components, a **sub-operation** is a smaller task that can be fed to just one VM circuit component for processing. By decoding an instruction into sub-operations, the VM circuit translates high-level instructions into smaller achievable tasks. To continue with the `ADD` example, it would translate "add two items from memory and store the result in memory" to "load an item from memory, load another item from memory, add them, and store the result to memory."
@@ -149,7 +149,24 @@ Any lookup into calldata from a request's initial contract call must retrieve a 
 **TODO**
 
 ## Chiplets
-**TODO**
+
+A chiplet is essentially a sub-circuit for performing specialized sub-operations. A chiplet is defined as a dedicated table (a set of columns and relations) in the AVM circuit that is activated when the relevant sub-operation is used. The main rationale behind the use of chiplets is to offload specialized computations to a region of the circuit _outside the main operations trace and instruction controller_ where the computations might require many rows and/or additional dedicated columns. In addition, this approach offers strong modularity for the operations implemented as chiplets.
+
+The interaction between a chiplet and the instruction controller follows the following pattern:
+
+1. The **inputs** of a chiplet sub-operation are loaded to the respective intermediate registers (usually $I_a$, $I_b$).
+2. The dedicated chiplet fetches/copies the content of the intermediate registers from the **operations trace** in its own table and executes the operation.
+3. The output of the operation is copied back to the **operations trace** in a specific register (usually $I_c$). This register is usually involved in a write memory sub-operation.
+
+In addition to the mentioned inputs and output, some other relevant information such as the instruction tag might be copied as well to the chiplet.
+
+In the circuit, the transmission of the input/output between the **chiplet trace** and the **operations trace** are performed through lookup or permutation constraints, i.e., they ensure that all relevant intermediate registers have the same values between both traces. The unique key of this mapping is `CLK` which is basically used as a "DB foreign key" from the **chiplet trace** pointing to corresponding entry in the **operations trace**.
+
+The planned chiplets for the AVM are:
+
+- **ALU**: Arithmetic and bitwise operations such as addition, multiplication, XOR, etc...
+- **Type Converter**: Dedicated to casting words between different types and/or type constraints.
+- **Gadgets:** Relevant cryptographic operations or other computationally intensive operations. There will likely be multiple chiplets of this category, including `Poseidon2Permutation`, `Keccakf1600`, and `ECADD`.
 
 ## Circuit I/O
 ### How do "Public Inputs" work in the AVM circuit?
@@ -192,7 +209,6 @@ AvmSessionPublicInputs {
     sessionResults: AvmSessionResults,
 }
 ```
-> The `ExecutionEnvironment` structure is defined in [the AVM's high level specification](./avm.md). `initialEnvironment` here omits `calldata` and `bytecode`.
 
 > The `WorldStateAccessTrace` and `AccruedSubstate` types are defined in ["State"](./state). Their vectors are assigned constant/maximum lengths when used as circuit inputs.
 

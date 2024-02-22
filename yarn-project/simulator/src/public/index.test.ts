@@ -6,6 +6,7 @@ import {
   GlobalVariables,
   Header,
   L1_TO_L2_MSG_TREE_HEIGHT,
+  L2ToL1Message,
 } from '@aztec/circuits.js';
 import { makeHeader } from '@aztec/circuits.js/factories';
 import { FunctionArtifact, FunctionSelector, encodeArguments } from '@aztec/foundation/abi';
@@ -331,8 +332,8 @@ describe('ACIR public execution simulator', () => {
 
       const expectedNoteHash = pedersenHash([amount.toBuffer(), secretHash.toBuffer()]);
       const storageSlot = new Fr(5); // for pending_shields
-      const expectedInnerNoteHash = pedersenHash([storageSlot.toBuffer(), expectedNoteHash]);
-      expect(result.newCommitments[0].value.toBuffer()).toEqual(expectedInnerNoteHash);
+      const expectedInnerNoteHash = pedersenHash([storageSlot, expectedNoteHash].map(f => f.toBuffer()));
+      expect(result.newCommitments[0].value).toEqual(expectedInnerNoteHash);
     });
 
     it('Should be able to create a L2 to L1 message from the public context', async () => {
@@ -341,10 +342,12 @@ describe('ACIR public execution simulator', () => {
       )!;
       const args = encodeArguments(createL2ToL1MessagePublicArtifact, params);
 
+      const portalContractAddress = EthAddress.random();
+
       const callContext = CallContext.from({
         msgSender: AztecAddress.random(),
         storageContractAddress: contractAddress,
-        portalContractAddress: EthAddress.random(),
+        portalContractAddress,
         functionSelector: FunctionSelector.empty(),
         isContractDeployment: false,
         isDelegateCall: false,
@@ -360,8 +363,9 @@ describe('ACIR public execution simulator', () => {
       // Assert the l2 to l1 message was created
       expect(result.newL2ToL1Messages.length).toEqual(1);
 
-      const expectedNewMessageValue = pedersenHash(params.map(a => a.toBuffer()));
-      expect(result.newL2ToL1Messages[0].toBuffer()).toEqual(expectedNewMessageValue);
+      const expectedNewMessage = new L2ToL1Message(portalContractAddress, pedersenHash(params.map(a => a.toBuffer())));
+
+      expect(result.newL2ToL1Messages[0]).toEqual(expectedNewMessage);
     });
 
     it('Should be able to create a nullifier from the public context', async () => {
@@ -391,7 +395,7 @@ describe('ACIR public execution simulator', () => {
       expect(result.newNullifiers.length).toEqual(1);
 
       const expectedNewMessageValue = pedersenHash(params.map(a => a.toBuffer()));
-      expect(result.newNullifiers[0].value.toBuffer()).toEqual(expectedNewMessageValue);
+      expect(result.newNullifiers[0].value).toEqual(expectedNewMessageValue);
     });
 
     describe('L1 to L2 messages', () => {
@@ -471,7 +475,7 @@ describe('ACIR public execution simulator', () => {
 
         let root = messageKey ?? preimage.hash();
         for (const sibling of siblingPathBuffers) {
-          root = Fr.fromBuffer(pedersenHash([root.toBuffer(), sibling]));
+          root = pedersenHash([root.toBuffer(), sibling]);
         }
         commitmentsDb.getL1ToL2Message.mockImplementation(() => {
           return Promise.resolve(new MessageLoadOracleInputs(preimage, 0n, siblingPath));
