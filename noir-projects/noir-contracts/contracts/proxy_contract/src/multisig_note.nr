@@ -81,7 +81,7 @@ impl NoteInterface<8> for MultiSigNote {
                     context,
                     (*context).this_address(),
                     slot,
-                    666777,
+                    666+777,
                     encryption_pub_key,
                     self.serialize_content(),
                 );

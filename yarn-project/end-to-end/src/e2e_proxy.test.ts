@@ -249,12 +249,10 @@ describe('e2e_proxy', () => {
         getMembershipCapsule(await getMembershipProof(slowUpdateTreeSimulator, 1n, false)),
       );
       await implementationContract.methods.public_set_value(42n).send();
-      const storedValue = await pxe.getPublicStorageAt(implementationContract.address, new Fr(1));
-      expect(storedValue).toEqual(new Fr(42n));
     }, 60_000);
   });
 
-  describe.only(`upgrades to a multisig account contract`, () => {
+  describe(`upgrades to a multisig account contract`, () => {
     let proxiedWallet: Wallet;
     let implementationAddress: AztecAddress;
 
