@@ -96,7 +96,7 @@ impl PrivateContext {
         }
     }
 
-    pub fn assert_deployment() {
+    pub fn assert_deployment(self) {
         // TODO(#4738): Implement this
     }
 
