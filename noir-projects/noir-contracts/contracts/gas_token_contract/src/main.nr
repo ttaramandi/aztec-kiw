@@ -2,14 +2,14 @@ mod fee;
 
 contract GasToken {
     use dep::aztec::protocol_types::{abis::function_selector::FunctionSelector, address::AztecAddress};
-    use dep::aztec::{hash::{compute_secret_hash}, state_vars::{public_state::PublicState, map::Map}};
+    use dep::aztec::{hash::{compute_secret_hash}, state_vars::{public_mutable::PublicMutable, map::Map}};
 
     use dep::safe_math::SafeU120;
 
     use crate::fee::calculate_fee;
 
     struct Storage {
-        balances: Map<AztecAddress, PublicState<SafeU120>>,
+        balances: Map<AztecAddress, PublicMutable<SafeU120>>,
     }
 
     #[aztec(private)]
