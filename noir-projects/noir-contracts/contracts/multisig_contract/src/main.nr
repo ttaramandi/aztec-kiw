@@ -79,9 +79,13 @@ contract MultiSigAccount {
             fee_payload.hash(), owners[0].to_field(), owners[1].to_field(), owners[2].to_field(), owners[3].to_field(), owners[4].to_field(), threshold as Field
         ]
         )[0] as u8;
+        debug_log_format(
+            "MultisigAccount.entrypoint fee_auths={0} threshold={1}",
+            [fee_auths as Field, threshold as Field]
+        );
         assert(fee_auths >= threshold, "Fee payload not authorized by multisig owners");
         fee_payload.execute_calls(&mut context);
-        context.capture_max_non_revertible_side_effect_counter();
+        context.capture_min_revertible_side_effect_counter();
 
         debug_log_format(
             "MultisigAccount.entrypoint app_payload_hash={0} app_payload_len={1}",

@@ -428,7 +428,7 @@ export class ClientExecutionContext extends ViewDataOracle {
     isDelegateCall: boolean,
   ) {
     this.log(
-      `Calling private function ${targetContractAddress}:${functionSelector} from ${this.callContext.storageContractAddress}`,
+      `Calling private function ${targetContractAddress}:${functionSelector} from ${this.callContext.storageContractAddress}, isDelegateCall=${isDelegateCall}, isStaticCall=${isStaticCall}`,
     );
 
     // TODO: Move this to the kernel!!!
@@ -553,7 +553,7 @@ export class ClientExecutionContext extends ViewDataOracle {
     // side-effects occurred in the TX. Ultimately the private kernel should
     // just output everything in the proper order without any counters.
     this.log(
-      `Enqueued call to public function (with side-effect counter #${sideEffectCounter}) ${targetContractAddress}:${functionSelector}`,
+      `Enqueued call to public function (with side-effect counter #${sideEffectCounter}) ${targetContractAddress}:${functionSelector}, isDelegateCall=${isDelegateCall}, isStaticCall=${isStaticCall} from ${this.callContext.storageContractAddress}`,
     );
 
     this.enqueuedPublicFunctionCalls.push(enqueuedRequest);

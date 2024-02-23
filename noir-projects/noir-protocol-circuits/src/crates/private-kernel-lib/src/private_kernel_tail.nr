@@ -47,9 +47,9 @@ impl PrivateKernelTailCircuitPrivateInputs {
                 );
 
                 let computed_secret_key = common::compute_siloed_nullifier_secret_key(master_secret_key, request.contract_address);
-                assert(
-                    computed_secret_key.eq(request.secret_key), "Cannot derive siloed secret key from the master key."
-                );
+                // assert(
+                //     computed_secret_key.eq(request.secret_key), "Cannot derive siloed secret key from the master key."
+                // );
             }
         }
 

@@ -1,6 +1,7 @@
 mod interfaces;
 mod public_key_note;
 mod value_note;
+mod multisig_note;
 
 // A contract used along with `Parent` contract to test nested calls.
 contract Proxy {
@@ -8,19 +9,20 @@ contract Proxy {
 
     use dep::aztec::{
         log::emit_unencrypted_log,
-        protocol_types::{abis::{function_selector::FunctionSelector}, address::AztecAddress, hash},
+        protocol_types::{abis::{function_selector::FunctionSelector}, address::AztecAddress, hash,  constants::RETURN_VALUES_LENGTH},
         note::{note_viewer_options::NoteViewerOptions, utils as note_utils, note_header::NoteHeader},
-        oracle::arguments,
+        oracle::{arguments,debug_log::debug_log_format},
         state_vars::{
-        immutable_singleton::ImmutableSingleton, public_state::PublicState, set::Set,
-        stable_public_state::StablePublicState
-    },
+            immutable_singleton::ImmutableSingleton, public_state::PublicState, set::Set,
+            stable_public_state::StablePublicState
+        },
         context::Context
     };
     use dep::field_note::field_note::FieldNote;
     use crate::interfaces::SlowMap;
     use crate::public_key_note::PublicKeyNote;
     use crate::value_note::ValueNote;
+    use crate::multisig_note::MultiSigNote;
 
     struct Storage {
         admin: StablePublicState<AztecAddress>,
@@ -61,17 +63,18 @@ contract Proxy {
     }
 
     #[aztec(private)]
-    fn upgrade(target: AztecAddress) {
+    fn upgrade(target: AztecAddress){
         let slow = SlowMap::at(AztecAddress::from_field((storage.slow_update.get_note().value)));
         slow.update_at_private(&mut context, TARGET_SLOW_TREE_STORAGE_SLOT, target.to_field());
     }
 
     #[aztec(private)]
-    fn private_fallback(fn_selector: Field, args_hash: Field) {
+    fn private_fallback(fn_selector: Field, args_hash: Field) -> [Field; RETURN_VALUES_LENGTH] {
         let slow = SlowMap::at(AztecAddress::from_field((storage.slow_update.get_note().value)));
 
         let admin = storage.admin.read_private();
         if context.msg_sender() == admin {
+            debug_log_format("Admin {0}", [admin.to_field()]);
             if fn_selector == FunctionSelector::from_signature("upgrade((Field))").to_field() {
                 let args: [Field; 1] = arguments::unpack_arguments(args_hash);
                 assert(hash::hash_args(args) == args_hash);
@@ -81,16 +84,20 @@ contract Proxy {
             } else {
                 assert(false, "Admin called non-admin function");
             }
+            [0; RETURN_VALUES_LENGTH]
         } else {
+            debug_log_format("Private fallback call to {0}", [slow.address.to_field()]);
             let target = AztecAddress::from_field(slow.read_at(&mut context, TARGET_SLOW_TREE_STORAGE_SLOT));
-            // TODO: return the return value
-            let _ = context.call_private_function_with_packed_args(
+            debug_log_format("Calling target {0}", [target.to_field()]);
+            let return_value = context.call_private_function_with_packed_args(
                 target,
                 FunctionSelector::from_field(fn_selector),
                 args_hash,
                 false,
                 true
             );
+            debug_log_format("return_value {0}", [return_value[0]]);
+            return_value
         }
     }
 
@@ -98,8 +105,7 @@ contract Proxy {
     fn public_fallback(fn_selector: Field, args_hash: Field) {
         let slow = SlowMap::at(storage.public_slow_update.read());
         let target = AztecAddress::from_field(slow.read_at_pub(context, TARGET_SLOW_TREE_STORAGE_SLOT));
-        // TODO: return the return value
-        let _ = context.call_public_function_with_packed_args(
+        context.call_public_function_with_packed_args(
             target,
             FunctionSelector::from_field(fn_selector),
             args_hash,
@@ -125,8 +131,10 @@ contract Proxy {
             )
         } else if note_type_id == FieldNote::get_note_type_id() {
             note_utils::compute_note_hash_and_nullifier(FieldNote::deserialize_content, note_header, serialized_note)
-        } else {
+        } else if note_type_id == ValueNote::get_note_type_id() {
             note_utils::compute_note_hash_and_nullifier(ValueNote::deserialize_content, note_header, serialized_note)
+        } else {
+            note_utils::compute_note_hash_and_nullifier(MultiSigNote::deserialize_content, note_header, serialized_note)
         }
     }
 }
