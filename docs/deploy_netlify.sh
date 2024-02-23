@@ -13,8 +13,26 @@ if [ "$1" = "master" ]; then
     # Deploy to production if the argument is "master"
     DEPLOY_OUTPUT=$(netlify deploy --site aztec-docs-dev --prod)
 else
-    # Regular deploy if the argument is not "master"
+    DOCS_CHANGED=$(curl -L \
+        -H "Accept: application/vnd.github+json" \
+        -H "Authorization: Bearer $AZTEC_BOT_COMMENTER_GITHUB_TOKEN" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        https://api.github.com/repos/AztecProtocol/aztec-packages/pulls/$2/files | \
+        jq '[.[] | select(.filename | startswith("docs/"))] | length > 0')
+
+    if [ "$DOCS_CHANGED" = "false" ]; then
+        echo "No docs changed, not deploying"
+        exit 0
+    fi
+
+    # Regular deploy if the argument is not "master" and docs changed
     DEPLOY_OUTPUT=$(netlify deploy --site aztec-docs-dev)
     UNIQUE_DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -E "https://.*aztec-docs-dev.netlify.app" | awk '{print $4}')
-    echo "$UNIQUE_DEPLOY_URL"
+    echo "Unique deploy URL: $UNIQUE_DEPLOY_URL"
+
+    extract_repo yarn-project /usr/src project
+    cd project/src/yarn-project/scripts
+
+    yarn
+    UNIQUE_DEPLOY_URL=$UNIQUE_DEPLOY_URL yarn docs-preview
 fi
