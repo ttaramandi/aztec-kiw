@@ -225,8 +225,11 @@ pub fn brillig_to_avm(brillig: &Brillig) -> Vec<u8> {
     bytecode
 }
 
-/// Handle foreign function calls
-/// - Environment getting opcodes will be represented as foreign calls
+/// Handle brillig foreign calls
+/// Examples:
+/// - Tree access opcodes
+/// - Hashing/gadget opcodes
+/// - Environment getter opcodes
 /// - TODO: support for avm external calls through this function
 fn handle_foreign_call(
     avm_instrs: &mut Vec<AvmInstruction>,
@@ -235,6 +238,8 @@ fn handle_foreign_call(
     inputs: &Vec<ValueOrArray>,
 ) {
     match function.as_str() {
+        "emitNoteHash" => emit_emit_note_hash(avm_instrs, destinations, inputs),
+        "emitNullifier" => emit_emit_nullifier(avm_instrs, destinations, inputs),
         "keccak256" | "sha256" => {
             emit_2_field_hash_instruction(avm_instrs, function, destinations, inputs)
         }
@@ -243,6 +248,56 @@ fn handle_foreign_call(
         }
         _ => handle_getter_instruction(avm_instrs, function, destinations, inputs),
     }
+}
+
+/// Emit an AVM EMITNOTEHASH instruction
+/// (an emitNoteHash brillig foreign call was encountered)
+/// Adds the new instruction to the avm instructions list.
+fn emit_emit_note_hash(
+    avm_instrs: &mut Vec<AvmInstruction>,
+    destinations: &Vec<ValueOrArray>,
+    inputs: &Vec<ValueOrArray>,
+) {
+    if destinations.len() != 0 || inputs.len() != 1 {
+        panic!("Transpiler expects ForeignCall::EMITNOTEHASH to have 0 destinations and 1 input, got {} and {}", destinations.len(), inputs.len());
+    }
+    let note_hash_offset_operand = match &inputs[0] {
+        ValueOrArray::MemoryAddress(offset) => offset.to_usize() as u32,
+        _ => panic!("Transpiler does not know how to handle ForeignCall::EMITNOTEHASH with HeapArray/Vector inputs"),
+    };
+    avm_instrs.push(AvmInstruction {
+        opcode: AvmOpcode::EMITNOTEHASH,
+        indirect: Some(ALL_DIRECT),
+        operands: vec![AvmOperand::U32 {
+            value: note_hash_offset_operand,
+        }],
+        ..Default::default()
+    });
+}
+
+/// Emit an AVM EMITNULLIFIER instruction
+/// (an emitNullifier brillig foreign call was encountered)
+/// Adds the new instruction to the avm instructions list.
+fn emit_emit_nullifier(
+    avm_instrs: &mut Vec<AvmInstruction>,
+    destinations: &Vec<ValueOrArray>,
+    inputs: &Vec<ValueOrArray>,
+) {
+    if destinations.len() != 0 || inputs.len() != 1 {
+        panic!("Transpiler expects ForeignCall::EMITNULLIFIER to have 0 destinations and 1 input, got {} and {}", destinations.len(), inputs.len());
+    }
+    let nullifier_offset_operand = match &inputs[0] {
+        ValueOrArray::MemoryAddress(offset) => offset.to_usize() as u32,
+        _ => panic!("Transpiler does not know how to handle ForeignCall::EMITNOTEHASH with HeapArray/Vector inputs"),
+    };
+    avm_instrs.push(AvmInstruction {
+        opcode: AvmOpcode::EMITNULLIFIER,
+        indirect: Some(ALL_DIRECT),
+        operands: vec![AvmOperand::U32 {
+            value: nullifier_offset_operand,
+        }],
+        ..Default::default()
+    });
 }
 
 /// Two field hash instructions represent instruction's that's outputs are larger than a field element
@@ -261,7 +316,6 @@ fn emit_2_field_hash_instruction(
 ) {
     // handle field returns differently
     let hash_offset_maybe = inputs[0];
-    println!("hash_offset_maybe: {:?}", hash_offset_maybe);
     let (hash_offset, hash_size) = match hash_offset_maybe {
         ValueOrArray::HeapArray(HeapArray { pointer, size }) => (pointer.0, size),
         _ => panic!("Keccak | Sha256 address inputs destination should be a single value"),
