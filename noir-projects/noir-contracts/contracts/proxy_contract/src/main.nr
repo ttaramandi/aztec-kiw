@@ -11,7 +11,7 @@ contract Proxy {
         log::emit_unencrypted_log,
         protocol_types::{abis::{function_selector::FunctionSelector}, address::AztecAddress, hash,  constants::RETURN_VALUES_LENGTH},
         note::{note_viewer_options::NoteViewerOptions, utils as note_utils, note_header::NoteHeader},
-        oracle::{arguments,debug_log::debug_log_format},
+        oracle::{arguments},
         state_vars::{
             immutable_singleton::ImmutableSingleton, public_state::PublicState, set::Set,
             stable_public_state::StablePublicState
@@ -73,8 +73,8 @@ contract Proxy {
         let slow = SlowMap::at(AztecAddress::from_field((storage.slow_update.get_note().value)));
 
         let admin = storage.admin.read_private();
-        if context.msg_sender() == admin {
-            debug_log_format("Admin {0}", [admin.to_field()]);
+        
+        let return_value = if context.msg_sender() == admin {
             if fn_selector == FunctionSelector::from_signature("upgrade((Field))").to_field() {
                 let args: [Field; 1] = arguments::unpack_arguments(args_hash);
                 assert(hash::hash_args(args) == args_hash);
@@ -86,19 +86,16 @@ contract Proxy {
             }
             [0; RETURN_VALUES_LENGTH]
         } else {
-            debug_log_format("Private fallback call to {0}", [slow.address.to_field()]);
             let target = AztecAddress::from_field(slow.read_at(&mut context, TARGET_SLOW_TREE_STORAGE_SLOT));
-            debug_log_format("Calling target {0}", [target.to_field()]);
-            let return_value = context.call_private_function_with_packed_args(
+            context.call_private_function_with_packed_args(
                 target,
                 FunctionSelector::from_field(fn_selector),
                 args_hash,
                 false,
                 true
-            );
-            debug_log_format("return_value {0}", [return_value[0]]);
-            return_value
-        }
+            )
+        };
+        return_value
     }
 
     #[aztec(public)]

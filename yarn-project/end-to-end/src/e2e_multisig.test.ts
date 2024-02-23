@@ -100,6 +100,24 @@ describe('e2e_multisig', () => {
     logger.info(`Test contract address: ${testContract.address}`);
   });
 
+  it('sends a tx to the test contract via the multisig with first two owners (public fn)', async () => {
+    // Set up the method we want to call on a contract with the multisig as the wallet
+    const action = testContract.methods.emit_unencrypted(42n);
+
+    // We collect the signatures from each owner and register them using addAuthWitness
+    const authWits = await collectSignatures(getRequestsFromTxRequest(await action.create()), [walletA, walletB]);
+    await Promise.all(authWits.map(w => multisigWallet.addAuthWitness(w)));
+
+    // Send the tx after having added all auth witnesses from the signers
+    // TODO: We should be able to call send() on the result of create()
+    const tx = await action.send().wait();
+
+    const logs = await pxe.getUnencryptedLogs({ txHash: tx.txHash });
+    logger.info(`Tx logs: ${logs.logs.map(log => log.toHumanReadable())}`);
+    logger.info(`Multisig address: ${multisig.address}`);
+    logger.info(`Test contract address: ${testContract.address}`);
+  });
+
   it('sends a tx to the test contract via the multisig without the first owner signature', async () => {
     // Set up the method we want to call on a contract with the multisig as the wallet
     const action = testContract.methods.emit_msg_sender();

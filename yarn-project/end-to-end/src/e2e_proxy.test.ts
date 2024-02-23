@@ -17,7 +17,6 @@ import {
   generatePublicKey,
 } from '@aztec/aztec.js';
 import {
-  AccountManager,
   AuthWitness,
   AuthWitnessProvider,
   ContractArtifact,
@@ -29,7 +28,6 @@ import { pedersenHash } from '@aztec/foundation/crypto';
 import { openTmpStore } from '@aztec/kv-store/utils';
 import { Pedersen, SparseTree, newTree } from '@aztec/merkle-tree';
 import {
-  ChildContract,
   DelegatedOnContract,
   MultiSigAccountContract,
   ProxyContract,
@@ -166,7 +164,7 @@ describe('e2e_proxy', () => {
   }, 100_000);
 
   describe('proxies to another contract', () => {
-    it.only("runs another contract's private function on proxy's storage via fallback", async () => {
+    it("runs another contract's private function on proxy's storage via fallback", async () => {
       const sentValue = 42n;
 
       await userWallet.addCapsule(getMembershipCapsule(await getMembershipProof(slowUpdateTreeSimulator, 1n, false)));
@@ -197,7 +195,6 @@ describe('e2e_proxy', () => {
   });
 
   describe(`behaves like an account contract`, () => {
-    let child: ChildContract;
     let proxiedWallet: Wallet;
 
     beforeAll(async () => {
@@ -232,7 +229,7 @@ describe('e2e_proxy', () => {
       await userWallet.addCapsule(getMembershipCapsule(await getMembershipProof(slowUpdateTreeSimulator, 1n, false)));
       await proxyAsImplementation.methods.initialize(signingX, signingY).send().wait();
 
-      child = await ChildContract.deploy(proxiedWallet).send().deployed();
+      implementationContract = await DelegatedOnContract.deploy(proxiedWallet).send().deployed();
     }, 60_000);
 
     it('calls a private function', async () => {
@@ -240,7 +237,10 @@ describe('e2e_proxy', () => {
       await proxiedWallet.addCapsule(
         getMembershipCapsule(await getMembershipProof(slowUpdateTreeSimulator, 1n, false)),
       );
-      await child.methods.value(42).send().wait({ interval: 0.1 });
+      await implementationContract.methods
+        .private_set_value(42, proxiedWallet.getCompleteAddress().address)
+        .send()
+        .wait();
     }, 60_000);
 
     it('calls a public function', async () => {
@@ -248,15 +248,15 @@ describe('e2e_proxy', () => {
       await proxiedWallet.addCapsule(
         getMembershipCapsule(await getMembershipProof(slowUpdateTreeSimulator, 1n, false)),
       );
-      await child.methods.pubIncValue(42).send().wait({ interval: 0.1 });
-      const storedValue = await pxe.getPublicStorageAt(child.address, new Fr(1));
+      await implementationContract.methods.public_set_value(42n).send();
+      const storedValue = await pxe.getPublicStorageAt(implementationContract.address, new Fr(1));
       expect(storedValue).toEqual(new Fr(42n));
     }, 60_000);
   });
 
   describe.only(`upgrades to a multisig account contract`, () => {
-    let child: ChildContract;
     let proxiedWallet: Wallet;
+    let implementationAddress: AztecAddress;
 
     beforeAll(async () => {
       // Deploy the multisig contract
@@ -276,6 +276,7 @@ describe('e2e_proxy', () => {
       const sentTx = deployMethod.send();
 
       const deploymentResult = await new DeployAccountSentTx(proxiedWallet, sentTx.getTxHash()).wait();
+      implementationAddress = deploymentResult.contractAddress!;
 
       await updateSlowTree(slowUpdateTreeSimulator, proxiedWallet, 1n, deploymentResult.contractAddress!.toField());
 
@@ -294,7 +295,7 @@ describe('e2e_proxy', () => {
         .send()
         .wait();
 
-      child = await ChildContract.deploy(proxiedWallet).send().deployed();
+      implementationContract = await DelegatedOnContract.deploy(proxiedWallet).send().deployed();
     }, 60_000);
 
     it('sends a tx to the test contract via the multisig with first two owners', async () => {
@@ -304,14 +305,16 @@ describe('e2e_proxy', () => {
           getMembershipCapsule(await getMembershipProof(slowUpdateTreeSimulator, 1n, false)),
         );
       }
+
       // Set up the method we want to call on a contract with the multisig as the wallet
-      const action = child.methods.value(42);
+      const action = implementationContract.methods.private_set_value(42n, proxiedWallet.getCompleteAddress().address);
 
       // We collect the signatures from each owner and register them using addAuthWitness
       const authWits = await collectSignatures(getRequestsFromTxRequest(await action.create()), [
         userWallet,
         adminWallet,
       ]);
+
       await Promise.all(authWits.map(w => proxiedWallet.addAuthWitness(w)));
 
       // Send the tx after having added all auth witnesses from the signers
@@ -326,8 +329,11 @@ describe('e2e_proxy', () => {
           getMembershipCapsule(await getMembershipProof(slowUpdateTreeSimulator, 1n, false)),
         );
       }
+      console.log(`Implementation contract: ${implementationContract.address.toString()}`);
+      console.log(`Proxy contract: ${proxyContract.address.toString()}`);
+      console.log(`Multisig contract: ${implementationAddress!.toString()}`);
       // Set up the method we want to call on a contract with the multisig as the wallet
-      const action = child.methods.pubIncValue(42);
+      const action = implementationContract.methods.public_set_value(42n);
 
       // We collect the signatures from each owner and register them using addAuthWitness
       const authWits = await collectSignatures(getRequestsFromTxRequest(await action.create()), [
@@ -339,7 +345,7 @@ describe('e2e_proxy', () => {
       // Send the tx after having added all auth witnesses from the signers
       // TODO: We should be able to call send() on the result of create()
       await action.send().wait();
-      const storedValue = await pxe.getPublicStorageAt(child.address, new Fr(1));
+      const storedValue = await pxe.getPublicStorageAt(implementationContract.address, new Fr(1));
       expect(storedValue).toEqual(new Fr(42n));
     }, 60_000);
   });
