@@ -12,15 +12,19 @@ DEPLOY_OUTPUT=""
 if [ "$1" = "master" ]; then
     # Deploy to production if the argument is "master"
     DEPLOY_OUTPUT=$(netlify deploy --site aztec-docs-dev --prod)
-else
+else    
+    PR_URL="$2"                                                                                             INT ✘  17:02:39 
+    API_URL="${/github.com/api.github.com}"
+    API_URL="${API_URL/pull/repos}"
+    API_URL="${API_URL}/files
 
-    echo "$2"
+    echo "API URL: $API_URL"
+
     echo "https://api.github.com/repos/AztecProtocol/aztec-packages/pulls/"$2"/files"
     DOCS_CHANGED=$(curl -L -f \
         -H "Accept: application/vnd.github+json" \
         -H "Authorization: Bearer $AZTEC_BOT_COMMENTER_GITHUB_TOKEN" \
-        -H "X-GitHub-Api-Version: 2022-11-28" \
-        https://api.github.com/repos/AztecProtocol/aztec-packages/pulls/"$2"/files | \
+        "${API_URL}" | \
         jq '[.[] | select(.filename | startswith("docs/"))] | length > 0')
 
     if [ "$DOCS_CHANGED" = "false" ]; then
