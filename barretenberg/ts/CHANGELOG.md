@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.25.0](https://github.com/AztecProtocol/aztec-packages/compare/barretenberg.js-v0.24.0...barretenberg.js-v0.25.0) (2024-02-24)
+
+
+### Miscellaneous
+
+* Implement poseidon2 opcode ([#4446](https://github.com/AztecProtocol/aztec-packages/issues/4446)) ([491a8df](https://github.com/AztecProtocol/aztec-packages/commit/491a8dfe81a33a7552686f70833f6130da944142))
+
 ## [0.24.0](https://github.com/AztecProtocol/aztec-packages/compare/barretenberg.js-v0.23.0...barretenberg.js-v0.24.0) (2024-02-13)
 
 
