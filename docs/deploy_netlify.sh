@@ -16,7 +16,7 @@ else
     PR_URL="$2"                                                                                             INT ✘  17:02:39 
     API_URL="${/github.com/api.github.com}"
     API_URL="${API_URL/pull/repos}"
-    API_URL="${API_URL}/files
+    API_URL="${API_URL}/files"
 
     echo "API URL: $API_URL"
 
