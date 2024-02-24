@@ -1,4 +1,5 @@
 import { Fr } from '@aztec/foundation/fields';
+import { TracedNullifierCheck } from './trace_types.js';
 
 export class WorldStateAccessTrace {
   public accessCounter: number;
@@ -12,7 +13,7 @@ export class WorldStateAccessTrace {
   //public noteHashChecks: TracedNoteHashCheck[] = [];
   //public newNoteHashes: TracedNoteHash[] = [];
   public newNoteHashes: Fr[] = [];
-  //public nullifierChecks: TracedNullifierCheck[] = [];
+  public nullifierChecks: TracedNullifierCheck[] = [];
   //public newNullifiers: TracedNullifier[] = [];
   public newNullifiers: Fr[] = [];
   //public l1toL2MessageReads: TracedL1toL2MessageRead[] = [];
@@ -73,6 +74,22 @@ export class WorldStateAccessTrace {
     this.incrementAccessCounter();
   }
 
+  public traceNullifierCheck(storageAddress: Fr, nullifier: Fr, exists: boolean, isPending: boolean, leafIndex: Fr) {
+    // TODO: check if some threshold is reached for max new nullifier
+    const traced: TracedNullifierCheck = {
+      callPointer: Fr.ZERO, // FIXME
+      storageAddress,
+      nullifier,
+      exists,
+      counter: new Fr(this.accessCounter),
+      endLifetime: Fr.ZERO,
+      isPending,
+      leafIndex,
+    };
+    this.nullifierChecks.push(traced);
+    this.incrementAccessCounter();
+  }
+
   public traceNewNullifier(_storageAddress: Fr, nullifier: Fr) {
     // TODO: check if some threshold is reached for max new nullifier
     //const traced: TracedNullifier = {
@@ -105,6 +122,7 @@ export class WorldStateAccessTrace {
     mergeContractJournalMaps(this.publicStorageWrites, incomingTrace.publicStorageWrites);
     // Merge new note hashes and nullifiers
     this.newNoteHashes = this.newNoteHashes.concat(incomingTrace.newNoteHashes);
+    this.nullifierChecks = this.nullifierChecks.concat(incomingTrace.nullifierChecks);
     this.newNullifiers = this.newNullifiers.concat(incomingTrace.newNullifiers);
     // it is assumed that the incoming trace was initialized with this as parent, so accept counter
     this.accessCounter = incomingTrace.accessCounter;
